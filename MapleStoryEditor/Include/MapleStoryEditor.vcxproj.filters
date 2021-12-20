@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="01. Scene">
+      <UniqueIdentifier>{38f3a722-9e22-4175-ba25-c62bfc3d6706}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Editor">
+      <UniqueIdentifier>{f2d8bfd2-04a4-4d0f-b8f7-d5c9f2bafb4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Object">
+      <UniqueIdentifier>{36585969-a747-4dd0-9e80-4cb218ec098b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Scene\DefaultScene.cpp">
+      <Filter>01. Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Window\SpriteWindow.cpp">
+      <Filter>02. Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Window\ObjectHierarchy.cpp">
+      <Filter>02. Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Window\EditorMenu.cpp">
+      <Filter>02. Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Window\DetailWindow.cpp">
+      <Filter>02. Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\AnimationLoadObject.cpp">
+      <Filter>03. Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\SpriteEditObject.cpp">
+      <Filter>03. Object</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\DragObject.cpp">
+      <Filter>03. Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Window\ConfigurationWindow.cpp">
+      <Filter>02. Editor</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Scene\DefaultScene.h">
+      <Filter>01. Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Window\SpriteWindow.h">
+      <Filter>02. Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Window\ObjectHierarchy.h">
+      <Filter>02. Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Window\EditorMenu.h">
+      <Filter>02. Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Window\DetailWindow.h">
+      <Filter>02. Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\AnimationLoadObject.h">
+      <Filter>03. Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\SpriteEditObject.h">
+      <Filter>03. Object</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorInfo.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\DragObject.h">
+      <Filter>03. Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Window\ConfigurationWindow.h">
+      <Filter>02. Editor</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MapleStoryEditor.rc">
+      <Filter>리소스 파일</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon1.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+  </ItemGroup>
+</Project>

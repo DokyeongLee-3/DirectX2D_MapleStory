@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="01. SceneMode">
+      <UniqueIdentifier>{08f6a8fe-7247-4566-ab08-731047988b40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object">
+      <UniqueIdentifier>{218ff1ce-6222-432f-84b8-207c4ba77cb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\01. Player">
+      <UniqueIdentifier>{d12d3136-29ab-4a70-b7fb-250eaf30a6fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\02. Arrow">
+      <UniqueIdentifier>{5e8705bc-f3c7-4bde-9f10-6fa6f27ef3df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\03. Effect">
+      <UniqueIdentifier>{776cb84f-3fa6-42cf-a39f-4f1eaf804211}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\03. Effect\01. PlayerEffect">
+      <UniqueIdentifier>{023690ba-23f6-4ac1-9a0d-02e463a7df8f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\MainScene.cpp">
+      <Filter>01. SceneMode</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\Player2D.cpp">
+      <Filter>02. Object\01. Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\BulletTornaido.cpp">
+      <Filter>02. Object\02. Arrow</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\PlayerAnimation2D.cpp">
+      <Filter>02. Object\01. Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\SylphideLancerArrow.cpp">
+      <Filter>02. Object\02. Arrow</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\SylphideLancerArrowAnimation2D.cpp">
+      <Filter>02. Object\02. Arrow</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\SylphideLancerEffectAnimation2D.cpp">
+      <Filter>02. Object\03. Effect\01. PlayerEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\PlayerSkillBodyEffect.cpp">
+      <Filter>02. Object\03. Effect\01. PlayerEffect</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\MainScene.h">
+      <Filter>01. SceneMode</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Player2D.h">
+      <Filter>02. Object\01. Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\BulletTornaido.h">
+      <Filter>02. Object\02. Arrow</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\PlayerAnimation2D.h">
+      <Filter>02. Object\01. Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\SylphideLancerArrow.h">
+      <Filter>02. Object\02. Arrow</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\SylphideLancerArrowAnimation2D.h">
+      <Filter>02. Object\02. Arrow</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\SylphideLancerEffectAnimation2D.h">
+      <Filter>02. Object\03. Effect\01. PlayerEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\PlayerSkillBodyEffect.h">
+      <Filter>02. Object\03. Effect\01. PlayerEffect</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon1.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MapleStoryClient2D.rc">
+      <Filter>리소스 파일</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
