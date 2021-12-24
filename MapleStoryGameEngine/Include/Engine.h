@@ -16,8 +16,15 @@ private:
 	// 실제로 Engine::Run에서 시작됐는지 안됐는지
 	bool		m_Start;
 	bool		m_Play;
+	Engine_Space	m_Space;
 
 public:
+	Engine_Space GetEngineSpace()	const
+	{
+		return m_Space;
+	}
+
+
 	bool IsPlay()	const
 	{
 		return m_Play;

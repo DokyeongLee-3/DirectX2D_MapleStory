@@ -238,6 +238,9 @@ bool CSceneResource::LoadSequence2DFullPath(const char* FullPath)
 	if (!CResourceManager::GetInst()->LoadSequence2DFullPath(SequenceName, FullPath, m_Scene))
 		return false;
 
+	if (FindAnimationSequence2D(SequenceName))
+		return true;
+
 	CAnimationSequence2D* Sequence = CResourceManager::GetInst()->FindAnimationSequence2D(SequenceName);
 
 	m_mapSequence2D.insert(std::make_pair(SequenceName, Sequence));
@@ -249,6 +252,9 @@ bool CSceneResource::LoadSequence2DFullPath(std::string& resultName, const char*
 {
 	if (!CResourceManager::GetInst()->LoadSequence2DFullPath(resultName, FullPath, m_Scene))
 		return false;
+
+	if (FindAnimationSequence2D(resultName))
+		return true;
 
 	CAnimationSequence2D* Sequence = CResourceManager::GetInst()->FindAnimationSequence2D(resultName);
 

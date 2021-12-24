@@ -122,9 +122,15 @@ bool CAnimationManager::LoadSequenceFullPath(std::string& resultName, const char
 		return false;
 	}
 
-	m_mapSequence2D.insert(std::make_pair(Sequence->GetName(), Sequence));
-
 	resultName = Sequence->GetName();
+
+	if (FindSequence(resultName))
+	{
+		SAFE_RELEASE(Sequence);
+		return true;
+	}
+
+	m_mapSequence2D.insert(std::make_pair(Sequence->GetName(), Sequence));
 
 	return true;
 }

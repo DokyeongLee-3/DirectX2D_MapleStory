@@ -170,6 +170,9 @@
     <ClInclude Include="..\..\..\MapleStory\MapleStoryGameEngine\Include\PathManager.h" />
     <ClInclude Include="Animation\AnimationSequence2DData.h" />
     <ClInclude Include="Animation\AnimationSequence2DInstance.h" />
+    <ClInclude Include="Collision\CollisionManager.h" />
+    <ClInclude Include="Component\ColliderBox2D.h" />
+    <ClInclude Include="Component\ColliderComponent.h" />
     <ClInclude Include="Component\ColorComponent.h" />
     <ClInclude Include="Component\Component.h" />
     <ClInclude Include="Component\ObjectComponent.h" />
@@ -254,6 +257,9 @@
     <ClCompile Include="..\..\..\MapleStory\MapleStoryGameEngine\Include\PathManager.cpp" />
     <ClCompile Include="Animation\AnimationSequence2DData.cpp" />
     <ClCompile Include="Animation\AnimationSequence2DInstance.cpp" />
+    <ClCompile Include="Collision\CollisionManager.cpp" />
+    <ClCompile Include="Component\ColliderBox2D.cpp" />
+    <ClCompile Include="Component\ColliderComponent.cpp" />
     <ClCompile Include="Component\ColorComponent.cpp" />
     <ClCompile Include="Component\Component.cpp" />
     <ClCompile Include="Component\ObjectComponent.cpp" />

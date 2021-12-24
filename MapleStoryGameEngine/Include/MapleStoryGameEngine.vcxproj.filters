@@ -127,6 +127,12 @@
     <Filter Include="01. Engine\08. IMGUI\03. Widget">
       <UniqueIdentifier>{2e80570b-bfe3-4d7e-90c0-3911d6c489a5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="08. Collision">
+      <UniqueIdentifier>{6f8bd08e-db1c-4c34-a7a1-aa083bbd3637}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Component\01. SceneComponent\02. Collider">
+      <UniqueIdentifier>{db3b843c-57ec-46e7-8818-e3492be4d52f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -356,6 +362,15 @@
     </ClCompile>
     <ClCompile Include="Component\ColorComponent.cpp">
       <Filter>05. Component\01. SceneComponent\01. MeshComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\ColliderBox2D.cpp">
+      <Filter>05. Component\01. SceneComponent\02. Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\ColliderComponent.cpp">
+      <Filter>05. Component\01. SceneComponent\02. Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision\CollisionManager.cpp">
+      <Filter>08. Collision</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -604,6 +619,15 @@
     </ClInclude>
     <ClInclude Include="Component\ColorComponent.h">
       <Filter>05. Component\01. SceneComponent\01. MeshComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\ColliderBox2D.h">
+      <Filter>05. Component\01. SceneComponent\02. Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\ColliderComponent.h">
+      <Filter>05. Component\01. SceneComponent\02. Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision\CollisionManager.h">
+      <Filter>08. Collision</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

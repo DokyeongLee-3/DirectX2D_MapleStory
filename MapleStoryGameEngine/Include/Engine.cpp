@@ -7,6 +7,7 @@
 #include "Render/RenderManager.h"
 #include "Input.h"
 #include "IMGUIManager.h"
+#include "Collision/CollisionManager.h"
 
 DEFINITION_SINGLE(CEngine)
 
@@ -16,7 +17,8 @@ CEngine::CEngine()	:
 	m_ClearColor{},
 	m_Timer(nullptr),
 	m_Start(false),
-	m_Play(true)
+	m_Play(true),
+	m_Space(Engine_Space::Space2D)
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	//_CrtSetBreakAlloc(729);
@@ -30,6 +32,8 @@ CEngine::~CEngine()
 	CInput::DestroyInst();
 
 	CRenderManager::DestroyInst();
+
+	CCollisionManager::DestroyInst();
 
 	CPathManager::DestroyInst();
 
@@ -78,6 +82,9 @@ bool CEngine::Init(HINSTANCE hInst, HWND hWnd,
 		return false;
 
 	if (!CResourceManager::GetInst()->Init())
+		return false;
+
+	if (!CCollisionManager::GetInst()->Init())
 		return false;
 
 	if (!CInput::GetInst()->Init(m_hInst, m_hWnd))
