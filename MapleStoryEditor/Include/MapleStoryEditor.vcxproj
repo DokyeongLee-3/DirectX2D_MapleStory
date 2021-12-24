@@ -163,6 +163,8 @@
     <ClInclude Include="EditorManager.h" />
     <ClInclude Include="Object\AnimationLoadObject.h" />
     <ClInclude Include="Object\DragObject.h" />
+    <ClInclude Include="Object\Pivot.h" />
+    <ClInclude Include="Object\Player2D.h" />
     <ClInclude Include="Object\SpriteEditObject.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Scene\DefaultScene.h" />
@@ -177,6 +179,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Object\AnimationLoadObject.cpp" />
     <ClCompile Include="Object\DragObject.cpp" />
+    <ClCompile Include="Object\Pivot.cpp" />
+    <ClCompile Include="Object\Player2D.cpp" />
     <ClCompile Include="Object\SpriteEditObject.cpp" />
     <ClCompile Include="Scene\DefaultScene.cpp" />
     <ClCompile Include="Window\ConfigurationWindow.cpp" />

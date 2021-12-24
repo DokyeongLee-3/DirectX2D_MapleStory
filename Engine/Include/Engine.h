@@ -15,8 +15,19 @@ private:
 	// 생성한 Scene이 생성되고나서(Init에서 new로 만드는거)
 	// 실제로 Engine::Run에서 시작됐는지 안됐는지
 	bool		m_Start;
+	bool		m_Play;
 
 public:
+	bool IsPlay()	const
+	{
+		return m_Play;
+	}
+
+	void SetPlay(bool Play)
+	{
+		m_Play = Play;
+	}
+
 	HWND GetWindowHandle()	const
 	{
 		return m_hWnd;

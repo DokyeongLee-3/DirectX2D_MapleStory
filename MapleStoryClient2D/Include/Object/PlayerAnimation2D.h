@@ -18,3 +18,4 @@ private:
 	void CreateSylphideLancerEffect();
 };
 
+

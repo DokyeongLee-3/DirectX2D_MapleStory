@@ -51,6 +51,7 @@ void CClientManager::CreateSceneMode(CScene* Scene, size_t Type)
 {
 }
 
-void CClientManager::CreateObject(CScene* Scene, size_t Type)
+CGameObject* CClientManager::CreateObject(CScene* Scene, size_t Type)
 {
+	return nullptr;
 }

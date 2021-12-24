@@ -18,6 +18,9 @@ private:
 	class CIMGUITextInput* m_RotY;
 	class CIMGUITextInput* m_RotZ;
 
+	class CIMGUITextInput* m_ScalingX;
+	class CIMGUITextInput* m_ScalingY;
+
 public:
 	virtual bool Init();
 	virtual void Update(float DeltaTime);
@@ -31,5 +34,9 @@ private:
 	void RotationXCallback();
 	void RotationYCallback();
 	void RotationZCallback();
+
+private:
+	void ScalingXCallback();
+	void ScalingYCallback();
 };
 

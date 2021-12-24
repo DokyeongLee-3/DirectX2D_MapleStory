@@ -2,6 +2,7 @@
 #include "MeshManager.h"
 #include "SpriteMesh.h"
 #include "StaticMesh.h"
+#include "ColorMesh.h"
 
 CMeshManager::CMeshManager()
 {
@@ -40,6 +41,18 @@ bool CMeshManager::Init()
 		D3D11_USAGE_IMMUTABLE, D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
 
 	m_mapMesh.insert(std::make_pair("FrameRect", FrameRectMesh));
+
+
+	// »¡°£ 1ÇÈ¼¿ Á÷»ç°¢Çü ¿ëµµ Mesh
+	CMesh* ColorMesh = new CColorMesh;
+
+	if (!ColorMesh->Init())
+	{
+		ColorMesh->Release();
+		return false;
+	}
+
+	m_mapMesh.insert(std::make_pair("ColorMesh", ColorMesh));
 
 	return true;
 }

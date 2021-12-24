@@ -98,25 +98,25 @@ void CAnimationManager::AddFrame(const std::string& Name,
 	Sequence->AddFrame(StartX, StartY, Width, Height);
 }
 
-bool CAnimationManager::SaveSequence(const std::string& Name, const char* FullPath)
+bool CAnimationManager::SaveSequenceFullPath(const std::string& Name, const char* FullPath)
 {
 	CAnimationSequence2D* Sequence = FindSequence(Name);
 
 	if (!Sequence)
 		return false;
 
-	Sequence->Save(FullPath);
+	Sequence->SaveFullPath(FullPath);
 
 	return true;
 }
 
-bool CAnimationManager::LoadSequence(std::string& resultName, const char* FullPath, class CScene* Scene)
+bool CAnimationManager::LoadSequenceFullPath(std::string& resultName, const char* FullPath, class CScene* Scene)
 {
 	CAnimationSequence2D* Sequence = new CAnimationSequence2D;
 
 	Sequence->SetScene(Scene);
 
-	if (!Sequence->Load(FullPath))
+	if (!Sequence->LoadFullPath(FullPath))
 	{
 		SAFE_DELETE(Sequence);
 		return false;
@@ -125,6 +125,45 @@ bool CAnimationManager::LoadSequence(std::string& resultName, const char* FullPa
 	m_mapSequence2D.insert(std::make_pair(Sequence->GetName(), Sequence));
 
 	resultName = Sequence->GetName();
+
+	return true;
+}
+
+bool CAnimationManager::SaveSequence(const std::string& Name, const char* FileName,
+	const std::string& PathName)
+{
+	CAnimationSequence2D* Sequence = FindSequence(Name);
+
+	if (!Sequence)
+		return false;
+
+	Sequence->Save(FileName, PathName);
+
+	return true;
+}
+
+bool CAnimationManager::LoadSequence(std::string& resultName, const char* FileName,
+	const std::string& PathName, CScene* Scene)
+{
+	CAnimationSequence2D* Sequence = new CAnimationSequence2D;
+
+	Sequence->SetScene(Scene);
+
+	if (!Sequence->Load(FileName, PathName))
+	{
+		SAFE_DELETE(Sequence);
+		return false;
+	}
+
+	resultName = Sequence->GetName();
+
+	if (FindSequence(resultName))
+	{
+		SAFE_RELEASE(Sequence);
+		return true;
+	}
+
+	m_mapSequence2D.insert(std::make_pair(resultName, Sequence));
 
 	return true;
 }

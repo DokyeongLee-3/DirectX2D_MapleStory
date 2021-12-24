@@ -1,6 +1,7 @@
 
 #include "Transform.h"
 #include "../Resource/Shader/TransformConstantBuffer.h"
+#include "../Device.h"
 
 CTransform::CTransform() :
 	m_Parent(nullptr),
@@ -593,7 +594,10 @@ void CTransform::SetTransform()
 
 	Matrix	matProj;
 
-	matProj = XMMatrixOrthographicOffCenterLH(0.f, 1280.f, 0.f, 720.f, 0.f, 1000.f);
+	Resolution RS = CDevice::GetInst()->GetResolution();
+
+	// 내가 ViewLeft, ViewBottom 수정함
+	matProj = XMMatrixOrthographicOffCenterLH(0.f, (float)RS.Width, 0.f, (float)RS.Height, 0.f, 1000.f);
 
 	m_CBuffer->SetProjMatrix(matProj);
 

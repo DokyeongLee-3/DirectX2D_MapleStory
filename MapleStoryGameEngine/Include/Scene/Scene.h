@@ -58,11 +58,23 @@ public:
 	{
 		m_Mode = new T;
 
+		m_Mode->m_Scene = this;
+
 		if (!m_Mode->Init())
 		{
 			m_Mode = nullptr;
 			return false;
 		}
+
+		return true;
+	}
+
+	template <typename T>
+	bool LoadSceneMode()
+	{
+		m_Mode = new T;
+
+		m_Mode->m_Scene = this;
 
 		return true;
 	}
@@ -82,6 +94,21 @@ public:
 		}
 
 		m_ObjList.push_back(Obj);
+
+		return Obj;
+	}
+
+	template <typename T>
+	T* LoadGameObject()
+	{
+		T* Obj = new T;
+
+		Obj->SetScene(this);
+
+		m_ObjList.push_back(Obj);
+
+		if (m_Start)
+			Obj->Start();
 
 		return Obj;
 	}

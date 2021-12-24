@@ -134,6 +134,36 @@ bool CDetailWindow::Init()
 	m_RotZ->SetTextType(ImGuiText_Type::Float);
 	m_RotZ->SetCallback(this, &CDetailWindow::RotationZCallback);
 
+	// Scaling
+	Label = AddWidget<CIMGUILabel>("Scaling", 60.f, 30.f);
+	Label->SetColor(0, 0, 255);
+	Label->SetAlign(0.5f, 0.f);
+
+	Line = AddWidget<CIMGUISameLine>("Line");
+
+	Label = AddWidget<CIMGUILabel>("X", 30.f, 30.f);
+
+	Line = AddWidget<CIMGUISameLine>("Line");
+
+	m_ScalingX = AddWidget<CIMGUITextInput>("ScalingX", 60.f, 30.f);
+	m_ScalingX->SetHideName(true);
+	m_ScalingX->SetTextType(ImGuiText_Type::Float);
+	m_ScalingX->SetCallback(this, &CDetailWindow::ScalingXCallback);
+
+	Line = AddWidget<CIMGUISameLine>("Line");
+
+	Label = AddWidget<CIMGUILabel>("Y", 30.f, 30.f);
+
+	Label->SetColor(0, 0, 255);
+	Label->SetAlign(0.5f, 0.f);
+
+	Line = AddWidget<CIMGUISameLine>("Line");
+
+	m_ScalingY = AddWidget<CIMGUITextInput>("ScalingY", 60.f, 30.f);
+	m_ScalingY->SetHideName(true);
+	m_ScalingY->SetTextType(ImGuiText_Type::Float);
+	m_ScalingY->SetCallback(this, &CDetailWindow::ScalingYCallback);
+
 	return true;
 }
 
@@ -296,4 +326,56 @@ void CDetailWindow::RotationZCallback()
 	Rot.z = m_RotZ->GetValueFloat();
 
 	Obj->SetWorldRotation(Rot);
+}
+
+void CDetailWindow::ScalingXCallback()
+{
+	CObjectHierarchy* Hierarchy = (CObjectHierarchy*)CIMGUIManager::GetInst()->FindIMGUIWindow("ObjectHierarchy");
+
+	if (!Hierarchy)
+		return;
+
+	CGameObject* Obj = nullptr;
+
+	CIMGUIListBox* ObjList = Hierarchy->GetObjectList();
+
+	if (ObjList->GetSelectIndex() == -1)
+		return;
+
+	Obj = CSceneManager::GetInst()->GetScene()->FindObject(ObjList->GetSelectItem());
+
+	if (!Obj)
+		return;
+
+	Vector3	Scale = Obj->GetRootComponent()->GetWorldScale();
+
+	Scale.x = m_ScalingX->GetValueFloat();
+
+	Obj->GetRootComponent()->SetWorldScale(Scale);
+}
+
+void CDetailWindow::ScalingYCallback()
+{
+	CObjectHierarchy* Hierarchy = (CObjectHierarchy*)CIMGUIManager::GetInst()->FindIMGUIWindow("ObjectHierarchy");
+
+	if (!Hierarchy)
+		return;
+
+	CGameObject* Obj = nullptr;
+
+	CIMGUIListBox* ObjList = Hierarchy->GetObjectList();
+
+	if (ObjList->GetSelectIndex() == -1)
+		return;
+
+	Obj = CSceneManager::GetInst()->GetScene()->FindObject(ObjList->GetSelectItem());
+
+	if (!Obj)
+		return;
+
+	Vector3	Scale = Obj->GetRootComponent()->GetWorldScale();
+
+	Scale.y = m_ScalingY->GetValueFloat();
+
+	Obj->GetRootComponent()->SetWorldScale(Scale);
 }

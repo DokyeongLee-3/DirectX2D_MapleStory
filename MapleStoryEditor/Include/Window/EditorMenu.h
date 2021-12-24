@@ -28,5 +28,6 @@ public:
 	void ComponentCreateButton();
 	void SaveScene();
 	void LoadScene();
+	void GamePlay();
 };
 

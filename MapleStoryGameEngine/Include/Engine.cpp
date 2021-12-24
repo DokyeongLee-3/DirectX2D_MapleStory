@@ -15,7 +15,8 @@ bool CEngine::m_Loop = true;
 CEngine::CEngine()	:
 	m_ClearColor{},
 	m_Timer(nullptr),
-	m_Start(false)
+	m_Start(false),
+	m_Play(true)
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	//_CrtSetBreakAlloc(729);
@@ -141,6 +142,9 @@ void CEngine::Logic()
 	m_Timer->Update();
 
 	float DeltaTime = m_Timer->GetDeltaTime();
+
+	if (!m_Play)
+		DeltaTime = 0.f;
 
 	CInput::GetInst()->Update(DeltaTime);
 

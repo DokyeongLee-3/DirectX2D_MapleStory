@@ -52,6 +52,29 @@ void CAnimationSequence2DData::Save(FILE* File)
 
 void CAnimationSequence2DData::Load(FILE* File)
 {
+	int	Length = 0;
+	char	Name[256] = {};
+
+	fread(&Length, sizeof(int), 1, File);
+	fread(Name, sizeof(char), Length, File);
+	m_Name = Name;
+
+
+	fread(&m_Frame, sizeof(int), 1, File);
+	fread(&m_Time, sizeof(float), 1, File);
+	fread(&m_FrameTime, sizeof(float), 1, File);
+	fread(&m_PlayTime, sizeof(float), 1, File);
+	fread(&m_PlayScale, sizeof(float), 1, File);
+
+	fread(&m_Loop, sizeof(bool), 1, File);
+	fread(&m_Reverse, sizeof(bool), 1, File);
+
+	Length = 0;
+	char	SequenceName[256] = {};
+	fread(&Length, sizeof(int), 1, File);
+	fread(SequenceName, sizeof(char), Length, File);
+
+	m_SequenceName = SequenceName;
 }
 
 CAnimationSequence2D* CAnimationSequence2DData::GetAnimationSequence() const

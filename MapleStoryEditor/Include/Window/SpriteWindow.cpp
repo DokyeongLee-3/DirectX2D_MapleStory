@@ -9,6 +9,7 @@
 #include "IMGUICheckBox.h"
 #include "IMGUIRadioButton.h"
 #include "IMGUIImage.h"
+#include "IMGUITree.h"
 #include "Device.h"
 #include "Engine.h"
 #include "PathManager.h"
@@ -23,9 +24,8 @@
 #include "Animation/AnimationSequence2DInstance.h"
 #include "Animation/AnimationSequence2DData.h"
 #include "../Object/AnimationLoadObject.h"
-#include "../Object/SpriteEditObject.h"
+#include "../Object/Pivot.h"
 
-#include <sstream>
 
 CSpriteWindow::CSpriteWindow() :
     m_SpriteObject(nullptr),
@@ -59,6 +59,19 @@ bool CSpriteWindow::Init()
 {
     CIMGUIWindow::Init();
 
+    CIMGUITree* Tree = AddWidget<CIMGUITree>("Tree");
+    Node* NewNode = Tree->AddChildNode("", "Configuration");
+
+    NewNode = Tree->AddChildNode("Configuration", "Style");
+
+    NewNode->Callback = std::bind(&CSpriteWindow::StyleCallback, this);
+
+    NewNode = Tree->AddChildNode("Configuration", "EditMode");
+
+    CIMGUIRadioButton* Radio = Tree->AddNodeWidget<CIMGUIRadioButton>("EditMode", 100.f, 100.f);
+    Radio->AddText<CSpriteWindow>("Map Edit Mode", this, &CSpriteWindow::EditModeCallback1);
+    Radio->AddText<CSpriteWindow>("Sprite Edit Mode", this, &CSpriteWindow::SpriteEditButton);
+
     //CIMGUISameLine* Line = AddWidget<CIMGUISameLine>("Line");
 
     //Button = AddWidget<CIMGUIButton>("SpriteEdit");
@@ -86,6 +99,20 @@ bool CSpriteWindow::Init()
     Button = AddWidget<CIMGUIButton>("LoadAnim", 80.f, 30.f);
 
     Button->SetClickCallback<CSpriteWindow>(this, &CSpriteWindow::LoadAnimation);
+
+    Button = AddWidget<CIMGUIButton>("Load Texture");
+
+    Button->SetSize(80.f, 30.f);
+
+    Button->SetClickCallback<CSpriteWindow>(this, &CSpriteWindow::LoadTextureButton);
+
+    Line = AddWidget<CIMGUISameLine>("Line");
+
+    m_LoadFileName = AddWidget<CIMGUITextInput>("LoadFileName");
+    m_LoadFileName->SetHideName(true);
+    m_LoadFileName->SetText("");
+    m_LoadFileName->SetSize(200.f, 20.f);
+    m_LoadFileName->ReadOnly(true);
 
     CIMGUILabel* Label = AddWidget<CIMGUILabel>("AnimationListName", 200.f, 30.f);
 
@@ -220,20 +247,6 @@ bool CSpriteWindow::Init()
 
     m_SpriteFrame = AddWidget<CIMGUIImage>("SpriteFrame", 200.f, 200.f);
 
-    Line = AddWidget<CIMGUISameLine>("Line");
-
-    Button = AddWidget<CIMGUIButton>("Load Texture");
-
-    Button->SetSize(80.f, 30.f);
-
-    Button->SetClickCallback<CSpriteWindow>(this, &CSpriteWindow::LoadTextureButton);
-
-    Line = AddWidget<CIMGUISameLine>("Line");
-
-    m_LoadFileName = AddWidget<CIMGUITextInput>("LoadFileName");
-    m_LoadFileName->SetHideName(true);
-    m_LoadFileName->SetText("");
-    m_LoadFileName->ReadOnly(true);
 
     // SpriteComponent통해서 CreateAnimationInstance를 하면 Instance에 Scene이
     // Set되어 있겠지만 이 경우엔 아니라서 Instance가
@@ -275,6 +288,8 @@ void CSpriteWindow::Update(float DeltaTime)
             m_SpriteFrame->SetImageStart(FrameData.Start.x, FrameData.Start.y);
 
             m_SpriteFrame->SetImageEnd(FrameData.Start.x + FrameData.Size.x, FrameData.Start.y + FrameData.Size.y);
+
+            m_SpriteFrame->SetSize(FrameData.Size);
         }
     }
 
@@ -423,6 +438,12 @@ void CSpriteWindow::AddAnimationFrameButton()
     m_SpriteFrame->SetImageStart(StartPos.x, StartPos.y);
 
     m_SpriteFrame->SetImageEnd(EndPos.x, EndPos.y);
+
+    Vector2 SpriteFrameSize;
+    SpriteFrameSize.x = abs(EndPos.x - StartPos.x);
+    SpriteFrameSize.y = abs(EndPos.y - StartPos.y);
+
+    m_SpriteFrame->SetSize(SpriteFrameSize);
 }
 
 void CSpriteWindow::SelectAnimationFrame(int Index, const char* Item)
@@ -444,6 +465,11 @@ void CSpriteWindow::SelectAnimationFrame(int Index, const char* Item)
 
     m_SpriteFrame->SetImageEnd(Data.Start.x + Data.Size.x, Data.Start.y + Data.Size.y);
 
+    m_FrameStartPosX->SetInt((int)Data.Start.x);
+    m_FrameStartPosY->SetInt((int)Data.Start.y);
+    m_FrameEndPosX->SetInt((int)(Data.Start.x + Data.Size.x));
+    m_FrameEndPosY->SetInt((int)(Data.Start.y + Data.Size.y));
+
     CDragObject* DragObj = CEditorManager::GetInst()->GetDragObj();
 
     Vector2 StartPos, EndPos;
@@ -458,6 +484,12 @@ void CSpriteWindow::SelectAnimationFrame(int Index, const char* Item)
 
     DragObj->SetStartPos(StartPos);
     DragObj->SetEndPos(EndPos);
+
+    m_SpriteFrame->SetSize(Data.Size);
+
+    CPivot* Pivot = CEditorManager::GetInst()->GetDragPivot();
+
+    Pivot->SetWorldPos((StartPos.x + EndPos.x) / 2.f, (StartPos.y + EndPos.y) / 2.f, 0.f);
 }
 
 void CSpriteWindow::SelectAnimation(int Index, const char* Item)
@@ -516,7 +548,7 @@ void CSpriteWindow::SaveSequence()
         int Length = WideCharToMultiByte(CP_ACP, 0, FilePath, -1, 0, 0, 0, 0);
         WideCharToMultiByte(CP_ACP, 0, FilePath, -1, FullPath, Length, 0, 0);
 
-        m_AnimInstance->GetCurrentAnimation()->GetAnimationSequence()->Save(FullPath);
+        m_AnimInstance->GetCurrentAnimation()->GetAnimationSequence()->SaveFullPath(FullPath);
     }
 }
 
@@ -546,7 +578,7 @@ void CSpriteWindow::LoadSequence()
 
         std::string	SequenceName;
         // 결국 LoadSequence는 파일에서 정보를 읽어서 시퀀스들을(CAnimationManager에서) 새로 하나 만드는것
-        Resource->LoadSequence2D(SequenceName, FullPath);
+        Resource->LoadSequence2DFullPath(SequenceName, FullPath);
     }
 }
 
@@ -629,17 +661,66 @@ void CSpriteWindow::LoadAnimation()
 
 void CSpriteWindow::AdjustFrameDataStartX()
 {
+    int SelectIndex = m_AnimationList->GetSelectIndex();
+    if (SelectIndex == -1)
+        return;
+
+    CSceneResource* Resource = CSceneManager::GetInst()->GetScene()->GetResource();
+
+    CAnimationSequence2D* Sequence = Resource->FindAnimationSequence2D(m_AnimationList->GetItem(SelectIndex));
+
     int NewFrameStartX = m_FrameStartPosX->GetValueInt();
+    int NewFrameStartY = m_FrameStartPosY->GetValueInt();
+    int NewFrameEndX = m_FrameEndPosX->GetValueInt();
+    int NewFrameEndY = m_FrameEndPosY->GetValueInt();
+
+    int Index = m_AnimationFrameList->GetSelectIndex();
+
+    if (Index == -1)
+        return;
+
+    Vector2 NewStarPos = Vector2((float)NewFrameStartX, (float)NewFrameStartY);
+    Vector2 NewSize = Vector2((float)(NewFrameEndX - NewFrameStartX), (float)(NewFrameEndY - NewFrameStartY));
+
+    Sequence->SetFrameData(Index, NewStarPos, NewSize);
 
     CDragObject* DragObj = CEditorManager::GetInst()->GetDragObj();
 
     // 드래그 영역 갱신
     DragObj->SetStartPos(Vector2(m_SpriteObject->GetWorldPos().x + (float)NewFrameStartX, DragObj->GetStartPos().y));
+
+    CPivot* Pivot = CEditorManager::GetInst()->GetDragPivot();
+
+    float NewXPivotPos = (DragObj->GetStartPos().x + DragObj->GetEndPos().x) / 2.f;
+
+    Pivot->SetWorldPos(NewXPivotPos, Pivot->GetWorldPos().y, Pivot->GetWorldPos().z);
 }
 
 void CSpriteWindow::AdjustFrameDataStartY()
 {
+    int SelectIndex = m_AnimationList->GetSelectIndex();
+    if (SelectIndex == -1)
+        return;
+
+    CSceneResource* Resource = CSceneManager::GetInst()->GetScene()->GetResource();
+
+    CAnimationSequence2D* Sequence = Resource->FindAnimationSequence2D(m_AnimationList->GetItem(SelectIndex));
+
+    int NewFrameStartX = m_FrameStartPosX->GetValueInt();
     int NewFrameStartY = m_FrameStartPosY->GetValueInt();
+    int NewFrameEndX = m_FrameEndPosX->GetValueInt();
+    int NewFrameEndY = m_FrameEndPosY->GetValueInt();
+
+    int Index = m_AnimationFrameList->GetSelectIndex();
+
+    if (Index == -1)
+        return;
+
+    Vector2 NewStarPos = Vector2((float)NewFrameStartX, (float)NewFrameStartY);
+    Vector2 NewSize = Vector2((float)(NewFrameEndX - NewFrameStartX), (float)(NewFrameEndY - NewFrameStartY));
+
+    Sequence->SetFrameData(Index, NewStarPos, NewSize);
+
 
     CDragObject* DragObj = CEditorManager::GetInst()->GetDragObj();
 
@@ -647,21 +728,77 @@ void CSpriteWindow::AdjustFrameDataStartY()
 
     // 드래그 영역 갱신
     DragObj->SetStartPos(Vector2(DragObj->GetStartPos().x, m_SpriteObject->GetWorldPos().y + TexHeight - (float)NewFrameStartY));
+
+    CPivot* Pivot = CEditorManager::GetInst()->GetDragPivot();
+
+    float NewYPivotPos = (DragObj->GetStartPos().y + DragObj->GetEndPos().y) / 2.f;
+
+    Pivot->SetWorldPos(Pivot->GetWorldPos().x, NewYPivotPos, Pivot->GetWorldPos().z);
 }
 
 void CSpriteWindow::AdjustFrameDataEndX()
 {
+    int SelectIndex = m_AnimationList->GetSelectIndex();
+    if (SelectIndex == -1)
+        return;
+
+    CSceneResource* Resource = CSceneManager::GetInst()->GetScene()->GetResource();
+
+    CAnimationSequence2D* Sequence = Resource->FindAnimationSequence2D(m_AnimationList->GetItem(SelectIndex));
+
+    int NewFrameStartX = m_FrameStartPosX->GetValueInt();
+    int NewFrameStartY = m_FrameStartPosY->GetValueInt();
     int NewFrameEndX = m_FrameEndPosX->GetValueInt();
+    int NewFrameEndY = m_FrameEndPosY->GetValueInt();
+
+    int Index = m_AnimationFrameList->GetSelectIndex();
+
+    if (Index == -1)
+        return;
+
+    Vector2 NewStarPos = Vector2((float)NewFrameStartX, (float)NewFrameStartY);
+    Vector2 NewSize = Vector2((float)(NewFrameEndX - NewFrameStartX), (float)(NewFrameEndY - NewFrameStartY));
+
+    Sequence->SetFrameData(Index, NewStarPos, NewSize);
+
 
     CDragObject* DragObj = CEditorManager::GetInst()->GetDragObj();
 
     // 드래그 영역 갱신
     DragObj->SetEndPos(Vector2(m_SpriteObject->GetWorldPos().x + (float)NewFrameEndX, DragObj->GetEndPos().y));
+
+    CPivot* Pivot = CEditorManager::GetInst()->GetDragPivot();
+
+    float NewXPivotPos = (DragObj->GetStartPos().x + DragObj->GetEndPos().x)/2.f;
+
+    Pivot->SetWorldPos(NewXPivotPos, Pivot->GetWorldPos().y, Pivot->GetWorldPos().z);
 }
 
 void CSpriteWindow::AdjustFrameDataEndY()
 {
+    int SelectIndex = m_AnimationList->GetSelectIndex();
+    if (SelectIndex == -1)
+        return;
+
+    CSceneResource* Resource = CSceneManager::GetInst()->GetScene()->GetResource();
+
+    CAnimationSequence2D* Sequence = Resource->FindAnimationSequence2D(m_AnimationList->GetItem(SelectIndex));
+
+    int NewFrameStartX = m_FrameStartPosX->GetValueInt();
+    int NewFrameStartY = m_FrameStartPosY->GetValueInt();
+    int NewFrameEndX = m_FrameEndPosX->GetValueInt();
     int NewFrameEndY = m_FrameEndPosY->GetValueInt();
+
+    int Index = m_AnimationFrameList->GetSelectIndex();
+
+    if (Index == -1)
+        return;
+
+    Vector2 NewStarPos = Vector2((float)NewFrameStartX, (float)NewFrameStartY);
+    Vector2 NewSize = Vector2((float)(NewFrameEndX - NewFrameStartX), (float)(NewFrameEndY - NewFrameStartY));
+
+    Sequence->SetFrameData(Index, NewStarPos, NewSize);
+
 
     CDragObject* DragObj = CEditorManager::GetInst()->GetDragObj();
 
@@ -669,6 +806,48 @@ void CSpriteWindow::AdjustFrameDataEndY()
 
     // 드래그 영역 갱신
     DragObj->SetEndPos(Vector2(DragObj->GetEndPos().x, m_SpriteObject->GetWorldPos().y + TexHeight - (float)NewFrameEndY));
+
+    CPivot* Pivot = CEditorManager::GetInst()->GetDragPivot();
+
+    float NewYPivotPos = (DragObj->GetStartPos().y + DragObj->GetEndPos().y) / 2.f;
+
+    Pivot->SetWorldPos(Pivot->GetWorldPos().x, NewYPivotPos, Pivot->GetWorldPos().z);
+}
+
+void CSpriteWindow::StyleCallback()
+{
+    MyShowStyleEditor();
+}
+
+void CSpriteWindow::MyShowStyleEditor(ImGuiStyle* ref)
+{
+    // You can pass in a reference ImGuiStyle structure to compare to, revert to and save to
+    // (without a reference style pointer, we will use one compared locally as a reference)
+    ImGuiStyle& style = ImGui::GetStyle();
+    static ImGuiStyle ref_saved_style;
+
+    // Default to using internal storage as reference
+    static bool init = true;
+    if (init && ref == NULL)
+        ref_saved_style = style;
+    init = false;
+    if (ref == NULL)
+        ref = &ref_saved_style;
+
+    ImGui::PushItemWidth(ImGui::GetWindowWidth() * 0.50f);
+
+    if (ImGui::ShowStyleSelector("Colors##Selector"))
+        ref_saved_style = style;
+    ImGui::ShowFontSelector("Fonts##Selector");
+}
+
+
+void CSpriteWindow::EditModeCallback1()
+{
+}
+
+void CSpriteWindow::EditModeCallback2()
+{
 }
 
 void CSpriteWindow::PlayAnimation()

@@ -351,6 +351,12 @@
     <ClCompile Include="Component\StaticMeshComponent.cpp">
       <Filter>05. Component\01. SceneComponent\01. MeshComponent</Filter>
     </ClCompile>
+    <ClCompile Include="Resource\Mesh\ColorMesh.cpp">
+      <Filter>02. Resource\01. Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\ColorComponent.cpp">
+      <Filter>05. Component\01. SceneComponent\01. MeshComponent</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -591,6 +597,12 @@
       <Filter>02. Resource\01. Mesh</Filter>
     </ClInclude>
     <ClInclude Include="Component\StaticMeshComponent.h">
+      <Filter>05. Component\01. SceneComponent\01. MeshComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Mesh\ColorMesh.h">
+      <Filter>02. Resource\01. Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\ColorComponent.h">
       <Filter>05. Component\01. SceneComponent\01. MeshComponent</Filter>
     </ClInclude>
   </ItemGroup>

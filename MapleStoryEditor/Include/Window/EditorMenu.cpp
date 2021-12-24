@@ -24,6 +24,8 @@
 #include "ObjectHierarchy.h"
 #include "../EditorManager.h"
 #include "IMGUIManager.h"
+#include "../Object/Player2D.h"
+#include "Engine.h"
 
 CEditorMenu::CEditorMenu()
 {
@@ -79,6 +81,10 @@ bool CEditorMenu::Init()
 
 	LoadSceneButton->SetClickCallback(this, &CEditorMenu::LoadScene);
 
+	CIMGUIButton* PlayButton = AddWidget<CIMGUIButton>("▶", 50.f, 50.f);
+
+	PlayButton->SetClickCallback(this, &CEditorMenu::GamePlay);
+
 	return true;
 }
 
@@ -99,6 +105,7 @@ void CEditorMenu::ObjectCreateButton()
 		CSceneManager::GetInst()->GetScene()->CreateGameObject<CGameObject>(m_ObjectNameInput->GetTextMultibyte());
 		break;
 	case CreateObject_Type::Player:
+		CSceneManager::GetInst()->GetScene()->CreateGameObject<CPlayer2D>(m_ObjectNameInput->GetTextMultibyte());
 		break;
 	}
 
@@ -182,5 +189,33 @@ void CEditorMenu::SaveScene()
 
 void CEditorMenu::LoadScene()
 {
+	TCHAR   FilePath[MAX_PATH] = {};
+
+	OPENFILENAME    OpenFile = {};
+
+	OpenFile.lStructSize = sizeof(OPENFILENAME);
+	OpenFile.hwndOwner = CEngine::GetInst()->GetWindowHandle();
+	OpenFile.lpstrFilter = TEXT("모든파일\0*.*\0Scene File\0*.scn");
+	OpenFile.lpstrFile = FilePath;
+	OpenFile.nMaxFile = MAX_PATH;
+	OpenFile.lpstrInitialDir = CPathManager::GetInst()->FindPath(SCENE_PATH)->Path;
+
+	if (GetOpenFileName(&OpenFile) != 0)
+	{
+		char    ConvertFullPath[MAX_PATH] = {};
+
+		int Length = WideCharToMultiByte(CP_ACP, 0, FilePath, -1, 0, 0, 0, 0);
+		WideCharToMultiByte(CP_ACP, 0, FilePath, -1, ConvertFullPath, Length, 0, 0);
+
+		CSceneManager::GetInst()->GetScene()->LoadFullPath(ConvertFullPath);
+	}
 }
 
+void CEditorMenu::GamePlay()
+{
+	if (!CEngine::GetInst()->IsPlay())
+		CEngine::GetInst()->SetPlay(true);
+
+	else
+		CEngine::GetInst()->SetPlay(false);
+}

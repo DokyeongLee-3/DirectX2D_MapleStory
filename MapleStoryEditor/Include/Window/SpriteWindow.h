@@ -89,6 +89,12 @@ public:
 	void AdjustFrameDataEndX();
 	void AdjustFrameDataEndY();
 
+public:
+	void StyleCallback();
+	void MyShowStyleEditor(ImGuiStyle* ref = (ImGuiStyle*)0);
 
+private:
+	void EditModeCallback1();
+	void EditModeCallback2();
 };
 

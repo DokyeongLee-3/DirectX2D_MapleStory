@@ -236,3 +236,199 @@ CMaterial* CMaterial::Clone()
 {
 	return new CMaterial(*this);
 }
+
+void CMaterial::Save(FILE* File)
+{
+	std::string	ShaderName = m_Shader->GetName();
+
+	int	Length = (int)ShaderName.length();
+
+	fwrite(&Length, sizeof(int), 1, File);
+	fwrite(ShaderName.c_str(), sizeof(char), Length, File);
+
+	fwrite(&m_BaseColor, sizeof(Vector4), 1, File);
+	fwrite(&m_Opacity, sizeof(float), 1, File);
+
+	for (int i = 0; i < (int)RenderState_Type::Max; ++i)
+	{
+		bool	StateEnable = false;
+
+		if (m_RenderStateArray[i])
+			StateEnable = true;
+
+		fwrite(&StateEnable, sizeof(bool), 1, File);
+
+		if (m_RenderStateArray[i])
+		{
+			std::string	StateName = m_RenderStateArray[i]->GetName();
+
+			int	Length = (int)StateName.length();
+
+			fwrite(&Length, sizeof(int), 1, File);
+			fwrite(StateName.c_str(), sizeof(char), Length, File);
+		}
+	}
+
+	int	TextureCount = (int)m_TextureInfo.size();
+
+	fwrite(&TextureCount, sizeof(int), 1, File);
+
+	for (int i = 0; i < TextureCount; ++i)
+	{
+		int	Length = (int)m_TextureInfo[i].Name.length();
+
+		fwrite(&Length, sizeof(int), 1, File);
+		fwrite(m_TextureInfo[i].Name.c_str(), sizeof(char), Length, File);
+
+		fwrite(&m_TextureInfo[i].SamplerType, sizeof(Sampler_Type), 1, File);
+		fwrite(&m_TextureInfo[i].Register, sizeof(int), 1, File);
+		fwrite(&m_TextureInfo[i].ShaderType, sizeof(int), 1, File);
+
+		m_TextureInfo[i].Texture->Save(File);
+	}
+}
+
+void CMaterial::Load(FILE* File)
+{
+	char	ShaderName[256] = {};
+
+	int	Length = 0;
+
+	fread(&Length, sizeof(int), 1, File);
+	fread(ShaderName, sizeof(char), Length, File);
+
+	m_Shader = (CGraphicShader*)CResourceManager::GetInst()->FindShader(ShaderName);
+
+	fread(&m_BaseColor, sizeof(Vector4), 1, File);
+	fread(&m_Opacity, sizeof(float), 1, File);
+
+	for (int i = 0; i < (int)RenderState_Type::Max; ++i)
+	{
+		bool	StateEnable = false;
+
+		fread(&StateEnable, sizeof(bool), 1, File);
+
+		if (StateEnable)
+		{
+			char	StateName[256] = {};
+			Length = 0;
+
+			fread(&Length, sizeof(int), 1, File);
+			fread(StateName, sizeof(char), Length, File);
+
+			m_RenderStateArray[i] = CRenderManager::GetInst()->FindRenderState(StateName);
+		}
+	}
+
+	int	TextureCount = 0;
+
+	fread(&TextureCount, sizeof(int), 1, File);
+
+	for (int i = 0; i < TextureCount; ++i)
+	{
+		m_TextureInfo.push_back(MaterialTextureInfo());
+
+		Length = 0;
+
+		char	TextureName[256] = {};
+
+		fread(&Length, sizeof(int), 1, File);
+		fread(TextureName, sizeof(char), Length, File);
+
+		m_TextureInfo[i].Name = TextureName;
+
+		fread(&m_TextureInfo[i].SamplerType, sizeof(Sampler_Type), 1, File);
+		fread(&m_TextureInfo[i].Register, sizeof(int), 1, File);
+		fread(&m_TextureInfo[i].ShaderType, sizeof(int), 1, File);
+
+		int	TexNameLength = 0;
+		fread(&TexNameLength, sizeof(int), 1, File);
+		char	TexName[256] = {};
+		fread(TexName, sizeof(char), TexNameLength, File);
+
+		Image_Type	ImageType;
+		fread(&ImageType, sizeof(Image_Type), 1, File);
+
+		int	InfoCount = 0;
+
+		fread(&InfoCount, sizeof(int), 1, File);
+
+		std::vector<std::wstring>	vecFullPath;
+		std::vector<std::wstring>	vecFileName;
+		std::string	PathName;
+
+		for (int i = 0; i < InfoCount; ++i)
+		{
+			int	PathSize = 0;
+
+			fread(&PathSize, sizeof(int), 1, File);
+
+			TCHAR	FullPath[MAX_PATH] = {};
+			fread(FullPath, sizeof(TCHAR), PathSize, File);
+			vecFullPath.push_back(FullPath);
+
+			fread(&PathSize, sizeof(int), 1, File);
+
+			TCHAR	TexFileName[MAX_PATH] = {};
+			fread(TexFileName, sizeof(TCHAR), PathSize, File);
+			vecFileName.push_back(TexFileName);
+
+			fread(&PathSize, sizeof(int), 1, File);
+
+			char	TexPathName[MAX_PATH] = {};
+			fread(TexPathName, sizeof(char), PathSize, File);
+
+			PathName = TexPathName;
+		}
+
+		switch (ImageType)
+		{
+		case Image_Type::Atlas:
+			if (vecFileName.size() == 1)
+			{
+				if (m_Scene)
+				{
+					m_Scene->GetResource()->LoadTexture(TexName, vecFileName[0].c_str(), PathName);
+				}
+
+				else
+				{
+					CResourceManager::GetInst()->LoadTexture(TexName, vecFileName[0].c_str(), PathName);
+				}
+			}
+
+			else
+			{
+			}
+			break;
+		case Image_Type::Frame:
+			if (vecFileName.size() == 1)
+			{
+			}
+
+			else
+			{
+			}
+			break;
+		case Image_Type::Array:
+			if (vecFileName.size() == 1)
+			{
+			}
+
+			else
+			{
+			}
+			break;
+		}
+
+		if (m_Scene)
+		{
+			m_TextureInfo[i].Texture = m_Scene->GetResource()->FindTexture(TexName);
+		}
+
+		else
+		{
+			m_TextureInfo[i].Texture = CResourceManager::GetInst()->FindTexture(TexName);
+		}
+	}
+}

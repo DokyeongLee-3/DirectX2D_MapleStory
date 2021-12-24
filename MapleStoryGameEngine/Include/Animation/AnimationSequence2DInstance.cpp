@@ -12,6 +12,7 @@ CAnimationSequence2DInstance::CAnimationSequence2DInstance() :
 	m_Owner(nullptr),
 	m_PlayAnimation(true)
 {
+	SetTypeID<CAnimationSequence2DInstance>();
 }
 
 CAnimationSequence2DInstance::CAnimationSequence2DInstance(const CAnimationSequence2DInstance& Anim)
@@ -67,6 +68,63 @@ void CAnimationSequence2DInstance::AddAnimation(const std::string& SequenceName,
 
 	else
 	{
+		Sequence = CResourceManager::GetInst()->FindAnimationSequence2D(SequenceName);
+	}
+
+	if (!Sequence)
+		return;
+
+	Anim = new CAnimationSequence2DData;
+
+	Anim->m_Sequence = Sequence;
+	Anim->m_Name = Name;
+	Anim->m_Loop = Loop;
+	Anim->m_PlayTime = PlayTime;
+	Anim->m_PlayScale = PlayScale;
+	Anim->m_Reverse = Reverse;
+	Anim->m_FrameTime = PlayTime / Sequence->GetFrameCount();
+
+	if (m_mapAnimation.empty())
+	{
+		m_CurrentAnimation = Anim;
+
+		if (m_Owner)
+		{
+			m_Owner->SetTexture(0, 0, (int)ConstantBuffer_Shader_Type::Pixel, Anim->m_Sequence->GetTexture()->GetName(),
+				Anim->m_Sequence->GetTexture());
+		}
+	}
+
+	m_mapAnimation.insert(std::make_pair(Name, Anim));
+}
+
+void CAnimationSequence2DInstance::AddAnimation(const TCHAR* FileName, const std::string& PathName, const std::string& Name, bool Loop, float PlayTime, float PlayScale, bool Reverse)
+{
+	CAnimationSequence2DData* Anim = FindAnimation(Name);
+
+	if (Anim)
+		return;
+
+	char	FileNameMultibyte[256] = {};
+
+	int	Length = WideCharToMultiByte(CP_ACP, 0, FileName, -1, 0, 0, 0, 0);
+	WideCharToMultiByte(CP_ACP, 0, FileName, -1, FileNameMultibyte, Length, 0, 0);
+
+	CAnimationSequence2D* Sequence = nullptr;
+
+	if (m_Scene)
+	{
+		std::string	SequenceName;
+
+		m_Scene->GetResource()->LoadSequence2D(SequenceName, FileNameMultibyte);
+		Sequence = m_Scene->GetResource()->FindAnimationSequence2D(SequenceName);
+	}
+
+	else
+	{
+		std::string	SequenceName;
+
+		CResourceManager::GetInst()->LoadSequence2D(SequenceName, FileNameMultibyte);
 		Sequence = CResourceManager::GetInst()->FindAnimationSequence2D(SequenceName);
 	}
 
@@ -368,8 +426,48 @@ void CAnimationSequence2DInstance::Save(FILE* File)
 
 void CAnimationSequence2DInstance::Load(FILE* File)
 {
-}
+	int	AnimCount = 0;
+	fread(&AnimCount, sizeof(int), 1, File);
 
+	for (int i = 0; i < AnimCount; ++i)
+	{
+		int	Length = 0;
+		char	AnimName[256] = {};
+
+		fread(&Length, sizeof(int), 1, File);
+		fread(AnimName, sizeof(char), Length, File);
+
+		CAnimationSequence2DData* Data = new CAnimationSequence2DData;
+
+		Data->Load(File);
+
+		if (m_Scene)
+		{
+			Data->m_Sequence = m_Scene->GetResource()->FindAnimationSequence2D(Data->m_SequenceName);
+		}
+
+		else
+		{
+			Data->m_Sequence = CResourceManager::GetInst()->FindAnimationSequence2D(Data->m_SequenceName);
+		}
+
+		m_mapAnimation.insert(std::make_pair(AnimName, Data));
+	}
+
+	int	Length = 0;
+	char	CurrentName[256] = {};
+
+	fread(&Length, sizeof(int), 1, File);
+	fread(CurrentName, sizeof(char), Length, File);
+
+	m_CurrentAnimation = FindAnimation(CurrentName);
+
+	fread(&m_PlayAnimation, sizeof(bool), 1, File);
+
+
+	if (m_Scene)
+		m_CBuffer = m_Scene->GetResource()->GetAnimation2DCBuffer();
+}
 CAnimationSequence2DData* CAnimationSequence2DInstance::FindAnimation(const std::string& Name)
 {
 	auto	iter = m_mapAnimation.find(Name);

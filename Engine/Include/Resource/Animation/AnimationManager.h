@@ -31,9 +31,10 @@ public:
 	bool CreateAnimationSequence2D(const std::string& Name, class CTexture* Texture);
 	void AddFrame(const std::string& Name, const Vector2& Start, const Vector2& Size);
 	void AddFrame(const std::string& Name, float StartX, float StartY, float Width, float Height);
-	bool SaveSequence(const std::string& Name, const char* FullPath);
-	bool LoadSequence(std::string& resultName, const char* FullPath, class CScene* Scene = nullptr);
-
+	bool SaveSequenceFullPath(const std::string& Name, const char* FullPath);
+	bool LoadSequenceFullPath(std::string& resultName, const char* FullPath, class CScene* Scene = nullptr);
+	bool SaveSequence(const std::string& Name, const char* FileName, const std::string& PathName);
+	bool LoadSequence(std::string& resultName, const char* FileName, const std::string& PathName, class CScene* Scene = nullptr);
 
 	CAnimationSequence2D* FindSequence(const std::string& Name);
 	void ReleaseSequence(const std::string& Name);

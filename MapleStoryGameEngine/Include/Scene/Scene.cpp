@@ -1,6 +1,7 @@
 
 #include "Scene.h"
 #include "../PathManager.h"
+#include "SceneManager.h"
 
 CScene::CScene()
 {
@@ -123,6 +124,10 @@ void CScene::SaveFullPath(const char* FullPath)
 
 	for (; iter != iterEnd; ++iter)
 	{
+		size_t	ObjType = (*iter)->GetTypeID();
+
+		fwrite(&ObjType, sizeof(size_t), 1, File);
+
 		(*iter)->Save(File);
 	}
 
@@ -153,6 +158,29 @@ void CScene::LoadFullPath(const char* FullPath)
 	if (!File)
 		return;
 
+	m_ObjList.clear();
+
+	size_t	SceneModeType = 0;
+
+	fread(&SceneModeType, sizeof(size_t), 1, File);
+
+	// SceneMode »ý¼º
+	CSceneManager::GetInst()->CallCreateSceneMode(this, SceneModeType);
+
+	size_t	ObjCount = m_ObjList.size();
+
+	fread(&ObjCount, sizeof(size_t), 1, File);
+
+	for (size_t i = 0; i < ObjCount; ++i)
+	{
+		size_t	ObjType = 0;
+		fread(&ObjType, sizeof(size_t), 1, File);
+
+		CGameObject* Obj = CSceneManager::GetInst()->CallCreateObject(this, ObjType);
+
+		Obj->Load(File);
+	}
 
 	fclose(File);
 }
+

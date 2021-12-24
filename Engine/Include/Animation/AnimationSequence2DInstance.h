@@ -10,6 +10,7 @@ public:
 	virtual ~CAnimationSequence2DInstance();
 
 private:
+	size_t		m_TypeID;
 	class CSpriteComponent* m_Owner;
 	class CScene* m_Scene;
 	// CAnimationSequence2DData의 이름을 Key, CAnimationSequence2DData* 를 Value로
@@ -19,6 +20,17 @@ private:
 	bool		m_PlayAnimation;
 
 public:
+	size_t GetTypeID()	const
+	{
+		return m_TypeID;
+	}
+
+	template <typename T>
+	void SetTypeID()
+	{
+		m_TypeID = typeid(T).hash_code();
+	}
+
 	void SetScene(class CScene* Scene)
 	{
 		m_Scene = Scene;
@@ -76,6 +88,8 @@ public:
 
 public:
 	void AddAnimation(const std::string& SequenceName, const std::string& Name, bool Loop = true, float PlayTime = 1.f,
+		float PlayScale = 1.f, bool Reverse = false);
+	void AddAnimation(const TCHAR* FileName, const std::string& PathName, const std::string& Name, bool Loop = true, float PlayTime = 1.f,
 		float PlayScale = 1.f, bool Reverse = false);
 	void DeleteAnimation(const std::string& Name);
 	void SetPlayTime(const std::string& Name, float PlayTime);

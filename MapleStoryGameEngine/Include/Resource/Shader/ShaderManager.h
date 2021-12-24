@@ -34,6 +34,8 @@ public:
 
 		Shader = new T;
 
+		Shader->SetName(Name);
+
 		if (!Shader->Init())
 		{
 			SAFE_RELEASE(Shader);

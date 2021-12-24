@@ -6,6 +6,7 @@
 #include "../Animation/AnimationSequence2DData.h"
 #include "../Render/RenderManager.h"
 #include "../Resource/Shader/Standard2DConstantBuffer.h"
+#include "../Scene/SceneManager.h"
 
 CSpriteComponent::CSpriteComponent() :
 	m_Animation(nullptr)
@@ -234,13 +235,45 @@ void CSpriteComponent::Save(FILE* File)
 	fwrite(&AnimEnable, sizeof(bool), 1, File);
 
 	if (m_Animation)
+	{
+		size_t	TypeID = m_Animation->GetTypeID();
+		fwrite(&TypeID, sizeof(size_t), 1, File);
+
 		m_Animation->Save(File);
+	}
 
 	CSceneComponent::Save(File);
 }
 
 void CSpriteComponent::Load(FILE* File)
 {
+	char	MeshName[256] = {};
+
+	int	Length = 0;
+
+	fread(&Length, sizeof(int), 1, File);
+	fread(MeshName, sizeof(char), Length, File);
+
+	m_Mesh = (CSpriteMesh*)m_Scene->GetResource()->FindMesh(MeshName);
+
+	m_Material = m_Scene->GetResource()->CreateMaterialEmpty<CMaterial>();
+
+	m_Material->Load(File);
+
+	bool	AnimEnable = false;
+
+	fread(&AnimEnable, sizeof(bool), 1, File);
+
+	if (AnimEnable)
+	{
+		size_t	TypeID = 0;
+		fread(&TypeID, sizeof(size_t), 1, File);
+
+		CSceneManager::GetInst()->CallCreateAnimInstance(this, TypeID);
+
+		m_Animation->Load(File);
+	}
+
 	CSceneComponent::Load(File);
 }
 

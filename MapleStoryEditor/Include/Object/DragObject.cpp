@@ -21,9 +21,6 @@ void CDragObject::SetStartPos(const Vector2& Pos)
 {
 	m_StartPos = Pos;
 
-	if (!m_Mesh)
-		int a = 3;
-
 	m_Mesh->SetWorldPos(m_StartPos.x, m_StartPos.y, 0.f);
 
 	m_Mesh->SetWorldScale(m_EndPos.x - m_StartPos.x, m_EndPos.y - m_StartPos.y, 1.f);

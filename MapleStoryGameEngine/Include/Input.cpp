@@ -123,13 +123,9 @@ bool CInput::InitWindow()
 
 bool CInput::InitDirectInput()
 {
-	// 디바이스를 찾아서 연결해줌
 	if (FAILED(m_Input->CreateDevice(GUID_SysKeyboard, &m_Keyboard, nullptr)))
 		return false;
 
-	// 위에서 CreateDevice로 얻은 디바이스의 데이터 포맷 설정
-	// 예를 들어 키보드인지(c_dfDIKeyboard), 마우스인지(c_dfDIMouse),
-	// 조이스틱인지(c_dfDIJoystick)
 	if (FAILED(m_Keyboard->SetDataFormat(&c_dfDIKeyboard)))
 		return false;
 
@@ -184,8 +180,7 @@ void CInput::Update(float DeltaTime)
 	// 키 상태를 업데이트 해준다.
 	UpdateKeyState();
 
-	// 업데이트된 키 상태를 바탕으로 기존에 m_mapKeyInfo에 등록된
-	// 정보와 일치할시, 콜백을 호출한다
+	// 키보드 키 입력처리를 한다.
 	UpdateKeyInfo(DeltaTime);
 
 	// 마우스 입력처리를 한다.

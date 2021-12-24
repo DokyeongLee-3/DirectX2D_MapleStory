@@ -10,7 +10,7 @@ public:
 	int Run();
 
 	void CreateSceneMode(class CScene* Scene, size_t Type);
-	void CreateObject(class CScene* Scene, size_t Type);
+	class CGameObject* CreateObject(class CScene* Scene, size_t Type);
 
 	DECLARE_SINGLE(CClientManager)
 };

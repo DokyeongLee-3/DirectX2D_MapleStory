@@ -40,6 +40,15 @@ public:
         return m_vecFrameData[Index];
     }
 
+    void SetFrameData(int Index, const Vector2& Start, const Vector2& Size)
+    {
+        if ((int)m_vecFrameData.size() - 1 < Index || Index < 0)
+            return;
+
+        m_vecFrameData[Index].Start = Start;
+        m_vecFrameData[Index].Size = Size;
+    }
+
     int GetFrameCount() const
     {
         return (int)m_vecFrameData.size();
@@ -54,8 +63,9 @@ public:
         const std::string& PathName = TEXTURE_PATH);
     void AddFrame(const Vector2& StartPos, const Vector2& Size);
     void AddFrame(float StartX, float StartY, float Width, float Height);
-    bool Save(const char* FullPath);
-    bool Load(const char* FullPath);
-
+    bool SaveFullPath(const char* FullPath);
+    bool LoadFullPath(const char* FullPath);
+    bool Save(const char* FileName, const std::string& PathName);
+    bool Load(const char* FileName, const std::string& PathName);
 };
 

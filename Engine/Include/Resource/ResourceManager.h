@@ -53,6 +53,12 @@ public:
 		return m_MaterialManager->CreateMaterial<T>(Name);
 	}
 
+	template <typename T>
+	T* CreateMaterialEmpty()
+	{
+		return m_MaterialManager->CreateMaterialEmpty<T>();
+	}
+
 public:	// =================== Texture =====================
 	bool LoadTexture(const std::string& Name, const TCHAR* FileName,
 		const std::string& PathName = TEXTURE_PATH);
@@ -66,9 +72,12 @@ public:	// =================== Sequence2D =====================
 	bool CreateAnimationSequence2D(const std::string& Name, class CTexture* Texture);
 	void AddAnimationSequence2DFrame(const std::string& Name, const Vector2& Start, const Vector2& Size);
 	void AddAnimationSequence2DFrame(const std::string& Name, float StartX, float StartY, float Width, float Height);
-	bool SaveSequence2D(const std::string& Name, const char* FullPath);
-	bool LoadSequence2D(std::string& resultName, const char* FullPath, class CScene* Scene = nullptr);
-	bool LoadSequence2D(const char* FullPath, class CScene* Scene = nullptr);
+	bool SaveSequence2DFullPath(const std::string& Name, const char* FullPath);
+	bool LoadSequence2DFullPath(std::string& resultName, const char* FullPath, class CScene* Scene = nullptr);
+	bool LoadSequence2DFullPath(const char* FullPath, class CScene* Scene = nullptr);
+	bool SaveSequence2D(const std::string& Name, const char* FileName, const std::string& PathName = ANIMATION_PATH);
+	bool LoadSequence2D(const char* FileName, const std::string& PathName = ANIMATION_PATH, class CScene* Scene = nullptr);
+	bool LoadSequence2D(std::string& resultName, const char* FileName, const std::string& PathName = ANIMATION_PATH, class CScene* Scene = nullptr);
 	CAnimationSequence2D* FindAnimationSequence2D(const std::string& Name);
 	void ReleaseAnimationSequence2D(const std::string& Name);
 	class CAnimation2DConstantBuffer* GetAnimation2DCBuffer()	const;

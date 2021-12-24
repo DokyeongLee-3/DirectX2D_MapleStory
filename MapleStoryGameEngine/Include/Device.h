@@ -26,6 +26,8 @@ private:
 	HWND	m_hWnd;
 	Resolution m_RS;
 
+	
+
 public:
 	ID3D11Device* GetDevice()	const
 	{

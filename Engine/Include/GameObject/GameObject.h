@@ -100,6 +100,28 @@ public:
 		return Component;
 	}
 
+	template <typename T>
+	T* LoadComponent()
+	{
+		T* Component = new T;
+
+		Component->SetScene(m_Scene);
+		Component->SetGameObject(this);
+
+		if (Component->GetComponentType() == Component_Type::ObjectComponent)
+			m_vecObjectComponent.push_back((class CObjectComponent*)Component);
+
+		else
+		{
+			m_SceneComponentList.push_back((class CSceneComponent*)Component);
+
+			if (!m_RootComponent)
+				m_RootComponent = Component;
+		}
+
+		return Component;
+	}
+
 
 	// Transform 관련 함수들
 public:	

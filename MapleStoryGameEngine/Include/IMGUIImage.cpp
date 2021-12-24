@@ -48,7 +48,7 @@ void CIMGUIImage::SetTexture(CTexture* Texture)
 
 bool CIMGUIImage::Init()
 {
-	SetTexture("DefaultUI", TEXT("DefaultUI.png"));
+	SetTexture("DefaultUI", TEXT("NoImage.png"));
 
 	SetImageStart(0.f, 0.f);
 	SetImageEnd(100.f, 100.f);

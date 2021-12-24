@@ -1,7 +1,5 @@
 #pragma once
-
 #include "Scene/SceneMode.h"
-
 class CDefaultScene :
     public CSceneMode
 {
@@ -11,5 +9,8 @@ public:
 
 public:
     virtual bool Init();
+
+private:
+    bool LoadAnimationSequence2D();
 };
 
