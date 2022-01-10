@@ -22,6 +22,21 @@
     <Filter Include="03. Object">
       <UniqueIdentifier>{36585969-a747-4dd0-9e80-4cb218ec098b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Object\01. Player">
+      <UniqueIdentifier>{51cb5dbb-a665-4306-a1af-a336c587241d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Object\02. Skill">
+      <UniqueIdentifier>{37aa73cc-79e6-41b8-a9cf-5f5c589aedc8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Object\03. Monster">
+      <UniqueIdentifier>{b406a78d-d886-4d62-807a-700247bcf21c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Object\04. MapObject">
+      <UniqueIdentifier>{44ba97b3-281c-41a0-a48d-2baa0c7d4e69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Object\05. Stage">
+      <UniqueIdentifier>{66c56ca2-7fbd-4a01-9fd1-be4f66ed84b1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scene\DefaultScene.cpp">
@@ -38,9 +53,6 @@
     </ClCompile>
     <ClCompile Include="Window\DetailWindow.cpp">
       <Filter>02. Editor</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\AnimationLoadObject.cpp">
-      <Filter>03. Object</Filter>
     </ClCompile>
     <ClCompile Include="Object\SpriteEditObject.cpp">
       <Filter>03. Object</Filter>
@@ -61,7 +73,49 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Object\Player2D.cpp">
-      <Filter>03. Object</Filter>
+      <Filter>03. Object\01. Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\MonsterRadish.cpp">
+      <Filter>03. Object\03. Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\PlayerSkillSet.cpp">
+      <Filter>03. Object\02. Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\LampLight.cpp">
+      <Filter>03. Object\04. MapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\Portal.cpp">
+      <Filter>03. Object\04. MapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\MonsterOnion.cpp">
+      <Filter>03. Object\03. Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\BlinkTree.cpp">
+      <Filter>03. Object\04. MapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\Butterfly.cpp">
+      <Filter>03. Object\04. MapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\DoubleHelixBlinkTree.cpp">
+      <Filter>03. Object\04. MapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\SingleHelixBlinkTree.cpp">
+      <Filter>03. Object\04. MapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\LowerClassBook.cpp">
+      <Filter>03. Object\03. Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\Library2ndLampLight.cpp">
+      <Filter>03. Object\04. MapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\Library2ndButterfly.cpp">
+      <Filter>03. Object\04. MapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\StaticMapObj.cpp">
+      <Filter>03. Object\04. MapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\Stage.cpp">
+      <Filter>03. Object\05. Stage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -79,9 +133,6 @@
     </ClInclude>
     <ClInclude Include="Window\DetailWindow.h">
       <Filter>02. Editor</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\AnimationLoadObject.h">
-      <Filter>03. Object</Filter>
     </ClInclude>
     <ClInclude Include="Object\SpriteEditObject.h">
       <Filter>03. Object</Filter>
@@ -105,7 +156,52 @@
       <Filter>03. Object</Filter>
     </ClInclude>
     <ClInclude Include="Object\Player2D.h">
-      <Filter>03. Object</Filter>
+      <Filter>03. Object\01. Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\MonsterRadish.h">
+      <Filter>03. Object\03. Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\PlayerSkillSet.h">
+      <Filter>03. Object\02. Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\LampLight.h">
+      <Filter>03. Object\04. MapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Portal.h">
+      <Filter>03. Object\04. MapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\MonsterOnion.h">
+      <Filter>03. Object\03. Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\BlinkTree.h">
+      <Filter>03. Object\04. MapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Butterfly.h">
+      <Filter>03. Object\04. MapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\DoubleHelixBlinkTree.h">
+      <Filter>03. Object\04. MapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\SingleHelixBlinkTree.h">
+      <Filter>03. Object\04. MapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectSet.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\LowerClassBook.h">
+      <Filter>03. Object\03. Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Library2ndLampLight.h">
+      <Filter>03. Object\04. MapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Library2ndButterfly.h">
+      <Filter>03. Object\04. MapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\StaticMapObj.h">
+      <Filter>03. Object\04. MapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Stage.h">
+      <Filter>03. Object\05. Stage</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -115,6 +211,9 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="icon1.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="MapleIcon.ico">
       <Filter>리소스 파일</Filter>
     </Image>
   </ItemGroup>

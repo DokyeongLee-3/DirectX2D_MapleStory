@@ -20,6 +20,12 @@ public:
 	class CIMGUIWindow* FindIMGUIWindow(const std::string& Name);
 
 public:
+	ImFont* GetCurrentFont()	const
+	{
+		return m_CurrentFont;
+	}
+
+public:
 	bool AddFont(const std::string& Name, const char* FileName, float Size, bool Korea = false, int OverH = 2, int OverV = 1,
 		float Spacing = 1.f, const std::string& PathName = FONT_PATH);
 	bool AddFontFullPath(const std::string& Name, const char* FullPath, float Size, bool Korea = false, int OverH = 2, int OverV = 1,

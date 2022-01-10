@@ -29,5 +29,6 @@ public:
 	void SaveScene();
 	void LoadScene();
 	void GamePlay();
+	void SelectObjTexture();
 };
 

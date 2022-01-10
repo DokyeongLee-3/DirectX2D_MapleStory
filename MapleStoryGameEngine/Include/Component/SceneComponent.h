@@ -53,6 +53,7 @@ public:
 	// Obj에 m_SceneComponentList에 나와 내 자식 컴포넌트들을 넣어준다
 	void SetSceneComponent(class CGameObject* Object);
 	void GetAllSceneComponentsName(std::vector<FindComponentName>& vecNames);
+	virtual void Destroy();
 
 public:
 	virtual void SetScene(class CScene* Scene);
@@ -69,6 +70,7 @@ public:
 	virtual bool Init();
 	virtual void Update(float DeltaTime);
 	virtual void PostUpdate(float DeltaTime);
+	virtual void CheckCollision();
 	virtual void PrevRender();
 	// Transform정보를 담고 있는 상수버퍼를 
 	// 렌더 직전에 셰이더로 넘겨준다

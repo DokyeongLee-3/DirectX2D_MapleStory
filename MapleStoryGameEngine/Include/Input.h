@@ -47,6 +47,8 @@ private:
 	unsigned char	m_KeyArray[256];
 	DIMOUSESTATE	m_MouseState;
 	Input_Type	m_InputType;
+	bool		m_LButtonClick;
+	bool		m_RButtonClick;
 
 private:
 	std::unordered_map<std::string, KeyInfo*>	m_mapKeyInfo;
@@ -59,18 +61,41 @@ private:
 	bool	m_Shift;
 	// 커서 위치
 	Vector2		m_MousePos;
+	Vector2		m_MouseWorldPos;
 	// 전 프레임에 대한 이번 프레임에 커서 이동량
 	Vector2		m_MouseMove;
+	// CInput에서 확인한 마우스와 UI가 충돌여부
+	bool		m_CollisionWidget;
 
 public:
+	bool GetMouseLButtonClick()	const
+	{
+		return m_LButtonClick;
+	}
+
+	bool GetMouseRButtonClick()	const
+	{
+		return m_RButtonClick;
+	}
+
 	Vector2 GetMousePos()	const
 	{
 		return m_MousePos;
 	}
 
-	Vector2 GetMosueMove()	const
+	Vector2 GetMouseWorld2DPos()	const
+	{
+		return m_MouseWorldPos;
+	}
+
+	Vector2 GetMouseMove()	const
 	{
 		return m_MouseMove;
+	}
+
+	const keyState&	GetKeyState(int Index)	const
+	{
+		return m_vecKeyState[Index];
 	}
 
 public:

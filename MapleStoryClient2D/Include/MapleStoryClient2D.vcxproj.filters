@@ -31,6 +31,18 @@
     <Filter Include="02. Object\03. Effect\01. PlayerEffect">
       <UniqueIdentifier>{023690ba-23f6-4ac1-9a0d-02e463a7df8f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Object\04. Monster">
+      <UniqueIdentifier>{523790ee-a74e-42b1-b50d-ff932ec1e7e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\05. Bullet">
+      <UniqueIdentifier>{a948177d-8b66-4cec-a0c8-c31a7e4c129d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\06. Test">
+      <UniqueIdentifier>{cb20ad5b-72fa-4fe3-b368-37aa047dec27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. UI">
+      <UniqueIdentifier>{1061491c-3584-4fdd-8ad7-25e4a4757c49}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -63,6 +75,24 @@
     <ClCompile Include="Object\PlayerSkillBodyEffect.cpp">
       <Filter>02. Object\03. Effect\01. PlayerEffect</Filter>
     </ClCompile>
+    <ClCompile Include="Object\Monster.cpp">
+      <Filter>02. Object\04. Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\MonsterAnimation.cpp">
+      <Filter>02. Object\04. Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\BulletCamera.cpp">
+      <Filter>02. Object\05. Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\Bullet.cpp">
+      <Filter>02. Object\05. Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\PixelTest.cpp">
+      <Filter>02. Object\06. Test</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\MainWidget.cpp">
+      <Filter>03. UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -94,6 +124,24 @@
     </ClInclude>
     <ClInclude Include="Object\PlayerSkillBodyEffect.h">
       <Filter>02. Object\03. Effect\01. PlayerEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Monster.h">
+      <Filter>02. Object\04. Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\MonsterAnimation.h">
+      <Filter>02. Object\04. Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\BulletCamera.h">
+      <Filter>02. Object\05. Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Bullet.h">
+      <Filter>02. Object\05. Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\PixelTest.h">
+      <Filter>02. Object\06. Test</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\MainWidget.h">
+      <Filter>03. UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

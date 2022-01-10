@@ -13,6 +13,21 @@ protected:
     virtual ~CColliderBox2D();
 
 protected:
+    Box2DInfo   m_Info;
+
+public:
+    Box2DInfo GetInfo() const
+    {
+        return m_Info;
+    }
+
+    void SetExtent(float Width, float Height)
+    {
+        m_Info.Length.x = Width;
+        m_Info.Length.y = Height;
+
+        SetWorldScale(m_Info.Length.x * 2.f, m_Info.Length.y * 2.f, 1.f);
+    }
 
 public:
     virtual void Start();
@@ -25,5 +40,7 @@ public:
     virtual CColliderBox2D* Clone();
     virtual void Save(FILE* File);
     virtual void Load(FILE* File);
+    virtual bool Collision(CColliderComponent* Dest);
+    virtual bool CollisionMouse(const Vector2& MousePos);
 };
 

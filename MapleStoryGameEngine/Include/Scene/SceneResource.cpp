@@ -206,6 +206,19 @@ bool CSceneResource::CreateAnimationSequence2D(const std::string& Name, CTexture
 	return true;
 }
 
+void CSceneResource::EraseAnimationSequence2D(const std::string& Name)
+{
+	if (FindAnimationSequence2D(Name))
+	{
+		m_mapSequence2D.erase(Name);
+	}
+
+	if (CResourceManager::GetInst()->FindAnimationSequence2D(Name))
+	{
+		CResourceManager::GetInst()->EraseAnimationSequence2D(Name);
+	}
+}
+
 void CSceneResource::AddAnimationSequence2DFrame(const std::string& Name, const Vector2& Start, const Vector2& Size)
 {
 	CAnimationSequence2D* Anim = FindAnimationSequence2D(Name);

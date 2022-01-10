@@ -46,6 +46,16 @@ public:
 		return m_ValueFloat;
 	}
 
+	void SetValueInt(int Value)
+	{
+		m_ValueInt = Value;
+	}
+
+	void SetValueFloat(float Value)
+	{
+		m_ValueFloat = Value;
+	}
+
 	const wchar_t* GetText()	const
 	{
 		return m_wText;

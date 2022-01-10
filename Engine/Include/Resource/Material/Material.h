@@ -10,7 +10,9 @@ struct MaterialTextureInfo
     CSharedPtr<CTexture>    Texture;
     // CMaterial::Render에서 갖고 있는 m_TextureInfo에 있는 Texture들을 돌면서
     // SetShader를 호출해줌으로써, **SetShaderResource(ex. VSSetShaderResource)를 해줄때 
-    // 첫번째 인자인 StartSlot을 여기 Register에 담아둔다.
+    // 첫번째 인자인 StartSlot을 여기 Register에 담아둔다. 
+    // Register는 ShaderInfo.fx에서 볼수 있듯이 Texture2D g_BaseTexture : register(t0); 이렇게 선언해놨듯이
+    // Texture용 레지스터 0번을 사용하도록 해놓았기 때문에 Array타입이 아니면 0번을 쓴다
     // Texture타입이 Array타입이 아니면(ex. Atlas, Frame) 텍스쳐 클래스가 하나의 텍스쳐만 갖고 있고,
     // Array타입은 Texture클래스가 여러개의 텍스쳐를 갖고 있다는 의미이다.
     //  Array타입이면 **SetShaderResource함수의 첫번째 인자인 StartSlot에 쓰일

@@ -2,6 +2,7 @@
 
 #include "GameObject/GameObject.h"
 #include "Component/SpriteComponent.h"
+#include "Component/ColliderBox2D.h"
 
 class CPlayer2D :
     public CGameObject
@@ -15,6 +16,13 @@ protected:
 
 private:
     CSharedPtr<CSpriteComponent>    m_Sprite;
+    CSharedPtr<CSpriteComponent>    m_OrbSprite;
+    CSharedPtr<CSpriteComponent>    m_BodyEffectSprite;
+    CSharedPtr<CColliderBox2D>      m_Body;
+
+    float                           m_TransparencyTime;
+    float                           m_AccTransparencyTime;
+    bool                            m_IsTransParent;
 
 public:
     virtual void Start();
@@ -30,5 +38,18 @@ private:
     void MoveDown(float DeltaTime);
     void RotationZInv(float DeltaTime);
     void RotationZ(float DeltaTime);
+
+private:
+    void AddMotionAnimation();
+    void AddSkillAnimation();
+
+private:
+    void FlipAll(float DeltaTime);
+    void NextAnimation(float DeltaTime);
+
+public:
+    void TransformingLight(float DeltaTime);
+    bool IsMouseCollision();
+    void ReturnToBlank();
 };
 

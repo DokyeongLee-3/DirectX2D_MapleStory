@@ -24,6 +24,7 @@ public:
 
 public:
 	void SetScene(class CScene* Scene);
+	virtual void Destroy();
 
 protected:
 	CSharedPtr<CSceneComponent> m_RootComponent;
@@ -61,11 +62,27 @@ public:
 	class CComponent* FindComponent(const std::string& Name);
 	void GetAllSceneComponentsName(std::vector<FindComponentName>& vecNames);
 
+	template <typename T>
+	T* FindComponentFromType()
+	{
+		auto	iter = m_SceneComponentList.begin();
+		auto	iterEnd = m_SceneComponentList.end();
+
+		for (; iter != iterEnd; ++iter)
+		{
+			if ((*iter)->CheckType<T>())
+				return (T*)*iter;
+		}
+
+		return nullptr;
+	}
+
 public:
 	virtual void Start();
 	virtual bool Init();
 	virtual void Update(float DeltaTime);
 	virtual void PostUpdate(float DeltaTime);
+	void AddCollision();
 	virtual void PrevRender();
 	virtual void Render();
 	virtual void PostRender();

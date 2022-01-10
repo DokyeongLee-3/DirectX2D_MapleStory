@@ -4,8 +4,9 @@
 
 enum class EditMode
 {
-	Scene,
-	Sprite
+	Map,
+	Sprite,
+	Scene
 };
 
 class CEditorManager
@@ -22,7 +23,28 @@ private:
 	class CConfigurationWindow* m_ConfigurationWindow;
 	class CObjectHierarchy* m_ObjectHierarchy;
 
+
 public:
+	class CEditorMenu* GetEditorMenu()	const
+	{
+		return m_EditorMenu;
+	}
+
+	class CObjectHierarchy* GetObjectHierarchy()	const
+	{
+		return m_ObjectHierarchy;
+	}
+
+	class CSpriteWindow* GetSpriteWindow()	const
+	{
+		return m_SpriteWindow;
+	}
+
+	class CDetailWindow* GetDetailWindow()	const
+	{
+		return m_DetailWindow;
+	}
+
 	EditMode GetEditMode()
 	{
 		return m_EditMode;
@@ -50,10 +72,7 @@ public:
 	void MouseLButtonPush(float DeltaTime);
 	void MouseLButtonUp(float DeltaTime);
 
-	void KeyboardUp(float DeltaTime);
-	void KeyboardDown(float DeltaTime);
-	void KeyboardLeft(float DeltaTime);
-	void KeyboardRight(float DeltaTime);
+	void MouseClickCallback(float DeltaTime);
 
 	void EditObjDown(float DeltaTime);
 	void EditObjUp(float DeltaTime);
@@ -66,6 +85,10 @@ public:
 	class CComponent* CreateComponent(class CGameObject* Obj, size_t Type);
 	void CreateAnimInstance(class CSpriteComponent* Sprite, size_t Type);
 
+public:
+	void AddObjectHierarchy();
+	void AddComponentHierarchy(class CGameObject* Obj);
+	void AddComponentHierarchy(const char* ComponentName);
 
 	DECLARE_SINGLE(CEditorManager)
 };

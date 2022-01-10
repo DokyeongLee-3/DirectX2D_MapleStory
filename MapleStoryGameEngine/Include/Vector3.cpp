@@ -349,6 +349,10 @@ Vector3 Vector3::ConvertAngle() const
 
 Vector3 Vector3::TransformNormal(const Matrix& m) const
 {
+	// XMVector3TransformNormal는 첫번째 인자인 벡터와
+	// 두번째 인자인 행렬을 곱해준다. XMVector3TransformNormal는
+	// 벡터의 네번째 인자를 0으로 만들고 XMVector3TransformCoord는
+	// 1로 만들고 곱해준다
 	return Vector3(XMVector3TransformNormal(Convert(), m.m));
 }
 

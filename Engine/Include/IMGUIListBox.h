@@ -99,6 +99,29 @@ public:
 		m_vecItemUTF8.erase(iter1);
 	}
 
+	void ModifyItem(int Index, const std::string& Modify)
+	{
+		m_vecItem[Index] = Modify;
+
+		wchar_t	wItem[1024] = {};
+		char	ItemUTF8[1024] = {};
+
+		int	Length = MultiByteToWideChar(CP_ACP, 0, Modify.c_str(), -1, 0, 0);
+		MultiByteToWideChar(CP_ACP, 0, Modify.c_str(), -1, wItem, Length);
+
+		// UTF8로 변환한다.
+		Length = WideCharToMultiByte(CP_UTF8, 0, wItem, -1, 0, 0, 0, 0);
+		WideCharToMultiByte(CP_UTF8, 0, wItem, -1, ItemUTF8, Length, 0, 0);
+
+		m_vecItemUTF8[Index] = ItemUTF8;
+
+		if (m_Sort)
+		{
+			std::sort(m_vecItem.begin(), m_vecItem.end());
+			std::sort(m_vecItemUTF8.begin(), m_vecItemUTF8.end());
+		}
+	}
+
 	void Clear()
 	{
 		m_vecItem.clear();

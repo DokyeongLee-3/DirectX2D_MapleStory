@@ -1,4 +1,6 @@
+
 #include "IMGUIButton.h"
+#include "IMGUIManager.h"
 
 CIMGUIButton::CIMGUIButton()	:
 	m_Click(false)
@@ -16,13 +18,9 @@ bool CIMGUIButton::Init()
 
 void CIMGUIButton::Render()
 {
-	if (m_Name == "Load Texture")
-	{
-		//ImGui::Dummy(ImVec2(0.0f, 100.0f));
-	}
-
 	m_Click = ImGui::Button(m_Name.c_str(), m_Size);
 
 	if (m_Click && m_ClickCallback)
 		m_ClickCallback();
+
 }

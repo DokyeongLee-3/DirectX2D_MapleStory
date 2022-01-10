@@ -2,6 +2,9 @@
 #include "Transform.h"
 #include "../Resource/Shader/TransformConstantBuffer.h"
 #include "../Device.h"
+#include "../Scene/Scene.h"
+#include "../Scene/CameraManager.h"
+#include "CameraComponent.h"
 
 CTransform::CTransform() :
 	m_Parent(nullptr),
@@ -180,18 +183,19 @@ void CTransform::InheritWorldScale(bool Current)
 	}
 }
 
+// InheritRotation이랑 같은 내용
 void CTransform::InheritWorldRotation(bool Current)
 {
 	if (m_Parent)
 	{
 		if (m_InheritRotX)
-			m_RelativeRot.x = m_WorldRot.x - m_Parent->GetWorldRot().x;
+			m_WorldRot.x = m_RelativeRot.x + m_Parent->GetWorldRot().x;
 
 		if (m_InheritRotY)
-			m_RelativeRot.y = m_WorldRot.y - m_Parent->GetWorldRot().y;
+			m_WorldRot.y = m_RelativeRot.y + m_Parent->GetWorldRot().y;
 
 		if (m_InheritRotZ)
-			m_RelativeRot.z = m_WorldRot.z - m_Parent->GetWorldRot().z;
+			m_WorldRot.z = m_RelativeRot.z + m_Parent->GetWorldRot().z;
 
 		if ((m_InheritRotX || m_InheritRotY || m_InheritRotZ) && !Current)
 			InheritParentRotationPos(false);
@@ -233,51 +237,114 @@ void CTransform::InheritWorldRotation(bool Current)
 
 void CTransform::InheritParentRotationWorldPos(bool Current)
 {
-	if (m_Parent)
+	if (Current)
 	{
-		Matrix	matRot;
-
-		Vector3	ParentRot;
-
-		if (m_InheritRotX)
-			ParentRot.x = m_Parent->GetWorldRot().x;
-
-		if (m_InheritRotY)
-			ParentRot.y = m_Parent->GetWorldRot().y;
-
-		if (m_InheritRotZ)
-			ParentRot.z = m_Parent->GetWorldRot().z;
-
-		if (m_InheritRotX || m_InheritRotY || m_InheritRotZ)
+		if (m_Parent)
 		{
-			Vector3	ConvertRot = ParentRot.ConvertAngle();
-
-			XMVECTOR Qut = XMQuaternionRotationRollPitchYaw(ConvertRot.x, ConvertRot.y, ConvertRot.z);
-
 			Matrix	matRot;
-			matRot.RotationQuaternion(Qut);
 
-			Vector3	ParentPos = m_Parent->GetWorldPos();
+			Vector3	ParentRot;
 
-			memcpy(&matRot._41, &ParentPos, sizeof(Vector3));
+			if (m_InheritRotX)
+				ParentRot.x = m_Parent->GetWorldRot().x;
 
-			matRot.Inverse();
+			if (m_InheritRotY)
+				ParentRot.y = m_Parent->GetWorldRot().y;
 
-			m_RelativePos = m_WorldPos.TransformCoord(matRot);
+			if (m_InheritRotZ)
+				ParentRot.z = m_Parent->GetWorldRot().z;
+
+			if (m_InheritRotX || m_InheritRotY || m_InheritRotZ)
+			{
+				Vector3	ConvertRot = ParentRot.ConvertAngle();
+
+				XMVECTOR Qut = XMQuaternionRotationRollPitchYaw(ConvertRot.x, ConvertRot.y, ConvertRot.z);
+
+				Matrix	matRot;
+				matRot.RotationQuaternion(Qut);
+
+				Vector3	ParentPos = m_Parent->GetWorldPos();
+
+				memcpy(&matRot._41, &ParentPos, sizeof(Vector3));
+
+				matRot.Inverse();
+
+				m_RelativePos = m_WorldPos.TransformCoord(matRot);
+			}
+
+			else
+			{
+				// 원래 코드
+				//m_WorldPos = m_RelativePos + m_Parent->GetWorldPos();
+
+				// 수정한 코드
+				m_RelativePos = m_WorldPos - m_Parent->GetWorldPos();
+			}
 		}
 
-		else
-			m_WorldPos = m_RelativePos + m_Parent->GetWorldPos();
+		m_UpdatePos = true;
+
+		// 자식이 있을 경우 모두 갱신해준다.
+		size_t	Size = m_vecChild.size();
+
+		for (size_t i = 0; i < Size; ++i)
+		{
+			m_vecChild[i]->InheritParentRotationPos(false);
+		}
 	}
 
-	m_UpdatePos = true;
-
-	// 자식이 있을 경우 모두 갱신해준다.
-	size_t	Size = m_vecChild.size();
-
-	for (size_t i = 0; i < Size; ++i)
+	else
 	{
-		m_vecChild[i]->InheritParentRotationPos(false);
+		if (m_Parent)
+		{
+			Matrix	matRot;
+
+			Vector3	ParentRot;
+
+			if (m_InheritRotX)
+				ParentRot.x = m_Parent->GetWorldRot().x;
+
+			if (m_InheritRotY)
+				ParentRot.y = m_Parent->GetWorldRot().y;
+
+			if (m_InheritRotZ)
+				ParentRot.z = m_Parent->GetWorldRot().z;
+
+			if (m_InheritRotX || m_InheritRotY || m_InheritRotZ)
+			{
+				Vector3	ConvertRot = ParentRot.ConvertAngle();
+
+				XMVECTOR Qut = XMQuaternionRotationRollPitchYaw(ConvertRot.x, ConvertRot.y, ConvertRot.z);
+
+				Matrix	matRot;
+				matRot.RotationQuaternion(Qut);
+
+				Vector3	ParentPos = m_Parent->GetWorldPos();
+
+				memcpy(&matRot._41, &ParentPos, sizeof(Vector3));
+
+				m_WorldPos = m_RelativePos.TransformCoord(matRot);
+			}
+
+			else
+			{
+				// 원래 코드
+				//m_WorldPos = m_RelativePos + m_Parent->GetWorldPos();
+
+				// 수정한 코드
+				m_WorldPos = m_RelativePos + m_Parent->GetWorldPos();
+			}
+		}
+
+		m_UpdatePos = true;
+
+		// 자식이 있을 경우 모두 갱신해준다.
+		size_t	Size = m_vecChild.size();
+
+		for (size_t i = 0; i < Size; ++i)
+		{
+			m_vecChild[i]->InheritParentRotationPos(false);
+		}
 	}
 }
 
@@ -473,6 +540,8 @@ void CTransform::SetWorldPos(const Vector3& Pos)
 	m_WorldPos = Pos;
 	m_RelativePos = Pos;
 
+	// InheritParentRotationWorldPos의 인자는 이 함수를
+	// 첫번째로 부른 컴포넌트 인지 아닌지 알려주는 인자
 	InheritParentRotationWorldPos(true);
 }
 
@@ -592,14 +661,10 @@ void CTransform::SetTransform()
 {
 	m_CBuffer->SetWorldMatrix(m_matWorld);
 
-	Matrix	matProj;
+	CCameraComponent* Camera = m_Scene->GetCameraManager()->GetCurrentCamera();
 
-	Resolution RS = CDevice::GetInst()->GetResolution();
-
-	// 내가 ViewLeft, ViewBottom 수정함
-	matProj = XMMatrixOrthographicOffCenterLH(0.f, (float)RS.Width, 0.f, (float)RS.Height, 0.f, 1000.f);
-
-	m_CBuffer->SetProjMatrix(matProj);
+	m_CBuffer->SetViewMatrix(Camera->GetViewMatrix());
+	m_CBuffer->SetProjMatrix(Camera->GetProjMatrix());
 
 	m_CBuffer->SetPivot(m_Pivot);
 	m_CBuffer->SetMeshSize(m_MeshSize);

@@ -1,4 +1,5 @@
 #include "SpriteWindow.h"
+#include "IMGUIManager.h"
 #include "IMGUIButton.h"
 #include "IMGUISameLine.h"
 #include "IMGUILabel.h"
@@ -20,12 +21,13 @@
 #include "Scene/SceneResource.h"
 #include "Component/SpriteComponent.h"
 #include "Resource/Animation/AnimationSequence2D.h"
-#include "../Object/DragObject.h"
 #include "Animation/AnimationSequence2DInstance.h"
 #include "Animation/AnimationSequence2DData.h"
-#include "../Object/AnimationLoadObject.h"
 #include "../Object/Pivot.h"
+#include "../Object/DragObject.h"
+#include "ObjectHierarchy.h"
 
+#include <sstream>
 
 CSpriteWindow::CSpriteWindow() :
     m_SpriteObject(nullptr),
@@ -40,7 +42,10 @@ CSpriteWindow::CSpriteWindow() :
     m_ReverseCheckBox(nullptr),
     m_AnimPlayScale(nullptr),
     m_AnimPlayTime(nullptr),
-    m_LoadFileName(nullptr)
+    m_LoadFileName(nullptr),
+    m_DragPivotXPos(nullptr),
+    m_DragPivotYPos(nullptr),
+    m_CurrentFrameText(nullptr)
     //m_EditorAnimationLoadObject(nullptr)
 {
 }
@@ -48,6 +53,11 @@ CSpriteWindow::CSpriteWindow() :
 CSpriteWindow::~CSpriteWindow()
 {
     SAFE_DELETE(m_AnimInstance);
+}
+
+void CSpriteWindow::SetPlayTime(float PlayTime)
+{
+    m_AnimPlayTime->SetValueFloat(PlayTime);
 }
 
 void CSpriteWindow::SetSpriteObject(CSpriteEditObject* Obj)
@@ -69,44 +79,20 @@ bool CSpriteWindow::Init()
     NewNode = Tree->AddChildNode("Configuration", "EditMode");
 
     CIMGUIRadioButton* Radio = Tree->AddNodeWidget<CIMGUIRadioButton>("EditMode", 100.f, 100.f);
-    Radio->AddText<CSpriteWindow>("Map Edit Mode", this, &CSpriteWindow::EditModeCallback1);
+    Radio->AddText<CSpriteWindow>("Scene Edit Mode", this, &CSpriteWindow::ObjectArrangeButton);
     Radio->AddText<CSpriteWindow>("Sprite Edit Mode", this, &CSpriteWindow::SpriteEditButton);
+    Radio->AddText<CSpriteWindow>("Map Edit Mode", this, &CSpriteWindow::MapEditButton);
 
-    //CIMGUISameLine* Line = AddWidget<CIMGUISameLine>("Line");
+    CIMGUILabel* Label = AddWidget<CIMGUILabel>("", 600.f, 50.f);
+    Label->SetColorFloat(0.0f, 0.0f, 0.0f, 0.f);
 
-    //Button = AddWidget<CIMGUIButton>("SpriteEdit");
+    CIMGUIButton* Button = AddWidget<CIMGUIButton>("Load a Texture");
 
-    //Button->SetClickCallback<CSpriteWindow>(this, &CSpriteWindow::SpriteEditButton);
-
-    CIMGUIButton* Button = AddWidget<CIMGUIButton>("SaveSequence", 80.f, 30.f);
-
-    Button->SetClickCallback<CSpriteWindow>(this, &CSpriteWindow::SaveSequence);
-
-    CIMGUISameLine* Line = AddWidget<CIMGUISameLine>("Line");
-
-    Button = AddWidget<CIMGUIButton>("LoadSequence", 80.f, 30.f);
-
-    Button->SetClickCallback<CSpriteWindow>(this, &CSpriteWindow::LoadSequence);
-
-    Line = AddWidget<CIMGUISameLine>("Line");
-
-    Button = AddWidget<CIMGUIButton>("SaveAnim", 80.f, 30.f);
-
-    Button->SetClickCallback<CSpriteWindow>(this, &CSpriteWindow::SaveAnimation);
-
-    Line = AddWidget<CIMGUISameLine>("Line");
-
-    Button = AddWidget<CIMGUIButton>("LoadAnim", 80.f, 30.f);
-
-    Button->SetClickCallback<CSpriteWindow>(this, &CSpriteWindow::LoadAnimation);
-
-    Button = AddWidget<CIMGUIButton>("Load Texture");
-
-    Button->SetSize(80.f, 30.f);
+    Button->SetSize(120.f, 30.f);
 
     Button->SetClickCallback<CSpriteWindow>(this, &CSpriteWindow::LoadTextureButton);
 
-    Line = AddWidget<CIMGUISameLine>("Line");
+    CIMGUISameLine* Line = AddWidget<CIMGUISameLine>("Line");
 
     m_LoadFileName = AddWidget<CIMGUITextInput>("LoadFileName");
     m_LoadFileName->SetHideName(true);
@@ -114,9 +100,9 @@ bool CSpriteWindow::Init()
     m_LoadFileName->SetSize(200.f, 20.f);
     m_LoadFileName->ReadOnly(true);
 
-    CIMGUILabel* Label = AddWidget<CIMGUILabel>("AnimationListName", 200.f, 30.f);
+    Label = AddWidget<CIMGUILabel>("Animation Sequence", 150.f, 30.f);
 
-    Label->SetColor(0, 0, 255);
+    Label->SetColorFloat(0.28f, 0.28f, 0.28f, 0.8f);
     Label->SetAlign(0.5f, 0.f);
 
     Line = AddWidget<CIMGUISameLine>("Line");
@@ -125,11 +111,11 @@ bool CSpriteWindow::Init()
     m_AnimName->SetHideName(true);
 
     Line = AddWidget<CIMGUISameLine>("Line");
-    Line->SetOffsetX(400.f);
+    Line->SetOffsetX(420.f);
 
-    Label = AddWidget<CIMGUILabel>("AnimationFrameName", 200.f, 30.f);
+    Label = AddWidget<CIMGUILabel>("Frames for Sequence", 150.f, 30.f);
 
-    Label->SetColor(0, 0, 255);
+    Label->SetColorFloat(0.28f, 0.28f, 0.28f, 0.8f);
     Label->SetAlign(0.5f, 0.f);
 
     Line = AddWidget<CIMGUISameLine>("Line");
@@ -137,57 +123,57 @@ bool CSpriteWindow::Init()
     m_AnimFrameName = AddWidget<CIMGUITextInput>("AnimFrameNameInput", 80.f, 30.f);
     m_AnimFrameName->SetHideName(true);
 
-    m_AnimationList = AddWidget<CIMGUIListBox>("AnimationList", 200.f, 300.f);
+    m_AnimationList = AddWidget<CIMGUIListBox>("AnimationList", 150.f, 300.f);
     m_AnimationList->SetHideName(true);
     m_AnimationList->SetPageItemCount(6);
     m_AnimationList->SetSelectCallback<CSpriteWindow>(this, &CSpriteWindow::SelectAnimation);
 
     Line = AddWidget<CIMGUISameLine>("Line");
 
-    Line = AddWidget<CIMGUISameLine>("Line");
-    Line->SetOffsetX(400.f);
+    Button = AddWidget<CIMGUIButton>("Add", 50.f, 40.f);
+    Button->SetClickCallback<CSpriteWindow>(this, &CSpriteWindow::AddAnimationButton);
 
-    m_AnimationFrameList = AddWidget<CIMGUIListBox>("AnimationFrameList", 200.f, 300.f);
+    Line = AddWidget<CIMGUISameLine>("Line");
+
+    Button = AddWidget<CIMGUIButton>("Save", 50.f, 40.f);
+
+    Button->SetClickCallback<CSpriteWindow>(this, &CSpriteWindow::SaveSequence);
+
+    Line = AddWidget<CIMGUISameLine>("Line");
+
+    Button = AddWidget<CIMGUIButton>("Load", 50.f, 40.f);
+
+    Button->SetClickCallback<CSpriteWindow>(this, &CSpriteWindow::LoadSequence);
+
+    Line = AddWidget<CIMGUISameLine>("Line");
+
+    Button = AddWidget<CIMGUIButton>("Delete", 50.f, 40.f);
+
+    Button->SetClickCallback<CSpriteWindow>(this, &CSpriteWindow::DeleteSequenceButton);
+
+    Line = AddWidget<CIMGUISameLine>("Line");
+    Line->SetOffsetX(420.f);
+
+    m_AnimationFrameList = AddWidget<CIMGUIListBox>("AnimationFrameList", 150.f, 300.f);
     m_AnimationFrameList->SetHideName(true);
     m_AnimationFrameList->SetPageItemCount(6);
     m_AnimationFrameList->SetSelectCallback<CSpriteWindow>(this, &CSpriteWindow::SelectAnimationFrame);
 
     Line = AddWidget<CIMGUISameLine>("Line");
 
-    Button = AddWidget<CIMGUIButton>("Add a Frame", 120.f, 20.f);
+    Button = AddWidget<CIMGUIButton>("Add##", 50.f, 40.f);
 
     Button->SetClickCallback<CSpriteWindow>(this, &CSpriteWindow::AddAnimationFrameButton);
 
-    Button = AddWidget<CIMGUIButton>("DeleteFrame", 80.f, 30.f);
+    Line = AddWidget<CIMGUISameLine>("Line");
+
+    Button = AddWidget<CIMGUIButton>("Delete##", 50.f, 40.f);
 
     Button->SetClickCallback<CSpriteWindow>(this, &CSpriteWindow::DeleteFrameButton);
 
-    Line = AddWidget<CIMGUISameLine>("Line");
-
-    Button = AddWidget<CIMGUIButton>("AnimPlay", 80.f, 30.f);
-
-    Button->SetClickCallback<CSpriteWindow>(this, &CSpriteWindow::PlayAnimation);
-
-    Line = AddWidget<CIMGUISameLine>("Line");
-
-    Button = AddWidget<CIMGUIButton>("AnimStop", 80.f, 30.f);
-
-    Button->SetClickCallback<CSpriteWindow>(this, &CSpriteWindow::StopAnimation);
-
-    Line = AddWidget<CIMGUISameLine>("Line");
-
-    Button = AddWidget<CIMGUIButton>("DeleteAnim", 80.f, 30.f);
-
-    Button->SetClickCallback<CSpriteWindow>(this, &CSpriteWindow::DeleteAnimButton);
 
 
 
-    //Image->SetTexture("TeemoTest", TEXT("Teemo.jpg"));
-    //Image->SetImageStart(0.f, 0.f);
-    //Image->SetImageEnd(1215.f, 717.f);
-    //Image->SetTint(255, 0, 0);
-
-    // 마우스로 FrameData 잡아주기 하기
     m_FrameStartPosX = AddWidget<CIMGUITextInput>("FrameStartPosX", 120.f, 120.f);
     m_FrameStartPosX->SetInt(0);
     m_FrameStartPosX->SetTextType(ImGuiText_Type::Int);
@@ -200,11 +186,6 @@ bool CSpriteWindow::Init()
     m_FrameStartPosY->SetTextType(ImGuiText_Type::Int);
     m_FrameStartPosY->SetCallback<CSpriteWindow>(this, &CSpriteWindow::AdjustFrameDataStartY);
     //FrameStartPos->ReadOnly(true);
-
-    Line = AddWidget<CIMGUISameLine>("Line");
-
-    Button = AddWidget<CIMGUIButton>("Add a SequenceData", 150.f, 20.f);
-    Button->SetClickCallback<CSpriteWindow>(this, &CSpriteWindow::AddAnimationButton);
 
     m_FrameEndPosX = AddWidget<CIMGUITextInput>("FrameEndPosX", 120.f, 120.f);
     m_FrameEndPosX->SetInt(100);
@@ -220,32 +201,87 @@ bool CSpriteWindow::Init()
     m_FrameEndPosY->SetCallback<CSpriteWindow>(this, &CSpriteWindow::AdjustFrameDataEndY);
     //m_FrameEndPosY->ReadOnly(true);
 
-    // 애니메이션 추가할때 필요한 데이터(ex.Loop여부)를 받는 IMGUI
     m_AnimPlayTime = AddWidget<CIMGUITextInput>("AnimPlayTime");
     m_AnimPlayTime->SetTextType(ImGuiText_Type::Float);
     m_AnimPlayTime->SetFloat(1.f);
+    m_AnimPlayTime->SetCallback<CSpriteWindow>(this, &CSpriteWindow::ChangePlayTime);
 
     Line = AddWidget<CIMGUISameLine>("Line");
 
     m_AnimPlayScale = AddWidget<CIMGUITextInput>("AnimPlayScale");
     m_AnimPlayScale->SetTextType(ImGuiText_Type::Float);
     m_AnimPlayScale->SetFloat(1.f);
+    //m_AnimPlayScale->SetCallback<CSpriteWindow>(this, &CSpriteWindow::ChangePlayScale);
 
     Line = AddWidget<CIMGUISameLine>("Line");
 
+    Label = AddWidget<CIMGUILabel>("", 100.f, 30.f);
+    Label->SetColorFloat(0.0f, 0.0f, 0.0f, 0.f);
+
+    Line = AddWidget<CIMGUISameLine>("Line");
+
+    Line->SetOffsetX(500.f);
+
+    Button = AddWidget<CIMGUIButton>("Play", 30.f, 20.f);
+
+    Button->SetClickCallback<CSpriteWindow>(this, &CSpriteWindow::PlayAnimation);
+
+    Line = AddWidget<CIMGUISameLine>("Line");
+
+    Button = AddWidget<CIMGUIButton>("Stop", 30.f, 20.f);
+
+    Button->SetClickCallback<CSpriteWindow>(this, &CSpriteWindow::StopAnimation);
+
+
+
     m_LoopCheckBox = AddWidget<CIMGUICheckBox>("LoopCheckBox");
-    m_LoopCheckBox->SetText<CIMGUICheckBox>("LoopCheckBox", nullptr, nullptr);
+    m_LoopCheckBox->SetText<CIMGUICheckBox>("Loop", nullptr, nullptr);
+    m_LoopCheckBox->SetCheckCallback<CSpriteWindow>(this, &CSpriteWindow::ChangeLoop);
+    m_LoopCheckBox->SetUnCheckCallback<CSpriteWindow>(this, &CSpriteWindow::ChangeNoLoop);
 
     Line = AddWidget<CIMGUISameLine>("Line");
 
     m_ReverseCheckBox = AddWidget<CIMGUICheckBox>("ReverseCheckBox");
-    m_ReverseCheckBox->SetText<CIMGUICheckBox>("ReverseCheckBox", nullptr, nullptr);
+    m_ReverseCheckBox->SetText<CIMGUICheckBox>("Reverse", nullptr, nullptr);
+    m_ReverseCheckBox->SetCheckCallback<CSpriteWindow>(this, &CSpriteWindow::ChangeReverse);
+    m_ReverseCheckBox->SetUnCheckCallback<CSpriteWindow>(this, &CSpriteWindow::ChangeNoReverse);
+
+    Line = AddWidget<CIMGUISameLine>("Line");
+
+    Label = AddWidget<CIMGUILabel>("CenterXPos", 50.f, 20.f);
+    Label->SetColorFloat(0.0f, 0.0f, 150.f, 0.f);
+
+    Line = AddWidget<CIMGUISameLine>("Line");
+
+    m_DragPivotXPos = AddWidget<CIMGUIText>("CenterXPos");
+
+    Line = AddWidget<CIMGUISameLine>("Line");
+
+    Label = AddWidget<CIMGUILabel>("CenterYPos", 50.f, 20.f);
+    Label->SetColorFloat(0.0f, 0.0f, 150.f, 0.f);
+
+    Line = AddWidget<CIMGUISameLine>("Line");
+
+    m_DragPivotYPos = AddWidget<CIMGUIText>("CenterYPos");
+
+    Line = AddWidget<CIMGUISameLine>("Line");
+
+    Label = AddWidget<CIMGUILabel>("CurrentFrame", 90.f, 20.f);
+    Label->SetColorFloat(0.0f, 0.0f, 150.f, 0.f);
+
+    Line = AddWidget<CIMGUISameLine>("Line");
+
+    m_CurrentFrameText = AddWidget<CIMGUIText>("CurrentFrame");
+
+
 
     m_Sprite = AddWidget<CIMGUIImage>("SpriteOrigin", 200.f, 200.f);
 
     Line = AddWidget<CIMGUISameLine>("Line");
 
     m_SpriteFrame = AddWidget<CIMGUIImage>("SpriteFrame", 200.f, 200.f);
+
+    Line = AddWidget<CIMGUISameLine>("Line");
 
 
     // SpriteComponent통해서 CreateAnimationInstance를 하면 Instance에 Scene이
@@ -262,8 +298,6 @@ bool CSpriteWindow::Init()
 
     m_AnimInstance->Stop();
 
-    // AnimationInstance Save/Load 과제 구현
-
     // m_EditorAnimationLoadObject = CSceneManager::GetInst()->GetScene()->CreateGameObject<CAnimationLoadObject>("AnimationLoadObject");
 
     return true;
@@ -272,6 +306,8 @@ bool CSpriteWindow::Init()
 void CSpriteWindow::Update(float DeltaTime)
 {
     CIMGUIWindow::Update(DeltaTime);
+
+    DeltaTime *= m_AnimPlayScale->GetValueFloat();
 
     m_AnimInstance->Update(DeltaTime);
 
@@ -301,7 +337,9 @@ void CSpriteWindow::Update(float DeltaTime)
 
 void CSpriteWindow::LoadTextureButton()
 {
-    if (CEditorManager::GetInst()->GetEditMode() != EditMode::Sprite)
+    EditMode Mode = CEditorManager::GetInst()->GetEditMode();
+
+    if (Mode != EditMode::Sprite)
         return;
 
     TCHAR   FilePath[MAX_PATH] = {};
@@ -334,11 +372,19 @@ void CSpriteWindow::LoadTextureButton()
         // 여기 안에서 ImageEnd를 잡아준다(ImageStart는 (0,0) 그대로)
         m_Sprite->SetTextureFullPath(ConvertFileName, FilePath);
 
-        m_SpriteObject->GetSpriteComponent()->SetTextureFullPath(0, 0, (int)ConstantBuffer_Shader_Type::Pixel,
-            ConvertFileName, FilePath);
+        if (CEditorManager::GetInst()->GetEditMode() == EditMode::Sprite)
+        {
+            m_SpriteObject->GetSpriteComponent()->SetTextureFullPath(0, 0, (int)ConstantBuffer_Shader_Type::Pixel,
+                ConvertFileName, FilePath);
 
-        m_SpriteObject->GetSpriteComponent()->SetWorldScale((float)m_SpriteObject->GetSpriteComponent()->GetMaterial()->GetTextureWidth(),
-            (float)m_SpriteObject->GetSpriteComponent()->GetMaterial()->GetTextureHeight(), 1.f);
+            m_SpriteObject->GetSpriteComponent()->SetWorldScale((float)m_SpriteObject->GetSpriteComponent()->GetMaterial()->GetTextureWidth(),
+                (float)m_SpriteObject->GetSpriteComponent()->GetMaterial()->GetTextureHeight(), 1.f);
+        }
+
+        else if (CEditorManager::GetInst()->GetEditMode() == EditMode::Scene)
+        {
+            
+        }
 
         strcat_s(ConvertFileName, ConvertFileExt);
 
@@ -352,7 +398,19 @@ void CSpriteWindow::SpriteEditButton()
     CEditorManager::GetInst()->SetEditMode(EditMode::Sprite);
 
     if (!m_SpriteObject)
+    {
         m_SpriteObject = CSceneManager::GetInst()->GetScene()->CreateGameObject<CSpriteEditObject>("SpriteEditObject");
+    }
+}
+
+void CSpriteWindow::MapEditButton()
+{
+    CEditorManager::GetInst()->SetEditMode(EditMode::Map);
+}
+
+void CSpriteWindow::ObjectArrangeButton()
+{
+    CEditorManager::GetInst()->SetEditMode(EditMode::Scene);
 }
 
 void CSpriteWindow::AddAnimationButton()
@@ -396,16 +454,15 @@ void CSpriteWindow::AddAnimationFrameButton()
 
     CDragObject* DragObj = CEditorManager::GetInst()->GetDragObj();
 
-    Vector2 Size = DragObj->GetEndPos() - DragObj->GetStartPos();
-    Size.x = abs(Size.x);
-    Size.y = abs(Size.y);
+    Vector2 Size;
+    Vector2 FrameStartPos = Vector2((float)(m_FrameStartPosX->GetValueInt()), (float)(m_FrameStartPosY->GetValueInt()));
 
-    // 이미지상의 좌표로 변경후에 FrameData로 추가
-    Vector2 ConvertImagePos;
-    ConvertImagePos.x = DragObj->GetStartPos().x - m_SpriteObject->GetWorldPos().x;
-    ConvertImagePos.y = m_SpriteObject->GetSpriteComponent()->GetMaterial()->GetTexture()->GetHeight() - (DragObj->GetStartPos().y - m_SpriteObject->GetWorldPos().y);
+    Size.x = (float)(m_FrameEndPosX->GetValueInt() - m_FrameStartPosX->GetValueInt());
+    Size.y = (float)(m_FrameEndPosY->GetValueInt() - m_FrameStartPosY->GetValueInt());
 
-    Anim->AddFrame(ConvertImagePos, Size);
+    // 이미 m_FrameStartPosX, m_FrameStartPosY, m_FrameEndPosX, m_FrameEndPosY는 드래그위치를 사용하는데 드래그 위치를
+    // 잡아줄 때 이미지상의 좌표로 변환해놓았음 
+    Anim->AddFrame(FrameStartPos, Size);
 
     int FrameCount = Anim->GetFrameCount() - 1;
 
@@ -443,6 +500,7 @@ void CSpriteWindow::AddAnimationFrameButton()
     SpriteFrameSize.x = abs(EndPos.x - StartPos.x);
     SpriteFrameSize.y = abs(EndPos.y - StartPos.y);
 
+
     m_SpriteFrame->SetSize(SpriteFrameSize);
 }
 
@@ -465,6 +523,8 @@ void CSpriteWindow::SelectAnimationFrame(int Index, const char* Item)
 
     m_SpriteFrame->SetImageEnd(Data.Start.x + Data.Size.x, Data.Start.y + Data.Size.y);
 
+    m_SpriteFrame->SetSize(Data.Size);
+
     m_FrameStartPosX->SetInt((int)Data.Start.x);
     m_FrameStartPosY->SetInt((int)Data.Start.y);
     m_FrameEndPosX->SetInt((int)(Data.Start.x + Data.Size.x));
@@ -485,11 +545,23 @@ void CSpriteWindow::SelectAnimationFrame(int Index, const char* Item)
     DragObj->SetStartPos(StartPos);
     DragObj->SetEndPos(EndPos);
 
-    m_SpriteFrame->SetSize(Data.Size);
-
     CPivot* Pivot = CEditorManager::GetInst()->GetDragPivot();
 
     Pivot->SetWorldPos((StartPos.x + EndPos.x) / 2.f, (StartPos.y + EndPos.y) / 2.f, 0.f);
+
+    // 빨간 중심점 위치 갱신
+    float FrameCenterX = (m_FrameStartPosX->GetValueInt() + m_FrameEndPosX->GetValueInt()) / 2.f;
+    float FrameCenterY = (m_FrameStartPosY->GetValueInt() + m_FrameEndPosY->GetValueInt()) / 2.f;
+
+    Vector2 Center = Vector2(FrameCenterX, FrameCenterY);
+
+    std::stringstream PosX;
+    PosX << Center.x;
+    std::stringstream PosY;
+    PosY << Center.y;
+
+    m_DragPivotXPos->SetText(PosX.str().c_str());
+    m_DragPivotYPos->SetText(PosY.str().c_str());
 }
 
 void CSpriteWindow::SelectAnimation(int Index, const char* Item)
@@ -503,19 +575,19 @@ void CSpriteWindow::SelectAnimation(int Index, const char* Item)
     for (int i = 0; i < FrameCount; ++i)
     {
         char    FrameName[32] = {};
-        sprintf_s(FrameName, "%d", i + 1);
+        sprintf_s(FrameName, "%d", i);
         m_AnimationFrameList->AddItem(FrameName);
-    }
 
-    m_SpriteFrame->SetTexture(m_AnimInstance->GetCurrentAnimation()->GetAnimationSequence()->GetTexture());
+        m_SpriteFrame->SetTexture(m_AnimInstance->GetCurrentAnimation()->GetAnimationSequence()->GetTexture());
 
-    if (FrameCount > 0)
-    {
-        AnimationFrameData  Data = m_AnimInstance->GetCurrentAnimation()->GetAnimationSequence()->GetFrameData(Index);
+        if (FrameCount > 0)
+        {
+            AnimationFrameData  Data = m_AnimInstance->GetCurrentAnimation()->GetAnimationSequence()->GetFrameData(i);
 
-        m_SpriteFrame->SetImageStart(Data.Start.x, Data.Start.y);
+            m_SpriteFrame->SetImageStart(Data.Start.x, Data.Start.y);
 
-        m_SpriteFrame->SetImageEnd(Data.Start.x + Data.Size.x, Data.Start.y + Data.Size.y);
+            m_SpriteFrame->SetImageEnd(Data.Start.x + Data.Size.x, Data.Start.y + Data.Size.y);
+        }
     }
 }
 
@@ -579,6 +651,17 @@ void CSpriteWindow::LoadSequence()
         std::string	SequenceName;
         // 결국 LoadSequence는 파일에서 정보를 읽어서 시퀀스들을(CAnimationManager에서) 새로 하나 만드는것
         Resource->LoadSequence2DFullPath(SequenceName, FullPath);
+
+        CAnimationSequence2D* Sequence = Resource->FindAnimationSequence2D(SequenceName);
+
+        if (!Sequence)
+            return;
+
+        //bool Loop = m_LoopCheckBox->IsCheck();
+
+        m_AnimInstance->AddAnimation(SequenceName, SequenceName, true, 1.f);
+
+        m_AnimationList->AddItem(Sequence->GetName());
     }
 }
 
@@ -694,6 +777,20 @@ void CSpriteWindow::AdjustFrameDataStartX()
     float NewXPivotPos = (DragObj->GetStartPos().x + DragObj->GetEndPos().x) / 2.f;
 
     Pivot->SetWorldPos(NewXPivotPos, Pivot->GetWorldPos().y, Pivot->GetWorldPos().z);
+
+    // Center 빨간점 위치 갱신
+    float FrameCenterX = (m_FrameStartPosX->GetValueInt() + m_FrameEndPosX->GetValueInt()) / 2.f;
+    float FrameCenterY = (m_FrameStartPosY->GetValueInt() + m_FrameEndPosY->GetValueInt()) / 2.f;
+
+    Vector2 Center = Vector2(FrameCenterX, FrameCenterY);
+
+    std::stringstream PosX;
+    PosX << Center.x;
+    std::stringstream PosY;
+    PosY << Center.y;
+
+    m_DragPivotXPos->SetText(PosX.str().c_str());
+    m_DragPivotYPos->SetText(PosY.str().c_str());
 }
 
 void CSpriteWindow::AdjustFrameDataStartY()
@@ -734,6 +831,20 @@ void CSpriteWindow::AdjustFrameDataStartY()
     float NewYPivotPos = (DragObj->GetStartPos().y + DragObj->GetEndPos().y) / 2.f;
 
     Pivot->SetWorldPos(Pivot->GetWorldPos().x, NewYPivotPos, Pivot->GetWorldPos().z);
+
+    // Center 빨간점 위치 갱신
+    float FrameCenterX = (m_FrameStartPosX->GetValueInt() + m_FrameEndPosX->GetValueInt()) / 2.f;
+    float FrameCenterY = (m_FrameStartPosY->GetValueInt() + m_FrameEndPosY->GetValueInt()) / 2.f;
+
+    Vector2 Center = Vector2(FrameCenterX, FrameCenterY);
+
+    std::stringstream PosX;
+    PosX << Center.x;
+    std::stringstream PosY;
+    PosY << Center.y;
+
+    m_DragPivotXPos->SetText(PosX.str().c_str());
+    m_DragPivotYPos->SetText(PosY.str().c_str());
 }
 
 void CSpriteWindow::AdjustFrameDataEndX()
@@ -772,6 +883,20 @@ void CSpriteWindow::AdjustFrameDataEndX()
     float NewXPivotPos = (DragObj->GetStartPos().x + DragObj->GetEndPos().x)/2.f;
 
     Pivot->SetWorldPos(NewXPivotPos, Pivot->GetWorldPos().y, Pivot->GetWorldPos().z);
+
+    // Center 빨간점 위치 갱신
+    float FrameCenterX = (m_FrameStartPosX->GetValueInt() + m_FrameEndPosX->GetValueInt()) / 2.f;
+    float FrameCenterY = (m_FrameStartPosY->GetValueInt() + m_FrameEndPosY->GetValueInt()) / 2.f;
+
+    Vector2 Center = Vector2(FrameCenterX, FrameCenterY);
+
+    std::stringstream PosX;
+    PosX << Center.x;
+    std::stringstream PosY;
+    PosY << Center.y;
+
+    m_DragPivotXPos->SetText(PosX.str().c_str());
+    m_DragPivotYPos->SetText(PosY.str().c_str());
 }
 
 void CSpriteWindow::AdjustFrameDataEndY()
@@ -812,6 +937,107 @@ void CSpriteWindow::AdjustFrameDataEndY()
     float NewYPivotPos = (DragObj->GetStartPos().y + DragObj->GetEndPos().y) / 2.f;
 
     Pivot->SetWorldPos(Pivot->GetWorldPos().x, NewYPivotPos, Pivot->GetWorldPos().z);
+
+    // Center 빨간점 위치 갱신
+    float FrameCenterX = (m_FrameStartPosX->GetValueInt() + m_FrameEndPosX->GetValueInt()) / 2.f;
+    float FrameCenterY = (m_FrameStartPosY->GetValueInt() + m_FrameEndPosY->GetValueInt()) / 2.f;
+
+    Vector2 Center = Vector2(FrameCenterX, FrameCenterY);
+
+    std::stringstream PosX;
+    PosX << Center.x;
+    std::stringstream PosY;
+    PosY << Center.y;
+
+    m_DragPivotXPos->SetText(PosX.str().c_str());
+    m_DragPivotYPos->SetText(PosY.str().c_str());
+}
+
+void CSpriteWindow::ChangeLoop()
+{
+    if (m_AnimationList->GetSelectIndex() == -1)
+        return;
+
+    std::string SelectSequence = m_AnimationList->GetSelectItem();
+
+    CAnimationSequence2DData* Data = m_AnimInstance->FindAnimation(SelectSequence);
+
+    if (!Data)
+        return;
+
+    if (m_LoopCheckBox->IsCheck())
+        Data->SetLoop(true);
+}
+
+void CSpriteWindow::ChangeNoLoop()
+{
+    if (m_AnimationList->GetSelectIndex() == -1)
+        return;
+
+    std::string SelectSequence = m_AnimationList->GetSelectItem();
+
+    CAnimationSequence2DData* Data = m_AnimInstance->FindAnimation(SelectSequence);
+
+    if (!Data)
+        return;
+
+    if (!m_LoopCheckBox->IsCheck())
+        Data->SetLoop(false);
+}
+
+void CSpriteWindow::ChangeReverse()
+{
+    if (m_AnimationList->GetSelectIndex() == -1)
+        return;
+
+    std::string SelectSequence = m_AnimationList->GetSelectItem();
+
+    CAnimationSequence2DData* Data = m_AnimInstance->FindAnimation(SelectSequence);
+
+    if (!Data)
+        return;
+
+    if (m_ReverseCheckBox->IsCheck())
+        Data->SetReverse(true);
+}
+
+void CSpriteWindow::ChangeNoReverse()
+{
+    if (m_AnimationList->GetSelectIndex() == -1)
+        return;
+
+    std::string SelectSequence = m_AnimationList->GetSelectItem();
+
+    CAnimationSequence2DData* Data = m_AnimInstance->FindAnimation(SelectSequence);
+
+    if (!Data)
+        return;
+
+    if (!m_ReverseCheckBox->IsCheck())
+        Data->SetReverse(false);
+}
+
+void CSpriteWindow::ChangePlayTime()
+{
+    CObjectHierarchy* Hierarchy = CEditorManager::GetInst()->GetObjectHierarchy();
+
+    CScene* Scene = CSceneManager::GetInst()->GetScene();
+
+    if (Hierarchy->GetObjectList()->GetSelectIndex() == -1)
+        return;
+
+    CGameObject* Obj = Scene->FindObject(Hierarchy->GetObjectList()->GetSelectItem());
+
+    if (Obj->GetRootComponent()->GetTypeID() == typeid(CSpriteComponent).hash_code())
+    {
+        CSpriteComponent* Sprite = (CSpriteComponent*)Obj->GetRootComponent();
+        
+        Sprite->GetCurrentAnimation()->SetPlayTime(m_AnimPlayTime->GetValueFloat());
+    }
+}
+
+void CSpriteWindow::ChangePlayScale()
+{
 }
 
 void CSpriteWindow::StyleCallback()
@@ -839,16 +1065,14 @@ void CSpriteWindow::MyShowStyleEditor(ImGuiStyle* ref)
     if (ImGui::ShowStyleSelector("Colors##Selector"))
         ref_saved_style = style;
     ImGui::ShowFontSelector("Fonts##Selector");
+
 }
 
-
-void CSpriteWindow::EditModeCallback1()
+void CSpriteWindow::ClickObjInEditor()
 {
+    int a = 3;
 }
 
-void CSpriteWindow::EditModeCallback2()
-{
-}
 
 void CSpriteWindow::PlayAnimation()
 {
@@ -866,7 +1090,7 @@ void CSpriteWindow::StopAnimation()
     m_AnimInstance->Stop();
 }
 
-void CSpriteWindow::DeleteAnimButton()
+void CSpriteWindow::DeleteSequenceButton()
 {
     int SelectAnimIndex = m_AnimationList->GetSelectIndex();
     if (SelectAnimIndex == -1)
@@ -877,7 +1101,13 @@ void CSpriteWindow::DeleteAnimButton()
 
     // 애니메이션 시퀀스 실제로 지우기
 
-    m_AnimInstance->DeleteAnimation(m_AnimationList->GetItem(SelectAnimIndex));
+    std::string SequenceName = m_AnimationList->GetItem(SelectAnimIndex);
+
+    m_AnimInstance->DeleteAnimation(SequenceName);
+
+    CSceneResource* Resource = CSceneManager::GetInst()->GetScene()->GetResource();
+
+    Resource->EraseAnimationSequence2D(SequenceName);
 
     m_AnimationList->DeleteItem(SelectAnimIndex);
 
@@ -901,6 +1131,20 @@ void CSpriteWindow::DeleteFrameButton()
     Anim->DeleteFrame(SelectIndex);
 
     m_AnimationFrameList->DeleteItem(SelectIndex);
+
+    int FrameCount = m_AnimationFrameList->GetItemCount();
+
+    for (int i = SelectIndex; i < FrameCount; ++i)
+    {
+        std::stringstream ss;
+
+        ss << i;
+
+        m_AnimationFrameList->ModifyItem(i, ss.str());
+    }
+
+    // Load된 sqc파일의 Frame을 지운것일 수도 있으니 sqc파일을 새로 저장
+    SaveSequence();
 }
 
 

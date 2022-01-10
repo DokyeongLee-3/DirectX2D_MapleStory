@@ -34,3 +34,11 @@ void CSceneMode::Update(float DeltaTime)
 void CSceneMode::PostUpdate(float DeltaTime)
 {
 }
+
+void CSceneMode::AddObjectList(const char* ObjName)
+{
+}
+
+void CSceneMode::AddComponentList(const char* ComponentName)
+{
+}

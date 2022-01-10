@@ -2,6 +2,8 @@
 
 #include "GameObject/GameObject.h"
 #include "Component/SpriteComponent.h"
+#include "Component/ColliderBox2D.h"
+#include "Component/CameraComponent.h"
 
 class CPlayer2D :
     public CGameObject
@@ -30,6 +32,9 @@ private:
     // 보이드 프레셔 사용시 플레이어 바로 앞에 생기는 작은 구체
     CSharedPtr<CSpriteComponent>    m_VoidPressureSphere;
 
+    CSharedPtr<CColliderBox2D>       m_Body;
+    CSharedPtr<CCameraComponent>     m_Camera;
+
     float       m_Opacity;
     float       m_ScaleFactor;
 
@@ -55,9 +60,14 @@ private:
     void Stand(float DeltaTime);
     void MoveUp(float DeltaTime);
     void MoveDown(float DeltaTime);
-    void MoveLeft(float DeltaTime);
-    void MoveRight(float DeltaTime);
+    void RotationZInv(float DeltaTime);
+    void RotationZ(float DeltaTime);
     void SylphideLancer(float DeltaTime);
     void VoidPressure(float DeltaTime);
+
+    void Skill2(float DeltaTime);
+
+public:
+    void FlipAll(float DeltaTime);
 };
 

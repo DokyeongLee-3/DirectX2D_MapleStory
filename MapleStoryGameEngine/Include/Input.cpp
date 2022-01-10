@@ -1,5 +1,11 @@
+
 #include "Input.h"
 #include "Device.h"
+#include "Scene/SceneManager.h"
+#include "Scene/Scene.h"
+#include "Scene/CameraManager.h"
+#include "Component/CameraComponent.h"
+#include "Engine.h"
 
 DEFINITION_SINGLE(CInput)
 
@@ -9,7 +15,10 @@ CInput::CInput() :
 	m_Input(nullptr),
 	m_Keyboard(nullptr),
 	m_Mouse(nullptr),
-	m_KeyArray{}
+	m_KeyArray{},
+	m_LButtonClick(false),
+	m_RButtonClick(false),
+	m_CollisionWidget(false)
 {
 	m_vecKeyState.resize(256);
 
@@ -177,14 +186,18 @@ void CInput::Update(float DeltaTime)
 		ReadDirectInputMouse();
 	}
 
-	// 키 상태를 업데이트 해준다.
+	// 마우스의 Pos, WorldPos를 갱신
+	UpdateMouse(DeltaTime);
+
+	// UI vs 마우스 충돌처리(Object vs 마우스보다 전에 해줘서
+	// UI와 마우스가 충돌하면 Object vs 마우스 충돌처리는 안해주기위해)
+	m_CollisionWidget = CSceneManager::GetInst()->GetScene()->GetCollision()->CollisionWidget(DeltaTime);
+
+	// 키 상태(눌려졌는지, 떼졌는지 등)를 업데이트 해준다.
 	UpdateKeyState();
 
-	// 키보드 키 입력처리를 한다.
+	// 입력된 키에 따라 콜백들을 호출한다.
 	UpdateKeyInfo(DeltaTime);
-
-	// 마우스 입력처리를 한다.
-	UpdateMouse(DeltaTime);
 }
 
 void CInput::ReadDirectInputKeyboard()
@@ -225,6 +238,14 @@ void CInput::UpdateMouse(float DeltaTime)
 	m_MouseMove = MousePos - m_MousePos;
 
 	m_MousePos = MousePos;
+	m_MouseWorldPos = m_MousePos;
+
+	if (CEngine::GetInst()->GetEngineSpace() == Engine_Space::Space2D)
+	{
+		CCameraComponent* Camera = CSceneManager::GetInst()->GetScene()->GetCameraManager()->GetCurrentCamera();
+
+		m_MouseWorldPos += Camera->GetLeftBottom();
+	}
 }
 
 void CInput::UpdateKeyState()
@@ -249,6 +270,18 @@ void CInput::UpdateKeyState()
 
 		else
 			m_Shift = false;
+
+		if (m_MouseState.rgbButtons[0] & 0x80)
+			m_LButtonClick = true;
+
+		else
+			m_LButtonClick = false;
+
+		if (m_MouseState.rgbButtons[1] & 0x80)
+			m_RButtonClick = true;
+
+		else
+			m_RButtonClick = false;
 		break;
 	case Input_Type::Window:
 		if (GetAsyncKeyState(VK_CONTROL) & 0x8000)
@@ -285,15 +318,21 @@ void CInput::UpdateKeyState()
 		case Input_Type::Direct:
 			switch (Key)
 			{
+			// 마우스와 위젯이 충돌된게 아닌 경우에만
+			// KeyPush를 true로 줘서 아래에서 KeyState를 Update하도록 한다
 			case DIK_MOUSELBUTTON:
-				if (m_MouseState.rgbButtons[0] & 0x80)
+				if (m_MouseState.rgbButtons[0] & 0x80 && !m_CollisionWidget)
 				{
+					m_LButtonClick = true;
 					KeyPush = true;
 				}
 				break;
+			// 마우스와 위젯이 충돌된게 아닌 경우에만
+			// KeyPush를 true로 줘서 아래에서 KeyState를 Update하도록 한다
 			case DIK_MOUSERBUTTON:
-				if (m_MouseState.rgbButtons[1] & 0x80)
+				if (m_MouseState.rgbButtons[1] & 0x80 && !m_CollisionWidget)
 				{
+					m_RButtonClick = true;
 					KeyPush = true;
 				}
 				break;

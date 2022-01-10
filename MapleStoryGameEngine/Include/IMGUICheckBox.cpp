@@ -18,7 +18,10 @@ void CIMGUICheckBox::Render()
 {
     if (ImGui::Checkbox(m_TextUTF8, &m_Check))
     {
-        if (m_Check && m_Callback)
-            m_Callback();
+        if (m_Check && m_CheckCallback)
+            m_CheckCallback();
+
+        else if (!m_Check && m_UnCheckCallback)
+            m_UnCheckCallback();
     }
 }

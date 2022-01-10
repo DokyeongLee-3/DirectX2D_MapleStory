@@ -5,5 +5,19 @@
 enum class CreateObject_Type
 {
 	GameObject,
-	Player
+	Player,
+	MonsterRadish,
+	MonsterOnion,
+	LowerClassBook,
+	PlayerSkillSet,
+	Portal,
+	LampLight,
+	BlinkTree,
+	Butterfly,
+	DoubleHelixBlinkTree,
+	SingleHelixBlinkTree,
+	Library2ndLampLight,
+	Library2ndButterfly,
+	StaticMapObj,
+	Stage
 };

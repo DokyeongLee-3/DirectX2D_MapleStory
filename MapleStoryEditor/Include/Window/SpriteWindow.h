@@ -33,9 +33,33 @@ private:
 	class CIMGUITextInput* m_AnimPlayTime;
 	class CIMGUITextInput* m_AnimPlayScale;
 
+
+	class CIMGUIText* m_DragPivotXPos;
+	class CIMGUIText* m_DragPivotYPos;
+
+	// Object Hierarchy에서 고른 Object가 현재 DefaultScene에서 애니메이션 재생중이라면
+	// 애니메이션의 현재 프레임
+	class CIMGUIText* m_CurrentFrameText;
+
+
 	//class CAnimationLoadObject* m_EditorAnimationLoadObject;
 
 public:
+	class CIMGUIText* GetCurrentFrameText()	const
+	{
+		return m_CurrentFrameText;
+	}
+
+	class CIMGUIText* GetDragPivotXPosText()	const
+	{
+		return m_DragPivotXPos;
+	}
+
+	class CIMGUIText* GetDragPivotYPosText()	const
+	{
+		return m_DragPivotYPos;
+	}
+
 	class CSpriteEditObject* GetSpriteObject()	const
 	{
 		return m_SpriteObject;
@@ -61,6 +85,8 @@ public:
 		return m_FrameEndPosY;
 	}
 
+	void SetPlayTime(float PlayTime);
+
 	void SetSpriteObject(class CSpriteEditObject* Obj);
 
 public:
@@ -70,12 +96,14 @@ public:
 public:
 	void LoadTextureButton();
 	void SpriteEditButton();
+	void MapEditButton();
+	void ObjectArrangeButton();
 	void AddAnimationButton();
 	void AddAnimationFrameButton();
 	void SelectAnimationFrame(int Index, const char* Item);
 	void PlayAnimation();
 	void StopAnimation();
-	void DeleteAnimButton();
+	void DeleteSequenceButton();
 	void DeleteFrameButton();
 	void SelectAnimation(int Index, const char* Item);
 
@@ -89,12 +117,21 @@ public:
 	void AdjustFrameDataEndX();
 	void AdjustFrameDataEndY();
 
+	// Animation Sequence List에 클릭된 시퀀스의 Loop = true 바꾼다
+	void ChangeLoop();
+	void ChangeNoLoop();
+	// Animation Sequence List에 클릭된 시퀀스의 Reverse = true 바꾼다
+	void ChangeReverse();
+	void ChangeNoReverse();
+
+	void ChangePlayTime();
+	void ChangePlayScale();
+
 public:
 	void StyleCallback();
 	void MyShowStyleEditor(ImGuiStyle* ref = (ImGuiStyle*)0);
 
-private:
-	void EditModeCallback1();
-	void EditModeCallback2();
+public:
+	void ClickObjInEditor();
 };
 

@@ -46,6 +46,20 @@ void CGameObject::SetScene(CScene* Scene)
 	m_Scene = Scene;
 }
 
+void CGameObject::Destroy()
+{
+	CRef::Destroy();
+
+	m_RootComponent->Destroy();
+
+	size_t	Size = m_vecObjectComponent.size();
+
+	for (size_t i = 0; i < Size; ++i)
+	{
+		m_vecObjectComponent[i]->Destroy();
+	}
+}
+
 CComponent* CGameObject::FindComponent(const std::string& Name)
 {
 	{
@@ -75,18 +89,18 @@ CComponent* CGameObject::FindComponent(const std::string& Name)
 
 void CGameObject::GetAllSceneComponentsName(std::vector<FindComponentName>& vecNames)
 {
-	//if (!m_RootComponent)
-	//	return;
+	if (!m_RootComponent)
+		return;
 
-	//m_RootComponent->GetAllSceneComponentsName(vecNames);
+	m_RootComponent->GetAllSceneComponentsName(vecNames);
 
-	auto iter = m_SceneComponentList.begin();
-	auto iterEnd = m_SceneComponentList.end();
+	//auto iter = m_SceneComponentList.begin();
+	//auto iterEnd = m_SceneComponentList.end();
 
-	for (; iter != iterEnd; ++iter)
-	{
-		(*iter)->GetAllSceneComponentsName(vecNames);
-	}
+	//for (; iter != iterEnd; ++iter)
+	//{
+	//	(*iter)->GetAllSceneComponentsName(vecNames);
+	//}
 }
 
 
@@ -133,6 +147,12 @@ void CGameObject::PostUpdate(float DeltaTime)
 
 	if (m_RootComponent)
 		m_RootComponent->PostUpdate(DeltaTime);
+}
+
+void CGameObject::AddCollision()
+{
+	if (m_RootComponent)
+		m_RootComponent->CheckCollision();
 }
 
 void CGameObject::PrevRender()
@@ -244,5 +264,7 @@ void CGameObject::Load(FILE* File)
 		Component->Load(File);
 
 		m_vecObjectComponent.push_back((CObjectComponent*)Component);
+
+		CSceneManager::GetInst()->GetScene()->GetSceneMode()->AddComponentList(Component->GetName().c_str());
 	}
 }

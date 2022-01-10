@@ -1,7 +1,6 @@
 #include "IMGUIManager.h"
 #include "Device.h"
 #include "IMGUIWindow.h"
-#include "IMGUITestWindow.h"
 #include "PathManager.h"
 
 DEFINITION_SINGLE(CIMGUIManager)
@@ -56,8 +55,6 @@ bool CIMGUIManager::Init(HWND hWnd)
 
 	m_CurrentFont = FindFont("Default");
 
-	//CIMGUITestWindow* Window = AddWindow<CIMGUITestWindow>("TestWindow");
-
 	return true;
 }
 
@@ -65,21 +62,6 @@ void CIMGUIManager::Update(float DeltaTime)
 {
 	if (m_mapWindow.empty())
 		return;
-
-	static bool	Open = false;
-
-	if (GetAsyncKeyState(VK_RETURN) & 0x8000)
-		Open = true;
-
-	else if (Open)
-
-	{
-		Open = false;
-		CIMGUIWindow* Window = FindIMGUIWindow("TestWindow");
-
-		if (Window)
-			Window->Open();
-	}
 
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();

@@ -83,15 +83,12 @@ void CIMGUIWindow::Update(float DeltaTime)
 	if (!ImGui::Begin(m_Name.c_str(), &m_Open, m_WindowFlag))
 		m_Open = false;
 
-	//ImGui::Begin(m_Name.c_str(), &m_Open, m_WindowFlag);
-
 	size_t Size = m_vecWidget.size();
 
 	for (size_t i = 0; i < Size; ++i)
 	{
 		m_vecWidget[i]->Render();
 	}
-
 
 	ImGui::End();
 }

@@ -63,6 +63,15 @@ public:
 		m_Color.Value.w = a / 255.f;
 	}
 
+	void SetColorFloat(float r, float g, float b,
+		float a = 1.f)
+	{
+		m_Color.Value.x = r;
+		m_Color.Value.y = g;
+		m_Color.Value.z = b;
+		m_Color.Value.w = a;
+	}
+
 public:
 	virtual bool Init();
 	virtual void Render();

@@ -89,6 +89,18 @@ void CSceneComponent::GetAllSceneComponentsName(std::vector<FindComponentName>& 
 	}
 }
 
+void CSceneComponent::Destroy()
+{
+	CComponent::Destroy();
+
+	size_t	Size = m_vecChild.size();
+
+	for (size_t i = 0; i < Size; ++i)
+	{
+		m_vecChild[i]->Destroy();
+	}
+}
+
 void CSceneComponent::SetScene(CScene* Scene)
 {
 	CComponent::SetScene(Scene);
@@ -236,6 +248,16 @@ void CSceneComponent::PostUpdate(float DeltaTime)
 	}
 }
 
+void CSceneComponent::CheckCollision()
+{
+	size_t	Size = m_vecChild.size();
+
+	for (size_t i = 0; i < Size; ++i)
+	{
+		m_vecChild[i]->CheckCollision();
+	}
+}
+
 void CSceneComponent::PrevRender()
 {
 	if (m_Render)
@@ -310,6 +332,8 @@ void CSceneComponent::Load(FILE* File)
 
 	m_Transform->Load(File);
 
+	std::string MyName = m_Name;
+
 	int	ChildCount = 0;
 
 	fread(&ChildCount, sizeof(int), 1, File);
@@ -323,7 +347,10 @@ void CSceneComponent::Load(FILE* File)
 
 		Component->Load(File);
 
-		m_vecChild.push_back((CSceneComponent*)Component);
+		AddChild((CSceneComponent*)Component);
+
+		//CSceneManager::GetInst()->GetScene()->GetSceneMode()->AddComponentList(Component->GetName().c_str());
 	}
+
 }
 

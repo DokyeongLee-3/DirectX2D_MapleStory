@@ -30,14 +30,29 @@
 #include "imgui.h"
 #include "imgui_impl_dx11.h"
 #include "imgui_impl_win32.h"
+#include "Resource/Texture/DirectXTex.h"
+#include "fmod.hpp"
+
+#ifdef _DEBUG
+
+#pragma comment (lib, "DirectXTex_Debug.lib")
+
+#else
+
+#pragma comment(lib, "DirectXTex.lib")
+
+#endif	// _DEBUG
+
+#pragma comment(lib, "fmod64_vc.lib")
 
 
-#define ROOT_PATH		"Root"
-#define SHADER_PATH		"Shader"
-#define	TEXTURE_PATH	"Texture"
-#define	FONT_PATH		"Font"
-#define	ANIMATION_PATH	"Animation"
-#define	SCENE_PATH		"Scene"
+#define ROOT_PATH				"Root"
+#define SHADER_PATH				"Shader"
+#define	TEXTURE_PATH			"Texture"
+#define	FONT_PATH				"Font"
+#define	ANIMATION_PATH			"Animation"
+#define	SCENE_PATH				"Scene"
+#define	PLAYER_TEXTURE_PATH				"PlayerTexture"
 
 #define SAFE_DELETE(p) if(p) { delete p; p = nullptr; }
 #define SAFE_DELETE_ARRAY(p) if(p) { delete[] p; p = nullptr;}
@@ -209,5 +224,86 @@ struct CollisionProfile
 	Collision_Channel	Channel;
 	bool				CollisionEnable;
 
-	std::vector<Collision_State>	vecState;
+	std::vector<Collision_Interaction>	vecInteraction;
+};
+
+struct CollisionResult
+{
+	class CColliderComponent* Src;
+	class CColliderComponent* Dest;
+	Vector3	HitPoint;
+
+	CollisionResult() :
+		Src(nullptr),
+		Dest(nullptr)
+	{
+	}
+};
+
+struct Box2DInfo
+{
+	// ColliderBox2D의 WorldPos로 부터 상대적인 위치로 센터를 잡는다
+	// -> ColliderComponent들이 Offset을 갖고 있어서 WorldPos로부터
+	// 센터가 얼마나 떨어져 있는지 Offset으로 설정해둔다
+	Vector2	Center;
+	Vector2	Axis[2];
+	// 가로축, 너비축의 절반 길이
+	Vector2	Length;
+	Vector2	Min;
+	Vector2	Max;
+};
+
+struct CircleInfo
+{
+	Vector2	Center;
+	float	Radius;
+	Vector2	Min;
+	Vector2	Max;
+};
+
+struct PixelInfo
+{
+	// Pixel이라는 동적배열은 ColliderPixel에서 
+	// 얕은 복사가 되게하고 얕은 복사가 될때마다
+	// RefCount를 증가시켜주고 RefCount가 0이면
+	// 그때서야 Delete를 해준다
+	unsigned char* Pixel;
+	unsigned int	Width;
+	unsigned int	Height;
+	PixelCollision_Type	Type;
+	// 어떤 색이랑만 충돌할지(혹은 이 색이랑만 충돌을 무시하고 나머지 색 모두랑 충돌할지 정해준다
+	unsigned char	Color[4];
+	// 픽셀 충돌체 자체가 하나의 이미지(아래 SRV)를 갖고 있는 상황이고
+	// 그 이미지의 테두리를 감싸는 Box충돌체가 있다
+	Box2DInfo		Box;
+	Vector2	Min;
+	Vector2	Max;
+	ID3D11ShaderResourceView* SRV;
+	int		RefCount;
+
+	PixelInfo() :
+		RefCount(1),
+		Pixel(nullptr),
+		SRV(nullptr),
+		Width(0),
+		Height(0),
+		Box{},
+		Color{},
+		Type(PixelCollision_Type::Color_Confirm)
+	{
+	}
+};
+
+struct ColliderCBuffer
+{
+	Vector4	Color;
+	Matrix	matWVP;
+};
+
+struct WidgetCBuffer
+{
+	Vector4	Tint;
+	Matrix	matWP;
+	int		UseTexture;
+	Vector3	Empty;
 };

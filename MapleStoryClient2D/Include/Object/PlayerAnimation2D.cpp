@@ -27,19 +27,13 @@ bool CPlayerAnimation2D::Init()
 	// 바꿔서 Load하고 그 텍스쳐에 대한 Shader Resource View로
 	// 알아서 바인딩해준다
 
-	CSpriteComponent* PlayerSprite = GetOwner();
-	CPlayer2D* Player = (CPlayer2D*)PlayerSprite->GetGameObject();
+	AddAnimation(TEXT("PlayerIdleLeft.sqc"), ANIMATION_PATH, "IdleLeft", true);
+	AddAnimation(TEXT("PlayerWalkLeft.sqc"), ANIMATION_PATH, "WalkLeft", true);
+	AddAnimation(TEXT("PlayerHealLeft.sqc"), ANIMATION_PATH, "HealLeft", true);
+	AddAnimation(TEXT("PlayerRope.sqc"), ANIMATION_PATH, "Rope", true);
+	AddAnimation(TEXT("PlayerJumpLeft.sqc"), ANIMATION_PATH, "JumpLeft", true);
 
-	AddAnimation("PlayerStandLeft", "PlayerStandLeft");
-	AddAnimation("PlayerStandRight", "PlayerStandRight", true, 1.f, 1.f, true);
-	AddAnimation("PlayerWalkLeft", "PlayerWalkLeft");
-	AddAnimation("PlayerWalkRight", "PlayerWalkRight", true, 1.f, 1.f, true);
-	AddAnimation("PlayerSkillActionLeft", "PlayerSkillActionLeft",
-		false, 0.6f, 1.f, false);
-	AddAnimation("PlayerSkillActionRight", "PlayerSkillActionRight",
-		false, 0.6f, 1.f, true);
-
-	CAnimationSequence2DData* Data = FindAnimation("PlayerSkillActionLeft");
+	/*CAnimationSequence2DData* Data = FindAnimation("PlayerSkillActionLeft");
 
 	Data->SetEndFunction<CPlayer2D>(Player, &CPlayer2D::Stand);
 	Data->AddNotify<CPlayerAnimation2D>("PlayerSkillActionLeft", 2,
@@ -50,7 +44,7 @@ bool CPlayerAnimation2D::Init()
 
 	Data->SetEndFunction<CPlayer2D>(Player, &CPlayer2D::Stand);
 	Data->AddNotify<CPlayerAnimation2D>("PlayerSkillActionRight", 0,
-		this, &CPlayerAnimation2D::CreateSylphideLancerEffect);
+		this, &CPlayerAnimation2D::CreateSylphideLancerEffect);*/
 
 	return true;
 }

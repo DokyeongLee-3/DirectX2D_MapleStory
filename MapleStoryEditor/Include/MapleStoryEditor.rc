@@ -54,6 +54,9 @@ END
 // remains consistent on all systems.
 IDI_ICON1               ICON                    "icon1.ico"
 
+
+IDI_ICON2             ICON                  "MapleIcon.ico"
+
 #endif    // 한국어(대한민국) resources
 /////////////////////////////////////////////////////////////////////////////
 

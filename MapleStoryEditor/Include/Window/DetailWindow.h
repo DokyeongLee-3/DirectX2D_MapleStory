@@ -21,9 +21,52 @@ private:
 	class CIMGUITextInput* m_ScalingX;
 	class CIMGUITextInput* m_ScalingY;
 
+
 public:
 	virtual bool Init();
 	virtual void Update(float DeltaTime);
+
+public:
+	class CIMGUITextInput* GetPosXInput()	const
+	{
+		return m_PosX;
+	}
+
+	class CIMGUITextInput* GetPosYInput()	const
+	{
+		return m_PosY;
+	}
+
+	class CIMGUITextInput* GetPosZInput()	const
+	{
+		return m_PosZ;
+	}
+
+	class CIMGUITextInput* GetRotXInput()	const
+	{
+		return m_RotX;
+	}
+
+	class CIMGUITextInput* GetRotYInput()	const
+	{
+		return m_RotY;
+	}
+
+	class CIMGUITextInput* GetRotZInput()	const
+	{
+		return m_RotZ;
+	}
+
+	class CIMGUITextInput* GetScaleXInput()	const
+	{
+		return m_ScalingX;
+	}
+
+	class CIMGUITextInput* GetScaleYInput()	const
+	{
+		return m_ScalingY;
+	}
+
 
 private:
 	void PositionXCallback();

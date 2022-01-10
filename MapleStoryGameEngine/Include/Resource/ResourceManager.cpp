@@ -8,12 +8,14 @@ CResourceManager::CResourceManager() :
 	m_ShaderManager(nullptr),
 	m_MaterialManager(nullptr),
 	m_TextureManager(nullptr),
-	m_AnimationManager(nullptr)
+	m_AnimationManager(nullptr),
+	m_SoundManager(nullptr)
 {
 }
 
 CResourceManager::~CResourceManager()
 {
+	SAFE_DELETE(m_SoundManager);
 	SAFE_DELETE(m_AnimationManager);
 	SAFE_DELETE(m_MaterialManager);
 	SAFE_DELETE(m_ShaderManager);
@@ -62,9 +64,19 @@ bool CResourceManager::Init()
 	if (!m_AnimationManager->Init())
 		return false;
 
+	m_SoundManager = new CSoundManager;
+
+	if (!m_SoundManager->Init())
+		return false;
 
 	return true;
 }
+
+void CResourceManager::Update()
+{
+	m_SoundManager->Update();
+}
+
 
 CMesh* CResourceManager::FindMesh(const std::string& Name)
 {
@@ -136,6 +148,14 @@ bool CResourceManager::CreateAnimationSequence2D(const std::string& Name, const 
 bool CResourceManager::CreateAnimationSequence2D(const std::string& Name, CTexture* Texture)
 {
 	return m_AnimationManager->CreateAnimationSequence2D(Name, Texture);
+}
+
+void CResourceManager::EraseAnimationSequence2D(const std::string& Name)
+{
+	if (FindAnimationSequence2D(Name))
+	{
+		m_AnimationManager->EraseAnimationSequence2D(Name);
+	}
 }
 
 void CResourceManager::AddAnimationSequence2DFrame(const std::string& Name, const Vector2& Start,

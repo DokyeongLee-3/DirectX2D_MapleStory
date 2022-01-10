@@ -19,6 +19,7 @@ protected:
 public:
     void SetScene(class CScene* Scene);
     void SetGameObject(class CGameObject* Object);
+    virtual void Destroy();
 
 public:
     class CScene* GetScene()    const

@@ -18,6 +18,7 @@ private:
 	CAnimationSequence2DData* m_CurrentAnimation;
 	class CAnimation2DConstantBuffer* m_CBuffer;
 	bool		m_PlayAnimation;
+	bool m_Flip;
 
 public:
 	size_t GetTypeID()	const
@@ -86,6 +87,11 @@ public:
 		return iter->second;
 	}
 
+	bool IsFlip()	const
+	{
+		return m_Flip;
+	}
+
 public:
 	void AddAnimation(const std::string& SequenceName, const std::string& Name, bool Loop = true, float PlayTime = 1.f,
 		float PlayScale = 1.f, bool Reverse = false);
@@ -99,7 +105,10 @@ public:
 	void SetCurrentAnimation(const std::string& Name);
 	void ChangeAnimation(const std::string& Name);
 	bool CheckCurrentAnimation(const std::string& Name);
-
+	// 애니메이션 좌우 반전
+	void Flip();
+	// map에 저장된 애니메이션중 다음 애니메이션으로 현재 애니메이션을 바꾼다
+	void NextAnimation();
 
 public:
 	virtual void Start();

@@ -1,17 +1,6 @@
 #pragma once
 
 #include "../../Ref.h"
-#include "DirectXTex.h"
-
-#ifdef _DEBUG
-
-#pragma comment (lib, "DirectXTex_Debug.lib")
-
-#else
-
-#pragma comment(lib, "DirectXTex.lib")
-
-#endif	// _DEBUG
 
 struct TextureResourceInfo
 {
@@ -103,6 +92,8 @@ private:
 	bool CreateResource(int Index);
 
 public:
+	// Register는 ShaderInfo.fx에서 볼수 있듯이 Texture2D g_BaseTexture : register(t0); 이렇게 선언해놨듯이
+	// Texture용 레지스터 0번을 사용하도록 해놓았기 때문에 Array타입이 아니면 0번을 쓴다
 	void SetShader(int Register, int ShaderType, int Index);
 	void ResetShader(int Register, int ShaderType, int Index);
 	void Save(FILE* pFile);

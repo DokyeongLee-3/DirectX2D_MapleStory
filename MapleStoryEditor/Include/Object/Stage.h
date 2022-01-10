@@ -1,19 +1,21 @@
 #pragma once
 
 #include "GameObject/GameObject.h"
+#include "Component/SpriteComponent.h"
 
-class CAnimationLoadObject :
+class CStage :
     public CGameObject
 {
     friend class CScene;
 
 protected:
-    CAnimationLoadObject();
-    CAnimationLoadObject(const CAnimationLoadObject& obj);
-    virtual ~CAnimationLoadObject();
+    CStage();
+    CStage(const CStage& obj);
+    virtual ~CStage();
 
 private:
-    CSharedPtr<class CSpriteComponent>    m_Sprite;
+    CSharedPtr<CSpriteComponent>    m_Sprite;
+
 
 public:
     class CSpriteComponent* GetSpriteComponent()    const
@@ -22,9 +24,12 @@ public:
     }
 
 public:
+    virtual void Start();
     virtual bool Init();
     virtual void Update(float DeltaTime);
     virtual void PostUpdate(float DeltaTime);
-    virtual CAnimationLoadObject* Clone();
+    virtual CStage* Clone();
+    virtual void Save(FILE* File);
+    virtual void Load(FILE* File);
 };
 

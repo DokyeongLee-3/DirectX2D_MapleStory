@@ -76,6 +76,14 @@ bool CAnimationManager::CreateAnimationSequence2D(const std::string& Name, CText
 	return true;
 }
 
+void CAnimationManager::EraseAnimationSequence2D(const std::string& Name)
+{
+	if (FindSequence(Name))
+	{
+		m_mapSequence2D.erase(Name);
+	}
+}
+
 void CAnimationManager::AddFrame(const std::string& Name,
 	const Vector2& Start, const Vector2& Size)
 {

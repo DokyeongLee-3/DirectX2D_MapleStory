@@ -13,7 +13,8 @@ protected:
 
 private:
 	char m_TextUTF8[1024];
-	std::function<void()> m_Callback;
+	std::function<void()> m_CheckCallback;
+	std::function<void()> m_UnCheckCallback;
 	// 체크박스에 체크 됐는지
 	bool m_Check;
 
@@ -31,6 +32,18 @@ public:
 	void SetNotCheck()
 	{
 		m_Check = false;
+	}
+
+	template <typename T>
+	void SetCheckCallback(T* Obj, void(T::* Func)())
+	{
+		m_CheckCallback = std::bind(Func, Obj);
+	}
+
+	template <typename T>
+	void SetUnCheckCallback(T* Obj, void(T::* Func)())
+	{
+		m_UnCheckCallback = std::bind(Func, Obj);
 	}
 
 public:
@@ -53,9 +66,9 @@ public:
 		strcpy_s(m_TextUTF8, TextUTF8);
 
 		if (Obj && Func)
-			m_Callback = std::bind(Func, Obj);
+			m_CheckCallback = std::bind(Func, Obj);
 		else
-			m_Callback = nullptr;
+			m_CheckCallback = nullptr;
 
 
 		delete[] TextUTF8;

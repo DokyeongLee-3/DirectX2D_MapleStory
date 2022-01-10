@@ -30,9 +30,11 @@ bool CClientManager::Init(HINSTANCE hInst)
 
 	CInput::GetInst()->CreateKey("MoveUp", VK_UP);
 	CInput::GetInst()->CreateKey("MoveDown", VK_DOWN);
-	CInput::GetInst()->CreateKey("MoveLeft", VK_LEFT);
-	CInput::GetInst()->CreateKey("MoveRight", VK_RIGHT);
+	CInput::GetInst()->CreateKey("RotationZInv", VK_LEFT);
+	CInput::GetInst()->CreateKey("RotationZ", VK_RIGHT);
 	CInput::GetInst()->CreateKey("Skill1", 'Q');
+	CInput::GetInst()->CreateKey("Skill2", '1');
+	CInput::GetInst()->CreateKey("Flip", 'F');
 
 	return true;
 }

@@ -77,6 +77,8 @@ Index of this file:
 #endif
 
 #include "imgui.h"
+#include <string>
+#include "IMGUIManager.h"
 #ifndef IMGUI_DISABLE
 
 // System includes
@@ -6072,17 +6074,35 @@ void ImGui::ShowFontSelector(const char* label)
             ImFont* font = io.Fonts->Fonts[n];
             ImGui::PushID((void*)font);
             if (ImGui::Selectable(font->GetDebugName(), font == font_current))
+            {
                 io.FontDefault = font;
+                std::string FontName = font->ConfigData->Name;
+
+                if (FontName.find("Black") != std::string::npos)
+                {
+                    CIMGUIManager::GetInst()->SetCurrentFont("DefaultBlack");
+                }
+
+                else if (FontName.find("Bold") != std::string::npos)
+                {
+                    CIMGUIManager::GetInst()->SetCurrentFont("DefaultBold");
+                }
+
+                else if (FontName.find("Default") != std::string::npos)
+                {
+                    CIMGUIManager::GetInst()->SetCurrentFont("Default");
+                }
+            }
             ImGui::PopID();
         }
         ImGui::EndCombo();
     }
     ImGui::SameLine();
-    HelpMarker(
+    /*HelpMarker(
         "- Load additional fonts with io.Fonts->AddFontFromFileTTF().\n"
         "- The font atlas is built when calling io.Fonts->GetTexDataAsXXXX() or io.Fonts->Build().\n"
         "- Read FAQ and docs/FONTS.md for more details.\n"
-        "- If you need to add/remove fonts at runtime (e.g. for DPI change), do it before calling NewFrame().");
+        "- If you need to add/remove fonts at runtime (e.g. for DPI change), do it before calling NewFrame().");*/
 }
 
 // Demo helper function to select among default colors. See ShowStyleEditor() for more advanced options.

@@ -84,6 +84,8 @@ enum class SceneComponent_Type
 {
 	Sprite,
 	StaticMesh,
+	ColliderBox2D,
+	ColliderCircle,
 	Max
 };
 
@@ -94,7 +96,7 @@ enum class Collision_Channel
 	Monster,
 	PlayerAttack,
 	MonsterAttack,
-	Custom1,
+	MapCollider,
 	Custom2,
 	Custom3,
 	Custom4,
@@ -113,13 +115,52 @@ enum class Collision_Channel
 	Max
 };
 
-enum class Collision_State
+enum class Collision_Interaction
 {
 	Ignore,
 	Collision
 };
 
+enum class Collision_State
+{
+	// 이제 막 처음으로 충돌이 시작됐을때
+	Begin,
+	// 충돌이 끝나고 두 충돌체가 서로 떨어질때
+	End,
+	Max
+};
+
 enum class Collider_Type
 {
-	Box2D
+	Box2D,
+	Circle,
+	Pixel
+};
+
+enum class Camera_Type
+{
+	Camera2D,
+	Camera3D,
+	CameraUI
+};
+
+enum class PixelCollision_Type
+{
+	// 해당 컬러만 제외하고 나머지 컬러에 대해 모두 충돌
+	Color_Ignore,
+	// 해당 컬러만 충돌
+	Color_Confirm,
+	// 해당 알파값만 제외하고 나머지 알파값에 대해 충돌
+	Alpha_Ignore,
+	// 해당 알파값만 충돌
+	Alpha_Confirm
+};
+
+enum class Button_State
+{
+	Normal,
+	MouseOn,
+	Click,
+	Disable,
+	Max
 };

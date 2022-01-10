@@ -133,6 +133,45 @@
     <Filter Include="05. Component\01. SceneComponent\02. Collider">
       <UniqueIdentifier>{db3b843c-57ec-46e7-8818-e3492be4d52f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Scene\03. Collision">
+      <UniqueIdentifier>{a3d9123a-5e43-4a6b-9ea7-1836e6a85711}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Resource\02. Shader\03. ConstantBuffer\05. Collider">
+      <UniqueIdentifier>{db263c02-5d0f-4f40-ad72-d7687d70cfbf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Resource\02. Shader\02. ShaderClass\03. Collider">
+      <UniqueIdentifier>{343b06cf-5982-4b27-8bfb-8013a8abe4c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Component\01. SceneComponent\03. Camera">
+      <UniqueIdentifier>{ae857657-8c97-4962-98db-5d678c22a6de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Scene\04. CameraManager">
+      <UniqueIdentifier>{8a26c214-c798-4a46-8475-f5b0747b67a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="09. Widget">
+      <UniqueIdentifier>{20959c95-2726-479e-b4f9-92357faaf87d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Scene\05. Viewport">
+      <UniqueIdentifier>{8b8f97ad-33c3-4d08-bd08-3fc1962a66f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="09. Widget\01. Window">
+      <UniqueIdentifier>{b199da28-4b00-49b9-9550-3a925401e026}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="09. Widget\02. Widget">
+      <UniqueIdentifier>{5fe6f2bb-4b7b-4640-9e94-079ca920d3cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Resource\02. Shader\03. ConstantBuffer\06. Widget">
+      <UniqueIdentifier>{5fa83022-9970-400f-8866-c485295c5aa6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Resource\02. Shader\02. ShaderClass\04. Widget">
+      <UniqueIdentifier>{c7811712-aafc-4de4-b53e-7ccd959de004}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Resource\06. Sound">
+      <UniqueIdentifier>{319bb119-12e8-4f25-ac02-e5d66fa6b3ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Resource\06. Sound\01. FMOD">
+      <UniqueIdentifier>{eb27c702-222b-482e-842b-9d86df54633b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -312,9 +351,6 @@
     <ClCompile Include="IMGUISameLine.cpp">
       <Filter>01. Engine\08. IMGUI\03. Widget</Filter>
     </ClCompile>
-    <ClCompile Include="IMGUITestWindow.cpp">
-      <Filter>01. Engine\08. IMGUI\02. Window</Filter>
-    </ClCompile>
     <ClCompile Include="IMGUIText.cpp">
       <Filter>01. Engine\08. IMGUI\03. Widget</Filter>
     </ClCompile>
@@ -371,6 +407,60 @@
     </ClCompile>
     <ClCompile Include="Collision\CollisionManager.cpp">
       <Filter>08. Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\SceneCollision.cpp">
+      <Filter>03. Scene\03. Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\CollisionSection.cpp">
+      <Filter>03. Scene\03. Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\ColliderConstantBuffer.cpp">
+      <Filter>02. Resource\02. Shader\03. ConstantBuffer\05. Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision\Collision.cpp">
+      <Filter>08. Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\ColliderShader.cpp">
+      <Filter>02. Resource\02. Shader\02. ShaderClass\03. Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\CameraComponent.cpp">
+      <Filter>05. Component\01. SceneComponent\03. Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\CameraManager.cpp">
+      <Filter>03. Scene\04. CameraManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\ColliderCircle.cpp">
+      <Filter>05. Component\01. SceneComponent\02. Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\ColliderPixel.cpp">
+      <Filter>05. Component\01. SceneComponent\02. Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\ColliderPixelShader.cpp">
+      <Filter>02. Resource\02. Shader\02. ShaderClass\03. Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\Viewport.cpp">
+      <Filter>03. Scene\05. Viewport</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\Widget.cpp">
+      <Filter>09. Widget\02. Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\Button.cpp">
+      <Filter>09. Widget\02. Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\WidgetWindow.cpp">
+      <Filter>09. Widget\01. Window</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\WidgetConstantBuffer.cpp">
+      <Filter>02. Resource\02. Shader\03. ConstantBuffer\06. Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\WidgetShader.cpp">
+      <Filter>02. Resource\02. Shader\02. ShaderClass\04. Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Sound\SoundManager.cpp">
+      <Filter>02. Resource\06. Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Sound\Sound.cpp">
+      <Filter>02. Resource\06. Sound</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -569,9 +659,6 @@
     <ClInclude Include="IMGUISameLine.h">
       <Filter>01. Engine\08. IMGUI\03. Widget</Filter>
     </ClInclude>
-    <ClInclude Include="IMGUITestWindow.h">
-      <Filter>01. Engine\08. IMGUI\02. Window</Filter>
-    </ClInclude>
     <ClInclude Include="IMGUIWidget.h">
       <Filter>01. Engine\08. IMGUI\03. Widget</Filter>
     </ClInclude>
@@ -629,6 +716,84 @@
     <ClInclude Include="Collision\CollisionManager.h">
       <Filter>08. Collision</Filter>
     </ClInclude>
+    <ClInclude Include="Scene\CollisionSection.h">
+      <Filter>03. Scene\03. Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\SceneCollision.h">
+      <Filter>03. Scene\03. Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Shader\ColliderConstantBuffer.h">
+      <Filter>02. Resource\02. Shader\03. ConstantBuffer\05. Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision\Collision.h">
+      <Filter>08. Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Shader\ColliderShader.h">
+      <Filter>02. Resource\02. Shader\02. ShaderClass\03. Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\CameraComponent.h">
+      <Filter>05. Component\01. SceneComponent\03. Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\CameraManager.h">
+      <Filter>03. Scene\04. CameraManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\ColliderCircle.h">
+      <Filter>05. Component\01. SceneComponent\02. Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\ColliderPixel.h">
+      <Filter>05. Component\01. SceneComponent\02. Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Shader\ColliderPixelShader.h">
+      <Filter>02. Resource\02. Shader\02. ShaderClass\03. Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\Viewport.h">
+      <Filter>03. Scene\05. Viewport</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\Widget.h">
+      <Filter>09. Widget\02. Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\Button.h">
+      <Filter>09. Widget\02. Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\WidgetWindow.h">
+      <Filter>09. Widget\01. Window</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Shader\WidgetConstantBuffer.h">
+      <Filter>02. Resource\02. Shader\03. ConstantBuffer\06. Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Shader\WidgetShader.h">
+      <Filter>02. Resource\02. Shader\02. ShaderClass\04. Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="fmod.h">
+      <Filter>02. Resource\06. Sound\01. FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="fmod.hpp">
+      <Filter>02. Resource\06. Sound\01. FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="fmod_codec.h">
+      <Filter>02. Resource\06. Sound\01. FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="fmod_common.h">
+      <Filter>02. Resource\06. Sound\01. FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="fmod_dsp.h">
+      <Filter>02. Resource\06. Sound\01. FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="fmod_dsp_effects.h">
+      <Filter>02. Resource\06. Sound\01. FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="fmod_errors.h">
+      <Filter>02. Resource\06. Sound\01. FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="fmod_output.h">
+      <Filter>02. Resource\06. Sound\01. FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Sound\SoundManager.h">
+      <Filter>02. Resource\06. Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Sound\Sound.h">
+      <Filter>02. Resource\06. Sound</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\Shader\ShaderInfo.fx">
@@ -640,10 +805,25 @@
     <FxCompile Include="..\Bin\Shader\Mesh2D.fx">
       <Filter>02. Resource\02. Shader\01. HLSL</Filter>
     </FxCompile>
+    <FxCompile Include="..\Bin\Shader\Collider.fx">
+      <Filter>02. Resource\02. Shader\01. HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\Shader\Widget.fx">
+      <Filter>02. Resource\02. Shader\01. HLSL</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resource\Texture\DirectXTex.inl">
       <Filter>02. Resource\04. Texture</Filter>
+    </None>
+    <None Include="fmod.cs">
+      <Filter>02. Resource\06. Sound\01. FMOD</Filter>
+    </None>
+    <None Include="fmod_dsp.cs">
+      <Filter>02. Resource\06. Sound\01. FMOD</Filter>
+    </None>
+    <None Include="fmod_errors.cs">
+      <Filter>02. Resource\06. Sound\01. FMOD</Filter>
     </None>
   </ItemGroup>
 </Project>

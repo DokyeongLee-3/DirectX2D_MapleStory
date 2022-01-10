@@ -13,6 +13,7 @@ CSpriteComponent::CSpriteComponent() :
 {
 	SetTypeID<CSpriteComponent>();
 	m_Render = true;
+	m_Flip = false;
 }
 
 CSpriteComponent::CSpriteComponent(const CSpriteComponent& com) :
@@ -171,6 +172,15 @@ void CSpriteComponent::Update(float DeltaTime)
 
 	if (m_Animation)
 		m_Animation->Update(DeltaTime);
+
+	if (!m_Animation || !m_Animation->GetCurrentAnimation() || m_Animation->GetCurrentAnimation()->GetAnimationSequence()->GetFrameCount() == 0)
+		return;
+
+	int Frame = m_Animation->GetCurrentAnimation()->GetCurrentFrame();
+
+	AnimationFrameData Data = m_Animation->GetCurrentAnimation()->GetFrameData(Frame);
+
+	SetWorldScale(Data.Size.x, Data.Size.y, 0.f);
 }
 
 void CSpriteComponent::PostUpdate(float DeltaTime)
@@ -275,5 +285,16 @@ void CSpriteComponent::Load(FILE* File)
 	}
 
 	CSceneComponent::Load(File);
+}
+
+void CSpriteComponent::Flip()
+{
+	if (!m_Flip)
+		m_Flip = true;
+
+	else
+		m_Flip = false;
+
+	m_Animation->Flip();
 }
 

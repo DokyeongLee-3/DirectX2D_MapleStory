@@ -10,7 +10,8 @@
 CAnimationSequence2DInstance::CAnimationSequence2DInstance() :
 	m_Scene(nullptr),
 	m_Owner(nullptr),
-	m_PlayAnimation(true)
+	m_PlayAnimation(true),
+	m_Flip(false)
 {
 	SetTypeID<CAnimationSequence2DInstance>();
 }
@@ -262,6 +263,27 @@ bool CAnimationSequence2DInstance::CheckCurrentAnimation(const std::string& Name
 	return m_CurrentAnimation->m_Name == Name;
 }
 
+void CAnimationSequence2DInstance::Flip()
+{
+	if (!m_Flip)
+		m_Flip = true;
+	else
+		m_Flip = false;
+}
+
+void CAnimationSequence2DInstance::NextAnimation()
+{
+	CAnimationSequence2DData* Current = FindAnimation(m_CurrentAnimation->GetName());
+
+	auto iter = m_mapAnimation.find(Current->GetName());
+
+	++iter;
+
+	if (iter == m_mapAnimation.end())
+		iter = m_mapAnimation.begin();
+
+	ChangeAnimation(iter->second->m_Name);
+}
 
 
 void CAnimationSequence2DInstance::Start()
@@ -379,6 +401,13 @@ void CAnimationSequence2DInstance::SetShader()
 
 	EndUV = (Start + FrameSize) /
 		Vector2((float)m_CurrentAnimation->m_Sequence->GetTexture()->GetWidth(), (float)m_CurrentAnimation->m_Sequence->GetTexture()->GetHeight());
+
+	if (m_Flip)
+	{
+		float tmp = StartUV.x;
+		StartUV.x = EndUV.x;
+		EndUV.x = tmp;
+	}
 
 	if (m_CBuffer)
 	{

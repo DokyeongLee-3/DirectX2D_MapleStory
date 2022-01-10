@@ -48,8 +48,8 @@ bool CDragObject::Init()
 	// Shader만 교체해서 사용. Material은 CStaticMeshComponent::Init에서
 	// 이미 Set해줬음
 	m_Mesh->GetMaterial()->SetShader("PosMeshShader");
-	m_Mesh->SetPivot(0.f, 1.f, 0.f);
-	m_Mesh->SetBaseColor(0.f, 0.f, 0.f, 1.f);
+	m_Mesh->SetPivot(0.5f, 0.5f, 0.f);
+	m_Mesh->SetBaseColor(1.f, 0.f, 0.f, 1.f);
 
 	return true;
 }

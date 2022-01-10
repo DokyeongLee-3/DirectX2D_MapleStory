@@ -161,11 +161,25 @@
   <ItemGroup>
     <ClInclude Include="EditorInfo.h" />
     <ClInclude Include="EditorManager.h" />
-    <ClInclude Include="Object\AnimationLoadObject.h" />
+    <ClInclude Include="ObjectSet.h" />
+    <ClInclude Include="Object\BlinkTree.h" />
+    <ClInclude Include="Object\Butterfly.h" />
+    <ClInclude Include="Object\DoubleHelixBlinkTree.h" />
     <ClInclude Include="Object\DragObject.h" />
+    <ClInclude Include="Object\LampLight.h" />
+    <ClInclude Include="Object\Library2ndButterfly.h" />
+    <ClInclude Include="Object\Library2ndLampLight.h" />
+    <ClInclude Include="Object\LowerClassBook.h" />
+    <ClInclude Include="Object\MonsterOnion.h" />
+    <ClInclude Include="Object\MonsterRadish.h" />
     <ClInclude Include="Object\Pivot.h" />
     <ClInclude Include="Object\Player2D.h" />
+    <ClInclude Include="Object\PlayerSkillSet.h" />
+    <ClInclude Include="Object\Portal.h" />
+    <ClInclude Include="Object\SingleHelixBlinkTree.h" />
     <ClInclude Include="Object\SpriteEditObject.h" />
+    <ClInclude Include="Object\Stage.h" />
+    <ClInclude Include="Object\StaticMapObj.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Scene\DefaultScene.h" />
     <ClInclude Include="Window\ConfigurationWindow.h" />
@@ -177,11 +191,24 @@
   <ItemGroup>
     <ClCompile Include="EditorManager.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Object\AnimationLoadObject.cpp" />
+    <ClCompile Include="Object\BlinkTree.cpp" />
+    <ClCompile Include="Object\Butterfly.cpp" />
+    <ClCompile Include="Object\DoubleHelixBlinkTree.cpp" />
     <ClCompile Include="Object\DragObject.cpp" />
+    <ClCompile Include="Object\LampLight.cpp" />
+    <ClCompile Include="Object\Library2ndButterfly.cpp" />
+    <ClCompile Include="Object\Library2ndLampLight.cpp" />
+    <ClCompile Include="Object\LowerClassBook.cpp" />
+    <ClCompile Include="Object\MonsterOnion.cpp" />
+    <ClCompile Include="Object\MonsterRadish.cpp" />
     <ClCompile Include="Object\Pivot.cpp" />
     <ClCompile Include="Object\Player2D.cpp" />
+    <ClCompile Include="Object\PlayerSkillSet.cpp" />
+    <ClCompile Include="Object\Portal.cpp" />
+    <ClCompile Include="Object\SingleHelixBlinkTree.cpp" />
     <ClCompile Include="Object\SpriteEditObject.cpp" />
+    <ClCompile Include="Object\Stage.cpp" />
+    <ClCompile Include="Object\StaticMapObj.cpp" />
     <ClCompile Include="Scene\DefaultScene.cpp" />
     <ClCompile Include="Window\ConfigurationWindow.cpp" />
     <ClCompile Include="Window\DetailWindow.cpp" />
@@ -194,6 +221,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="icon1.ico" />
+    <Image Include="MapleIcon.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

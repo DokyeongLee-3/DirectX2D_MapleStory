@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../GameInfo.h"
+#include "../Resource/Animation/AnimationSequence2D.h"
 
 struct Animation2DNotify
 {
@@ -47,6 +48,16 @@ public:
 
 
 public:
+	void SetLoop(bool Loop)
+	{
+		m_Loop = Loop;
+	}
+
+	void SetReverse(bool Reverse)
+	{
+		m_Reverse = Reverse;
+	}
+
 	const std::string& GetName()	const
 	{
 		return m_Name;
@@ -67,9 +78,24 @@ public:
 		return m_PlayTime;
 	}
 
+	void SetPlayTime(float PlayTime)
+	{
+		m_PlayTime = PlayTime;
+	}
+
+	int GetFrameCount()	const
+	{
+		return m_Sequence->GetFrameCount();
+	}
+
 	float GetPlayScale()	const
 	{
 		return m_PlayScale;
+	}
+
+	void SetPlayScale(float PlayScale)
+	{
+		m_PlayScale = PlayScale;
 	}
 
 	float GetFrameTime()	const
@@ -82,10 +108,6 @@ public:
 		return m_Frame;
 	}
 
-	float GetAnimationTime()	const
-	{
-		return m_Time;
-	}
 
 	class CAnimationSequence2D* GetAnimationSequence()	const;
 

@@ -18,8 +18,14 @@ protected:
     CSharedPtr<CSpriteMesh> m_Mesh;
     CSharedPtr<CMaterial> m_Material;
     class CAnimationSequence2DInstance* m_Animation;
+    bool m_Flip;
 
 public:
+    bool IsFlip()   const
+    {
+        return m_Flip;
+    }
+
     CMaterial* GetMaterial()    const
     {
         return m_Material;
@@ -67,6 +73,9 @@ public:
     virtual CSpriteComponent* Clone();
     virtual void Save(FILE* File);
     virtual void Load(FILE* File);
+
+public:
+    void Flip();
 
 
 public:

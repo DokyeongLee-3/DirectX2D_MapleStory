@@ -183,6 +183,28 @@ bool CAnimationSequence2D::LoadFullPath(const char* FullPath)
 				if (m_Scene)
 				{
 					m_Scene->GetResource()->LoadTexture(TexName, vecFileName[0].c_str(), PathName);
+
+					CTexture* Test = m_Scene->GetResource()->FindTexture(TexName);
+
+					// Player관련 텍스쳐가 만약 경로를 바꿨을 경우 여기서 다른 경로로 Load시도
+					if (!Test)
+					{
+						char FileNameMultibyte[512] = {};
+						int	Length = WideCharToMultiByte(CP_ACP, 0, vecFileName[0].c_str(), -1, 0, 0, 0, 0);
+						WideCharToMultiByte(CP_ACP, 0, vecFileName[0].c_str(), -1, FileNameMultibyte, Length, 0, 0);
+
+						std::string NewFileName = FileNameMultibyte;
+
+						if(NewFileName.find("Player") != std::string::npos)
+						{
+							m_Scene->GetResource()->LoadTexture(TexName, vecFileName[0].c_str(), PLAYER_TEXTURE_PATH);
+						}
+
+						else
+						{
+							m_Scene->GetResource()->LoadTexture(TexName, vecFileName[0].c_str(), ROOT_PATH);
+						}
+					}
 				}
 
 				else

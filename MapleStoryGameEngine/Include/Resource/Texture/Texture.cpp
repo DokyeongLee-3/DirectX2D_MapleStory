@@ -220,6 +220,8 @@ bool CTexture::CreateResource(int Index)
 	return true;
 }
 
+// Register는 ShaderInfo.fx에서 볼수 있듯이 Texture2D g_BaseTexture : register(t0); 이렇게 선언해놨듯이
+// Texture용 레지스터 0번을 사용하도록 해놓았기 때문에 Array타입이 아니면 0번을 쓴다
 void CTexture::SetShader(int Register, int ShaderType, int Index)
 {
 	if (m_ImageType != Image_Type::Array)

@@ -7,6 +7,7 @@
 #include "Scene/DefaultScene.h"
 #include "Input.h"
 #include "IMGUIManager.h"
+#include "IMGUIText.h"
 #include "IMGUITextInput.h"
 #include "Window/SpriteWindow.h"
 #include "Window/DetailWindow.h"
@@ -18,10 +19,17 @@
 #include "Object/SpriteEditObject.h"
 #include "Component/SpriteComponent.h"
 #include "Component/StaticMeshComponent.h"
+#include "Component/ColliderCircle.h"
+#include "Component/ColliderPixel.h"
 #include "Animation/AnimationSequence2DInstance.h"
 #include "IMGUIImage.h"
-#include "Object/Player2D.h"
+#include "IMGUIListBox.h"
+#include "ObjectSet.h"
 #include "Engine.h"
+#include "Collision/Collision.h"
+#include "Scene/SceneCollision.h"
+
+#include <sstream>
 
 DEFINITION_SINGLE(CEditorManager)
 
@@ -61,10 +69,10 @@ void CEditorManager::SetEditMode(EditMode Mode)
 
 bool CEditorManager::Init(HINSTANCE hInst)
 {
-	CEngine::GetInst()->SetPlay(false);
+	CEngine::GetInst()->SetPlay(true);
 
-	if (!CEngine::GetInst()->Init(hInst, TEXT("GameEngine"),
-		1280, 720, IDI_ICON1))
+	if (!CEngine::GetInst()->Init(hInst, TEXT("MapleStoryEditor"),
+		1280, 720, IDI_ICON2))
 	{
 		CEngine::DestroyInst();
 		return false;
@@ -96,25 +104,14 @@ bool CEditorManager::Init(HINSTANCE hInst)
 	CInput::GetInst()->SetKeyCallback("MouseLButton", KeyState_Push, this, &CEditorManager::MouseLButtonPush);
 	CInput::GetInst()->SetKeyCallback("MouseLButton", KeyState_Up, this, &CEditorManager::MouseLButtonUp);
 
-
-	CInput::GetInst()->CreateKey("Up", VK_UP);
-	CInput::GetInst()->CreateKey("Down", VK_DOWN);
-	CInput::GetInst()->CreateKey("Left", VK_LEFT);
-	CInput::GetInst()->CreateKey("Right", VK_RIGHT);
-
-	CInput::GetInst()->SetKeyCallback("Up", KeyState_Down, this, &CEditorManager::KeyboardUp);
-	CInput::GetInst()->SetKeyCallback("Down", KeyState_Down, this, &CEditorManager::KeyboardDown);
-	CInput::GetInst()->SetKeyCallback("Left", KeyState_Down, this, &CEditorManager::KeyboardLeft);
-	CInput::GetInst()->SetKeyCallback("Right", KeyState_Down, this, &CEditorManager::KeyboardRight);
-
-	CInput::GetInst()->CreateKey("EditObjMoveDown", 'S');
+	/*CInput::GetInst()->CreateKey("EditObjMoveDown", 'S');
 	CInput::GetInst()->SetKeyCallback("EditObjMoveDown", KeyState_Push, this, &CEditorManager::EditObjDown);
-
-
-	CInput::GetInst()->CreateKey("MoveUp", 'W');
-	CInput::GetInst()->CreateKey("MoveDown", 'S');
-	CInput::GetInst()->CreateKey("RotationZInv", 'A');
-	CInput::GetInst()->CreateKey("RotationZ", 'D');
+	CInput::GetInst()->CreateKey("EditObjMoveUp", 'W');
+	CInput::GetInst()->SetKeyCallback("EditObjMoveUp", KeyState_Push, this, &CEditorManager::EditObjUp);
+	CInput::GetInst()->CreateKey("EditObjMoveRight", 'D');
+	CInput::GetInst()->SetKeyCallback("EditObjMoveRight", KeyState_Push, this, &CEditorManager::EditObjRight);
+	CInput::GetInst()->CreateKey("EditObjMoveLeft", 'A');
+	CInput::GetInst()->SetKeyCallback("EditObjMoveLeft", KeyState_Push, this, &CEditorManager::EditObjLeft);*/
 
 	return true;
 }
@@ -131,77 +128,113 @@ int CEditorManager::Run()
 
 void CEditorManager::MouseLButtonDown(float DeltaTime)
 {
-	if (m_DragObj)
+	if (m_EditMode == EditMode::Sprite)
 	{
-		m_DragObj->SetStartPos(CInput::GetInst()->GetMousePos());
-
-		Vector2 DragObjStartPos = m_DragObj->GetStartPos();
-
-		Resolution RS = CDevice::GetInst()->GetResolution();
-
-		if (DragObjStartPos.x < 0.f || DragObjStartPos.x > RS.Width ||
-			DragObjStartPos.y < 0.f || DragObjStartPos.y > RS.Height)
+		if (m_DragObj)
 		{
-			return;
+			Vector2 MouseWorldPos = CInput::GetInst()->GetMouseWorld2DPos();
+			m_DragObj->SetStartPos(MouseWorldPos);
+
+			Vector2 DragObjStartPos = m_DragObj->GetStartPos();
+
+			CIMGUITextInput* FrameStartPosX = m_SpriteWindow->GetFrameStartPosX();
+			CIMGUITextInput* FrameStartPosY = m_SpriteWindow->GetFrameStartPosY();
+
+			CSpriteEditObject* SpriteObj = m_SpriteWindow->GetSpriteObject();
+			CTexture* SpriteTex = SpriteObj->GetSpriteComponent()->GetMaterial()->GetTexture();
+
+			unsigned int TexHeight = SpriteTex->GetHeight();
+
+			Vector2 PosInImage;
+			PosInImage = Vector2(DragObjStartPos.x, TexHeight - MouseWorldPos.y);
+
+			FrameStartPosX->SetInt((int)PosInImage.x);
+			FrameStartPosY->SetInt((int)PosInImage.y);
 		}
+	}
 
-		CIMGUITextInput* FrameStartPosX = m_SpriteWindow->GetFrameStartPosX();
-		CIMGUITextInput* FrameStartPosY = m_SpriteWindow->GetFrameStartPosY();
+	else if (m_EditMode == EditMode::Scene)
+	{
+		CColliderComponent* Comp = CSceneManager::GetInst()->GetScene()->GetCollision()->GetMouseCollision();
 
-		Vector2 PosInImage;
-		CSpriteEditObject* SpriteObj = m_SpriteWindow->GetSpriteObject();
-		CTexture* SpriteTex = SpriteObj->GetSpriteComponent()->GetMaterial()->GetTexture();
+		if (Comp)
+		{
+			Vector2 MouseMove = CInput::GetInst()->GetMouseMove();
 
-		unsigned int TexWidth = SpriteTex->GetWidth();
-		unsigned int TexHeight = SpriteTex->GetHeight();
+			CGameObject* Owner = Comp->GetGameObject();
+			Owner->AddWorldPos(MouseMove.x, MouseMove.y, 0.f);
 
-		PosInImage = Vector2(DragObjStartPos.x - SpriteObj->GetWorldPos().x, SpriteObj->GetWorldPos().y + TexHeight - DragObjStartPos.y);
-
-		FrameStartPosX->SetInt((int)PosInImage.x);
-		FrameStartPosY->SetInt((int)PosInImage.y);
-
+			m_DetailWindow->GetPosXInput()->SetValueInt((int)Owner->GetWorldPos().x);
+			m_DetailWindow->GetPosYInput()->SetValueInt((int)(Owner->GetWorldPos().y));
+		}
 	}
 }
 
 void CEditorManager::MouseLButtonPush(float DeltaTime)
 {
-	if (m_DragObj)
+	if (m_EditMode == EditMode::Sprite)
 	{
-		m_DragObj->SetEndPos(CInput::GetInst()->GetMousePos());
-
-		Vector2 DragObjEndPos = m_DragObj->GetEndPos();
-
-		Resolution RS = CDevice::GetInst()->GetResolution();
-
-		if (DragObjEndPos.x < 0.f || DragObjEndPos.x > RS.Width ||
-			DragObjEndPos.y < 0.f || DragObjEndPos.y > RS.Height)
+		if (m_DragObj)
 		{
-			return;
+			Vector2 MouseWorldPos = CInput::GetInst()->GetMouseWorld2DPos();
+			m_DragObj->SetEndPos(CInput::GetInst()->GetMouseWorld2DPos());
+
+			Vector2 DragObjEndPos = m_DragObj->GetEndPos();
+
+			CIMGUITextInput* FrameEndPosX = m_SpriteWindow->GetFrameEndPosX();
+			CIMGUITextInput* FrameEndPosY = m_SpriteWindow->GetFrameEndPosY();
+
+			CSpriteEditObject* SpriteObj = m_SpriteWindow->GetSpriteObject();
+			CTexture* SpriteTex = SpriteObj->GetSpriteComponent()->GetMaterial()->GetTexture();
+
+			unsigned int TexHeight = SpriteTex->GetHeight();
+
+			Vector2 PosInImage;
+			PosInImage = Vector2(DragObjEndPos.x, TexHeight - MouseWorldPos.y);
+
+			FrameEndPosX->SetInt((int)PosInImage.x);
+			FrameEndPosY->SetInt((int)PosInImage.y);
+
+
+			if (m_DragPivot)
+			{
+				Vector2 DragStartPos = m_DragObj->GetStartPos();
+				Vector2 DragEndPos = m_DragObj->GetEndPos();
+
+				m_DragPivot->SetWorldPos((DragStartPos.x + DragEndPos.x) / 2.f, (DragStartPos.y + DragEndPos.y) / 2.f, 0.f);
+
+				float FrameCenterX = (m_SpriteWindow->GetFrameStartPosX()->GetValueInt() + m_SpriteWindow->GetFrameEndPosX()->GetValueInt()) / 2.f;
+				float FrameCenterY = (m_SpriteWindow->GetFrameStartPosY()->GetValueInt() + m_SpriteWindow->GetFrameEndPosY()->GetValueInt()) / 2.f;
+
+				Vector2 Center = Vector2(FrameCenterX, FrameCenterY);
+
+				std::stringstream PosX;
+				PosX << Center.x;
+				std::stringstream PosY;
+				PosY << Center.y;
+
+				m_SpriteWindow->GetDragPivotXPosText()->SetText(PosX.str().c_str());
+				m_SpriteWindow->GetDragPivotYPosText()->SetText(PosY.str().c_str());
+			}
+		}
+	}
+
+	if (m_EditMode == EditMode::Scene)
+	{
+		CColliderComponent* Comp = CSceneManager::GetInst()->GetScene()->GetCollision()->GetMouseCollision();
+
+		if (Comp)
+		{
+			Vector2 MouseMove = CInput::GetInst()->GetMouseMove();
+
+			CGameObject* Owner = Comp->GetGameObject();
+			Owner->AddWorldPos(MouseMove.x, MouseMove.y, 0.f);
+
+			m_DetailWindow->GetPosXInput()->SetValueInt((int)Owner->GetWorldPos().x);
+			m_DetailWindow->GetPosYInput()->SetValueInt((int)(Owner->GetWorldPos().y));
 		}
 
-		CIMGUITextInput* FrameEndPosX = m_SpriteWindow->GetFrameEndPosX();
-		CIMGUITextInput* FrameEndPosY = m_SpriteWindow->GetFrameEndPosY();
 
-		Vector2 PosInImage;
-		CSpriteEditObject* SpriteObj = m_SpriteWindow->GetSpriteObject();
-		CTexture* SpriteTex = SpriteObj->GetSpriteComponent()->GetMaterial()->GetTexture();
-
-		unsigned int TexWidth = SpriteTex->GetWidth();
-		unsigned int TexHeight = SpriteTex->GetHeight();
-
-		PosInImage = Vector2(DragObjEndPos.x - SpriteObj->GetWorldPos().x, SpriteObj->GetWorldPos().y + TexHeight - DragObjEndPos.y);
-
-		FrameEndPosX->SetInt((int)PosInImage.x);
-		FrameEndPosY->SetInt((int)PosInImage.y);
-
-
-		if (m_DragPivot)
-		{
-			Vector2 DragStartPos = m_DragObj->GetStartPos();
-			Vector2 DragEndPos = m_DragObj->GetEndPos();
-
-			m_DragPivot->SetWorldPos((DragStartPos.x + DragEndPos.x) / 2.f, (DragStartPos.y + DragEndPos.y) / 2.f, 0.f); 
-		}
 	}
 }
 
@@ -209,100 +242,56 @@ void CEditorManager::MouseLButtonUp(float DeltaTime)
 {
 }
 
-void CEditorManager::KeyboardUp(float DeltaTime)
+void CEditorManager::MouseClickCallback(float DeltaTime)
 {
-	if (m_DragObj)
-		m_DragObj->AddWorldPos(0.f, 1.f, 0.f);
-
-	CIMGUITextInput* StartYPos = m_SpriteWindow->GetFrameStartPosY();
-	CIMGUITextInput* EndYPos = m_SpriteWindow->GetFrameEndPosY();
-
-	StartYPos->SetInt(StartYPos->GetValueInt() - 1);
-	EndYPos->SetInt(EndYPos->GetValueInt() - 1);
-
-	m_SpriteWindow->AdjustFrameDataStartY();
-	m_SpriteWindow->AdjustFrameDataEndY();
-}
-
-void CEditorManager::KeyboardDown(float DeltaTime)
-{
-	if (m_DragObj)
-		m_DragObj->AddWorldPos(0.f, -1.f, 0.f);
-
-	CIMGUITextInput* StartYPos = m_SpriteWindow->GetFrameStartPosY();
-	CIMGUITextInput* EndYPos = m_SpriteWindow->GetFrameEndPosY();
-
-	StartYPos->SetInt(StartYPos->GetValueInt() + 1);
-	EndYPos->SetInt(EndYPos->GetValueInt() + 1);
-
-	m_SpriteWindow->AdjustFrameDataStartY();
-	m_SpriteWindow->AdjustFrameDataEndY();
-}
-
-void CEditorManager::KeyboardLeft(float DeltaTime)
-{
-	if (m_DragObj)
-		m_DragObj->AddWorldPos(-1.f, 0.f, 0.f);
-
-	CIMGUITextInput* StartXPos = m_SpriteWindow->GetFrameStartPosX();
-	CIMGUITextInput* EndXPos = m_SpriteWindow->GetFrameEndPosX();
-
-	StartXPos->SetInt(StartXPos->GetValueInt() - 1);
-	EndXPos->SetInt(EndXPos->GetValueInt() - 1);
-
-	m_SpriteWindow->AdjustFrameDataStartX();
-	m_SpriteWindow->AdjustFrameDataEndX();
-}
-
-void CEditorManager::KeyboardRight(float DeltaTime)
-{
-	if (m_DragObj)
-		m_DragObj->AddWorldPos(1.f, 0.f, 0.f);
-
-	CIMGUITextInput* StartXPos = m_SpriteWindow->GetFrameStartPosX();
-	CIMGUITextInput* EndXPos = m_SpriteWindow->GetFrameEndPosX();
-
-	StartXPos->SetInt(StartXPos->GetValueInt() + 1);
-	EndXPos->SetInt(EndXPos->GetValueInt() + 1);
-
-	m_SpriteWindow->AdjustFrameDataStartX();
-	m_SpriteWindow->AdjustFrameDataEndX();
 }
 
 void CEditorManager::EditObjDown(float DeltaTime)
 {
 	CSpriteEditObject* Obj = m_SpriteWindow->GetSpriteObject();
 
+	if (!Obj)
+		return;
+
 	Vector3 Pos = Obj->GetWorldPos();
 
-	Obj->AddWorldPos(0.f, -50.f * DeltaTime, 0.f);
+	Obj->AddWorldPos(0.f, -200.f * DeltaTime, 0.f);
 }
 
 void CEditorManager::EditObjUp(float DeltaTime)
 {
 	CSpriteEditObject* Obj = m_SpriteWindow->GetSpriteObject();
 
+	if (!Obj)
+		return;
+
 	Vector3 Pos = Obj->GetWorldPos();
 
-	Obj->AddWorldPos(0.f, 50.f * DeltaTime, 0.f);
+	Obj->AddWorldPos(0.f, 200.f * DeltaTime, 0.f);
 }
 
 void CEditorManager::EditObjLeft(float DeltaTime)
 {
 	CSpriteEditObject* Obj = m_SpriteWindow->GetSpriteObject();
 
+	if (!Obj)
+		return;
+
 	Vector3 Pos = Obj->GetWorldPos();
 
-	Obj->AddWorldPos(-50.f * DeltaTime, 0.f, 0.f);
+	Obj->AddWorldPos(-200.f * DeltaTime, 0.f, 0.f);
 }
 
 void CEditorManager::EditObjRight(float DeltaTime)
 {
 	CSpriteEditObject* Obj = m_SpriteWindow->GetSpriteObject();
 
+	if (!Obj)
+		return;
+
 	Vector3 Pos = Obj->GetWorldPos();
 
-	Obj->AddWorldPos(50.f * DeltaTime, 0.f, 0.f);
+	Obj->AddWorldPos(200.f * DeltaTime, 0.f, 0.f);
 }
 
 void CEditorManager::CreateSceneMode(CScene* Scene, size_t Type)
@@ -343,6 +332,105 @@ CGameObject* CEditorManager::CreateObject(CScene* Scene, size_t Type)
 		return Obj;
 	}
 
+	else if (Type == typeid(CMonsterRadish).hash_code())
+	{
+		CMonsterRadish* Obj = Scene->LoadGameObject<CMonsterRadish>();
+
+		return Obj;
+	}
+
+	else if (Type == typeid(CMonsterOnion).hash_code())
+	{
+		CMonsterOnion* Obj = Scene->LoadGameObject<CMonsterOnion>();
+
+		return Obj;
+	}
+
+	else if (Type == typeid(CPlayerSkillSet).hash_code())
+	{
+		CPlayerSkillSet* Obj = Scene->LoadGameObject<CPlayerSkillSet>();
+
+		return Obj;
+	}
+
+	else if (Type == typeid(CPortal).hash_code())
+	{
+		CPortal* Obj = Scene->LoadGameObject<CPortal>();
+
+		return Obj;
+	}
+
+	else if (Type == typeid(CLampLight).hash_code())
+	{
+		CLampLight* Obj = Scene->LoadGameObject<CLampLight>();
+
+		return Obj;
+	}
+
+	else if (Type == typeid(CBlinkTree).hash_code())
+	{
+		CBlinkTree* Obj = Scene->LoadGameObject<CBlinkTree>();
+
+		return Obj;
+	}
+
+	else if (Type == typeid(CButterfly).hash_code())
+	{
+		CButterfly* Obj = Scene->LoadGameObject<CButterfly>();
+
+		return Obj;
+	}
+
+	else if (Type == typeid(CDoubleHelixBlinkTree).hash_code())
+	{
+		CDoubleHelixBlinkTree* Obj = Scene->LoadGameObject<CDoubleHelixBlinkTree>();
+
+		return Obj;
+	}
+
+	else if (Type == typeid(CSingleHelixBlinkTree).hash_code())
+	{
+		CSingleHelixBlinkTree* Obj = Scene->LoadGameObject<CSingleHelixBlinkTree>();
+
+		return Obj;
+	}
+
+
+	else if (Type == typeid(CLowerClassBook).hash_code())
+	{
+		CLowerClassBook* Obj = Scene->LoadGameObject<CLowerClassBook>();
+
+		return Obj;
+	}
+
+	else if (Type == typeid(CLibrary2ndLampLight).hash_code())
+	{
+		CLibrary2ndLampLight* Obj = Scene->LoadGameObject<CLibrary2ndLampLight>();
+
+		return Obj;
+	}
+
+	else if (Type == typeid(CLibrary2ndButterfly).hash_code())
+	{
+		CLibrary2ndButterfly* Obj = Scene->LoadGameObject<CLibrary2ndButterfly>();
+
+		return Obj;
+	}
+
+	else if (Type == typeid(CStaticMapObj).hash_code())
+	{
+		CStaticMapObj* Obj = Scene->LoadGameObject<CStaticMapObj>();
+
+		return Obj;
+	}
+
+	else if (Type == typeid(CStage).hash_code())
+	{
+		CStage* Obj = Scene->LoadGameObject<CStage>();
+
+		return Obj;
+	}
+
 	return nullptr;
 }
 
@@ -350,24 +438,50 @@ CComponent* CEditorManager::CreateComponent(CGameObject* Obj, size_t Type)
 {
 	if (Type == typeid(CSceneComponent).hash_code())
 	{
-		CComponent* Component = Obj->LoadComponent<CSceneComponent>();
+		CSceneComponent* Component = Obj->LoadComponent<CSceneComponent>();
 
 		return Component;
 	}
 
 	else if (Type == typeid(CSpriteComponent).hash_code())
 	{
-		CComponent* Component = Obj->LoadComponent<CSpriteComponent>();
+		CSpriteComponent* Component = Obj->LoadComponent<CSpriteComponent>();
 
 		return Component;
 	}
 
 	else if (Type == typeid(CStaticMeshComponent).hash_code())
 	{
-		CComponent* Component = Obj->LoadComponent<CStaticMeshComponent>();
+		CStaticMeshComponent* Component = Obj->LoadComponent<CStaticMeshComponent>();
 
 		return Component;
 	}
+
+	else if (Type == typeid(CColliderBox2D).hash_code())
+	{
+		CColliderBox2D* Component = Obj->LoadComponent<CColliderBox2D>();
+
+		CSceneManager::GetInst()->GetScene()->GetCollision()->AddCollider(Component);
+
+		return Component;
+	}
+
+	else if (Type == typeid(CColliderCircle).hash_code())
+	{
+		CColliderCircle* Component = Obj->LoadComponent<CColliderCircle>();
+
+		CSceneManager::GetInst()->GetScene()->GetCollision()->AddCollider(Component);
+
+		return Component;
+	}
+
+	else if (Type == typeid(CColliderPixel).hash_code())
+	{
+		CColliderPixel* Component = Obj->LoadComponent<CColliderPixel>();
+
+		return Component;
+	}
+
 
 	return nullptr;
 }
@@ -378,4 +492,38 @@ void CEditorManager::CreateAnimInstance(CSpriteComponent* Sprite, size_t Type)
 	{
 		Sprite->LoadAnimationInstance<CAnimationSequence2DInstance>();
 	}
+}
+
+void CEditorManager::AddObjectHierarchy()
+{
+	int ObjCount = (int)CSceneManager::GetInst()->GetScene()->GetObjectCount();
+
+	for (int i = 0; i < ObjCount; ++i)
+	{
+		CGameObject* Obj = CSceneManager::GetInst()->GetScene()->GetGameObject(i);
+
+		m_ObjectHierarchy->AddObjectList(Obj->GetName().c_str());
+
+		AddComponentHierarchy(Obj);
+	}
+}
+
+void CEditorManager::AddComponentHierarchy(CGameObject* Obj)
+{
+	CSceneComponent* Com = Obj->GetRootComponent();
+
+	std::vector<FindComponentName> vecSceneComp;
+	Com->GetAllSceneComponentsName(vecSceneComp);
+
+	int Count = (int)vecSceneComp.size();
+
+	for (int i = 0; i < Count; ++i)
+	{
+		m_ObjectHierarchy->AddComponentList(vecSceneComp[i].Name.c_str());
+	}
+}
+
+void CEditorManager::AddComponentHierarchy(const char* ComponentName)
+{
+	m_ObjectHierarchy->AddComponentList(ComponentName);
 }

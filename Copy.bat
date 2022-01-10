@@ -6,3 +6,4 @@ xcopy .\MapleStoryGameEngine\Bin\*.* .\MapleStoryEditor\Bin\ /s /d /y /exclude:e
 
 xcopy .\MapleStoryGameEngine\Include\*.h .\Engine\Include\ /s /d /y
 xcopy .\MapleStoryGameEngine\Include\*.inl .\Engine\Include\ /s /d /y
+xcopy .\MapleStoryGameEngine\Include\*.hpp .\Engine\Include\ /s /d /y

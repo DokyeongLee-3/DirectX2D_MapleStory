@@ -7,15 +7,28 @@ CScene::CScene()
 {
 	m_Mode = new CSceneMode;
 	m_Resource = new CSceneResource;
+	m_Collision = new CSceneCollision;
+	m_CameraManager = new CCameraManager;
+	m_Viewport = new CViewport;
 
 	m_Mode->m_Scene = this;
 	m_Resource->m_Scene = this;
+	m_Collision->m_Scene = this;
+	m_CameraManager->m_Scene = this;
+	m_Viewport->m_Scene = this;
 
 	m_Start = false;
+
+	m_Collision->Init();
+	m_CameraManager->Init();
+	m_Viewport->Init();
 }
 
 CScene::~CScene()
 {
+	SAFE_DELETE(m_Viewport);
+	SAFE_DELETE(m_CameraManager);
+	SAFE_DELETE(m_Collision);
 	SAFE_DELETE(m_Resource);
 }
 
@@ -32,11 +45,28 @@ void CScene::Start()
 	}
 
 	m_Start = true;
+
+	m_CameraManager->Start();
+	m_Collision->Start();
+	m_Viewport->Start();
+
+	if (m_Mode->GetPlayerObject())
+	{
+		CCameraComponent* Camera = m_Mode->GetPlayerObject()->FindComponentFromType<CCameraComponent>();
+
+		if (Camera)
+		{
+			m_CameraManager->SetCurrentCamera(Camera);
+		}
+	}
 }
 
 void CScene::Update(float DeltaTime)
 {
 	m_Mode->Update(DeltaTime);
+
+	// 내가 수정
+	m_CameraManager->Update(DeltaTime);
 
 	auto	iter = m_ObjList.begin();
 	auto	iterEnd = m_ObjList.end();
@@ -59,11 +89,16 @@ void CScene::Update(float DeltaTime)
 		(*iter)->Update(DeltaTime);
 		++iter;
 	}
+
+	m_Viewport->Update(DeltaTime);
 }
 
 void CScene::PostUpdate(float DeltaTime)
 {
 	m_Mode->PostUpdate(DeltaTime);
+
+	// 내가 수정
+	m_CameraManager->PostUpdate(DeltaTime);
 
 	auto	iter = m_ObjList.begin();
 	auto	iterEnd = m_ObjList.end();
@@ -86,6 +121,20 @@ void CScene::PostUpdate(float DeltaTime)
 		(*iter)->PostUpdate(DeltaTime);
 		++iter;
 	}
+
+	m_Viewport->PostUpdate(DeltaTime);
+
+	// 충돌체들을 충돌 영역에 포함시킨다.
+	iter = m_ObjList.begin();
+	iterEnd = m_ObjList.end();
+
+	for (; iter != iterEnd; ++iter)
+	{
+		(*iter)->AddCollision();
+	}
+
+	// 포함된 충돌체들을 이용해서 충돌처리를 진행한다.
+	m_Collision->Collision(DeltaTime);
 }
 
 void CScene::Save(const char* FileName, const std::string& PathName)
@@ -115,7 +164,8 @@ void CScene::SaveFullPath(const char* FullPath)
 
 	fwrite(&SceneModeType, sizeof(size_t), 1, File);
 
-	size_t	ObjCount = m_ObjList.size();
+	// DefaultScene에서 빈 오브젝트에 카메라 컴포넌트 달아놓은 오브젝트는 빼고 저장
+	size_t	ObjCount = m_ObjList.size() - 1;
 
 	fwrite(&ObjCount, sizeof(size_t), 1, File);
 
@@ -124,6 +174,9 @@ void CScene::SaveFullPath(const char* FullPath)
 
 	for (; iter != iterEnd; ++iter)
 	{
+		if ((*iter)->GetName() == "EditorCamera")
+			continue;
+
 		size_t	ObjType = (*iter)->GetTypeID();
 
 		fwrite(&ObjType, sizeof(size_t), 1, File);
@@ -179,6 +232,9 @@ void CScene::LoadFullPath(const char* FullPath)
 		CGameObject* Obj = CSceneManager::GetInst()->CallCreateObject(this, ObjType);
 
 		Obj->Load(File);
+
+		// 에디터에서만 동작한다. Hierarachy에 Load한 Scene에 들어있는 Object추가
+		m_Mode->AddObjectList(Obj->GetName().c_str());
 	}
 
 	fclose(File);
