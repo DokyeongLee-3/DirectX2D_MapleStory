@@ -210,8 +210,26 @@ void CScene::LoadFullPath(const char* FullPath)
 
 	if (!File)
 		return;
+	
+	// Load하면서 현재 DefaultScene의 CameraObject도 지워지므로 CameraObject빼고 clear한다
+	// m_ObjList.clear();
 
-	m_ObjList.clear();
+	auto iter = m_ObjList.begin();
+	auto iterEnd = m_ObjList.end();
+
+	for (; iter != iterEnd; )
+	{
+		if ((*iter)->GetName() == "EditorCamera")
+		{	
+			++iter;
+			continue;
+		}
+
+		m_ObjList.erase(iter);
+		iter = m_ObjList.begin();
+		iterEnd = m_ObjList.end();
+
+	}
 
 	size_t	SceneModeType = 0;
 
@@ -233,7 +251,7 @@ void CScene::LoadFullPath(const char* FullPath)
 
 		Obj->Load(File);
 
-		// 에디터에서만 동작한다. Hierarachy에 Load한 Scene에 들어있는 Object추가
+		// virtual로 정의해서 에디터에서만 ObjectList에 추가하는 동작을 한다. Hierarachy에 Load한 Scene에 들어있는 Object추가
 		m_Mode->AddObjectList(Obj->GetName().c_str());
 	}
 

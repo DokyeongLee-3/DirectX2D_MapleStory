@@ -1,5 +1,7 @@
 #pragma once
+
 #include "Scene/SceneMode.h"
+
 class CDefaultScene :
     public CSceneMode
 {
@@ -19,17 +21,22 @@ public:
         return m_StageObject;
     }
 
-    void SetStageObject(class CStage* Stage)
-    {
-        m_StageObject = Stage;
-    }
+    void SetStageObject(class CStage* Stage);
 
 private:
     bool LoadAnimationSequence2D();
+
+private:
     void CameraRight(float DeltaTime);
     void CameraLeft(float DeltaTime);
     void CameraUp(float DeltaTime);
     void CameraDown(float DeltaTime);
+
+private:
+    void SelectObjectRight(float DeltaTime);
+    void SelectObjectLeft(float DeltaTime);
+    void SelectObjectUp(float DeltaTime);
+    void SelectObjectDown(float DeltaTime);
 
 public:
     virtual void AddObjectList(const char* ObjName);

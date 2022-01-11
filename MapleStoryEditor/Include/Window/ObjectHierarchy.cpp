@@ -1,5 +1,6 @@
 
 #include "ObjectHierarchy.h"
+#include "SpriteWindow.h"
 #include "IMGUIButton.h"
 #include "IMGUISameLine.h"
 #include "IMGUILabel.h"
@@ -11,19 +12,16 @@
 #include "Engine.h"
 #include "PathManager.h"
 #include "../EditorManager.h"
-#include "../Object/SpriteEditObject.h"
 #include "Scene/SceneManager.h"
-#include "Scene/Scene.h"
-#include "Scene/SceneResource.h"
 #include "Component/SpriteComponent.h"
-#include "Resource/Animation/AnimationSequence2D.h"
+#include "../Object/SpriteEditObject.h"
 #include "../Object/DragObject.h"
+#include "Resource/Animation/AnimationSequence2D.h"
 #include "Animation/AnimationSequence2DInstance.h"
 #include "Animation/AnimationSequence2DData.h"
 #include "../EditorManager.h"
 #include "DetailWindow.h"
 #include "EditorMenu.h"
-#include "SpriteWindow.h"
 
 #include <sstream>
 

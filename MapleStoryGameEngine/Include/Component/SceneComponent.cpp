@@ -345,6 +345,9 @@ void CSceneComponent::Load(FILE* File)
 
 		CComponent* Component = CSceneManager::GetInst()->CallCreateComponent(m_Object, TypeID);
 
+		if (!Component)
+			assert(false);
+
 		Component->Load(File);
 
 		AddChild((CSceneComponent*)Component);

@@ -296,9 +296,11 @@ void CEditorManager::EditObjRight(float DeltaTime)
 
 void CEditorManager::CreateSceneMode(CScene* Scene, size_t Type)
 {
+	// 여기서도 DefaultScene의 CameraObject의 RootComponent와 Scene도 0xddddddd
 	if (Type == typeid(CDefaultScene).hash_code())
 	{
-		Scene->LoadSceneMode<CDefaultScene>();
+		if(!(Scene->GetSceneMode()))
+			Scene->LoadSceneMode<CDefaultScene>();
 	}
 }
 
@@ -427,6 +429,9 @@ CGameObject* CEditorManager::CreateObject(CScene* Scene, size_t Type)
 	else if (Type == typeid(CStage).hash_code())
 	{
 		CStage* Obj = Scene->LoadGameObject<CStage>();
+
+		CDefaultScene* DefaultScene = (CDefaultScene*)CSceneManager::GetInst()->GetScene()->GetSceneMode();
+		DefaultScene->SetStageObject(Obj);
 
 		return Obj;
 	}

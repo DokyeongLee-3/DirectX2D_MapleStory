@@ -1,15 +1,14 @@
 
 #include "DefaultScene.h"
 #include "Scene/Scene.h"
-#include "Scene/SceneResource.h"
 #include "Input.h"
 #include "Device.h"
 #include "../EditorManager.h"
 #include "../Window/SpriteWindow.h"
 #include "../Window/ObjectHierarchy.h"
-#include "../Object/SpriteEditObject.h"
 #include "Component/SpriteComponent.h"
 #include "IMGUIListBox.h"
+#include "../Object/SpriteEditObject.h"
 #include "../Object/Stage.h"
 
 CDefaultScene::CDefaultScene()  :
@@ -27,6 +26,7 @@ CDefaultScene::~CDefaultScene()
 bool CDefaultScene::Init()
 {
     m_CameraObject = m_Scene->CreateGameObject<CGameObject>("EditorCamera");
+    m_CameraObject->SetScene(m_Scene);
 
     m_CameraComponent = m_CameraObject->CreateComponent<CCameraComponent>("CameraComponent");
 
@@ -53,7 +53,24 @@ bool CDefaultScene::Init()
     CInput::GetInst()->SetKeyCallback<CDefaultScene>("CameraLeft", KeyState_Push, this, &CDefaultScene::CameraLeft);
 
 
+    CInput::GetInst()->CreateKey("SelectObjectDown", 'S');
+    CInput::GetInst()->SetKeyCallback<CDefaultScene>("SelectObjectDown", KeyState_Down, this, &CDefaultScene::SelectObjectDown);
+
+    CInput::GetInst()->CreateKey("SelectObjectUp", 'W');
+    CInput::GetInst()->SetKeyCallback<CDefaultScene>("SelectObjectUp", KeyState_Down, this, &CDefaultScene::SelectObjectUp);
+
+    CInput::GetInst()->CreateKey("SelectObjectRight", 'D');
+    CInput::GetInst()->SetKeyCallback<CDefaultScene>("SelectObjectRight", KeyState_Down, this, &CDefaultScene::SelectObjectRight);
+
+    CInput::GetInst()->CreateKey("SelectObjectLeft", 'A');
+    CInput::GetInst()->SetKeyCallback<CDefaultScene>("SelectObjectLeft", KeyState_Down, this, &CDefaultScene::SelectObjectLeft);
+
     return true;
+}
+
+void CDefaultScene::SetStageObject(CStage* Stage)
+{
+    m_StageObject = Stage;
 }
 
 bool CDefaultScene::LoadAnimationSequence2D()
@@ -120,6 +137,8 @@ void CDefaultScene::CameraRight(float DeltaTime)
             return;
 
         float Width = (float)(m_StageObject->GetSpriteComponent()->GetMaterial()->GetTextureWidth());
+
+        CDefaultScene* Me = this;
 
         if (m_CameraObject->GetWorldPos().x + RS.Width >= Width)
         {
@@ -226,6 +245,83 @@ void CDefaultScene::CameraDown(float DeltaTime)
 
         m_CameraObject->AddRelativePos(0.f, -300.f * DeltaTime, 0.f);
     }
+}
+
+void CDefaultScene::SelectObjectRight(float DeltaTime)
+{
+    CIMGUIListBox* ObjListBox = CEditorManager::GetInst()->GetObjectHierarchy()->GetObjectList();
+
+    int Idx = ObjListBox->GetSelectIndex();
+
+    if (Idx == -1)
+        return;
+
+    std::string SelectObjectName = ObjListBox->GetSelectItem();
+
+    CGameObject* Obj = m_Scene->FindObject(SelectObjectName);
+
+    if (!Obj)
+        return;
+
+    Obj->AddWorldPos(1.f, 0.f, 0.f);
+
+}
+
+void CDefaultScene::SelectObjectLeft(float DeltaTime)
+{
+    CIMGUIListBox* ObjListBox = CEditorManager::GetInst()->GetObjectHierarchy()->GetObjectList();
+
+    int Idx = ObjListBox->GetSelectIndex();
+
+    if (Idx == -1)
+        return;
+
+    std::string SelectObjectName = ObjListBox->GetSelectItem();
+
+    CGameObject* Obj = m_Scene->FindObject(SelectObjectName);
+
+    if (!Obj)
+        return;
+
+    Obj->AddWorldPos(-1.f, 0.f, 0.f);
+}
+
+void CDefaultScene::SelectObjectUp(float DeltaTime)
+{
+    CIMGUIListBox* ObjListBox = CEditorManager::GetInst()->GetObjectHierarchy()->GetObjectList();
+
+    int Idx = ObjListBox->GetSelectIndex();
+
+    if (Idx == -1)
+        return;
+
+    std::string SelectObjectName = ObjListBox->GetSelectItem();
+
+    CGameObject* Obj = m_Scene->FindObject(SelectObjectName);
+
+    if (!Obj)
+        return;
+
+    Obj->AddWorldPos(0.f, 1.f, 0.f);
+}
+
+void CDefaultScene::SelectObjectDown(float DeltaTime)
+{
+    CIMGUIListBox* ObjListBox = CEditorManager::GetInst()->GetObjectHierarchy()->GetObjectList();
+
+    int Idx = ObjListBox->GetSelectIndex();
+
+    if (Idx == -1)
+        return;
+
+    std::string SelectObjectName = ObjListBox->GetSelectItem();
+
+    CGameObject* Obj = m_Scene->FindObject(SelectObjectName);
+
+    if (!Obj)
+        return;
+
+    Obj->AddWorldPos(0.f, -1.f, 0.f);
 }
 
 void CDefaultScene::AddObjectList(const char* ObjName)
