@@ -4,6 +4,8 @@
 
 class CAnimationSequence2DInstance
 {
+	friend class CButton;
+
 public:
 	CAnimationSequence2DInstance();
 	CAnimationSequence2DInstance(const CAnimationSequence2DInstance& Anim);
@@ -18,7 +20,7 @@ private:
 	CAnimationSequence2DData* m_CurrentAnimation;
 	class CAnimation2DConstantBuffer* m_CBuffer;
 	bool		m_PlayAnimation;
-	bool m_Flip;
+	bool		m_Flip;
 
 public:
 	size_t GetTypeID()	const
@@ -47,6 +49,15 @@ public:
 		return m_Owner;
 	}
 
+	void AddFrameData(const AnimationFrameData& FrameData)
+	{
+		m_CurrentAnimation->AddFrameData(FrameData);
+	}
+
+	void AddFrameData(const Vector2& Start, const Vector2& Size)
+	{
+		m_CurrentAnimation->AddFrameData(Start, Size);
+	}
 
 	int GetAnimationCount()	const
 	{
@@ -92,6 +103,11 @@ public:
 		return m_Flip;
 	}
 
+	class CAnimation2DConstantBuffer* GetConstantBuffer()	const
+	{
+		return m_CBuffer;
+	}
+
 public:
 	void AddAnimation(const std::string& SequenceName, const std::string& Name, bool Loop = true, float PlayTime = 1.f,
 		float PlayScale = 1.f, bool Reverse = false);
@@ -109,6 +125,7 @@ public:
 	void Flip();
 	// map에 저장된 애니메이션중 다음 애니메이션으로 현재 애니메이션을 바꾼다
 	void NextAnimation();
+	void SetCurrentAnimationFirstFrame();
 
 public:
 	virtual void Start();

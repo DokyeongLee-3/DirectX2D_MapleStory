@@ -1,6 +1,7 @@
 
 #include "StaticMapObj.h"
 #include "Input.h"
+#include "../Component/DragCollider.h"
 
 
 CStaticMapObj::CStaticMapObj() :
@@ -27,7 +28,7 @@ void CStaticMapObj::Start()
 bool CStaticMapObj::Init()
 {
 	m_Sprite = CreateComponent<CSpriteComponent>("StaticMapObjSprite");
-	m_DragCollider = CreateComponent<CColliderBox2D>("DragCollider");
+	m_DragCollider = CreateComponent<CDragCollider>("DragCollider");
 
 
 	m_DragCollider->SetCollisionProfile("DragCollider");
@@ -73,6 +74,22 @@ void CStaticMapObj::Load(FILE* File)
 	CGameObject::Load(File);
 
 	m_Sprite = (CSpriteComponent*)FindComponent("StaticMapObjSprite");
+}
+
+void CStaticMapObj::DeleteAllDragCollider()
+{
+	if (m_RootComponent->GetTypeID() == typeid(CDragCollider).hash_code())
+	{
+		m_RootComponent->Destroy();
+		return;
+	}
+
+	int ChildCount = m_RootComponent->GetChildCount();
+
+	for (int i = 0; i < ChildCount; ++i)
+	{
+		//m_RootComponent->GetChild
+	}
 }
 
 

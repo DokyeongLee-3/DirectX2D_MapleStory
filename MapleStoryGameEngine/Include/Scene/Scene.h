@@ -24,6 +24,8 @@ private:
 	std::list<CSharedPtr<CGameObject>> m_ObjList;
 	bool		m_Start;
 
+
+
 public:
 	CSceneMode*	GetSceneMode()	const
 	{
@@ -91,6 +93,7 @@ public:
 	void SaveFullPath(const char* FullPath);
 	void Load(const char* FileName, const std::string& PathName = SCENE_PATH);
 	void LoadFullPath(const char* FullPath);
+
 
 public:
 	template <typename T>

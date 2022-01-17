@@ -8,6 +8,7 @@
 #include "PlayerSkillBodyEffect.h"
 #include "BulletCamera.h"
 #include "Bullet.h"
+#include "../Widget/SimpleHUD.h"
 
 CPlayer2D::CPlayer2D()	:
 	m_BodySprite(nullptr),
@@ -31,6 +32,8 @@ CPlayer2D::CPlayer2D(const CPlayer2D& obj) :
 	m_VoidPressureSphere = (CSpriteComponent*)FindComponent("PlayerVoidPressureSphere");
 
 	m_Body = (CColliderBox2D*)FindComponent("Body");
+	m_Camera = (CCameraComponent*)FindComponent("Camera");
+	m_SimpleHUDWidget = (CWidgetComponent*)FindComponent("SimpleHUD");
 
 	m_Opacity = obj.m_Opacity;
 }
@@ -50,9 +53,13 @@ bool CPlayer2D::Init()
 	m_VoidPressureSphere = CreateComponent<CSpriteComponent>("PlayerVoidPressureSphere");
 	*/
 	
-	m_Body = CreateComponent<CColliderBox2D>("Body");
+	m_Body = CreateComponent<CColliderBox2D>("PlayerBody");
 
 	m_Camera = CreateComponent<CCameraComponent>("Camera");
+
+	m_SimpleHUDWidget = CreateComponent<CWidgetComponent>("SimpleHUD");
+
+	m_SimpleHUDWidget->CreateWidgetWindow<CSimpleHUD>("SimpleHUDWidget");
 
 	SetRootComponent(m_BodySprite);
 
@@ -66,11 +73,10 @@ bool CPlayer2D::Init()
 	//m_BodySprite->AddChild(m_VoidPressureSphere);
 	
 	m_BodySprite->AddChild(m_Body);
-
 	m_BodySprite->AddChild(m_Camera);
+	m_BodySprite->AddChild(m_SimpleHUDWidget);
 
-	//m_SylphideLancerMuzzle->AddChild(m_SylphideLancerMirror);
-
+	m_SimpleHUDWidget->SetRelativePos(-50.f, 50.f, 0.f);
 
 	m_BodySprite->SetTransparency(true);
 	//m_SylphideLancerMirror->SetTransparency(true);
@@ -80,10 +86,7 @@ bool CPlayer2D::Init()
 	//m_SylphideLancerMirror->CreateAnimationInstance<CSylphideLancerEffectAnimation2D>();
 	//m_SkillBodyEffect->CreateAnimationInstance<CPlayerSkillBodyEffect>();
 
-	// Stand상태 기준의 Scale
-	m_BodySprite->SetRelativeScale(Vector3(91.f, 82.f, 1.f) * m_ScaleFactor);
-	m_BodySprite->SetRelativePos(100.f, 100.f, 0.f);
-	m_BodySprite->SetPivot(0.5f, 0.5f, 0.f);
+
 
 	m_SylphideLancerMuzzle->SetInheritRotZ(true);
 	m_SylphideLancerMuzzle->SetPivot(0.5f, 0.5f, 0.f);
@@ -93,10 +96,9 @@ bool CPlayer2D::Init()
 	//m_SylphideLancerMirror->SetInheritRotZ(true);
 	//m_SylphideLancerMirror->SetPivot(0.5f, 0.5f, 0.f);
 
-	//m_SkillBodyEffect->SetRelativePos(0.f, 0.f, 0.f);
-	//m_SkillBodyEffect->SetWorldScale(100.f, 100.f, 1.f);
-	//m_SkillBodyEffect->SetPivot(0.5f, 0.5f, 0.f);
-
+	m_BodySprite->SetRelativeScale(Vector3(91.f, 82.f, 1.f) * m_ScaleFactor);
+	m_BodySprite->SetRelativePos(100.f, 100.f, 0.f);
+	m_BodySprite->SetPivot(0.5f, 0.5f, 0.f);
 
 	CInput::GetInst()->SetKeyCallback<CPlayer2D>("MoveUp", KeyState_Push, this, &CPlayer2D::MoveUp);
 	CInput::GetInst()->SetKeyCallback<CPlayer2D>("MoveDown", KeyState_Push, this, &CPlayer2D::MoveDown);

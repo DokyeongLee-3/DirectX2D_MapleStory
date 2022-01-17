@@ -33,5 +33,25 @@ public:
 	{
 		m_BufferData.UseTexture = Use ? 1 : 0;
 	}
+
+	void SetAnimType(int Type)
+	{
+		m_BufferData.WidgetAnimType = Type;
+	}
+
+	void SetStartUV(const Vector2& StartUV)
+	{
+		m_BufferData.WidgetAnimStartUV = StartUV;
+	}
+
+	void SetEndUV(const Vector2& EndUV)
+	{
+		m_BufferData.WidgetAnimEndUV = EndUV;
+	}
+
+	void SetAnimEnable(bool Enable)
+	{
+		m_BufferData.WidgetAnimEnable = Enable ? 1 : 0;
+	}
 };
 

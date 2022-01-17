@@ -5,9 +5,13 @@
 #include "../Scene/Scene.h"
 #include "../Scene/SceneResource.h"
 #include "../Input.h"
+#include "../Resource/ResourceManager.h"
+#include "../Scene/SceneManager.h"
 
 CButton::CButton() :
-	m_State(Button_State::Normal)
+	m_State(Button_State::Normal),
+	m_MouseOnSound(false),
+	m_ClickSound(false)
 {
 }
 
@@ -15,6 +19,9 @@ CButton::CButton(const CButton& widget) :
 	CWidget(widget)
 {
 	m_State = Button_State::Normal;
+	m_ClickCallback = nullptr;
+	m_MouseOnSound = false;
+	m_ClickSound = false;
 }
 
 CButton::~CButton()
@@ -24,12 +31,21 @@ CButton::~CButton()
 bool CButton::SetTexture(Button_State State, const std::string& Name, const TCHAR* FileName,
 	const std::string& PathName)
 {
-	CSceneResource* Resource = m_Owner->GetViewport()->GetScene()->GetResource();
+	if (m_Owner->GetViewport())
+	{
+		if (!m_Owner->GetViewport()->GetScene()->GetResource()->LoadTexture(Name, FileName, PathName))
+			return false;
 
-	if (!Resource->LoadTexture(Name, FileName, PathName))
-		return false;
+		m_Info[(int)State].Texture = m_Owner->GetViewport()->GetScene()->GetResource()->FindTexture(Name);
+	}
 
-	m_Info[(int)State].Texture = Resource->FindTexture(Name);
+	else
+	{
+		if (!CResourceManager::GetInst()->LoadTexture(Name, FileName, PathName))
+			return false;
+
+		m_Info[(int)State].Texture = CResourceManager::GetInst()->FindTexture(Name);
+	}
 
 	SetUseTexture(true);
 
@@ -39,12 +55,21 @@ bool CButton::SetTexture(Button_State State, const std::string& Name, const TCHA
 bool CButton::SetTextureFullPath(Button_State State, const std::string& Name,
 	const TCHAR* FullPath)
 {
-	CSceneResource* Resource = m_Owner->GetViewport()->GetScene()->GetResource();
+	if (m_Owner->GetViewport())
+	{
+		if (!m_Owner->GetViewport()->GetScene()->GetResource()->LoadTextureFullPath(Name, FullPath))
+			return false;
 
-	if (!Resource->LoadTextureFullPath(Name, FullPath))
-		return false;
+		m_Info[(int)State].Texture = m_Owner->GetViewport()->GetScene()->GetResource()->FindTexture(Name);
+	}
 
-	m_Info[(int)State].Texture = Resource->FindTexture(Name);
+	else
+	{
+		if (!CResourceManager::GetInst()->LoadTextureFullPath(Name, FullPath))
+			return false;
+
+		m_Info[(int)State].Texture = CResourceManager::GetInst()->FindTexture(Name);
+	}
 
 	SetUseTexture(true);
 
@@ -71,9 +96,50 @@ void CButton::AddFrameData(Button_State State, const Vector2& Start, const Vecto
 	m_Info[(int)State].vecFrameData.push_back(Data);
 }
 
+void CButton::SetSound(Button_Sound_State State, const std::string& Name)
+{
+	if (m_Owner->GetViewport())
+		m_Sound[(int)State] = m_Owner->GetViewport()->GetScene()->GetResource()->FindSound(Name);
+
+	else
+		m_Sound[(int)State] = CResourceManager::GetInst()->FindSound(Name);
+}
+
+void CButton::SetSound(Button_Sound_State State, CSound* Sound)
+{
+	m_Sound[(int)State] = Sound;
+}
+
+void CButton::SetSound(Button_Sound_State State, const std::string& ChannelGroupName,
+	const std::string& Name, const char* FileName, const std::string& PathName)
+{
+	if (m_Owner->GetViewport())
+	{
+		m_Owner->GetViewport()->GetScene()->GetResource()->LoadSound(ChannelGroupName, false, Name, FileName, PathName);
+
+		m_Sound[(int)State] = m_Owner->GetViewport()->GetScene()->GetResource()->FindSound(Name);
+	}
+
+	else
+	{
+		CResourceManager::GetInst()->LoadSound(ChannelGroupName, false, Name, FileName, PathName);
+		m_Sound[(int)State] = CResourceManager::GetInst()->FindSound(Name);
+	}
+}
+
+void CButton::LoadSequence2D(Button_State State, const char* FileName, const std::string& PathName, float PlayTime, float PlayScale, bool Loop, bool Reverse)
+{
+}
+
 void CButton::Start()
 {
 	CWidget::Start();
+
+	for (int i = 0; i < (int)Button_State::Max; ++i)
+	{
+		if (!m_Info[i].vecFrameData.empty())
+			m_Info[i].FrameTime = m_Info[i].PlayTime / m_Info[i].vecFrameData.size();
+	}
 }
 
 bool CButton::Init()
@@ -92,8 +158,26 @@ void CButton::Update(float DeltaTime)
 	{
 		if (m_MouseHovered)
 		{
+			if (!m_MouseOnSound)
+			{
+				m_MouseOnSound = true;
+
+				if (m_Sound[(int)Button_Sound_State::MouseOn])
+					m_Sound[(int)Button_Sound_State::MouseOn]->Play();
+			}
+
 			if (CInput::GetInst()->GetMouseLButtonClick())
+			{
 				m_State = Button_State::Click;
+
+				if (!m_ClickSound)
+				{
+					m_ClickSound = true;
+
+					if (m_Sound[(int)Button_Sound_State::Click])
+						m_Sound[(int)Button_Sound_State::Click]->Play();
+				}
+			}
 
 			else if (m_State == Button_State::Click)
 			{
@@ -101,14 +185,20 @@ void CButton::Update(float DeltaTime)
 					m_ClickCallback();
 
 				m_State = Button_State::MouseOn;
+				m_ClickSound = false;
 			}
 
 			else
+			{
+				m_ClickSound = false;
 				m_State = Button_State::MouseOn;
+			}
 		}
 
 		else
 		{
+			m_ClickSound = false;
+			m_MouseOnSound = false;
 			m_State = Button_State::Normal;
 		}
 	}
@@ -127,4 +217,9 @@ void CButton::Render()
 	m_Tint = m_Info[(int)m_State].Tint;
 
 	CWidget::Render();
+}
+
+CButton* CButton::Clone()
+{
+	return new CButton(*this);
 }

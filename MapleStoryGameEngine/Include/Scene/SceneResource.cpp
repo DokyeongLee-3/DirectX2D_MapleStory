@@ -1,5 +1,6 @@
+
 #include "SceneResource.h"
-#include "../Animation/AnimationSequence2DInstance.h"
+//#include "../Animation/AnimationSequence2DInstance.h"
 
 CSceneResource::CSceneResource()
 {
@@ -154,6 +155,34 @@ bool CSceneResource::LoadTextureFullPath(const std::string& Name, const TCHAR* F
 		return true;
 
 	if (!CResourceManager::GetInst()->LoadTextureFullPath(Name, FullPath))
+		return false;
+
+	m_mapTexture.insert(std::make_pair(Name, CResourceManager::GetInst()->FindTexture(Name)));
+
+	return true;
+}
+
+bool CSceneResource::LoadTexture(const std::string& Name, const std::vector<TCHAR*>& vecFileName,
+	const std::string& PathName)
+{
+	if (FindTexture(Name))
+		return true;
+
+	if (!CResourceManager::GetInst()->LoadTexture(Name, vecFileName, PathName))
+		return false;
+
+	m_mapTexture.insert(std::make_pair(Name, CResourceManager::GetInst()->FindTexture(Name)));
+
+	return true;
+}
+
+bool CSceneResource::LoadTextureFullPath(const std::string& Name,
+	const std::vector<TCHAR*>& vecFullPath)
+{
+	if (FindTexture(Name))
+		return true;
+
+	if (!CResourceManager::GetInst()->LoadTextureFullPath(Name, vecFullPath))
 		return false;
 
 	m_mapTexture.insert(std::make_pair(Name, CResourceManager::GetInst()->FindTexture(Name)));
@@ -347,4 +376,77 @@ void CSceneResource::InsertAnimationSequence2D(CAnimationSequence2D* Sequence)
 		return;
 
 	m_mapSequence2D.insert(std::make_pair(Sequence->GetName(), Sequence));
+}
+
+bool CSceneResource::LoadSound(const std::string& ChannelGroupName, bool Loop, const std::string& Name,
+	const char* FileName, const std::string& PathName)
+{
+	if (FindSound(Name))
+		return true;
+
+	if (!CResourceManager::GetInst()->LoadSound(ChannelGroupName, Loop, Name, FileName, PathName))
+		return false;
+
+	m_mapSound.insert(std::make_pair(Name, CResourceManager::GetInst()->FindSound(Name)));
+
+	return true;
+}
+
+bool CSceneResource::CreateSoundChannelGroup(const std::string& Name)
+{
+	return CResourceManager::GetInst()->CreateSoundChannelGroup(Name);
+}
+
+bool CSceneResource::SetVolume(int Volume)
+{
+	return CResourceManager::GetInst()->SetVolume(Volume);
+}
+
+bool CSceneResource::SetVolume(const std::string& ChannelGroupName, int Volume)
+{
+	return CResourceManager::GetInst()->SetVolume(ChannelGroupName, Volume);
+}
+
+bool CSceneResource::SoundPlay(const std::string& Name)
+{
+	return CResourceManager::GetInst()->SoundPlay(Name);
+}
+
+bool CSceneResource::SoundStop(const std::string& Name)
+{
+	return CResourceManager::GetInst()->SoundStop(Name);
+}
+
+bool CSceneResource::SoundPause(const std::string& Name)
+{
+	return CResourceManager::GetInst()->SoundPause(Name);
+}
+
+bool CSceneResource::SoundResume(const std::string& Name)
+{
+	return CResourceManager::GetInst()->SoundResume(Name);
+}
+
+CSound* CSceneResource::FindSound(const std::string& Name)
+{
+	auto	iter = m_mapSound.find(Name);
+
+	if (iter == m_mapSound.end())
+	{
+		CSound* Sound = CResourceManager::GetInst()->FindSound(Name);
+
+		if (!Sound)
+			return nullptr;
+
+		m_mapSound.insert(std::make_pair(Name, Sound));
+
+		return Sound;
+	}
+
+	return iter->second;
+}
+
+FMOD::ChannelGroup* CSceneResource::FindChannelGroup(const std::string& Name)
+{
+	return CResourceManager::GetInst()->FindChannelGroup(Name);
 }

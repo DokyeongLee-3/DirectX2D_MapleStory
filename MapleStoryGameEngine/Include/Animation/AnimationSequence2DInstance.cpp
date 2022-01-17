@@ -285,6 +285,12 @@ void CAnimationSequence2DInstance::NextAnimation()
 	ChangeAnimation(iter->second->m_Name);
 }
 
+void CAnimationSequence2DInstance::SetCurrentAnimationFirstFrame()
+{
+	if (m_CurrentAnimation)
+		m_CurrentAnimation->SetCurrentAnimationFirstFrame();
+}
+
 
 void CAnimationSequence2DInstance::Start()
 {
@@ -401,6 +407,7 @@ void CAnimationSequence2DInstance::SetShader()
 
 	EndUV = (Start + FrameSize) /
 		Vector2((float)m_CurrentAnimation->m_Sequence->GetTexture()->GetWidth(), (float)m_CurrentAnimation->m_Sequence->GetTexture()->GetHeight());
+
 
 	if (m_Flip)
 	{

@@ -16,11 +16,16 @@
 // 그 기능을 포함한 헤더 
 #include <d3dcompiler.h>
 #include <dinput.h>
+#include <dwrite.h>
+#include <dwrite_3.h>
+#include <d2d1.h>
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 #pragma comment(lib, "dinput8.lib")
+#pragma comment(lib, "dwrite.lib")
+#pragma comment(lib, "d2d1.lib")
 
 #include "Vector2.h"
 #include "Vector3.h"
@@ -52,6 +57,7 @@
 #define	FONT_PATH				"Font"
 #define	ANIMATION_PATH			"Animation"
 #define	SCENE_PATH				"Scene"
+#define	SOUND_PATH				"Sound"
 #define	PLAYER_TEXTURE_PATH				"PlayerTexture"
 
 #define SAFE_DELETE(p) if(p) { delete p; p = nullptr; }
@@ -305,5 +311,16 @@ struct WidgetCBuffer
 	Vector4	Tint;
 	Matrix	matWP;
 	int		UseTexture;
-	Vector3	Empty;
+	int		WidgetAnimType;
+	Vector2	WidgetAnimStartUV;
+	Vector2	WidgetAnimEndUV;
+	int		WidgetAnimEnable;
+	int		Empty;
+};
+
+struct ProgressBarCBuffer
+{
+	float	Percent;
+	int		Dir;
+	Vector2	Empty;
 };

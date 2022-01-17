@@ -106,6 +106,8 @@ bool CDefaultScene::LoadAnimationSequence2D()
     m_Scene->GetResource()->LoadSequence2D("DoubleHelixBlinkTree.sqc");
     m_Scene->GetResource()->LoadSequence2D("SingleHelixBlinkTree.sqc");
 
+    m_Scene->GetResource()->LoadSequence2D("Portal.sqc");
+
     return true;
 }
 

@@ -51,7 +51,6 @@ bool CPlayer2D::Init()
 	m_OrbSprite->SetTransparency(true);
 
 	m_BodyEffectSprite->SetTransparency(true);
-	//m_Sprite->SetOpacity(0.5f);
 
 	m_Sprite->CreateAnimationInstance<CAnimationSequence2DInstance>();
 	m_OrbSprite->CreateAnimationInstance<CAnimationSequence2DInstance>();
@@ -72,7 +71,6 @@ bool CPlayer2D::Init()
 
 	m_OrbSprite->SetWorldScale(40.f, 40.f, 1.f);
 	m_OrbSprite->AddRelativePos(70.f, 10.f, 0.f);
-
 	m_OrbSprite->SetPivot(0.5f, 0.5f, 0.f);
 
 	m_BodyEffectSprite->AddRelativePos(3.f, 3.f, 0.f);
@@ -87,6 +85,10 @@ bool CPlayer2D::Init()
 	CInput::GetInst()->SetKeyCallback<CPlayer2D>("NextAnimation", KeyState_Down, this, &CPlayer2D::NextAnimation);
 	CInput::GetInst()->CreateKey("Transparent", 'T');
 	CInput::GetInst()->SetKeyCallback<CPlayer2D>("Transparent", KeyState_Down, this, &CPlayer2D::TransformingLight);
+	CInput::GetInst()->CreateKey("Rotate", VK_RIGHT);
+	CInput::GetInst()->SetKeyCallback<CPlayer2D>("Rotate", KeyState_Push, this, &CPlayer2D::RotationZ);
+	CInput::GetInst()->CreateKey("RotateInv", VK_LEFT);
+	CInput::GetInst()->SetKeyCallback<CPlayer2D>("RotateInv", KeyState_Push, this, &CPlayer2D::RotationZInv);
 
 
 	return true;
@@ -145,12 +147,12 @@ void CPlayer2D::MoveDown(float DeltaTime)
 
 void CPlayer2D::RotationZInv(float DeltaTime)
 {
-	m_Sprite->AddRelativeRotationZ(180.f * DeltaTime);
+	m_Sprite->AddRelativeRotationZ(100.f * DeltaTime);
 }
 
 void CPlayer2D::RotationZ(float DeltaTime)
 {
-	m_Sprite->AddRelativeRotationZ(-180.f * DeltaTime);
+	m_Sprite->AddRelativeRotationZ(-100.f * DeltaTime);
 }
 
 void CPlayer2D::AddMotionAnimation()

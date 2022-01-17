@@ -58,6 +58,10 @@ bool CMonsterOnion::Init()
 	CInput::GetInst()->SetKeyCallback<CMonsterOnion>("Flip", KeyState_Down, this, &CMonsterOnion::FlipAll);
 	CInput::GetInst()->CreateKey("NextAnimation", 'N');
 	CInput::GetInst()->SetKeyCallback<CMonsterOnion>("NextAnimation", KeyState_Down, this, &CMonsterOnion::NextAnimation);
+	CInput::GetInst()->CreateKey("Rotate", VK_RIGHT);
+	CInput::GetInst()->SetKeyCallback<CMonsterOnion>("Rotate", KeyState_Push, this, &CMonsterOnion::RotationZ);
+	CInput::GetInst()->CreateKey("RotateInv", VK_LEFT);
+	CInput::GetInst()->SetKeyCallback<CMonsterOnion>("RotateInv", KeyState_Push, this, &CMonsterOnion::RotationZInv);
 
 	return true;
 }
@@ -99,4 +103,14 @@ void CMonsterOnion::NextAnimation(float DeltaTime)
 	CAnimationSequence2DInstance* Anim = m_Sprite->GetAnimationInstance();
 
 	Anim->NextAnimation();
+}
+
+void CMonsterOnion::RotationZInv(float DeltaTime)
+{
+	m_Sprite->AddRelativeRotationZ(100.f * DeltaTime);
+}
+
+void CMonsterOnion::RotationZ(float DeltaTime)
+{
+	m_Sprite->AddRelativeRotationZ(-100.f * DeltaTime);
 }

@@ -1,7 +1,32 @@
 #pragma once
 
 #include "../Ref.h"
+#include "../Resource/Texture/Texture.h"
 
+struct WidgetImageInfo
+{
+	CSharedPtr<CTexture>	Texture;
+	Vector4			Tint;
+	std::vector<AnimationFrameData> vecFrameData;
+
+	int		Frame;		// 현재 애니메이션 프레임
+	float	Time;			// 애니메이션 동작 시간
+	float	FrameTime;	// 1프레임당 시간
+	float	PlayTime;
+	float	PlayScale;		// 재생 비율
+
+	WidgetImageInfo()
+	{
+		Tint = Vector4::White;
+		Frame = 0;
+		Time = 0.f;
+		FrameTime = 0.f;
+		PlayTime = 1.f;
+		PlayScale = 1.f;
+	}
+};
+
+// 위젯의 위치는 좌하단 기준
 class CWidget :
 	public CRef
 {
@@ -16,11 +41,13 @@ protected:
 	class CWidgetWindow* m_Owner;
 	int     m_ZOrder;
 	Vector2	m_Pos;
+	Vector2	m_RenderPos;
 	Vector2	m_Size;
 	float	m_Angle;
 	bool	m_Start;
 	Vector4	m_Tint;
 	bool	m_MouseHovered;
+	bool	m_CollisionMouseEnable;
 	class CWidgetConstantBuffer* m_CBuffer;
 	CSharedPtr<class CShader>	m_Shader;
 	CSharedPtr<class CMesh>		m_Mesh;
@@ -36,12 +63,12 @@ public:
 		return m_Owner;
 	}
 
-	Vector2 GetWindowPos()	const
+	Vector2 GetWidgetPos()	const
 	{
 		return m_Pos;
 	}
 
-	Vector2 GetWindowSize()	const
+	Vector2 GetWidgetSize()	const
 	{
 		return m_Size;
 	}
@@ -72,12 +99,12 @@ public:
 		m_Pos = Vector2(x, y);
 	}
 
-	void SetSize(const Vector2& Size)
+	virtual void SetSize(const Vector2& Size)
 	{
 		m_Size = Size;
 	}
 
-	void SetSize(float x, float y)
+	virtual void SetSize(float x, float y)
 	{
 		m_Size = Vector2(x, y);
 	}
@@ -92,6 +119,11 @@ public:
 		m_Angle = Angle;
 	}
 
+	void SetMouseCollisionEnable(bool Enable)
+	{
+		m_CollisionMouseEnable = Enable;
+	}
+
 	void SetShader(const std::string& Name);
 	void SetUseTexture(bool Use);
 
@@ -102,5 +134,6 @@ public:
 	virtual void PostUpdate(float DeltaTime);
 	virtual void Render();
 	virtual bool CollisionMouse(const Vector2& MousePos);
+	virtual CWidget* Clone(); 
 };
 

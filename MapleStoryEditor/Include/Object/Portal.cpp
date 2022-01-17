@@ -51,8 +51,13 @@ bool CPortal::Init()
 
 	CAnimationSequence2DInstance* Anim = m_Sprite->GetAnimationInstance();
 
-	Anim->AddAnimation(TEXT("Portal.sqc"), ANIMATION_PATH, "Portal", true, 0.6f);
+	Anim->AddAnimation(TEXT("Portal.sqc"), ANIMATION_PATH, "Portal", true, 0.8f);
 
+	/*Anim->AddAnimation(TEXT("GameStartBlink.sqc"), ANIMATION_PATH, "GameStartBlink", true, 0.5f);
+
+
+	CInput::GetInst()->CreateKey("NextAnimation", 'N');
+	CInput::GetInst()->SetKeyCallback<CPortal>("NextAnimation", KeyState_Down, this, &CPortal::NextAnimation);*/
 
 	return true;
 }
@@ -81,6 +86,12 @@ void CPortal::Load(FILE* File)
 {
 	CGameObject::Load(File);
 
-	m_Sprite = (CSpriteComponent*)FindComponent("PlayerSkillSprite");
+	m_Sprite = (CSpriteComponent*)FindComponent("PortalSprite");
 }
 
+void CPortal::NextAnimation(float DeltaTime)
+{
+	CAnimationSequence2DInstance* Anim = m_Sprite->GetAnimationInstance();
+
+	Anim->NextAnimation();
+}

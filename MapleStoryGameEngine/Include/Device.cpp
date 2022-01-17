@@ -8,13 +8,20 @@ CDevice::CDevice()	:
 	m_Context(nullptr),
 	m_SwapChain(nullptr),
 	m_TargetView(nullptr),
-	m_DepthView(nullptr)
+	m_DepthView(nullptr),
+	m_2DTarget(nullptr),
+	m_2DTargetWorld(nullptr),
+	m_2DFactory(nullptr)
 {
 
 }
 
 CDevice::~CDevice()
 {
+	SAFE_RELEASE(m_2DTarget);
+	SAFE_RELEASE(m_2DTargetWorld);
+	SAFE_RELEASE(m_2DFactory);
+
 	SAFE_RELEASE(m_TargetView);
 	SAFE_RELEASE(m_DepthView);
 
@@ -46,9 +53,9 @@ bool CDevice::Init(HWND hWnd, unsigned int Width,
 	m_RS.Width = Width;
 	m_RS.Height = Height;
 
-	// 나중에 폰트 출력을 위해서 DirectLight를 사용할 것인데
-	// DirectLight는 이 BGRA_SUPPORT가 되어야 사용가능해서
-	// 미리 여기에 설정해놓는 것
+	// 폰트 출력을 위해서 DirectWrite를 사용할 것인데 DirectWrite는 Direct2D를 사용한다. 
+	// 아래에 만든 RenderTarget은 3D용인데 Direct2D의 렌더 타겟도 만들려면
+	// 이 BGRA_SUPPORT flag가 true여야 사용가능하다
 	unsigned int Flag = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 
 #ifdef _DEBUG
@@ -189,6 +196,32 @@ bool CDevice::Init(HWND hWnd, unsigned int Width,
 	// 뷰포트는 Context를 이용해서 만듬
 	m_Context->RSSetViewports(1, &VP);
  
+
+	// TextUI를 위한 2D렌더타겟을 만들어주는 2D Factory생성
+	if (FAILED(D2D1CreateFactory(D2D1_FACTORY_TYPE_MULTI_THREADED, &m_2DFactory)))
+		return false;
+
+	// 기존에 만들어뒀던 3D Backbuffer를 이용해서
+	// IDXGISurface* 타입의 surface를 얻어와서 얻어온 surface로
+	// ID2D1RenderTarget타입의 렌더타겟을 만들고 거기에 Write하면
+	// 기존에 만든 3D용도의 D3D에 2D인 DWrite를 쓸 수 있다
+	// Direct2D와 Direct3D와의 상호호환을 위해 DirectX는 DXGI를 사용한다
+	IDXGISurface* BackSurface = nullptr;
+
+	// D3D에서는 백버퍼 Surface를 ID3D11Texture2D타입으로 받았다면
+	// D2D에서는 백버퍼 Surface를 IDXGISurface으로 받는게 다르다
+	m_SwapChain->GetBuffer(0, IID_PPV_ARGS(&BackSurface));
+
+	D2D1_RENDER_TARGET_PROPERTIES props = D2D1::RenderTargetProperties(
+		D2D1_RENDER_TARGET_TYPE_HARDWARE,
+		D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED));
+
+	// 기존에 만든 3D용 백버퍼와 호환되는 렌더
+	if (FAILED(m_2DFactory->CreateDxgiSurfaceRenderTarget(BackSurface, props, &m_2DTarget)))
+		return false;
+
+	SAFE_RELEASE(BackSurface);
+
 	return true;
 }
 

@@ -3,6 +3,8 @@
 #include "GameObject/GameObject.h"
 #include "Component/SpriteComponent.h"
 #include "Component/ColliderCircle.h"
+#include "Component/WidgetComponent.h"
+
 
 class CMonster :
     public CGameObject
@@ -18,6 +20,9 @@ private:
     CSharedPtr<CSpriteComponent>    m_Sprite;
     CSharedPtr<CColliderCircle>       m_Body;
     float   m_HP;
+
+    CSharedPtr<CWidgetComponent>     m_SimpleHUDWidget;
+    class CSimpleHUD* m_SimpleHUD;
 
 public:
     virtual bool Init();

@@ -31,5 +31,7 @@ public:
 private:
     void FlipAll(float DeltaTime);
     void NextAnimation(float DeltaTime);
+    void RotationZInv(float DeltaTime);
+    void RotationZ(float DeltaTime);
 };
 

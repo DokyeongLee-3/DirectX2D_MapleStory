@@ -25,6 +25,7 @@ CSceneComponent::CSceneComponent()
 CSceneComponent::CSceneComponent(const CSceneComponent& com) :
 	CComponent(com)
 {
+	*this = com;
 	m_Transform = com.m_Transform->Clone();
 
 	m_Transform->m_Parent = nullptr;
@@ -190,6 +191,18 @@ bool CSceneComponent::DeleteChild(const std::string& Name)
 	return false;
 }
 
+void CSceneComponent::ClearChild()
+{
+	int ChildCount = (int)m_vecChild.size();
+	
+	for (int i = 0; i < ChildCount; ++i)
+	{
+		DeleteChild(m_vecChild[i]);
+	}
+
+	Destroy();
+}
+
 CSceneComponent* CSceneComponent::FindComponent(const std::string& Name)
 {
 	if (m_Name == Name)
@@ -206,6 +219,18 @@ CSceneComponent* CSceneComponent::FindComponent(const std::string& Name)
 	}
 
 	return nullptr;
+}
+
+void CSceneComponent::SetAllSceneComponentsLayer(const std::string& Name)
+{
+	SetLayerName(Name);
+
+	size_t Count = m_vecChild.size();
+
+	for (size_t i = 0; i < Count; ++i)
+	{
+		m_vecChild[i]->SetAllSceneComponentsLayer(Name);
+	}
 }
 
 void CSceneComponent::Start()
@@ -226,24 +251,51 @@ bool CSceneComponent::Init()
 
 void CSceneComponent::Update(float DeltaTime)
 {
+	if (!IsActive())
+	{
+		ClearChild();
+	}
+
 	m_Transform->Update(DeltaTime);
 
 	size_t	Size = m_vecChild.size();
 
 	for (size_t i = 0; i < Size; ++i)
 	{
+		if (!m_vecChild[i]->IsActive())
+		{
+			auto iter = m_vecChild.begin();
+			std::advance(iter, i);
+			m_vecChild.erase(iter);
+			continue;
+		}
+
 		m_vecChild[i]->Update(DeltaTime);
 	}
+
 }
 
 void CSceneComponent::PostUpdate(float DeltaTime)
 {
+	if (!IsActive())
+	{
+		ClearChild();
+	}
+
 	m_Transform->PostUpdate(DeltaTime);
 
 	size_t	Size = m_vecChild.size();
 
 	for (size_t i = 0; i < Size; ++i)
 	{
+		if (!m_vecChild[i]->IsActive())
+		{
+			auto iter = m_vecChild.begin();
+			std::advance(iter, i);
+			m_vecChild.erase(iter);
+			continue;
+		}
+
 		m_vecChild[i]->PostUpdate(DeltaTime);
 	}
 }
@@ -332,8 +384,6 @@ void CSceneComponent::Load(FILE* File)
 
 	m_Transform->Load(File);
 
-	std::string MyName = m_Name;
-
 	int	ChildCount = 0;
 
 	fread(&ChildCount, sizeof(int), 1, File);
@@ -345,12 +395,10 @@ void CSceneComponent::Load(FILE* File)
 
 		CComponent* Component = CSceneManager::GetInst()->CallCreateComponent(m_Object, TypeID);
 
-		if (!Component)
-			assert(false);
+		AddChild((CSceneComponent*)Component);
 
 		Component->Load(File);
-
-		AddChild((CSceneComponent*)Component);
+		//Component->Start();
 
 		//CSceneManager::GetInst()->GetScene()->GetSceneMode()->AddComponentList(Component->GetName().c_str());
 	}

@@ -108,11 +108,21 @@ public:
 		return m_Frame;
 	}
 
+	void AddFrameData(const AnimationFrameData& FrameData)
+	{
+		m_Sequence->AddFrame(FrameData.Start, FrameData.Size);
+	}
+
+	void AddFrameData(const Vector2& Start, const Vector2& Size)
+	{
+		m_Sequence->AddFrame(Start, Size);
+	}
 
 	class CAnimationSequence2D* GetAnimationSequence()	const;
 
 	const AnimationFrameData& GetFrameData(int Index)	const;
 
+	void SetCurrentAnimationFirstFrame();
 
 public:
 	template <typename T>

@@ -67,9 +67,10 @@ bool CObjectHierarchy::Init()
 
 	m_LayerCombo->SetHideName(true);
 	m_LayerCombo->AddItem("Default");
+	m_LayerCombo->AddItem("Stage");
 	m_LayerCombo->AddItem("MapObjBack");
-	m_LayerCombo->AddItem("MapObjMiddle");
 	m_LayerCombo->AddItem("MapObjFront");
+	m_LayerCombo->AddItem("MovingObjFront");
 
 	Line = AddWidget<CIMGUISameLine>("Line");
 

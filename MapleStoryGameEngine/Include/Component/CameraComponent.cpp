@@ -91,6 +91,13 @@ void CCameraComponent::PostUpdate(float DeltaTime)
 
 	m_matView.Transpose();
 
+	// 카메라가 생성되면서 OnViewportCenter를 호출했었고 Parent는 Player의 RootComponent로 플레이어에 달려있는 상황을 가정해보자.
+	// 이때, Player의 RootComponent의 위치가 (100.f, 50.f)일때 계속 화면의 플레이어는 정중앙에 고정적으로 위치하면서
+	// 주변 오브젝트들이 가까워지고 멀어지고 하는 이유는 카메라 Component의 위치는 
+	// (Player의 RootComponent의 X좌표 - RS.Width, Player의 RootComponent의 Y좌표 - RS.Height)로 카메라 Component의
+	// 좌표가 계속 갱신되면서 뷰행렬을 만들기 때문이다.
+	// 알고 있는것처럼, 카메라가 음의 X방향으로 100만큼 이동하는것과 똑같은 효과를 내기위해 카메라를 제외한 나머지 모든 물체들을
+	// 양의 X방향으로 100만큼 이동시키는걸 기억하자
 	Vector3	Pos = GetWorldPos() * -1.f;
 
 	// 카메라 회전행렬의 역행렬과 이동행렬의 역행렬을 곱해보면

@@ -29,6 +29,6 @@ public:
 
 
 private:
-
+    void NextAnimation(float DeltaTime);
 };
 

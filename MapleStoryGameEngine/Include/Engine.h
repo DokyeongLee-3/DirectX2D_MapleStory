@@ -17,13 +17,14 @@ private:
 	bool		m_Start;
 	bool		m_Play;
 	Engine_Space	m_Space;
+	Mouse_State		m_MouseState;
+	CSharedPtr<class CWidgetWindow>	m_MouseWidget[(int)Mouse_State::Max];
 
 public:
 	Engine_Space GetEngineSpace()	const
 	{
 		return m_Space;
 	}
-
 
 	bool IsPlay()	const
 	{
@@ -68,6 +69,24 @@ private:
 	BOOL Create(const TCHAR* Name);
 	static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
+public:
+	template <typename T>
+	T* CreateMouse(Mouse_State State, const std::string& Name)
+	{
+		T* Window = new T;
+
+		Window->SetName(Name);
+
+		if (!Window->Init())
+		{
+			SAFE_RELEASE(Window);
+			return nullptr;
+		}
+
+		m_MouseWidget[(int)State] = Window;
+
+		return Window;
+	}
 
 	DECLARE_SINGLE(CEngine)
 };

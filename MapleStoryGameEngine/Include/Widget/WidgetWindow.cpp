@@ -1,16 +1,44 @@
 
 #include "WidgetWindow.h"
+#include "../Component/WidgetComponent.h"
+#include "../Scene/Scene.h"
 
 CWidgetWindow::CWidgetWindow() :
 	m_Viewport(nullptr),
+	m_OwnerComponent(nullptr),
 	m_ZOrder(0),
 	m_Size(100.f, 100.f),
 	m_Start(false)
 {
 }
 
+CWidgetWindow::CWidgetWindow(const CWidgetWindow& window)
+{
+	*this = window;
+	m_OwnerComponent = nullptr;
+
+	auto	iter = window.m_WidgetList.begin();
+	auto	iterEnd = window.m_WidgetList.end();
+
+	m_WidgetList.clear();
+
+	for (; iter != iterEnd; ++iter)
+	{
+		CWidget* Widget = (*iter)->Clone();
+
+		Widget->m_Owner = this;
+
+		m_WidgetList.push_back(Widget);
+	}
+}
+
 CWidgetWindow::~CWidgetWindow()
 {
+}
+
+void CWidgetWindow::SetViewport(CViewport* Viewport)
+{
+	m_Viewport = Viewport;
 }
 
 void CWidgetWindow::Start()
@@ -23,6 +51,11 @@ void CWidgetWindow::Start()
 	for (; iter != iterEnd; ++iter)
 	{
 		(*iter)->Start();
+	}
+
+	if (m_OwnerComponent)
+	{
+		m_Viewport = m_OwnerComponent->GetScene()->GetViewport();
 	}
 }
 
@@ -144,10 +177,18 @@ bool CWidgetWindow::CollisionMouse(const Vector2& MousePos)
 			continue;
 		}
 
-		if ((*iter)->CollisionMouse(MousePos))
+		if ((*iter)->m_CollisionMouseEnable)
 		{
-			(*iter)->m_MouseHovered = true;
-			return true;
+			if ((*iter)->CollisionMouse(MousePos))
+			{
+				(*iter)->m_MouseHovered = true;
+				return true;
+			}
+
+			else
+			{
+				(*iter)->m_MouseHovered = false;
+			}
 		}
 
 		else
@@ -157,6 +198,11 @@ bool CWidgetWindow::CollisionMouse(const Vector2& MousePos)
 	}
 
 	return false;
+}
+
+CWidgetWindow* CWidgetWindow::Clone()
+{
+	return new CWidgetWindow(*this);
 }
 
 bool CWidgetWindow::SortWidget(CSharedPtr<CWidget> Src, CSharedPtr<CWidget> Dest)

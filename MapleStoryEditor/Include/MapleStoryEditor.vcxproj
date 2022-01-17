@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Component\DragCollider.h" />
     <ClInclude Include="EditorInfo.h" />
     <ClInclude Include="EditorManager.h" />
     <ClInclude Include="ObjectSet.h" />
@@ -189,6 +190,7 @@
     <ClInclude Include="Window\SpriteWindow.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Component\DragCollider.cpp" />
     <ClCompile Include="EditorManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Object\BlinkTree.cpp" />

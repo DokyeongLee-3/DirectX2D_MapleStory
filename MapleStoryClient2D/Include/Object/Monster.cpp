@@ -3,6 +3,7 @@
 #include "Scene/Scene.h"
 #include "Resource/Material/Material.h"
 #include "MonsterAnimation.h"
+#include "../Widget/SimpleHUD.h"
 
 CMonster::CMonster()	:
 	m_HP(50.f)
@@ -15,6 +16,7 @@ CMonster::CMonster(const CMonster& obj) :
 {
 	m_Sprite = (CSpriteComponent*)FindComponent("MonsterSprite");
 	m_Body = (CColliderCircle*)FindComponent("Body");
+	m_SimpleHUDWidget = (CWidgetComponent*)FindComponent("SimpleHUD");
 }
 
 CMonster::~CMonster()
@@ -28,9 +30,21 @@ bool CMonster::Init()
 
 	m_Body->AddCollisionCallback<CMonster>(Collision_State::Begin, this, &CMonster::CollisionCallback);
 
-	SetRootComponent(m_Sprite);
+	m_SimpleHUDWidget = CreateComponent<CWidgetComponent>("SimpleHUD");
+
+	m_SimpleHUD = m_SimpleHUDWidget->CreateWidgetWindow<CSimpleHUD>("SimpleHUDWidget");
+
+
+	SetRootComponent(m_Sprite); 
 
 	m_Sprite->AddChild(m_Body);
+	m_Sprite->AddChild(m_SimpleHUDWidget);
+
+	m_SimpleHUDWidget->SetRelativePos(-50.f, 50.f, 0.f);
+
+	m_SimpleHUD->SetText(TEXT("¶ì¸ð"));
+	m_SimpleHUD->SetHPPercent(1.f);
+	m_SimpleHUD->SetHPDir(ProgressBar_Dir::BottomToTop);
 
 	m_Sprite->SetTransparency(true);
 	//m_Sprite->SetOpacity(0.5f);

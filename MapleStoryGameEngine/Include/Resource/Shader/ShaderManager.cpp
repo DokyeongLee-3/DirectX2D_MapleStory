@@ -7,6 +7,7 @@
 #include "ColliderShader.h"
 #include "ColliderPixelShader.h"
 #include "WidgetShader.h"
+#include "ProgressBarShader.h"
 
 CShaderManager::CShaderManager()
 {
@@ -35,10 +36,11 @@ bool CShaderManager::Init()
 	if (!CreateShader<CColliderPixelShader>("ColliderPixelShader"))
 		return false;
 
-
 	if (!CreateShader<CWidgetShader>("WidgetShader"))
 		return false;
 
+	if (!CreateShader<CProgressBarShader>("ProgressBarShader"))
+		return false;
 
 
 	// ================= 상수 버퍼 =================
@@ -60,6 +62,9 @@ bool CShaderManager::Init()
 		(int)ConstantBuffer_Shader_Type::Graphic);
 
 	CreateConstantBuffer("WidgetCBuffer", sizeof(WidgetCBuffer), 11,
+		(int)ConstantBuffer_Shader_Type::Graphic);
+
+	CreateConstantBuffer("ProgressBarCBuffer", sizeof(ProgressBarCBuffer), 12,
 		(int)ConstantBuffer_Shader_Type::Graphic);
 
 	return true;

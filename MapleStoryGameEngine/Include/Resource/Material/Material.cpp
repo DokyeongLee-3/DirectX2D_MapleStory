@@ -204,7 +204,9 @@ void CMaterial::Render()
 	for (int i = 0; i < (int)RenderState_Type::Max; ++i)
 	{
 		if (m_RenderStateArray[i])
+		{	
 			m_RenderStateArray[i]->SetState();
+		}
 	}
 
 	size_t	Size = m_TextureInfo.size();

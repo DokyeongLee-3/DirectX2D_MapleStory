@@ -2,7 +2,7 @@
 
 #include "GameObject/GameObject.h"
 #include "Component/SpriteComponent.h"
-#include "Component/ColliderBox2D.h"
+#include "../Component/DragCollider.h"
 
 // 애니메이션없는 맵상에 배치되는 모든 오브젝트 종류들
 class CStaticMapObj :
@@ -17,7 +17,7 @@ protected:
 
 private:
     CSharedPtr<CSpriteComponent>    m_Sprite;
-    CSharedPtr<CColliderBox2D>      m_DragCollider;
+    CSharedPtr<CDragCollider>      m_DragCollider;
 
 public:
     class CSpriteComponent* GetSpriteComponent()    const
@@ -33,6 +33,9 @@ public:
     virtual CStaticMapObj* Clone();
     virtual void Save(FILE* File);
     virtual void Load(FILE* File);
+
+public:
+    void DeleteAllDragCollider();
 
 };
 

@@ -172,6 +172,12 @@
     <Filter Include="02. Resource\06. Sound\01. FMOD">
       <UniqueIdentifier>{eb27c702-222b-482e-842b-9d86df54633b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Resource\07. Font">
+      <UniqueIdentifier>{2a3676e0-9bb7-40de-96da-6d027b11d78b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Component\01. SceneComponent\04. Widget">
+      <UniqueIdentifier>{92c72f01-ec10-4269-bcfb-a781dae329bb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -461,6 +467,27 @@
     </ClCompile>
     <ClCompile Include="Resource\Sound\Sound.cpp">
       <Filter>02. Resource\06. Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Font\FontManager.cpp">
+      <Filter>02. Resource\07. Font</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\Text.cpp">
+      <Filter>09. Widget\02. Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\WidgetComponent.cpp">
+      <Filter>05. Component\01. SceneComponent\04. Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\ProgressBar.cpp">
+      <Filter>09. Widget\02. Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\ProgressBarConstantBuffer.cpp">
+      <Filter>02. Resource\02. Shader\03. ConstantBuffer\06. Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\Image.cpp">
+      <Filter>09. Widget\02. Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\ProgressBarShader.cpp">
+      <Filter>02. Resource\02. Shader\02. ShaderClass\04. Widget</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -793,6 +820,27 @@
     </ClInclude>
     <ClInclude Include="Resource\Sound\Sound.h">
       <Filter>02. Resource\06. Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Font\FontManager.h">
+      <Filter>02. Resource\07. Font</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\Text.h">
+      <Filter>09. Widget\02. Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\WidgetComponent.h">
+      <Filter>05. Component\01. SceneComponent\04. Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\ProgressBar.h">
+      <Filter>09. Widget\02. Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Shader\ProgressBarConstantBuffer.h">
+      <Filter>02. Resource\02. Shader\03. ConstantBuffer\06. Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\Image.h">
+      <Filter>09. Widget\02. Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Shader\ProgressBarShader.h">
+      <Filter>02. Resource\02. Shader\02. ShaderClass\04. Widget</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -60,6 +60,11 @@ bool CMonsterRadish::Init()
 	CInput::GetInst()->CreateKey("NextAnimation", 'N');
 	CInput::GetInst()->SetKeyCallback<CMonsterRadish>("NextAnimation", KeyState_Down, this, &CMonsterRadish::NextAnimation);
 
+	CInput::GetInst()->CreateKey("Rotate", VK_RIGHT);
+	CInput::GetInst()->SetKeyCallback<CMonsterRadish>("Rotate", KeyState_Push, this, &CMonsterRadish::RotationZ);
+	CInput::GetInst()->CreateKey("RotateInv", VK_LEFT);
+	CInput::GetInst()->SetKeyCallback<CMonsterRadish>("RotateInv", KeyState_Push, this, &CMonsterRadish::RotationZInv);
+
 	return true;
 }
 
@@ -104,4 +109,14 @@ void CMonsterRadish::NextAnimation(float DeltaTime)
 	CAnimationSequence2DInstance* Anim = m_Sprite->GetAnimationInstance();
 
 	Anim->NextAnimation();
+}
+
+void CMonsterRadish::RotationZInv(float DeltaTime)
+{
+	m_Sprite->AddRelativeRotationZ(100.f * DeltaTime);
+}
+
+void CMonsterRadish::RotationZ(float DeltaTime)
+{
+	m_Sprite->AddRelativeRotationZ(-100.f * DeltaTime);
 }

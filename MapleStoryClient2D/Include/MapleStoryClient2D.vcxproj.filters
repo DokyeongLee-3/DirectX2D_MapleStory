@@ -43,6 +43,18 @@
     <Filter Include="03. UI">
       <UniqueIdentifier>{1061491c-3584-4fdd-8ad7-25e4a4757c49}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Object\07. Stage">
+      <UniqueIdentifier>{4e0197bf-f8eb-468a-b329-c4b59abe38bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\08. StaticMapObject">
+      <UniqueIdentifier>{d47bbbee-e3d4-40d7-a108-8ca61c2604b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component">
+      <UniqueIdentifier>{384b3b05-e324-49d3-98da-44585b1ccdc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. UI\01. Mouse">
+      <UniqueIdentifier>{9392cebc-a8fa-4c1f-9edb-79168675fd4a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -93,6 +105,27 @@
     <ClCompile Include="Widget\MainWidget.cpp">
       <Filter>03. UI</Filter>
     </ClCompile>
+    <ClCompile Include="Object\Stage.cpp">
+      <Filter>02. Object\07. Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\StaticMapObj.cpp">
+      <Filter>02. Object\08. StaticMapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\DragCollider.cpp">
+      <Filter>04. Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\SimpleHUD.cpp">
+      <Filter>03. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\ConfigurationWindow.cpp">
+      <Filter>03. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\Portal.cpp">
+      <Filter>02. Object\08. StaticMapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\MouseNormal.cpp">
+      <Filter>03. UI\01. Mouse</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -142,6 +175,27 @@
     </ClInclude>
     <ClInclude Include="Widget\MainWidget.h">
       <Filter>03. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Stage.h">
+      <Filter>02. Object\07. Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\StaticMapObj.h">
+      <Filter>02. Object\08. StaticMapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\DragCollider.h">
+      <Filter>04. Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\SimpleHUD.h">
+      <Filter>03. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\ConfigurationWindow.h">
+      <Filter>03. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Portal.h">
+      <Filter>02. Object\08. StaticMapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\MouseNormal.h">
+      <Filter>03. UI\01. Mouse</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

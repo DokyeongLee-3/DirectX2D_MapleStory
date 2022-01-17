@@ -87,3 +87,11 @@ const AnimationFrameData& CAnimationSequence2DData::GetFrameData(int Index) cons
 	return m_Sequence->GetFrameData(Index);
 }
 
+void CAnimationSequence2DData::SetCurrentAnimationFirstFrame()
+{
+	if (m_Reverse)
+		m_Frame = m_Sequence->GetFrameCount() - 1;
+	else
+		m_Frame = 0;
+}
+

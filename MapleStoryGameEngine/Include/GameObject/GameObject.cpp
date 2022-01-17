@@ -103,7 +103,15 @@ void CGameObject::GetAllSceneComponentsName(std::vector<FindComponentName>& vecN
 	//}
 }
 
+void CGameObject::SetAllSceneComponentsLayer(const std::string& Name)
+{
+	m_RootComponent->SetAllSceneComponentsLayer(Name);
+}
 
+void CGameObject::ClearSceneComponents()
+{
+
+}
 
 void CGameObject::Start()
 {
@@ -245,9 +253,8 @@ void CGameObject::Load(FILE* File)
 		size_t	TypeID = 0;
 		fread(&TypeID, sizeof(size_t), 1, File);
 
-		CSceneManager::GetInst()->CallCreateComponent(this, TypeID);
-
-		m_RootComponent->Load(File);
+		if(CSceneManager::GetInst()->CallCreateComponent(this, TypeID))
+			m_RootComponent->Load(File);
 	}
 
 	int	ObjComponentCount = 0;

@@ -37,6 +37,12 @@
     <Filter Include="03. Object\05. Stage">
       <UniqueIdentifier>{66c56ca2-7fbd-4a01-9fd1-be4f66ed84b1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04. Collider">
+      <UniqueIdentifier>{f71cce16-ae9f-4a24-90f9-9cfc087a83d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. UI">
+      <UniqueIdentifier>{d1423fd7-fa26-410e-983f-2ad97bc28891}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scene\DefaultScene.cpp">
@@ -116,6 +122,9 @@
     </ClCompile>
     <ClCompile Include="Object\Stage.cpp">
       <Filter>03. Object\05. Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\DragCollider.cpp">
+      <Filter>04. Collider</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -202,6 +211,9 @@
     </ClInclude>
     <ClInclude Include="Object\Stage.h">
       <Filter>03. Object\05. Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\DragCollider.h">
+      <Filter>04. Collider</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

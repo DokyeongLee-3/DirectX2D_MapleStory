@@ -205,6 +205,210 @@ bool CTexture::LoadTextureFullPath(const std::string& Name, const TCHAR* FullPat
 	return CreateResource(0);
 }
 
+bool CTexture::LoadTexture(const std::string& Name,
+	const std::vector<TCHAR*>& vecFileName, const std::string& PathName)
+{
+	m_ImageType = Image_Type::Frame;
+
+	SetName(Name);
+
+	const PathInfo* Path = CPathManager::GetInst()->FindPath(PathName);
+
+	size_t	Size = vecFileName.size();
+
+	for (size_t i = 0; i < Size; ++i)
+	{
+		TextureResourceInfo* Info = new TextureResourceInfo;
+
+		TCHAR* FullPath = new TCHAR[MAX_PATH];
+		memset(FullPath, 0, sizeof(TCHAR) * MAX_PATH);
+
+		if (Path)
+			lstrcpy(FullPath, Path->Path);
+
+		lstrcat(FullPath, vecFileName[i]);
+
+		Info->FullPath = FullPath;
+
+		Info->FileName = new TCHAR[MAX_PATH];
+		memset(Info->FileName, 0, sizeof(TCHAR) * MAX_PATH);
+
+		lstrcpy(Info->FileName, vecFileName[i]);
+
+		Info->PathName = new char[MAX_PATH];
+		memset(Info->PathName, 0, sizeof(char) * MAX_PATH);
+
+		strcpy_s(Info->PathName, PathName.length() + 1, PathName.c_str());
+
+		char	Ext[_MAX_EXT] = {};
+		char	FullPathMultibyte[MAX_PATH] = {};
+
+#ifdef UNICODE
+
+		int	ConvertLength = WideCharToMultiByte(CP_ACP, 0, FullPath, -1, nullptr, 0, nullptr, nullptr);
+		WideCharToMultiByte(CP_ACP, 0, FullPath, -1, FullPathMultibyte, ConvertLength, nullptr, nullptr);
+
+#else
+
+		strcpy_s(FullPathMultibyte, FullPath);
+
+#endif // UNICODE
+
+		_splitpath_s(FullPathMultibyte, nullptr, 0, nullptr, 0, nullptr, 0, Ext, _MAX_EXT);
+
+		_strupr_s(Ext);
+
+		ScratchImage* Image = new ScratchImage;
+
+		if (strcmp(Ext, ".DDS") == 0)
+		{
+			if (FAILED(LoadFromDDSFile(FullPath, DDS_FLAGS_NONE, nullptr, *Image)))
+			{
+				SAFE_DELETE(Info);
+				SAFE_DELETE(Image);
+				return false;
+			}
+		}
+
+		else if (strcmp(Ext, ".TGA") == 0)
+		{
+			if (FAILED(LoadFromTGAFile(FullPath, nullptr, *Image)))
+			{
+				SAFE_DELETE(Info);
+				SAFE_DELETE(Image);
+				return false;
+			}
+		}
+
+		else
+		{
+			if (FAILED(LoadFromWICFile(FullPath, WIC_FLAGS_NONE, nullptr, *Image)))
+			{
+				SAFE_DELETE(Info);
+				SAFE_DELETE(Image);
+				return false;
+			}
+		}
+
+		Info->Image = Image;
+
+		m_vecTextureInfo.push_back(Info);
+
+		if (!CreateResource((int)i))
+			return false;
+	}
+
+	return true;
+}
+
+bool CTexture::LoadTextureFullPath(const std::string& Name, 
+	const std::vector<TCHAR*>& vecFullPath)
+{
+	m_ImageType = Image_Type::Frame;
+
+	SetName(Name);
+
+	size_t	Size = vecFullPath.size();
+
+	for (size_t i = 0; i < Size; ++i)
+	{
+		TextureResourceInfo* Info = new TextureResourceInfo;
+
+		TCHAR* FullPath1 = new TCHAR[MAX_PATH];
+		memset(FullPath1, 0, sizeof(TCHAR) * MAX_PATH);
+
+		lstrcpy(FullPath1, vecFullPath[i]);
+
+		Info->FullPath = FullPath1;
+
+		Info->FileName = new TCHAR[MAX_PATH];
+		memset(Info->FileName, 0, sizeof(TCHAR) * MAX_PATH);
+
+		int PathLength = lstrlen(Info->FullPath);
+
+		// D:\Lecture\37th\API\GameFramework\GameFramework\Bin\Texture\Test.png
+		for (int i = PathLength - 1; i > 0; --i)
+		{
+			if (Info->FullPath[i] == '\\' && i >= 4)
+			{
+				if ((Info->FullPath[i - 1] == 'n' || Info->FullPath[i - 1] == 'N') &&
+					(Info->FullPath[i - 2] == 'i' || Info->FullPath[i - 2] == 'I') &&
+					(Info->FullPath[i - 3] == 'b' || Info->FullPath[i - 3] == 'B') &&
+					Info->FullPath[i - 4] == '\\')
+				{
+					lstrcpy(Info->FileName, &Info->FullPath[i + 1]);
+					break;
+				}
+			}
+		}
+
+		TCHAR	_FileExt[_MAX_EXT] = {};
+
+		_wsplitpath_s(vecFullPath[i], nullptr, 0, nullptr, 0, nullptr, 0, _FileExt, _MAX_EXT);
+
+		Info->PathName = new char[MAX_PATH];
+		memset(Info->PathName, 0, sizeof(char) * MAX_PATH);
+
+		strcpy_s(Info->PathName, strlen(ROOT_PATH) + 1, ROOT_PATH);
+
+		char	Ext[_MAX_EXT] = {};
+
+#ifdef UNICODE
+
+		int	ConvertLength = WideCharToMultiByte(CP_ACP, 0, _FileExt, -1, nullptr, 0, nullptr, nullptr);
+		WideCharToMultiByte(CP_ACP, 0, _FileExt, -1, Ext, ConvertLength, nullptr, nullptr);
+
+#else
+
+		strcpy_s(Ext, _FileExt);
+
+#endif // UNICODE
+
+		_strupr_s(Ext);
+
+		ScratchImage* Image = new ScratchImage;
+
+		if (strcmp(Ext, ".DDS") == 0)
+		{
+			if (FAILED(LoadFromDDSFile(vecFullPath[i], DDS_FLAGS_NONE, nullptr, *Image)))
+			{
+				SAFE_DELETE(Info);
+				SAFE_DELETE(Image);
+				return false;
+			}
+		}
+
+		else if (strcmp(Ext, ".TGA") == 0)
+		{
+			if (FAILED(LoadFromTGAFile(vecFullPath[i], nullptr, *Image)))
+			{
+				SAFE_DELETE(Info);
+				SAFE_DELETE(Image);
+				return false;
+			}
+		}
+
+		else
+		{
+			if (FAILED(LoadFromWICFile(vecFullPath[i], WIC_FLAGS_NONE, nullptr, *Image)))
+			{
+				SAFE_DELETE(Info);
+				SAFE_DELETE(Image);
+				return false;
+			}
+		}
+
+		Info->Image = Image;
+
+		m_vecTextureInfo.push_back(Info);
+
+		if (!CreateResource((int)i))
+			return false;
+	}
+
+	return true;
+}
+
 bool CTexture::CreateResource(int Index)
 {
 	TextureResourceInfo* Info = m_vecTextureInfo[Index];

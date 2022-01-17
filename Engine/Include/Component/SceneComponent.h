@@ -43,6 +43,11 @@ public:
 		return m_Render;
 	}
 
+	int GetChildCount()	const
+	{
+		return (int)m_vecChild.size();
+	}
+
 public:
 	void SetLayerName(const std::string& Name)
 	{
@@ -63,7 +68,9 @@ public:
 	void AddChild(CSceneComponent* Child);
 	bool DeleteChild(CSceneComponent* Child);
 	bool DeleteChild(const std::string& Name);
+	void ClearChild();
 	CSceneComponent* FindComponent(const std::string& Name);
+	void SetAllSceneComponentsLayer(const std::string& Name);
 
 public:
 	virtual void Start();

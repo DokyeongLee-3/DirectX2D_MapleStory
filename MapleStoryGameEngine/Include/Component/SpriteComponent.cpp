@@ -283,7 +283,7 @@ void CSpriteComponent::Load(FILE* File)
 
 		m_Animation->Load(File);
 	}
-
+		
 	CSceneComponent::Load(File);
 }
 

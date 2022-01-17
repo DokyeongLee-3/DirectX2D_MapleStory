@@ -12,7 +12,7 @@ public:
 public:
     virtual bool Init();
     class CGameObject* m_CameraObject;
-    class CStage*      m_StageObject;
+    class CStage* m_StageObject;
     class CCameraComponent* m_CameraComponent;
 
 public:

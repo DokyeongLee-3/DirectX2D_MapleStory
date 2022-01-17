@@ -220,11 +220,13 @@ void CEditorMenu::ComponentCreateButton()
 	{
 	case SceneComponent_Type::Sprite:
 		Com = Obj->CreateComponent<CSpriteComponent>(m_ComponentNameInput->GetTextMultibyte());
-		Obj->SetRootComponent(Com);
+		if(!Obj->GetRootComponent())
+			Obj->SetRootComponent(Com);
 		break;
 	case SceneComponent_Type::StaticMesh:
 		Com = Obj->CreateComponent<CStaticMeshComponent>(m_ComponentNameInput->GetTextMultibyte());
-		Obj->SetRootComponent(Com);
+		if (!Obj->GetRootComponent())
+			Obj->SetRootComponent(Com);
 		break;
 	case SceneComponent_Type::ColliderBox2D:
 		Com = Obj->CreateComponent<CColliderBox2D>(m_ComponentNameInput->GetTextMultibyte());
@@ -232,6 +234,10 @@ void CEditorMenu::ComponentCreateButton()
 		break;
 	case SceneComponent_Type::ColliderCircle:
 		Com = Obj->CreateComponent<CColliderCircle>(m_ComponentNameInput->GetTextMultibyte());
+		Obj->GetRootComponent()->AddChild(Com);
+		break;
+	case SceneComponent_Type::DragCollider:
+		Com = Obj->CreateComponent<CDragCollider>(m_ComponentNameInput->GetTextMultibyte());
 		Obj->GetRootComponent()->AddChild(Com);
 		break;
 	}

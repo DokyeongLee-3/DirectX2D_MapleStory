@@ -77,12 +77,20 @@ public:
 		return m_Ptr != Ptr.m_Ptr;
 	}
 
+	// 변환 연산자
+	// CSharedPtr<T>타입이 아니라 T* 타입으로 변환해준다
 	operator T* () const
 	{
 		return m_Ptr;
 	}
 
 	T* operator -> () const
+	{
+		return m_Ptr;
+	}
+
+	// 역참조 연산자
+	T* operator * ()	const
 	{
 		return m_Ptr;
 	}

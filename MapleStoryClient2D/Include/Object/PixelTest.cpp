@@ -25,7 +25,7 @@ bool CPixelTest::Init()
 
 	m_Body->SetRelativePos(400.f, 50.f, 0.f);
 
-	m_Body->SetInfo(TEXT("PixelCollision.png"));
+	m_Body->SetInfo(TEXT("back.2.png"));
 	m_Body->SetPixelCollisionType(PixelCollision_Type::Color_Confirm);
 	m_Body->SetPixelColor(255, 0, 255);
 

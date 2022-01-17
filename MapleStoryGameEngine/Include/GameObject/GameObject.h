@@ -61,6 +61,8 @@ public:
 
 	class CComponent* FindComponent(const std::string& Name);
 	void GetAllSceneComponentsName(std::vector<FindComponentName>& vecNames);
+	void SetAllSceneComponentsLayer(const std::string& Name);
+	void ClearSceneComponents();
 
 	template <typename T>
 	T* FindComponentFromType()

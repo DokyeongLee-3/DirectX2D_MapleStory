@@ -184,6 +184,7 @@
     <ClInclude Include="Component\SpriteComponent.h" />
     <ClInclude Include="Component\StaticMeshComponent.h" />
     <ClInclude Include="Component\Transform.h" />
+    <ClInclude Include="Component\WidgetComponent.h" />
     <ClInclude Include="Device.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="Flag.h" />
@@ -230,6 +231,7 @@
     <ClInclude Include="Render\RenderStateManager.h" />
     <ClInclude Include="Resource\Animation\AnimationManager.h" />
     <ClInclude Include="Resource\Animation\AnimationSequence2D.h" />
+    <ClInclude Include="Resource\Font\FontManager.h" />
     <ClInclude Include="Resource\Material\Material.h" />
     <ClInclude Include="Resource\Material\MaterialManager.h" />
     <ClInclude Include="Resource\Mesh\ColorMesh.h" />
@@ -250,6 +252,8 @@
     <ClInclude Include="Resource\Shader\MaterialConstantBuffer.h" />
     <ClInclude Include="Resource\Shader\Mesh2DShader.h" />
     <ClInclude Include="Resource\Shader\PosMeshShader.h" />
+    <ClInclude Include="Resource\Shader\ProgressBarConstantBuffer.h" />
+    <ClInclude Include="Resource\Shader\ProgressBarShader.h" />
     <ClInclude Include="Resource\Shader\Shader.h" />
     <ClInclude Include="Resource\Shader\ShaderManager.h" />
     <ClInclude Include="Resource\Shader\Standard2DConstantBuffer.h" />
@@ -275,6 +279,9 @@
     <ClInclude Include="Vector3.h" />
     <ClInclude Include="Vector4.h" />
     <ClInclude Include="Widget\Button.h" />
+    <ClInclude Include="Widget\Image.h" />
+    <ClInclude Include="Widget\ProgressBar.h" />
+    <ClInclude Include="Widget\Text.h" />
     <ClInclude Include="Widget\Widget.h" />
     <ClInclude Include="Widget\WidgetWindow.h" />
   </ItemGroup>
@@ -296,6 +303,7 @@
     <ClCompile Include="Component\SpriteComponent.cpp" />
     <ClCompile Include="Component\StaticMeshComponent.cpp" />
     <ClCompile Include="Component\Transform.cpp" />
+    <ClCompile Include="Component\WidgetComponent.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="GameObject\GameObject.cpp" />
@@ -330,6 +338,7 @@
     <ClCompile Include="Render\RenderStateManager.cpp" />
     <ClCompile Include="Resource\Animation\AnimationManager.cpp" />
     <ClCompile Include="Resource\Animation\AnimationSequence2D.cpp" />
+    <ClCompile Include="Resource\Font\FontManager.cpp" />
     <ClCompile Include="Resource\Material\Material.cpp" />
     <ClCompile Include="Resource\Material\MaterialManager.cpp" />
     <ClCompile Include="Resource\Mesh\ColorMesh.cpp" />
@@ -350,6 +359,8 @@
     <ClCompile Include="Resource\Shader\MaterialConstantBuffer.cpp" />
     <ClCompile Include="Resource\Shader\Mesh2DShader.cpp" />
     <ClCompile Include="Resource\Shader\PosMeshShader.cpp" />
+    <ClCompile Include="Resource\Shader\ProgressBarConstantBuffer.cpp" />
+    <ClCompile Include="Resource\Shader\ProgressBarShader.cpp" />
     <ClCompile Include="Resource\Shader\Shader.cpp" />
     <ClCompile Include="Resource\Shader\ShaderManager.cpp" />
     <ClCompile Include="Resource\Shader\Standard2DConstantBuffer.cpp" />
@@ -373,6 +384,9 @@
     <ClCompile Include="Vector3.cpp" />
     <ClCompile Include="Vector4.cpp" />
     <ClCompile Include="Widget\Button.cpp" />
+    <ClCompile Include="Widget\Image.cpp" />
+    <ClCompile Include="Widget\ProgressBar.cpp" />
+    <ClCompile Include="Widget\Text.cpp" />
     <ClCompile Include="Widget\Widget.cpp" />
     <ClCompile Include="Widget\WidgetWindow.cpp" />
   </ItemGroup>

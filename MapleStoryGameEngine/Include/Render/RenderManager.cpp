@@ -105,13 +105,13 @@ bool CRenderManager::Init()
 	m_RenderLayerList.push_back(Layer);
 
 	Layer = new RenderLayer;
-	Layer->Name = "MapObjBack";
+	Layer->Name = "Stage";
 	Layer->LayerPriority = 1;
 
 	m_RenderLayerList.push_back(Layer);
 
 	Layer = new RenderLayer;
-	Layer->Name = "MapObjMiddle";
+	Layer->Name = "MapObjBack";
 	Layer->LayerPriority = 2;
 
 	m_RenderLayerList.push_back(Layer);
@@ -119,6 +119,18 @@ bool CRenderManager::Init()
 	Layer = new RenderLayer;
 	Layer->Name = "MapObjFront";
 	Layer->LayerPriority = 3;
+
+	m_RenderLayerList.push_back(Layer);
+
+	Layer = new RenderLayer;
+	Layer->Name = "MovingObjFront";
+	Layer->LayerPriority = 4;
+
+	m_RenderLayerList.push_back(Layer);
+
+	Layer = new RenderLayer;
+	Layer->Name = "ScreenWidgetComponent";
+	Layer->LayerPriority = 5;
 
 	m_RenderLayerList.push_back(Layer);
 

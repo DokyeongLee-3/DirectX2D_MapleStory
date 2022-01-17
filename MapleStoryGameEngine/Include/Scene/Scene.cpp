@@ -211,7 +211,8 @@ void CScene::LoadFullPath(const char* FullPath)
 	if (!File)
 		return;
 	
-	// Load하면서 현재 DefaultScene의 CameraObject도 지워지므로 CameraObject빼고 clear한다
+	// Editor에서 저장된 Scene을 Load하면서 현재 DefaultScene의 CameraObject도 지워지므로 CameraObject빼고 clear한다
+	// 마찬가지로 Editor에서 저장한 Scene을 Client에서 Load할때 Client에서 Scene에 미리 만들어놓은 Player는 지우지 않도록한다 
 	// m_ObjList.clear();
 
 	auto iter = m_ObjList.begin();
@@ -219,7 +220,8 @@ void CScene::LoadFullPath(const char* FullPath)
 
 	for (; iter != iterEnd; )
 	{
-		if ((*iter)->GetName() == "EditorCamera")
+		if ((*iter)->GetName() == "EditorCamera" || 
+			(*iter)->GetName() == "Player")
 		{	
 			++iter;
 			continue;
@@ -257,4 +259,3 @@ void CScene::LoadFullPath(const char* FullPath)
 
 	fclose(File);
 }
-

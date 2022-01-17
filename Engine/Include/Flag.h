@@ -86,6 +86,7 @@ enum class SceneComponent_Type
 	StaticMesh,
 	ColliderBox2D,
 	ColliderCircle,
+	DragCollider,
 	Max
 };
 
@@ -162,5 +163,42 @@ enum class Button_State
 	MouseOn,
 	Click,
 	Disable,
+	Max
+};
+
+enum class Button_Sound_State
+{
+	MouseOn,
+	Click,
+	Max
+};
+
+enum class WidgetComponent_Space
+{
+	Screen,
+	World
+};
+
+enum class ProgressBar_Dir
+{
+	RightToLeft,
+	LeftToRight,
+	TopToBottom,
+	BottomToTop
+};
+
+enum class Mouse_State
+{
+	Normal,
+	State1,
+	State2,
+	State3,
+	State4,
+	State5,
+	State6,
+	State7,
+	State8,
+	State9,
+	State10,
 	Max
 };

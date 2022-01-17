@@ -296,7 +296,6 @@ void CEditorManager::EditObjRight(float DeltaTime)
 
 void CEditorManager::CreateSceneMode(CScene* Scene, size_t Type)
 {
-	// 여기서도 DefaultScene의 CameraObject의 RootComponent와 Scene도 0xddddddd
 	if (Type == typeid(CDefaultScene).hash_code())
 	{
 		if(!(Scene->GetSceneMode()))
@@ -487,6 +486,12 @@ CComponent* CEditorManager::CreateComponent(CGameObject* Obj, size_t Type)
 		return Component;
 	}
 
+	else if (Type == typeid(CDragCollider).hash_code())
+	{
+		CDragCollider* Component = Obj->LoadComponent<CDragCollider>();
+
+		return Component;
+	}
 
 	return nullptr;
 }
