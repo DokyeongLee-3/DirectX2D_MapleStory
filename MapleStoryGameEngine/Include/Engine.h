@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameInfo.h"
+#include "Timer.h"
 
 class CEngine
 {
@@ -17,10 +18,21 @@ private:
 	bool		m_Start;
 	bool		m_Play;
 	Engine_Space	m_Space;
+	int				m_ShowCursorCount;
 	Mouse_State		m_MouseState;
 	CSharedPtr<class CWidgetWindow>	m_MouseWidget[(int)Mouse_State::Max];
+	class CGlobalConstantBuffer* m_GlobalCBuffer;
+	float			m_GlobalAccTime;
+	CSharedPtr<class CTexture>	m_GlobalNoiseTexture;
 
 public:
+	void SetMouseState(Mouse_State State);
+
+	class CWidgetWindow* GetMouseWidget()	const
+	{
+		return m_MouseWidget[(int)m_MouseState];
+	}
+
 	Engine_Space GetEngineSpace()	const
 	{
 		return m_Space;
@@ -44,6 +56,21 @@ public:
 	HINSTANCE GetWindowInstance()	const
 	{
 		return m_hInst;
+	}
+
+	void Exit()
+	{
+		DestroyWindow(m_hWnd);
+	}
+
+	float GetFPS()	const
+	{
+		return m_Timer->GetFPS();
+	}
+
+	float GetDeltaTime()	const
+	{
+		return m_Timer->GetDeltaTime();
 	}
 
 public:

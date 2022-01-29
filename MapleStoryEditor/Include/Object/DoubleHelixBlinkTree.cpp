@@ -27,9 +27,12 @@ void CDoubleHelixBlinkTree::Start()
 bool CDoubleHelixBlinkTree::Init()
 {
 	m_Sprite = CreateComponent<CSpriteComponent>("DoubleHelixBlinkTreeSprite");
+	m_DragCollider = CreateComponent<CDragCollider>("DragCollider");
 
+	m_DragCollider->SetCollisionProfile("DragCollider");
 
 	SetRootComponent(m_Sprite);
+	m_Sprite->AddChild(m_DragCollider);
 
 	m_Sprite->SetTransparency(true);
 
@@ -39,10 +42,11 @@ bool CDoubleHelixBlinkTree::Init()
 	m_Sprite->SetRelativePos(500.f, 300.f, 0.f);
 	m_Sprite->SetPivot(0.5f, 0.5f, 0.f);
 
+	m_DragCollider->SetWorldScale(50.f, 50.f, 1.f);
 
 	CAnimationSequence2DInstance* Anim = m_Sprite->GetAnimationInstance();
 
-	Anim->AddAnimation(TEXT("DoubleHelixBlinkTree.sqc"), ANIMATION_PATH, "DoubleHelixBlinkTree", true, 0.6f);
+	Anim->AddAnimation(TEXT("DoubleHelixBlinkTree.sqc"), ANIMATION_PATH, "DoubleHelixBlinkTree", true, 1.5f);
 
 
 	return true;
@@ -73,5 +77,7 @@ void CDoubleHelixBlinkTree::Load(FILE* File)
 	CGameObject::Load(File);
 
 	m_Sprite = (CSpriteComponent*)FindComponent("DoubleHelixBlinkTreeSprite");
+
+	m_Sprite->GetAnimationInstance()->FindAnimation("DoubleHelixBlinkTree")->SetPlayTime(2.f);
 }
 

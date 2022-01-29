@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Widget/WidgetWindow.h"
-#include "Widget/Button.h"
 #include "Widget/Image.h"
 
 class CConfigurationWindow :
@@ -30,6 +29,5 @@ public:
 	virtual CConfigurationWindow* Clone();
 
 public:
-	void MoveSlider(float DeltaTime);
 };
 

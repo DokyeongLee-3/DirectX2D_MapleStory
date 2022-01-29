@@ -6,6 +6,7 @@ CWidgetConstantBuffer::CWidgetConstantBuffer() :
 	m_BufferData{}
 {
 	m_BufferData.Tint = Vector4(1.f, 1.f, 1.f, 1.f);
+	m_BufferData.Opacity = 1.f;
 }
 
 CWidgetConstantBuffer::CWidgetConstantBuffer(const CWidgetConstantBuffer& Buffer) :

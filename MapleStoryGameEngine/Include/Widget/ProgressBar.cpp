@@ -154,7 +154,7 @@ void CProgressBar::PostUpdate(float DeltaTime)
 void CProgressBar::Render()
 {
 	if (m_Info.Texture)
-		m_Info.Texture->SetShader(0, (int)ConstantBuffer_Shader_Type::Pixel, 0);
+		m_Info.Texture->SetShader(0, (int)Buffer_Shader_Type::Pixel, 0);
 
 	m_Tint = m_Info.Tint;
 

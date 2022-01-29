@@ -34,6 +34,6 @@ public:
 		float BorderColor[4]);
 	ID3D11SamplerState* FindSampler(const std::string& Name);
 	void SetSampler(const std::string& Name, int Register,
-		int ShaderType = (int)ConstantBuffer_Shader_Type::All);
+		int ShaderType = (int)Buffer_Shader_Type::All);
 };
 

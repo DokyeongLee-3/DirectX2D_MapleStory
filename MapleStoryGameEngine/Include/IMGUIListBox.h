@@ -83,6 +83,11 @@ public:
 		}
 	}
 
+	void SetSelectIndex(int Index)
+	{
+		m_SelectIndex = Index;	
+	}
+
 	void SetPageItemCount(int Count)
 	{
 		m_PageItemCount = Count;

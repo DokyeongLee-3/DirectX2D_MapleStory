@@ -17,6 +17,7 @@ protected:
 	std::function<void()>	m_ClickCallback;
 	bool m_MoveXAllowed;
 	bool m_MoveYAllowed;
+	bool m_Clicked;
 
 public:
 	void SetMoveXAllowed(bool Allowed)
@@ -41,6 +42,21 @@ public:
 		SetUseTexture(true);
 	}
 
+	const WidgetImageInfo& GetInfo()
+	{
+		return m_Info;
+	}
+
+	void ClearWidgetFrameData()
+	{
+		m_Info.vecFrameData.clear();
+	}
+
+	bool IsClicked()	const
+	{
+		return m_Clicked;
+	}
+
 	bool SetTexture(const std::string& Name, const TCHAR* FileName,
 		const std::string& PathName = TEXTURE_PATH);
 	bool SetTextureFullPath(const std::string& Name,
@@ -53,8 +69,11 @@ public:
 	void SetTextureTint(unsigned char r, unsigned char g,
 		unsigned char b, unsigned char a);
 	void AddFrameData(const Vector2& Start, const Vector2& Size);
+	void AddFrameData(int Count);
 	void SetPlayTime(float PlayTime);
 	void SetPlayScale(float PlayScale);
+	void LoadSequence2D(const char* FileName, const std::string& PathName = ANIMATION_PATH, float PlayTime = 1.f,
+		float PlayScale = 1.f);
 
 public:
 	virtual void Start();

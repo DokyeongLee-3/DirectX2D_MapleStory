@@ -43,5 +43,10 @@ public:
 public:
     void Die();
     void ReturnIdle();
+
+
+public:
+    void OnMouseBegin(const CollisionResult& result);
+    void OnMouseEnd(const CollisionResult& result);
 };
 

@@ -1,4 +1,6 @@
+
 #include "MainWidget.h"
+#include "Engine.h"
 
 CMainWidget::CMainWidget()
 {
@@ -13,6 +15,12 @@ CMainWidget::CMainWidget(const CMainWidget& window) :
     m_Button = FindWidget<CButton>("Button");
     m_Button1 = FindWidget<CButton>("Button1");
     m_Button1Text = FindWidget<CText>("Text");
+
+    m_Hour = FindWidget<CNumber>("Hour");
+    m_Minute = FindWidget<CNumber>("Minute");
+    m_Second = FindWidget<CNumber>("Second");
+
+    m_FPSText = FindWidget<CText>("FPSText");
 }
 
 CMainWidget::~CMainWidget()
@@ -75,17 +83,115 @@ bool CMainWidget::Init()
     m_Button1Text->SetShadowOffset(2.f, 2.f);
 
 
-    //m_AnimationButton = CreateWidget<CButton>("AnimationButton");
-    //m_AnimationButton->LoadSequence2D(Button_State::Normal, "GameStartBlink.sqc", ANIMATION_PATH, 0.5f);
-    //m_AnimationButton->SetPos(20.f, 20.f);
-    //m_AnimationButton->SetTextureTint(Button_State::Normal, 0, 0, 220, 255);
+   /* m_AnimationButton = CreateWidget<CButton>("AnimationButton");
+    m_AnimationButton->LoadSequence2D(Button_State::Normal, "GameStartBlink.sqc", ANIMATION_PATH, 0.5f);
+    m_AnimationButton->SetPos(20.f, 20.f);
+    m_AnimationButton->SetTextureTint(Button_State::Normal, 0, 0, 220, 255);*/
     
+  /*  m_Hour = CreateWidget<CNumber>("Hour");
+    m_Minute = CreateWidget<CNumber>("Minute");
+    m_Second = CreateWidget<CNumber>("Second");
+
+    std::vector<TCHAR*> vecFileName;
+
+    for (int i = 0; i < 10; ++i)
+    {
+        TCHAR* FileName = new TCHAR[MAX_PATH];
+        memset(FileName, 0, sizeof(TCHAR) * MAX_PATH);
+
+        wsprintf(FileName, TEXT("Number/1.NoRed0.%d.png"), i);
+
+        vecFileName.push_back(FileName);
+    }
+
+    m_Hour->SetTexture("Number", vecFileName);
+    m_Hour->AddFrameData(10);
+
+    for (int i = 0; i < 10; ++i)
+    {
+        SAFE_DELETE_ARRAY(vecFileName[i]);
+    }
+
+    vecFileName.clear();
+
+    for (int i = 0; i < 10; ++i)
+    {
+        TCHAR* FileName = new TCHAR[MAX_PATH];
+        memset(FileName, 0, sizeof(TCHAR) * MAX_PATH);
+
+        wsprintf(FileName, TEXT("Number/1.NoRed0.%d.png"), i);
+
+        vecFileName.push_back(FileName);
+    }
+
+    m_Minute->SetTexture("Number", vecFileName);
+    m_Minute->AddFrameData(10);
+    m_Minute->SetPos(100.f, 0.f);
+
+    for (int i = 0; i < 10; ++i)
+    {
+        SAFE_DELETE_ARRAY(vecFileName[i]);
+    }
+
+    vecFileName.clear();
+
+    for (int i = 0; i < 10; ++i)
+    {
+        TCHAR* FileName = new TCHAR[MAX_PATH];
+        memset(FileName, 0, sizeof(TCHAR) * MAX_PATH);
+
+        wsprintf(FileName, TEXT("Number/1.NoRed0.%d.png"), i);
+
+        vecFileName.push_back(FileName);
+    }
+
+    m_Second->SetTexture("Number", vecFileName);
+    m_Second->AddFrameData(10);
+    m_Second->SetPos(200.f, 0.f);
+
+    for (int i = 0; i < 10; ++i)
+    {
+        SAFE_DELETE_ARRAY(vecFileName[i]);
+    }
+
+    vecFileName.clear();*/
+
+    m_FPSText = CreateWidget<CText>("FPSText");
+
+    m_FPSText->SetText(TEXT("Button1"));
+    m_FPSText->SetPos(900.f, 650.f);
+    m_FPSText->SetSize(300.f, 40.f);
+    m_FPSText->SetZOrder(1);
+    m_FPSText->SetColor(1.f, 0.f, 0.f);
+    //m_Button1Text->SetOpacity(0.5f);
+    m_FPSText->SetAlignH(TEXT_ALIGN_H::Center);
+    m_FPSText->SetShadowEnable(true);
+    m_FPSText->SetShadowOffset(2.f, 2.f);
+
     return true;
 }
 
 void CMainWidget::Update(float DeltaTime)
 {
     CWidgetWindow::Update(DeltaTime);
+
+    SYSTEMTIME  time;
+
+    GetLocalTime(&time);
+
+  /*  m_Hour->SetNumber((int)time.wHour);
+    m_Minute->SetNumber((int)time.wMinute);
+    m_Second->SetNumber((int)time.wSecond);*/
+
+    char    FPS[256] = {};
+    sprintf_s(FPS, "FPS : %.5f", CEngine::GetInst()->GetFPS());
+
+    TCHAR   ConvertFPS[256] = {};
+
+    int Length = MultiByteToWideChar(CP_ACP, 0, FPS, -1, 0, 0);
+    MultiByteToWideChar(CP_ACP, 0, FPS, -1, ConvertFPS, Length);
+
+    m_FPSText->SetText(ConvertFPS);
 }
 
 void CMainWidget::PostUpdate(float DeltaTime)

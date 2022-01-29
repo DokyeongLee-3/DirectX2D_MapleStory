@@ -18,6 +18,7 @@ enum class CreateObject_Type
 	SingleHelixBlinkTree,
 	Library2ndLampLight,
 	Library2ndButterfly,
+	CharacterSelectBackLight,
 	StaticMapObj,
 	Stage
 };

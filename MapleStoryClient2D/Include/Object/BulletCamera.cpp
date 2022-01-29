@@ -82,6 +82,11 @@ CBulletCamera* CBulletCamera::Clone()
 	return new CBulletCamera(*this);
 }
 
+void CBulletCamera::SetCollisionProfile(const std::string& Name)
+{
+	m_Body->SetCollisionProfile(Name);
+}
+
 void CBulletCamera::CollisionCallback(const CollisionResult& result)
 {
 	m_Scene->GetCameraManager()->ReturnCamera();

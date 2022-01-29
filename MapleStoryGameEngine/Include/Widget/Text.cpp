@@ -5,6 +5,7 @@
 #include "../Scene/Scene.h"
 #include "../Resource/ResourceManager.h"
 #include "../Device.h"
+#include "../Render/RenderManager.h"
 
 CText::CText() :
 	m_TextCount(0),
@@ -330,7 +331,10 @@ void CText::Render()
 	}
 
 	if (m_Alpha)
-		m_ColorBrush->SetOpacity(m_Opacity);
+	{
+		float FadeAmount = CRenderManager::GetInst()->GetFadeAmount();
+		m_ColorBrush->SetOpacity(m_Opacity * FadeAmount);
+	}
 
 	else
 		m_ColorBrush->SetOpacity(1.f);

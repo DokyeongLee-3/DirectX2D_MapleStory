@@ -25,7 +25,7 @@ struct MaterialTextureInfo
     MaterialTextureInfo() :
         SamplerType(Sampler_Type::Linear),
         Register(0),
-        ShaderType((int)ConstantBuffer_Shader_Type::Pixel)
+        ShaderType((int)Buffer_Shader_Type::Pixel)
     {
     }
 };
@@ -93,12 +93,14 @@ public:
     }
 
 
+
 public:
     void SetRenderState(class CRenderState* State);
     void SetRenderState(const std::string& Name);
     void SetTransparency(bool Enable);
     void SetOpacity(float Opacity);
     void AddOpacity(float Opacity);
+
 
 public:
     void SetBaseColor(const Vector4& Color);

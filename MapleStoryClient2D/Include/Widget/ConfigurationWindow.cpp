@@ -35,13 +35,14 @@ bool CConfigurationWindow::Init()
 
     SetPos(700.f, 100.f);
     SetSize(265.f, 472.f);
+
     m_Configuration = CreateWidget<CImage>("ConfigurationWindowBackground");
-    m_Configuration->SetTexture("ConfigurationWindow", TEXT("UI/ConfigurationBackground.png"));
+    m_Configuration->SetTexture("ConfigurationWindow", TEXT("UI/Configuration/ConfigurationBackground.png"));
     m_Configuration->SetSize(265.f, 472.f);
     m_Configuration->SetMouseCollisionEnable(false);
 
     m_BGMSoundSlider = CreateWidget<CImage>("BGMSoundSlider");
-    m_BGMSoundSlider->SetTexture("BGMSoundSlider", TEXT("UI/OptionScroll.png"));
+    m_BGMSoundSlider->SetTexture("BGMSoundSlider", TEXT("UI/Configuration/OptionScroll.png"));
     m_BGMSoundSlider->SetSize(28.f, 11.f);
     m_BGMSoundSlider->SetPos(115.f, 333.f);
     m_BGMSoundSliderLeftMostXPos = 90.f;
@@ -49,7 +50,7 @@ bool CConfigurationWindow::Init()
     m_BGMSoundSlider->SetMoveXAllowed(true);
 
     float SliderXPos = m_BGMSoundSlider->GetWidgetPos().x;
-    m_Viewport->GetScene()->GetResource()->SetVolume("BGM", (SliderXPos - m_BGMSoundSliderLeftMostXPos) / (m_BGMSoundSliderRightMostXPos - m_BGMSoundSliderLeftMostXPos) * 100);
+    m_Viewport->GetScene()->GetResource()->SetVolume("BGM", (int)((SliderXPos - m_BGMSoundSliderLeftMostXPos) / (m_BGMSoundSliderRightMostXPos - m_BGMSoundSliderLeftMostXPos) * 100));
 
     
     //CInput::GetInst()->CreateKey("MouseLButton", VK_LBUTTON);
@@ -86,11 +87,6 @@ void CConfigurationWindow::Render()
 CConfigurationWindow* CConfigurationWindow::Clone()
 {
     return new CConfigurationWindow(*this);
-}
-
-void CConfigurationWindow::MoveSlider(float DeltaTime)
-{
-    int a = 3;
 }
 
 

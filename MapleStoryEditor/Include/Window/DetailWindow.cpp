@@ -54,7 +54,7 @@ bool CDetailWindow::Init()
 
 	m_PosX = AddWidget<CIMGUITextInput>("PositionX", 100.f, 30.f);
 	m_PosX->SetHideName(true);
-	m_PosX->SetTextType(ImGuiText_Type::Int);
+	m_PosX->SetTextType(ImGuiText_Type::Float);
 	m_PosX->SetCallback(this, &CDetailWindow::PositionXCallback);
 
 	Line = AddWidget<CIMGUISameLine>("Line");
@@ -68,7 +68,7 @@ bool CDetailWindow::Init()
 
 	m_PosY = AddWidget<CIMGUITextInput>("PositionY", 100.f, 30.f);
 	m_PosY->SetHideName(true);
-	m_PosY->SetTextType(ImGuiText_Type::Int);
+	m_PosY->SetTextType(ImGuiText_Type::Float);
 	m_PosY->SetCallback(this, &CDetailWindow::PositionYCallback);
 
 	Line = AddWidget<CIMGUISameLine>("Line");
@@ -82,7 +82,7 @@ bool CDetailWindow::Init()
 
 	m_PosZ = AddWidget<CIMGUITextInput>("PositionZ", 100.f, 30.f);
 	m_PosZ->SetHideName(true);
-	m_PosZ->SetTextType(ImGuiText_Type::Int);
+	m_PosZ->SetTextType(ImGuiText_Type::Float);
 	m_PosZ->SetCallback(this, &CDetailWindow::PositionZCallback);
 
 	// Rotation InputText
@@ -100,7 +100,7 @@ bool CDetailWindow::Init()
 
 	m_RotX = AddWidget<CIMGUITextInput>("RotationX", 100.f, 30.f);
 	m_RotX->SetHideName(true);
-	m_RotX->SetTextType(ImGuiText_Type::Int);
+	m_RotX->SetTextType(ImGuiText_Type::Float);
 	m_RotX->SetCallback(this, &CDetailWindow::RotationXCallback);
 
 	Line = AddWidget<CIMGUISameLine>("Line");
@@ -114,7 +114,7 @@ bool CDetailWindow::Init()
 
 	m_RotY = AddWidget<CIMGUITextInput>("RotationY", 100.f, 30.f);
 	m_RotY->SetHideName(true);
-	m_RotY->SetTextType(ImGuiText_Type::Int);
+	m_RotY->SetTextType(ImGuiText_Type::Float);
 	m_RotY->SetCallback(this, &CDetailWindow::RotationYCallback);
 
 	Line = AddWidget<CIMGUISameLine>("Line");
@@ -128,7 +128,7 @@ bool CDetailWindow::Init()
 
 	m_RotZ = AddWidget<CIMGUITextInput>("RotationZ", 100.f, 30.f);
 	m_RotZ->SetHideName(true);
-	m_RotZ->SetTextType(ImGuiText_Type::Int);
+	m_RotZ->SetTextType(ImGuiText_Type::Float);
 	m_RotZ->SetCallback(this, &CDetailWindow::RotationZCallback);
 
 	// Scaling
@@ -146,7 +146,7 @@ bool CDetailWindow::Init()
 
 	m_ScalingX = AddWidget<CIMGUITextInput>("ScaleX", 100.f, 30.f);
 	m_ScalingX->SetHideName(true);
-	m_ScalingX->SetTextType(ImGuiText_Type::Int);
+	m_ScalingX->SetTextType(ImGuiText_Type::Float);
 	m_ScalingX->SetCallback(this, &CDetailWindow::ScalingXCallback);
 
 	Line = AddWidget<CIMGUISameLine>("Line");
@@ -160,7 +160,7 @@ bool CDetailWindow::Init()
 
 	m_ScalingY = AddWidget<CIMGUITextInput>("ScaleY", 100.f, 30.f);
 	m_ScalingY->SetHideName(true);
-	m_ScalingY->SetTextType(ImGuiText_Type::Int);
+	m_ScalingY->SetTextType(ImGuiText_Type::Float);
 	m_ScalingY->SetCallback(this, &CDetailWindow::ScalingYCallback);
 
 	return true;
@@ -207,7 +207,7 @@ void CDetailWindow::PositionXCallback()
 	//Comp->SetRelativePos(Vector3(OriginRelativePos.x + Diff, OriginRelativePos.y, OriginRelativePos.z));
 
 	Vector3 NewWorldPos;
-	NewWorldPos.x = (float)m_PosX->GetValueInt();
+	NewWorldPos.x = m_PosX->GetValueFloat();
 
 	Comp->SetWorldPos(NewWorldPos.x, OriginWorldPos.y, OriginWorldPos.z);
 }
@@ -243,7 +243,7 @@ void CDetailWindow::PositionYCallback()
 	Vector3	OriginWorldPos = Comp->GetWorldPos();
 
 	Vector3 NewWorldPos;
-	NewWorldPos.y = (float)m_PosY->GetValueInt();
+	NewWorldPos.y = m_PosY->GetValueFloat();
 
 	Comp->SetWorldPos(OriginWorldPos.x, NewWorldPos.y, OriginWorldPos.z);
 }
@@ -269,7 +269,7 @@ void CDetailWindow::PositionZCallback()
 
 	Vector3	Pos = Obj->GetRootComponent()->GetWorldPos();
 
-	Pos.z = (float)m_PosZ->GetValueInt();
+	Pos.z = m_PosZ->GetValueFloat();
 
 	Obj->GetRootComponent()->SetWorldPos(Pos);
 }
@@ -295,7 +295,7 @@ void CDetailWindow::RotationXCallback()
 
 	Vector3	Rot = Obj->GetRootComponent()->GetWorldRot();
 
-	Rot.x = (float)m_RotX->GetValueInt();
+	Rot.x = m_RotX->GetValueFloat();
 
 	Obj->SetWorldRotation(Rot);
 }
@@ -321,7 +321,7 @@ void CDetailWindow::RotationYCallback()
 
 	Vector3	Rot = Obj->GetRootComponent()->GetWorldRot();
 
-	Rot.y = (float)m_RotY->GetValueInt();
+	Rot.y = m_RotY->GetValueFloat();
 
 	Obj->SetWorldRotation(Rot);
 }
@@ -347,7 +347,7 @@ void CDetailWindow::RotationZCallback()
 
 	Vector3	Rot = Obj->GetRootComponent()->GetWorldRot();
 
-	Rot.z = (float)m_RotZ->GetValueInt();
+	Rot.z = m_RotZ->GetValueFloat();
 
 	Obj->SetWorldRotation(Rot);
 }
@@ -382,7 +382,7 @@ void CDetailWindow::ScalingXCallback()
 
 	Vector3	Scale = ((CSceneComponent*)Comp)->GetWorldScale();
 
-	Scale.x = (float)m_ScalingX->GetValueInt();
+	Scale.x = m_ScalingX->GetValueFloat();
 
 	((CSceneComponent*)Comp)->SetWorldScale(Scale);
 }
@@ -417,7 +417,7 @@ void CDetailWindow::ScalingYCallback()
 
 	Vector3	Scale = ((CSceneComponent*)Comp)->GetWorldScale();
 
-	Scale.y = (float)m_ScalingY->GetValueInt();
+	Scale.y = m_ScalingY->GetValueFloat();
 
 	((CSceneComponent*)Comp)->SetWorldScale(Scale);
 }

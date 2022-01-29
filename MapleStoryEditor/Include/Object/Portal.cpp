@@ -51,7 +51,7 @@ bool CPortal::Init()
 
 	CAnimationSequence2DInstance* Anim = m_Sprite->GetAnimationInstance();
 
-	Anim->AddAnimation(TEXT("Portal.sqc"), ANIMATION_PATH, "Portal", true, 0.8f);
+	Anim->AddAnimation(TEXT("Portal.sqc"), ANIMATION_PATH, "Portal", true, 1.f);
 
 	/*Anim->AddAnimation(TEXT("GameStartBlink.sqc"), ANIMATION_PATH, "GameStartBlink", true, 0.5f);
 
@@ -87,6 +87,10 @@ void CPortal::Load(FILE* File)
 	CGameObject::Load(File);
 
 	m_Sprite = (CSpriteComponent*)FindComponent("PortalSprite");
+
+	CAnimationSequence2DData* Data = m_Sprite->GetAnimationInstance()->FindAnimation("Portal");
+
+	Data->SetPlayTime(0.9f);
 }
 
 void CPortal::NextAnimation(float DeltaTime)

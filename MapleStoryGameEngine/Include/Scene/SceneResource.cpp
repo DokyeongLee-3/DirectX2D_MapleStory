@@ -8,7 +8,7 @@ CSceneResource::CSceneResource()
 
 CSceneResource::~CSceneResource()
 {
-	{
+	/*{
 		auto	iter = m_mapMesh.begin();
 		auto	iterEnd = m_mapMesh.end();
 
@@ -75,6 +75,20 @@ CSceneResource::~CSceneResource()
 			iter = m_mapSequence2D.erase(iter);
 
 			CResourceManager::GetInst()->ReleaseAnimationSequence2D(Name);
+		}
+	}*/
+
+	{
+		auto	iter = m_mapParticle.begin();
+		auto	iterEnd = m_mapParticle.end();
+
+		for (; iter != iterEnd;)
+		{
+			std::string	Name = iter->first;
+
+			iter = m_mapParticle.erase(iter);
+
+			CResourceManager::GetInst()->ReleaseParticle(Name);
 		}
 	}
 }
@@ -449,4 +463,36 @@ CSound* CSceneResource::FindSound(const std::string& Name)
 FMOD::ChannelGroup* CSceneResource::FindChannelGroup(const std::string& Name)
 {
 	return CResourceManager::GetInst()->FindChannelGroup(Name);
+}
+
+bool CSceneResource::CreateParticle(const std::string& Name)
+{
+	if (FindParticle(Name))
+		return true;
+
+	if (!CResourceManager::GetInst()->CreateParticle(Name))
+		return false;
+
+	m_mapParticle.insert(std::make_pair(Name, CResourceManager::GetInst()->FindParticle(Name)));
+
+	return true;
+}
+
+CParticle* CSceneResource::FindParticle(const std::string& Name)
+{
+	auto	iter = m_mapParticle.find(Name);
+
+	if (iter == m_mapParticle.end())
+	{
+		CParticle* Particle = CResourceManager::GetInst()->FindParticle(Name);
+
+		if (!Particle)
+			return nullptr;
+
+		m_mapParticle.insert(std::make_pair(Name, Particle));
+
+		return Particle;
+	}
+
+	return iter->second;
 }

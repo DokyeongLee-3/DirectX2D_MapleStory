@@ -15,3 +15,4 @@
 #include "Object/Library2ndButterfly.h"
 #include "Object/StaticMapObj.h"
 #include "Object/Stage.h"
+#include "Object/CharacterSelectBackLight.h"

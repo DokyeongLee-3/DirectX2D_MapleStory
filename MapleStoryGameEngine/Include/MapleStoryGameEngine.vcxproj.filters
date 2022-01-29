@@ -178,6 +178,27 @@
     <Filter Include="05. Component\01. SceneComponent\04. Widget">
       <UniqueIdentifier>{92c72f01-ec10-4269-bcfb-a781dae329bb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Engine\09. Thread">
+      <UniqueIdentifier>{9fac276f-c986-4db6-8aa3-4e221fb4d959}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Resource\02. Shader\04. StructuredBuffer">
+      <UniqueIdentifier>{b1570ca3-f292-4ff9-bf9b-92359c14d975}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Resource\02. Shader\03. ConstantBuffer\07. Global">
+      <UniqueIdentifier>{7e72b8b4-a2ec-4d68-b6ad-282f4403c332}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Resource\02. Shader\03. ConstantBuffer\08. Particle">
+      <UniqueIdentifier>{1fdc3bb8-8ecb-4c02-911e-b83185d89496}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Component\01. SceneComponent\05. Particle">
+      <UniqueIdentifier>{a0bf564a-1628-41d1-b81b-9bb42e0df9f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Resource\02. Shader\02. ShaderClass\05. Particle">
+      <UniqueIdentifier>{d9d3b446-63a1-4aff-81d6-37e8c2fe0104}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Resource\08. Particle">
+      <UniqueIdentifier>{a979c4bf-db06-4992-ab24-6bb2b360018d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -488,6 +509,39 @@
     </ClCompile>
     <ClCompile Include="Resource\Shader\ProgressBarShader.cpp">
       <Filter>02. Resource\02. Shader\02. ShaderClass\04. Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\Number.cpp">
+      <Filter>09. Widget\02. Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\NumberShader.cpp">
+      <Filter>02. Resource\02. Shader\02. ShaderClass\04. Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Thread.cpp">
+      <Filter>01. Engine\09. Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\StructuredBuffer.cpp">
+      <Filter>02. Resource\02. Shader\04. StructuredBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\GlobalConstantBuffer.cpp">
+      <Filter>02. Resource\02. Shader\03. ConstantBuffer\07. Global</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\ParticleConstantBuffer.cpp">
+      <Filter>02. Resource\02. Shader\03. ConstantBuffer\08. Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\ParticleComponent.cpp">
+      <Filter>05. Component\01. SceneComponent\05. Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\ParticleUpdateShader.cpp">
+      <Filter>02. Resource\02. Shader\02. ShaderClass\05. Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Particle\Particle.cpp">
+      <Filter>02. Resource\08. Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Particle\ParticleManager.cpp">
+      <Filter>02. Resource\08. Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\ParticleRenderShader.cpp">
+      <Filter>02. Resource\02. Shader\02. ShaderClass\05. Particle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -842,6 +896,45 @@
     <ClInclude Include="Resource\Shader\ProgressBarShader.h">
       <Filter>02. Resource\02. Shader\02. ShaderClass\04. Widget</Filter>
     </ClInclude>
+    <ClInclude Include="Widget\Number.h">
+      <Filter>09. Widget\02. Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Shader\NumberShader.h">
+      <Filter>02. Resource\02. Shader\02. ShaderClass\04. Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="Thread.h">
+      <Filter>01. Engine\09. Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="Sync.h">
+      <Filter>01. Engine\09. Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadQueue.h">
+      <Filter>01. Engine\09. Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Shader\StructuredBuffer.h">
+      <Filter>02. Resource\02. Shader\04. StructuredBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Shader\GlobalConstantBuffer.h">
+      <Filter>02. Resource\02. Shader\03. ConstantBuffer\07. Global</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Shader\ParticleConstantBuffer.h">
+      <Filter>02. Resource\02. Shader\03. ConstantBuffer\08. Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\ParticleComponent.h">
+      <Filter>05. Component\01. SceneComponent\05. Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Shader\ParticleUpdateShader.h">
+      <Filter>02. Resource\02. Shader\02. ShaderClass\05. Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Particle\Particle.h">
+      <Filter>02. Resource\08. Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Particle\ParticleManager.h">
+      <Filter>02. Resource\08. Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Shader\ParticleRenderShader.h">
+      <Filter>02. Resource\02. Shader\02. ShaderClass\05. Particle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\Shader\ShaderInfo.fx">
@@ -857,6 +950,9 @@
       <Filter>02. Resource\02. Shader\01. HLSL</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\Shader\Widget.fx">
+      <Filter>02. Resource\02. Shader\01. HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\Shader\Particle.fx">
       <Filter>02. Resource\02. Shader\01. HLSL</Filter>
     </FxCompile>
   </ItemGroup>

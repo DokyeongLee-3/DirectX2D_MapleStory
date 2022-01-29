@@ -7,6 +7,7 @@
 #include "../Resource/Animation/AnimationSequence2D.h"
 #include "../Resource/ResourceManager.h"
 #include "../Resource/Sound/Sound.h"
+#include "../Resource/Particle/Particle.h"
 
 class CSceneResource
 {
@@ -26,6 +27,7 @@ private:
 	std::unordered_map<std::string, CSharedPtr<CTexture>>	m_mapTexture;
 	std::unordered_map<std::string, CSharedPtr<CAnimationSequence2D>>	m_mapSequence2D;
 	std::unordered_map<std::string, CSharedPtr<CSound>>		m_mapSound;
+	std::unordered_map<std::string, CSharedPtr<CParticle>>		m_mapParticle;
 
 public:	// =================== Mesh =====================
 	CMesh* FindMesh(const std::string& Name);
@@ -111,5 +113,9 @@ public:	// =================== Sound =====================
 	bool SoundResume(const std::string& Name);
 	class CSound* FindSound(const std::string& Name);
 	FMOD::ChannelGroup* FindChannelGroup(const std::string& Name);
+
+	public:	// =================== Particle =====================
+		bool CreateParticle(const std::string& Name);
+		CParticle* FindParticle(const std::string& Name);
 };
 

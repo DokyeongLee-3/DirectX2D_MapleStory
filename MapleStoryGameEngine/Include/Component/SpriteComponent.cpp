@@ -200,6 +200,7 @@ void CSpriteComponent::Render()
 	if (m_Animation)
 	{
 		CRenderManager::GetInst()->GetStandard2DCBuffer()->SetAnimation2DEnable(m_Animation->GetAnimationCount() > 0);
+		//CRenderManager::GetInst()->GetStandard2DCBuffer()->SetFadeAmount(1.f);
 		CRenderManager::GetInst()->GetStandard2DCBuffer()->UpdateCBuffer();
 
 		m_Animation->SetShader();
@@ -297,4 +298,5 @@ void CSpriteComponent::Flip()
 
 	m_Animation->Flip();
 }
+
 

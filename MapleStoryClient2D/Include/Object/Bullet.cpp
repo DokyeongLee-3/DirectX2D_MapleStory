@@ -33,10 +33,10 @@ bool CBullet::Init()
 	m_Sprite->SetTransparency(true);
 
 	m_Body = CreateComponent<CColliderBox2D>("Body");
-	m_Body->SetCollisionProfile("PlayerAttack");
+	//m_Body->SetCollisionProfile("PlayerAttack");
 	m_Body->SetExtent(40.f, 20.f);
 	m_Body->AddCollisionCallback<CBullet>(Collision_State::Begin, this,
-		&CBullet::CollisionCallback);
+		&CBullet::CollisionBeginCallback);
 
 	m_Sprite->AddChild(m_Body);
 
@@ -80,12 +80,21 @@ CBullet* CBullet::Clone()
 	return new CBullet(*this);
 }
 
+void CBullet::SetCollisionProfile(const std::string& Name)
+{
+	m_Body->SetCollisionProfile(Name);
+}
+
 void CBullet::FlipAll(float DeltaTime)
 {
 	m_Sprite->Flip();
 }
 
-void CBullet::CollisionCallback(const CollisionResult& result)
+void CBullet::CollisionBeginCallback(const CollisionResult& result)
 {
 	Destroy();
+}
+
+void CBullet::CollisionEndCallback(const CollisionResult& result)
+{
 }

@@ -165,6 +165,7 @@
     <ClInclude Include="ObjectSet.h" />
     <ClInclude Include="Object\BlinkTree.h" />
     <ClInclude Include="Object\Butterfly.h" />
+    <ClInclude Include="Object\CharacterSelectBackLight.h" />
     <ClInclude Include="Object\DoubleHelixBlinkTree.h" />
     <ClInclude Include="Object\DragObject.h" />
     <ClInclude Include="Object\LampLight.h" />
@@ -195,6 +196,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Object\BlinkTree.cpp" />
     <ClCompile Include="Object\Butterfly.cpp" />
+    <ClCompile Include="Object\CharacterSelectBackLight.cpp" />
     <ClCompile Include="Object\DoubleHelixBlinkTree.cpp" />
     <ClCompile Include="Object\DragObject.cpp" />
     <ClCompile Include="Object\LampLight.cpp" />

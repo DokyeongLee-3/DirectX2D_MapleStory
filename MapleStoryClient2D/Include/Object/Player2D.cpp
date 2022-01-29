@@ -270,6 +270,7 @@ void CPlayer2D::SylphideLancer(float DeltaTime)
 	//Bullet->SetWorldPos(GetWorldPos() + GetWorldAxis(AXIS_Y) * 75.f);
 	Bullet->SetWorldPos(GetWorldPos());
 	Bullet->SetWorldRotation(GetWorldRot());
+	Bullet->SetCollisionProfile("PlayerAttack");
 
 	if (m_BodySprite->IsFlip())
 	{
@@ -289,6 +290,7 @@ void CPlayer2D::Skill2(float DeltaTime)
 	//Bullet->SetWorldPos(GetWorldPos() + GetWorldAxis(AXIS_Y) * 75.f);
 	Bullet->SetWorldPos(m_SylphideLancerMuzzle->GetWorldPos());
 	Bullet->SetWorldRotation(GetWorldRot());
+	Bullet->SetCollisionProfile("PlayerAttack");
 	
 }
 

@@ -131,7 +131,5 @@ public:
 	void StyleCallback();
 	void MyShowStyleEditor(ImGuiStyle* ref = (ImGuiStyle*)0);
 
-public:
-	void ClickObjInEditor();
 };
 

@@ -22,6 +22,8 @@ public:
 		return m_Scene;
 	}
 
+
+
 public:
 	void SetScene(class CScene* Scene);
 	virtual void Destroy();

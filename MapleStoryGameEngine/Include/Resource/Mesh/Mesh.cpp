@@ -164,3 +164,79 @@ void CMesh::Render()
 	}
 
 }
+
+void CMesh::RenderInstancing(int Count)
+{
+	size_t	Size = m_vecContainer.size();
+
+	for (size_t i = 0; i < Size; ++i)
+	{
+		unsigned int	Stride = (unsigned int)m_vecContainer[i]->VB.Size;
+		unsigned int	Offset = 0;
+
+		CDevice::GetInst()->GetContext()->IASetPrimitiveTopology(m_vecContainer[i]->Primitive);
+		CDevice::GetInst()->GetContext()->IASetVertexBuffers(0, 1,
+			&m_vecContainer[i]->VB.Buffer, &Stride, &Offset);
+
+		size_t	IdxCount = m_vecContainer[i]->vecIB.size();
+
+		if (IdxCount > 0)
+		{
+			for (size_t j = 0; j < IdxCount; ++j)
+			{
+				CDevice::GetInst()->GetContext()->IASetIndexBuffer(
+					m_vecContainer[i]->vecIB[j].Buffer,
+					m_vecContainer[i]->vecIB[j].Fmt, 0);
+				CDevice::GetInst()->GetContext()->DrawIndexedInstanced(
+					m_vecContainer[i]->vecIB[j].Count, Count, 0, 0, 0);
+			}
+		}
+
+		else
+		{
+			CDevice::GetInst()->GetContext()->IASetIndexBuffer(
+				nullptr, DXGI_FORMAT_UNKNOWN, 0);
+			CDevice::GetInst()->GetContext()->DrawInstanced(
+				m_vecContainer[i]->VB.Count, Count, 0, 0);
+		}
+	}
+}
+
+void CMesh::RenderInstancing(ID3D11Buffer* InstancingBuffer, unsigned int InstanceSize, int Count)
+{
+	size_t	Size = m_vecContainer.size();
+
+	for (size_t i = 0; i < Size; ++i)
+	{
+		unsigned int	Stride[2] = { (unsigned int)m_vecContainer[i]->VB.Size, InstanceSize };
+		unsigned int	Offset[2] = {};
+
+		ID3D11Buffer* Buffer[2] = { m_vecContainer[i]->VB.Buffer , InstancingBuffer };
+
+		CDevice::GetInst()->GetContext()->IASetPrimitiveTopology(m_vecContainer[i]->Primitive);
+		CDevice::GetInst()->GetContext()->IASetVertexBuffers(0, 2,
+			Buffer, Stride, Offset);
+
+		size_t	IdxCount = m_vecContainer[i]->vecIB.size();
+
+		if (IdxCount > 0)
+		{
+			for (size_t j = 0; j < IdxCount; ++j)
+			{
+				CDevice::GetInst()->GetContext()->IASetIndexBuffer(
+					m_vecContainer[i]->vecIB[j].Buffer,
+					m_vecContainer[i]->vecIB[j].Fmt, 0);
+				CDevice::GetInst()->GetContext()->DrawIndexedInstanced(
+					m_vecContainer[i]->vecIB[j].Count, Count, 0, 0, 0);
+			}
+		}
+
+		else
+		{
+			CDevice::GetInst()->GetContext()->IASetIndexBuffer(
+				nullptr, DXGI_FORMAT_UNKNOWN, 0);
+			CDevice::GetInst()->GetContext()->DrawInstanced(
+				m_vecContainer[i]->VB.Count, Count, 0, 0);
+		}
+	}
+}

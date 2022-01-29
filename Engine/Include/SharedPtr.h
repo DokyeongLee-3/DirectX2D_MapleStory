@@ -94,5 +94,10 @@ public:
 	{
 		return m_Ptr;
 	}
+
+	T* Get()
+	{
+		return m_Ptr;
+	}
 };
 

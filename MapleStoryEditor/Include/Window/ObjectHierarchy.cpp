@@ -88,6 +88,22 @@ bool CObjectHierarchy::Init()
 	m_ObjectLayer = AddWidget<CIMGUIText>("ObjectLayer", 100.f, 30.f);
 
 
+	CIMGUIButton* DeleteObjectButton = AddWidget<CIMGUIButton>("Delete Object", 120.f, 30.f);
+
+	DeleteObjectButton->SetClickCallback(this, &CObjectHierarchy::DeleteObjectButtonCallback);
+
+
+	m_ZOrder = AddWidget<CIMGUITextInput>("ZOrder", 80.f, 30.f);
+	m_ZOrder->SetHideName(true);
+	m_ZOrder->SetText("");
+	m_ZOrder->SetSize(100.f, 20.f);
+	m_ZOrder->SetTextType(ImGuiText_Type::Int);
+
+	Line = AddWidget<CIMGUISameLine>("Line");
+
+	m_ZOrderChange = AddWidget<CIMGUIButton>("ZOrder Change", 120.f, 30.f);
+	m_ZOrderChange->SetClickCallback(this, &CObjectHierarchy::ZOrderChangeCallback);
+
 	return true;
 }
 
@@ -148,8 +164,14 @@ void CObjectHierarchy::SelectObject(int Index, const char* Item)
 			CEditorManager::GetInst()->GetSpriteWindow()->SetPlayTime(PlayTime);
 		}
 
-
 		m_ObjectLayer->SetText(Object->GetRootComponent()->GetLayerName().c_str());
+		m_ZOrder->SetValueInt(Sprite->GetZOrder());
+	}
+
+	else if (Object->GetRootComponent()->GetTypeID() == typeid(CSceneComponent).hash_code())
+	{
+		CSceneComponent* Comp = (CSceneComponent*)(Object->GetRootComponent());
+		m_ZOrder->SetValueInt(Comp->GetZOrder());
 	}
 }
 
@@ -170,16 +192,16 @@ void CObjectHierarchy::SelectComponent(int Index, const char* Item)
 		Vector3 WorldRotation = ((CSceneComponent*)Com)->GetWorldRot();
 		Vector3 WorldScale = ((CSceneComponent*)Com)->GetWorldScale();
 
-		CEditorManager::GetInst()->GetDetailWindow()->GetPosXInput()->SetValueInt((int)WorldPos.x);
-		CEditorManager::GetInst()->GetDetailWindow()->GetPosYInput()->SetValueInt((int)WorldPos.y);
-		CEditorManager::GetInst()->GetDetailWindow()->GetPosZInput()->SetValueInt((int)WorldPos.z);
+		CEditorManager::GetInst()->GetDetailWindow()->GetPosXInput()->SetValueFloat(WorldPos.x);
+		CEditorManager::GetInst()->GetDetailWindow()->GetPosYInput()->SetValueFloat(WorldPos.y);
+		CEditorManager::GetInst()->GetDetailWindow()->GetPosZInput()->SetValueFloat(WorldPos.z);
 
-		CEditorManager::GetInst()->GetDetailWindow()->GetRotXInput()->SetValueInt((int)WorldRotation.x);
-		CEditorManager::GetInst()->GetDetailWindow()->GetRotYInput()->SetValueInt((int)WorldRotation.y);
-		CEditorManager::GetInst()->GetDetailWindow()->GetRotZInput()->SetValueInt((int)WorldRotation.z);
+		CEditorManager::GetInst()->GetDetailWindow()->GetRotXInput()->SetValueFloat(WorldRotation.x);
+		CEditorManager::GetInst()->GetDetailWindow()->GetRotYInput()->SetValueFloat(WorldRotation.y);
+		CEditorManager::GetInst()->GetDetailWindow()->GetRotZInput()->SetValueFloat(WorldRotation.z);
 
-		CEditorManager::GetInst()->GetDetailWindow()->GetScaleXInput()->SetValueInt((int)WorldScale.x);
-		CEditorManager::GetInst()->GetDetailWindow()->GetScaleYInput()->SetValueInt((int)WorldScale.y);
+		CEditorManager::GetInst()->GetDetailWindow()->GetScaleXInput()->SetValueFloat(WorldScale.x);
+		CEditorManager::GetInst()->GetDetailWindow()->GetScaleYInput()->SetValueFloat(WorldScale.y);
 
 
 		int Idx = m_LayerCombo->GetSelectIndex();
@@ -240,5 +262,55 @@ void CObjectHierarchy::LayerChangeCallback()
 		((CSceneComponent*)Comp)->SetLayerName(LayerName);
 
 		m_ObjectLayer->SetText(Obj->GetRootComponent()->GetLayerName().c_str());
+	}
+}
+
+void CObjectHierarchy::DeleteObjectButtonCallback()
+{
+	int SelectObjIdx = CEditorManager::GetInst()->GetObjectHierarchy()->GetObjectList()->GetSelectIndex();
+
+	if (SelectObjIdx == -1)
+		return;
+
+	const std::string& ObjName = CEditorManager::GetInst()->GetObjectHierarchy()->GetObjectList()->GetSelectItem();
+
+	CGameObject* Obj = CSceneManager::GetInst()->GetScene()->FindObject(ObjName);
+
+	if (!Obj)
+		return;
+
+	m_ObjectListWidget->DeleteItem(SelectObjIdx);
+
+	int Count = m_ComponentListWidget->GetItemCount();
+
+	for (int i = 0; i < Count; ++i)
+	{
+		m_ComponentListWidget->DeleteItem(0);
+	}
+
+	Obj->Destroy();
+
+	m_ObjectListWidget->SetSelectIndex(-1);
+	m_ComponentListWidget->SetSelectIndex(-1);
+}
+
+void CObjectHierarchy::ZOrderChangeCallback()
+{
+	if (m_ObjectListWidget->GetSelectIndex() == -1)
+		return;
+
+	if (m_ComponentListWidget->GetSelectIndex() == -1)
+		return;
+
+	CGameObject* Obj = CSceneManager::GetInst()->GetScene()->FindObject(m_ObjectListWidget->GetSelectItem());
+
+	if (!Obj)
+		return;
+
+	CComponent* Comp = Obj->FindComponent(m_ComponentListWidget->GetSelectItem());
+
+	if (Comp->GetTypeID() == typeid(CSceneComponent).hash_code() || Comp->GetTypeID() == typeid(CSpriteComponent).hash_code())
+	{
+		((CSceneComponent*)Comp)->SetZOrder(m_ZOrder->GetValueInt());
 	}
 }

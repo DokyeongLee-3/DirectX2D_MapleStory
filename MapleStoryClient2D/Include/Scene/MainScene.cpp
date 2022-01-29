@@ -11,7 +11,10 @@
 #include "Engine.h"
 #include "../Object/StaticMapObj.h"
 #include "Resource/Sound/SoundManager.h"
-
+#include "../Widget/Inventory.h"
+#include "../Widget/CharacterStatusWindow.h"
+#include "../Widget/CharacterEXP.h"
+#include "../Object/BubbleParticle.h"
 
 CMainScene::CMainScene()
 {
@@ -22,11 +25,14 @@ CMainScene::~CMainScene()
 {
 }
 
+// CLoadingScene::Init에서 만든 LoadingThread가 실행해주는 중
 bool CMainScene::Init()
 {
-	/*CreateMaterial();
+	CreateMaterial();
 
 	CreateAnimationSequence();
+
+	CreateParticle();
 
 	CPlayer2D* Player = m_Scene->CreateGameObject<CPlayer2D>("Player");
 
@@ -34,23 +40,52 @@ bool CMainScene::Init()
 
 	Player->SetAllSceneComponentsLayer("MovingObjFront");
 
-	CMonster* Monster = m_Scene->CreateGameObject<CMonster>("Monster");
+	/*for (int i = 0; i < 20; ++i)
+	{
+		char MonsterName[MAX_PATH] = {};
 
-	CPixelTest* PixelTest = m_Scene->CreateGameObject<CPixelTest>("PixelTest");
+		sprintf_s(MonsterName,"Monster%d", i);
 
-	m_MainWidget = m_Scene->GetViewport()->CreateWidgetWindow<CMainWidget>("MainWidget");*/
+		CMonster* Monster = m_Scene->CreateGameObject<CMonster>(MonsterName);
+		Monster->SetWorldPos(i * 50.f, i * 50.f, 0.f);
+	}*/
+
+	//CPixelTest* PixelTest = m_Scene->CreateGameObject<CPixelTest>("PixelTest");
+
+	m_MainWidget = m_Scene->GetViewport()->CreateWidgetWindow<CMainWidget>("MainWidget");
 
 
-	/*m_ConfigurationWindow = m_Scene->GetViewport()->CreateWidgetWindow<CConfigurationWindow>("ConfigurationWindow");
+	m_ConfigurationWindow = m_Scene->GetViewport()->CreateWidgetWindow<CConfigurationWindow>("ConfigurationWindow");
 	m_ConfigurationWindow->SetZOrder(2);
+	m_ConfigurationWindow->SetPos(200.f, 200.f);
 
-	 m_Scene->GetResource()->LoadSound("Master", true, "BGM", "GlacierAdventure.mp3");
-	m_Scene->GetResource()->SoundPlay("BGM");*/
+	CInventory* Inventory = m_Scene->GetViewport()->CreateWidgetWindow<CInventory>("Inventory");
+	Inventory->SetZOrder(3);
+	Inventory->SetPos(300.f, 100.f);
+
+	CCharacterStatusWindow* MainStatus = m_Scene->GetViewport()->CreateWidgetWindow<CCharacterStatusWindow>("MainStatus");
+	MainStatus->SetPos(550.f, 30.f);
+
+	CCharacterEXP* EXPWindow = m_Scene->GetViewport()->CreateWidgetWindow<CCharacterEXP>("EXPWindow");
+
+
+	m_Scene->GetResource()->LoadSound("Master", true, "BGM", "GlacierAdventure.mp3");
+	m_Scene->GetResource()->SoundPlay("BGM");
+
+
+	CBubbleParticle* BubbleParticle = m_Scene->CreateGameObject<CBubbleParticle>("BubbleParticle");
+
+
+
+
+
+
+
 
 
 
 	// For Test
-	TestLoadScene();
+	//TestLoadScene();
 
 	return true;
 }
@@ -62,6 +97,12 @@ void CMainScene::SetStageObject(CStage* Stage)
 
 void CMainScene::CreateMaterial()
 {
+	m_Scene->GetResource()->CreateMaterial<CMaterial>("Bubble");
+	CMaterial* Material = m_Scene->GetResource()->FindMaterial("Bubble");
+
+	Material->AddTexture(0, (int)Buffer_Shader_Type::Pixel, "Bubble", TEXT("Particle/Bubbles99px.png"));
+
+	Material->SetShader("ParticleRenderShader");
 }
 
 void CMainScene::CreateAnimationSequence()
@@ -69,6 +110,27 @@ void CMainScene::CreateAnimationSequence()
 	CreatePlayerAnimationSequence();
 	CreateSkillAnimationSequence();
 	CreateMonsterAnimationSequence();
+}
+
+void CMainScene::CreateParticle()
+{
+	m_Scene->GetResource()->CreateParticle("Bubble");
+	CParticle* Particle = m_Scene->GetResource()->FindParticle("Bubble");
+
+	CMaterial* Material = m_Scene->GetResource()->FindMaterial("Bubble");
+
+	Particle->SetMaterial(Material);
+	Particle->SetSpawnCountMax(1000);
+	Particle->SetLifeTimeMin(1.f);
+	Particle->SetLifeTimeMax(2.f);
+	Particle->SetScaleMin(Vector3(20.f, 20.f, 1.f));
+	Particle->SetScaleMax(Vector3(50.f, 50.f, 1.f));
+	Particle->SetSpeedMin(100.f);
+	Particle->SetSpeedMax(300.f);
+	Particle->SetMoveDir(Vector3(0.f, 1.f, 0.f));
+	Particle->SetStartMin(Vector3(-300.f, -300.f, 0.f));
+	Particle->SetStartMax(Vector3(300.f, 300.f, 0.f));
+	Particle->SetMove(true);
 }
 
 void CMainScene::CreatePlayerAnimationSequence()

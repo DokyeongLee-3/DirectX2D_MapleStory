@@ -26,7 +26,7 @@ enum class Shader_Type
 	Compute
 };
 
-enum class ConstantBuffer_Shader_Type
+enum class Buffer_Shader_Type
 {
 	Vertex = 0x1,
 	Pixel = 0x2,
@@ -106,13 +106,6 @@ enum class Collision_Channel
 	Custom7,
 	Custom8,
 	Custom9,
-	Custom10,
-	Custom11,
-	Custom12,
-	Custom13,
-	Custom14,
-	Custom15,
-	Custom16,
 	Max
 };
 

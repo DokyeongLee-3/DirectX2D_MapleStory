@@ -1,19 +1,23 @@
 
 #include "RenderManager.h"
 #include "../GameObject/GameObject.h"
-#include "../Component/SceneComponent.h"
 #include "RenderStateManager.h"
 #include "../Resource/Shader/Standard2DConstantBuffer.h"
 #include "RenderState.h"
 #include "../Scene/SceneManager.h"
 #include "../Scene/Scene.h"
 #include "../Scene/Viewport.h"
+#include "../Input.h"
+#include "../Engine.h"
 
 DEFINITION_SINGLE(CRenderManager)
 
 CRenderManager::CRenderManager() :
 	m_RenderStateManager(nullptr),
-	m_Standard2DCBuffer(nullptr)
+	m_Standard2DCBuffer(nullptr),
+	m_FadeAmount(1.f),
+	m_StartFadeIn(false),
+	m_StartFadeOut(false)
 {
 }
 
@@ -87,6 +91,11 @@ void CRenderManager::SetLayerPriority(const std::string& Name, int Priority)
 	sort(m_RenderLayerList.begin(), m_RenderLayerList.end(), CRenderManager::Sortlayer);
 }
 
+void CRenderManager::SetFadeAmount(float FadeAmount)
+{
+	m_FadeAmount = FadeAmount;
+}
+
 bool CRenderManager::Init()
 {
 	m_RenderStateManager = new CRenderStateManager;
@@ -138,12 +147,31 @@ bool CRenderManager::Init()
 	m_AlphaBlend = m_RenderStateManager->FindRenderState("AlphaBlend");
 
 
+	CInput::GetInst()->CreateKey("FadeIn", 'O');
+	CInput::GetInst()->CreateKey("FadeOut", 'P');
+
+	CInput::GetInst()->SetKeyCallback("FadeIn", KeyState_Push, this, &CRenderManager::FadeIn);
+	CInput::GetInst()->SetKeyCallback("FadeOut", KeyState_Push, this, &CRenderManager::FadeOut);
+
 	return true;
 }
 
 void CRenderManager::Render()
 {
 	m_DepthDisable->SetState();
+
+
+
+	if (m_StartFadeIn)
+		FadeIn(CEngine::GetInst()->GetDeltaTime());
+
+	else if(m_StartFadeOut)
+		FadeOut(CEngine::GetInst()->GetDeltaTime());
+
+
+
+	m_Standard2DCBuffer->SetFadeAmount(m_FadeAmount);
+	m_Standard2DCBuffer->UpdateCBuffer();
 
 	{
 		auto	iter = m_RenderLayerList.begin();
@@ -175,6 +203,9 @@ void CRenderManager::Render()
 		{
 			for (int i = 0; i < (*iter)->RenderCount; ++i)
 			{
+				int Count = (*iter)->RenderCount;
+				auto RenderListEnd = (*iter)->RenderList.begin() + Count;
+				sort((*iter)->RenderList.begin(), RenderListEnd, RenderLayer::SortSceneComponent);
 				(*iter)->RenderList[i]->Render();
 			}
 		}
@@ -193,10 +224,17 @@ void CRenderManager::Render()
 		}
 	}
 
+
 	// Widget 출력
 	m_AlphaBlend->SetState();
 
 	CSceneManager::GetInst()->GetScene()->GetViewport()->Render();
+
+	// 마우스 출력
+	CWidgetWindow* MouseWidget = CEngine::GetInst()->GetMouseWidget();
+
+	if (MouseWidget)
+		MouseWidget->Render();
 
 	m_AlphaBlend->ResetState();
 
@@ -234,4 +272,28 @@ bool CRenderManager::Sortlayer(RenderLayer* Src, RenderLayer* Dest)
 	// 오름차순 -> Priority가 높은 LayerList에 있는 Component가
 	// 늦게 출력되도록 한다
 	return Src->LayerPriority < Dest->LayerPriority;
+}
+
+void CRenderManager::FadeIn(float DeltaTime)
+{
+	m_FadeAmount -= DeltaTime * 0.4f;
+
+	if (m_FadeAmount <= 0.f)
+	{
+		m_FadeAmount = 0.f;
+		m_StartFadeIn = false;
+
+		CSceneManager::GetInst()->CallFadeInEndCallback();
+	}
+}
+
+void CRenderManager::FadeOut(float DeltaTime)
+{
+	m_FadeAmount += DeltaTime * 0.4f;
+
+	if (m_FadeAmount >= 1.f)
+	{
+		m_FadeAmount = 1.f;
+		m_StartFadeOut = false;
+	}
 }

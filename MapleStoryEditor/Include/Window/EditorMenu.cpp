@@ -55,6 +55,7 @@ bool CEditorMenu::Init()
 	m_ObjectCombo->AddItem("SingleHelixBlinkTree");
 	m_ObjectCombo->AddItem("Library2ndLampLight");
 	m_ObjectCombo->AddItem("Library2ndButterfly");
+	m_ObjectCombo->AddItem("CharacterSelectBackLight");
 	m_ObjectCombo->AddItem("StaticMapObj");
 	m_ObjectCombo->AddItem("Stage");
 
@@ -166,6 +167,9 @@ void CEditorMenu::ObjectCreateButton()
 		break;
 	case CreateObject_Type::Library2ndButterfly:
 		CSceneManager::GetInst()->GetScene()->CreateGameObject<CLibrary2ndButterfly>(m_ObjectNameInput->GetTextMultibyte());
+		break;
+	case CreateObject_Type::CharacterSelectBackLight:
+		CSceneManager::GetInst()->GetScene()->CreateGameObject<CCharacterSelectBackLight>(m_ObjectNameInput->GetTextMultibyte());
 		break;
 	case CreateObject_Type::StaticMapObj:
 		CSceneManager::GetInst()->GetScene()->CreateGameObject<CStaticMapObj>(m_ObjectNameInput->GetTextMultibyte());
@@ -359,7 +363,7 @@ void CEditorMenu::SelectObjTexture()
 
 			CSpriteComponent* SpriteComp = ((CStaticMapObj*)SelectObject)->GetSpriteComponent();
 
-			SpriteComp->SetTextureFullPath(0, 0, (int)ConstantBuffer_Shader_Type::Pixel, ConvertFileName, FilePath);
+			SpriteComp->SetTextureFullPath(0, 0, (int)Buffer_Shader_Type::Pixel, ConvertFileName, FilePath);
 
 			SpriteComp->SetWorldScale((float)SpriteComp->GetMaterial()->GetTextureWidth(), (float)SpriteComp->GetMaterial()->GetTextureHeight(), 1.f);
 		}

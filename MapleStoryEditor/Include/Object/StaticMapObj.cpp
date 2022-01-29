@@ -74,6 +74,7 @@ void CStaticMapObj::Load(FILE* File)
 	CGameObject::Load(File);
 
 	m_Sprite = (CSpriteComponent*)FindComponent("StaticMapObjSprite");
+	m_Sprite->SetTransparency(true);
 }
 
 void CStaticMapObj::DeleteAllDragCollider()

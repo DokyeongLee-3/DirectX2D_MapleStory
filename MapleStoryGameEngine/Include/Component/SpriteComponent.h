@@ -40,6 +40,7 @@ public:
 
     void SetMaterial(CMaterial* Material);
 
+
 public:
     void SetBaseColor(const Vector4& Color);
     void SetBaseColor(float r, float g, float b, float a);
@@ -76,7 +77,6 @@ public:
 
 public:
     void Flip();
-
 
 public:
     template <typename T>

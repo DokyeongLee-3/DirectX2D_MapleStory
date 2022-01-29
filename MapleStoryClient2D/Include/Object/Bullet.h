@@ -15,9 +15,10 @@ protected:
 
 private:
     CSharedPtr<class CSpriteComponent>    m_Sprite;
+    CSharedPtr<CColliderBox2D>       m_Body;
     float   m_Distance;
     float   m_Speed;
-    CSharedPtr<CColliderBox2D>       m_Body;
+
 
 public:
     virtual bool Init();
@@ -26,8 +27,12 @@ public:
     virtual CBullet* Clone();
 
 public:
+    void SetCollisionProfile(const std::string& Name);
+
+public:
     void FlipAll(float DeltaTime);
-    void CollisionCallback(const CollisionResult& result);
+    void CollisionBeginCallback(const CollisionResult& result);
+    void CollisionEndCallback(const CollisionResult& result);
 };
 
 

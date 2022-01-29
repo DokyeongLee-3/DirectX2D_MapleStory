@@ -4,6 +4,7 @@
 #include "resource.h"
 #include "Scene/SceneManager.h"
 #include "Scene/MainScene.h"
+#include "Scene/StartScene.h"
 #include "Object/Stage.h"
 #include "Object/StaticMapObj.h"
 #include "Object/Portal.h"
@@ -14,6 +15,8 @@
 #include "Component/StaticMeshComponent.h"
 #include "Animation/AnimationSequence2DInstance.h"
 #include "Input.h"
+#include "Widget/MouseNormal.h"
+#include "Widget/MouseAttack.h"
 
 DEFINITION_SINGLE(CClientManager)
 
@@ -50,14 +53,20 @@ bool CClientManager::Init(HINSTANCE hInst)
 	CInput::GetInst()->CreateKey("Flip", 'F');
 
 	CResourceManager::GetInst()->CreateSoundChannelGroup("UI");
-	CResourceManager::GetInst()->SetVolume(10);
+	CResourceManager::GetInst()->CreateSoundChannelGroup("BGM");
+
+	CResourceManager::GetInst()->SetVolume("BGM", 70);
+
+	// 마우스 위젯 설정
+	CMouseNormal* MouseNormal = CEngine::GetInst()->CreateMouse<CMouseNormal>(Mouse_State::Normal, "MouseNormal");
+	CMouseAttack* MouseAttack = CEngine::GetInst()->CreateMouse<CMouseAttack>(Mouse_State::State1, "MouseAttack");
 
 	return true;
 }
 
 void CClientManager::CreateDefaultSceneMode()
 {
-	CSceneManager::GetInst()->CreateSceneMode<CMainScene>();
+	CSceneManager::GetInst()->CreateSceneMode<CStartScene>();
 }
 
 int CClientManager::Run()

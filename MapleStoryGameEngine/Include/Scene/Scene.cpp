@@ -22,6 +22,8 @@ CScene::CScene()
 	m_Collision->Init();
 	m_CameraManager->Init();
 	m_Viewport->Init();
+
+	m_Change = true;
 }
 
 CScene::~CScene()
@@ -130,6 +132,9 @@ void CScene::PostUpdate(float DeltaTime)
 
 	for (; iter != iterEnd; ++iter)
 	{
+		if (!(*iter)->IsEnable())
+			continue;
+
 		(*iter)->AddCollision();
 	}
 

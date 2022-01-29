@@ -7,6 +7,7 @@
 #include "Animation/AnimationManager.h"
 #include "Sound/SoundManager.h"
 #include "Font/FontManager.h"
+#include "Particle/ParticleManager.h"
 
 class CResourceManager
 {
@@ -18,6 +19,7 @@ private:
 	CAnimationManager* m_AnimationManager;
 	CSoundManager* m_SoundManager;
 	CFontManager* m_FontManager;
+	CParticleManager* m_ParticleManager;
 
 public:
 	bool Init();
@@ -43,7 +45,7 @@ public: // =================== Shader =====================
 	void ReleaseShader(const std::string& Name);
 
 	bool CreateConstantBuffer(const std::string& Name, int Size, int Register,
-		int ConstantBufferShaderType = (int)ConstantBuffer_Shader_Type::All);
+		int ConstantBufferShaderType = (int)Buffer_Shader_Type::All);
 	class CConstantBuffer* FindConstantBuffer(const std::string& Name);
 
 public: // =================== Material =====================
@@ -132,6 +134,11 @@ public:	// =================== Font =====================
 
 	IDWriteFontCollection1* FindFontFile(const std::string& Name);
 	IDWriteTextFormat* FindFont(const std::string& Name);
+
+public:	// =================== Particle =====================
+	bool CreateParticle(const std::string& Name);
+	CParticle* FindParticle(const std::string& Name);
+	void ReleaseParticle(const std::string& Name);
 
 	DECLARE_SINGLE(CResourceManager)
 };

@@ -16,7 +16,9 @@ private:
 	class CIMGUIButton* m_LayerChangeButton;
 	class CIMGUILabel* m_ObjectLayerLabel;
 	class CIMGUIText* m_ObjectLayer;
-
+	class CIMGUIButton* m_ObjectDeleteButton;
+	class CIMGUITextInput* m_ZOrder;
+	class CIMGUIButton* m_ZOrderChange; 
 public:
 	class CIMGUIComboBox* GetLayerCombo()	const
 	{
@@ -45,5 +47,7 @@ private:
 	void SelectObject(int Index, const char* Item);
 	void SelectComponent(int Index, const char* Item);
 	void LayerChangeCallback();
+	void DeleteObjectButtonCallback();
+	void ZOrderChangeCallback();
 };
 

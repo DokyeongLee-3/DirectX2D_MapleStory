@@ -148,8 +148,8 @@ void CEditorManager::MouseLButtonDown(float DeltaTime)
 			Vector2 PosInImage;
 			PosInImage = Vector2(DragObjStartPos.x, TexHeight - MouseWorldPos.y);
 
-			FrameStartPosX->SetInt((int)PosInImage.x);
-			FrameStartPosY->SetInt((int)PosInImage.y);
+			FrameStartPosX->SetFloat(PosInImage.x);
+			FrameStartPosY->SetFloat(PosInImage.y);
 		}
 	}
 
@@ -164,8 +164,8 @@ void CEditorManager::MouseLButtonDown(float DeltaTime)
 			CGameObject* Owner = Comp->GetGameObject();
 			Owner->AddWorldPos(MouseMove.x, MouseMove.y, 0.f);
 
-			m_DetailWindow->GetPosXInput()->SetValueInt((int)Owner->GetWorldPos().x);
-			m_DetailWindow->GetPosYInput()->SetValueInt((int)(Owner->GetWorldPos().y));
+			m_DetailWindow->GetPosXInput()->SetValueFloat(Owner->GetWorldPos().x);
+			m_DetailWindow->GetPosYInput()->SetValueFloat(Owner->GetWorldPos().y);
 		}
 	}
 }
@@ -192,8 +192,8 @@ void CEditorManager::MouseLButtonPush(float DeltaTime)
 			Vector2 PosInImage;
 			PosInImage = Vector2(DragObjEndPos.x, TexHeight - MouseWorldPos.y);
 
-			FrameEndPosX->SetInt((int)PosInImage.x);
-			FrameEndPosY->SetInt((int)PosInImage.y);
+			FrameEndPosX->SetFloat(PosInImage.x);
+			FrameEndPosY->SetFloat(PosInImage.y);
 
 
 			if (m_DragPivot)
@@ -203,8 +203,8 @@ void CEditorManager::MouseLButtonPush(float DeltaTime)
 
 				m_DragPivot->SetWorldPos((DragStartPos.x + DragEndPos.x) / 2.f, (DragStartPos.y + DragEndPos.y) / 2.f, 0.f);
 
-				float FrameCenterX = (m_SpriteWindow->GetFrameStartPosX()->GetValueInt() + m_SpriteWindow->GetFrameEndPosX()->GetValueInt()) / 2.f;
-				float FrameCenterY = (m_SpriteWindow->GetFrameStartPosY()->GetValueInt() + m_SpriteWindow->GetFrameEndPosY()->GetValueInt()) / 2.f;
+				float FrameCenterX = (m_SpriteWindow->GetFrameStartPosX()->GetValueFloat() + m_SpriteWindow->GetFrameEndPosX()->GetValueFloat()) / 2.f;
+				float FrameCenterY = (m_SpriteWindow->GetFrameStartPosY()->GetValueFloat() + m_SpriteWindow->GetFrameEndPosY()->GetValueFloat()) / 2.f;
 
 				Vector2 Center = Vector2(FrameCenterX, FrameCenterY);
 
@@ -230,8 +230,8 @@ void CEditorManager::MouseLButtonPush(float DeltaTime)
 			CGameObject* Owner = Comp->GetGameObject();
 			Owner->AddWorldPos(MouseMove.x, MouseMove.y, 0.f);
 
-			m_DetailWindow->GetPosXInput()->SetValueInt((int)Owner->GetWorldPos().x);
-			m_DetailWindow->GetPosYInput()->SetValueInt((int)(Owner->GetWorldPos().y));
+			m_DetailWindow->GetPosXInput()->SetValueFloat(Owner->GetWorldPos().x);
+			m_DetailWindow->GetPosYInput()->SetValueFloat((Owner->GetWorldPos().y));
 		}
 
 
@@ -418,6 +418,13 @@ CGameObject* CEditorManager::CreateObject(CScene* Scene, size_t Type)
 		return Obj;
 	}
 
+	else if (Type == typeid(CCharacterSelectBackLight).hash_code())
+	{
+		CCharacterSelectBackLight* Obj = Scene->LoadGameObject<CCharacterSelectBackLight>();
+
+		return Obj;
+	}
+
 	else if (Type == typeid(CStaticMapObj).hash_code())
 	{
 		CStaticMapObj* Obj = Scene->LoadGameObject<CStaticMapObj>();
@@ -483,12 +490,16 @@ CComponent* CEditorManager::CreateComponent(CGameObject* Obj, size_t Type)
 	{
 		CColliderPixel* Component = Obj->LoadComponent<CColliderPixel>();
 
+		CSceneManager::GetInst()->GetScene()->GetCollision()->AddCollider(Component);
+
 		return Component;
 	}
 
 	else if (Type == typeid(CDragCollider).hash_code())
 	{
 		CDragCollider* Component = Obj->LoadComponent<CDragCollider>();
+
+		CSceneManager::GetInst()->GetScene()->GetCollision()->AddCollider(Component);
 
 		return Component;
 	}

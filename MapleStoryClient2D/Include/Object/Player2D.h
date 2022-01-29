@@ -5,6 +5,7 @@
 #include "Component/ColliderBox2D.h"
 #include "Component/CameraComponent.h"
 #include "Component/WidgetComponent.h"
+#include "../Client.h"
 
 class CPlayer2D :
     public CGameObject
@@ -41,6 +42,8 @@ private:
     float       m_Opacity;
     float       m_ScaleFactor;
 
+    PlayerInfo m_PlayerInfo;
+
 public:
     CSceneComponent* GetSkillMuzzle()    const
     {
@@ -50,6 +53,11 @@ public:
     CSpriteComponent* GetRootSpriteComponent()    const
     {
         return m_BodySprite;
+    }
+
+    const PlayerInfo& GetInfo() const
+    {
+        return m_PlayerInfo;
     }
 
 public:

@@ -206,21 +206,21 @@ void CTextureManager::SetSampler(const std::string& Name, int Register, int Shad
 	if (!Sampler)
 		return;
 
-	if (ShaderType & (int)ConstantBuffer_Shader_Type::Vertex)
+	if (ShaderType & (int)Buffer_Shader_Type::Vertex)
 		CDevice::GetInst()->GetContext()->VSSetSamplers(Register, 1, &Sampler);
 
-	if (ShaderType & (int)ConstantBuffer_Shader_Type::Pixel)
+	if (ShaderType & (int)Buffer_Shader_Type::Pixel)
 		CDevice::GetInst()->GetContext()->PSSetSamplers(Register, 1, &Sampler);
 
-	if (ShaderType & (int)ConstantBuffer_Shader_Type::Domain)
+	if (ShaderType & (int)Buffer_Shader_Type::Domain)
 		CDevice::GetInst()->GetContext()->DSSetSamplers(Register, 1, &Sampler);
 
-	if (ShaderType & (int)ConstantBuffer_Shader_Type::Hull)
+	if (ShaderType & (int)Buffer_Shader_Type::Hull)
 		CDevice::GetInst()->GetContext()->HSSetSamplers(Register, 1, &Sampler);
 
-	if (ShaderType & (int)ConstantBuffer_Shader_Type::Geometry)
+	if (ShaderType & (int)Buffer_Shader_Type::Geometry)
 		CDevice::GetInst()->GetContext()->GSSetSamplers(Register, 1, &Sampler);
 
-	if (ShaderType & (int)ConstantBuffer_Shader_Type::Compute)
+	if (ShaderType & (int)Buffer_Shader_Type::Compute)
 		CDevice::GetInst()->GetContext()->CSSetSamplers(Register, 1, &Sampler);
 }

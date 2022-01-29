@@ -6,6 +6,8 @@
 #include "../EditorManager.h"
 #include "../Window/SpriteWindow.h"
 #include "../Window/ObjectHierarchy.h"
+#include "../Window/DetailWindow.h"
+#include "IMGUITextInput.h"
 #include "Component/SpriteComponent.h"
 #include "IMGUIListBox.h"
 #include "../Object/SpriteEditObject.h"
@@ -31,8 +33,8 @@ bool CDefaultScene::Init()
     m_CameraComponent = m_CameraObject->CreateComponent<CCameraComponent>("CameraComponent");
 
     m_CameraObject->SetWorldPos(0.f, 0.f, 0.f);
-    m_CameraObject->SetWorldScale(1.f, 1.f, 1.f);
-    m_CameraObject->SetPivot(0.5f, 0.5f, 0.f);
+    m_CameraObject->SetWorldScale(0.f, 0.f, 0.f);
+    m_CameraObject->SetPivot(0.f, 0.f, 0.f);
     m_CameraObject->SetRootComponent(m_CameraComponent);
 
     m_Scene->GetCameraManager()->SetCurrentCamera(m_CameraComponent);
@@ -103,10 +105,13 @@ bool CDefaultScene::LoadAnimationSequence2D()
     m_Scene->GetResource()->LoadSequence2D("OnionHitLeft.sqc");
     m_Scene->GetResource()->LoadSequence2D("OnionDieLeft.sqc");
 
-    m_Scene->GetResource()->LoadSequence2D("DoubleHelixBlinkTree.sqc");
     m_Scene->GetResource()->LoadSequence2D("SingleHelixBlinkTree.sqc");
+    m_Scene->GetResource()->LoadSequence2D("DoubleHelixBlinkTree.sqc");
+    m_Scene->GetResource()->LoadSequence2D("BlinkTree.sqc");
 
     m_Scene->GetResource()->LoadSequence2D("Portal.sqc");
+    m_Scene->GetResource()->LoadSequence2D("Butterfly.sqc");
+    m_Scene->GetResource()->LoadSequence2D("LampLight.sqc");
 
     return true;
 }
@@ -123,11 +128,11 @@ void CDefaultScene::CameraRight(float DeltaTime)
         {
             float Width = (float)(SpriteObj->GetSpriteComponent()->GetMaterial()->GetTextureWidth());
 
-            if (m_CameraObject->GetWorldPos().x + RS.Width >= Width)
+            if (m_CameraObject->GetWorldPos().x + 300.f * DeltaTime + RS.Width >= Width)
             {
                 m_CameraObject->SetWorldPos(Width - RS.Width, m_CameraObject->GetWorldPos().y, 0.f);
                 return;
-            }
+            }  
 
             m_CameraObject->AddRelativePos(300.f * DeltaTime, 0.f, 0.f);
         }
@@ -142,7 +147,7 @@ void CDefaultScene::CameraRight(float DeltaTime)
 
         CDefaultScene* Me = this;
 
-        if (m_CameraObject->GetWorldPos().x + RS.Width >= Width)
+        if (m_CameraObject->GetWorldPos().x + 300.f * DeltaTime + RS.Width >= Width)
         {
             m_CameraObject->SetWorldPos(Width - RS.Width, m_CameraObject->GetWorldPos().y, 0.f);
             return;
@@ -157,7 +162,7 @@ void CDefaultScene::CameraLeft(float DeltaTime)
 
     if (CEditorManager::GetInst()->GetEditMode() == EditMode::Sprite)
     {
-        if (m_CameraObject->GetWorldPos().x <= 0.f)
+        if (m_CameraObject->GetWorldPos().x -300.f * DeltaTime <= 0.f)
         {
             m_CameraObject->SetWorldPos(0.f, m_CameraObject->GetWorldPos().y, 0.f);
             return;
@@ -171,7 +176,7 @@ void CDefaultScene::CameraLeft(float DeltaTime)
         if (!m_StageObject)
             return;
 
-        if (m_CameraObject->GetWorldPos().x <= 0.f)
+        if (m_CameraObject->GetWorldPos().x - 300.f * DeltaTime <= 0.f)
         {
             m_CameraObject->SetWorldPos(0.f, m_CameraObject->GetWorldPos().y, 0.f);
             return;
@@ -194,7 +199,7 @@ void CDefaultScene::CameraUp(float DeltaTime)
         {
             float Height = (float)(SpriteObj->GetSpriteComponent()->GetMaterial()->GetTextureHeight());
 
-            if (m_CameraObject->GetWorldPos().y + RS.Height >= Height)
+            if (m_CameraObject->GetWorldPos().y + 300.f * DeltaTime + RS.Height >= Height)
             {
                 m_CameraObject->SetWorldPos(m_CameraObject->GetWorldPos().x, Height - RS.Height, 0.f);
                 return;
@@ -211,7 +216,7 @@ void CDefaultScene::CameraUp(float DeltaTime)
 
         float Height = (float)(m_StageObject->GetSpriteComponent()->GetMaterial()->GetTextureHeight());
 
-        if (m_CameraObject->GetWorldPos().y + RS.Height >= Height)
+        if (m_CameraObject->GetWorldPos().y + 300.f * DeltaTime + RS.Height >= Height)
         {
             m_CameraObject->SetWorldPos(m_CameraObject->GetWorldPos().x, Height - RS.Height, 0.f);
             return;
@@ -225,7 +230,7 @@ void CDefaultScene::CameraDown(float DeltaTime)
 {
     if (CEditorManager::GetInst()->GetEditMode() == EditMode::Sprite)
     {
-        if (m_CameraObject->GetWorldPos().y <= 0)
+        if (m_CameraObject->GetWorldPos().y - 300.f * DeltaTime <= 0)
         {
             m_CameraObject->SetWorldPos(m_CameraObject->GetWorldPos().x, 0.f, 0.f);
             return;
@@ -239,7 +244,7 @@ void CDefaultScene::CameraDown(float DeltaTime)
         if (!m_StageObject)
             return;
 
-        if (m_CameraObject->GetWorldPos().y <= 0)
+        if (m_CameraObject->GetWorldPos().y - 300.f * DeltaTime <= 0)
         {
             m_CameraObject->SetWorldPos(m_CameraObject->GetWorldPos().x, 0.f, 0.f);
             return;
@@ -267,6 +272,9 @@ void CDefaultScene::SelectObjectRight(float DeltaTime)
 
     Obj->AddWorldPos(1.f, 0.f, 0.f);
 
+    CDetailWindow* Window = CEditorManager::GetInst()->GetDetailWindow();
+    Window->GetPosXInput()->SetValueFloat(Obj->GetWorldPos().x);
+
 }
 
 void CDefaultScene::SelectObjectLeft(float DeltaTime)
@@ -286,6 +294,9 @@ void CDefaultScene::SelectObjectLeft(float DeltaTime)
         return;
 
     Obj->AddWorldPos(-1.f, 0.f, 0.f);
+
+    CDetailWindow* Window = CEditorManager::GetInst()->GetDetailWindow();
+    Window->GetPosXInput()->SetValueFloat(Obj->GetWorldPos().x);
 }
 
 void CDefaultScene::SelectObjectUp(float DeltaTime)
@@ -305,6 +316,9 @@ void CDefaultScene::SelectObjectUp(float DeltaTime)
         return;
 
     Obj->AddWorldPos(0.f, 1.f, 0.f);
+
+    CDetailWindow* Window = CEditorManager::GetInst()->GetDetailWindow();
+    Window->GetPosYInput()->SetValueFloat(Obj->GetWorldPos().y);
 }
 
 void CDefaultScene::SelectObjectDown(float DeltaTime)
@@ -324,6 +338,9 @@ void CDefaultScene::SelectObjectDown(float DeltaTime)
         return;
 
     Obj->AddWorldPos(0.f, -1.f, 0.f);
+
+    CDetailWindow* Window = CEditorManager::GetInst()->GetDetailWindow();
+    Window->GetPosYInput()->SetValueFloat(Obj->GetWorldPos().y);
 }
 
 void CDefaultScene::AddObjectList(const char* ObjName)

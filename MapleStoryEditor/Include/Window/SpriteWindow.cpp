@@ -173,29 +173,29 @@ bool CSpriteWindow::Init()
 
 
     m_FrameStartPosX = AddWidget<CIMGUITextInput>("FrameStartPosX", 120.f, 120.f);
-    m_FrameStartPosX->SetInt(0);
-    m_FrameStartPosX->SetTextType(ImGuiText_Type::Int);
+    m_FrameStartPosX->SetFloat(0.f);
+    m_FrameStartPosX->SetTextType(ImGuiText_Type::Float);
     m_FrameStartPosX->SetCallback<CSpriteWindow>(this, &CSpriteWindow::AdjustFrameDataStartX);
 
     Line = AddWidget<CIMGUISameLine>("Line");
 
     m_FrameStartPosY = AddWidget<CIMGUITextInput>("FrameStartPosY", 120.f, 120.f);
-    m_FrameStartPosY->SetInt(0);
-    m_FrameStartPosY->SetTextType(ImGuiText_Type::Int);
+    m_FrameStartPosY->SetFloat(0.f);
+    m_FrameStartPosY->SetTextType(ImGuiText_Type::Float);
     m_FrameStartPosY->SetCallback<CSpriteWindow>(this, &CSpriteWindow::AdjustFrameDataStartY);
     //FrameStartPos->ReadOnly(true);
 
     m_FrameEndPosX = AddWidget<CIMGUITextInput>("FrameEndPosX", 120.f, 120.f);
-    m_FrameEndPosX->SetInt(100);
-    m_FrameEndPosX->SetTextType(ImGuiText_Type::Int);
+    m_FrameEndPosX->SetFloat(100);
+    m_FrameEndPosX->SetTextType(ImGuiText_Type::Float);
     m_FrameEndPosX->SetCallback<CSpriteWindow>(this, &CSpriteWindow::AdjustFrameDataEndX);
 
     Line = AddWidget<CIMGUISameLine>("Line");
     Line->SetSpacing(16.f);
 
     m_FrameEndPosY = AddWidget<CIMGUITextInput>("FrameEndPosY", 120.f, 120.f);
-    m_FrameEndPosY->SetInt(100);
-    m_FrameEndPosY->SetTextType(ImGuiText_Type::Int);
+    m_FrameEndPosY->SetFloat(100);
+    m_FrameEndPosY->SetTextType(ImGuiText_Type::Float);
     m_FrameEndPosY->SetCallback<CSpriteWindow>(this, &CSpriteWindow::AdjustFrameDataEndY);
     //m_FrameEndPosY->ReadOnly(true);
 
@@ -372,7 +372,7 @@ void CSpriteWindow::LoadTextureButton()
 
         if (CEditorManager::GetInst()->GetEditMode() == EditMode::Sprite)
         {
-            m_SpriteObject->GetSpriteComponent()->SetTextureFullPath(0, 0, (int)ConstantBuffer_Shader_Type::Pixel,
+            m_SpriteObject->GetSpriteComponent()->SetTextureFullPath(0, 0, (int)Buffer_Shader_Type::Pixel,
                 ConvertFileName, FilePath);
 
             m_SpriteObject->GetSpriteComponent()->SetWorldScale((float)m_SpriteObject->GetSpriteComponent()->GetMaterial()->GetTextureWidth(),
@@ -453,10 +453,10 @@ void CSpriteWindow::AddAnimationFrameButton()
     CDragObject* DragObj = CEditorManager::GetInst()->GetDragObj();
 
     Vector2 Size;
-    Vector2 FrameStartPos = Vector2((float)(m_FrameStartPosX->GetValueInt()), (float)(m_FrameStartPosY->GetValueInt()));
+    Vector2 FrameStartPos = Vector2((m_FrameStartPosX->GetValueFloat()), (m_FrameStartPosY->GetValueFloat()));
 
-    Size.x = (float)(m_FrameEndPosX->GetValueInt() - m_FrameStartPosX->GetValueInt());
-    Size.y = (float)(m_FrameEndPosY->GetValueInt() - m_FrameStartPosY->GetValueInt());
+    Size.x = (m_FrameEndPosX->GetValueFloat() - m_FrameStartPosX->GetValueFloat());
+    Size.y = (m_FrameEndPosY->GetValueFloat() - m_FrameStartPosY->GetValueFloat());
 
     // 이미 m_FrameStartPosX, m_FrameStartPosY, m_FrameEndPosX, m_FrameEndPosY는 드래그위치를 사용하는데 드래그 위치를
     // 잡아줄 때 이미지상의 좌표로 변환해놓았음 
@@ -523,10 +523,10 @@ void CSpriteWindow::SelectAnimationFrame(int Index, const char* Item)
 
     m_SpriteFrame->SetSize(Data.Size);
 
-    m_FrameStartPosX->SetInt((int)Data.Start.x);
-    m_FrameStartPosY->SetInt((int)Data.Start.y);
-    m_FrameEndPosX->SetInt((int)(Data.Start.x + Data.Size.x));
-    m_FrameEndPosY->SetInt((int)(Data.Start.y + Data.Size.y));
+    m_FrameStartPosX->SetFloat(Data.Start.x);
+    m_FrameStartPosY->SetFloat(Data.Start.y);
+    m_FrameEndPosX->SetFloat(Data.Start.x + Data.Size.x);
+    m_FrameEndPosY->SetFloat(Data.Start.y + Data.Size.y);
 
     CDragObject* DragObj = CEditorManager::GetInst()->GetDragObj();
 
@@ -548,8 +548,8 @@ void CSpriteWindow::SelectAnimationFrame(int Index, const char* Item)
     Pivot->SetWorldPos((StartPos.x + EndPos.x) / 2.f, (StartPos.y + EndPos.y) / 2.f, 0.f);
 
     // 빨간 중심점 위치 갱신
-    float FrameCenterX = (m_FrameStartPosX->GetValueInt() + m_FrameEndPosX->GetValueInt()) / 2.f;
-    float FrameCenterY = (m_FrameStartPosY->GetValueInt() + m_FrameEndPosY->GetValueInt()) / 2.f;
+    float FrameCenterX = (m_FrameStartPosX->GetValueFloat() + m_FrameEndPosX->GetValueFloat()) / 2.f;
+    float FrameCenterY = (m_FrameStartPosY->GetValueFloat() + m_FrameEndPosY->GetValueFloat()) / 2.f;
 
     Vector2 Center = Vector2(FrameCenterX, FrameCenterY);
 
@@ -740,217 +740,6 @@ void CSpriteWindow::LoadAnimation()
     }*/
 }
 
-void CSpriteWindow::AdjustFrameDataStartX()
-{
-    int SelectIndex = m_AnimationList->GetSelectIndex();
-    if (SelectIndex == -1)
-        return;
-
-    CSceneResource* Resource = CSceneManager::GetInst()->GetScene()->GetResource();
-
-    CAnimationSequence2D* Sequence = Resource->FindAnimationSequence2D(m_AnimationList->GetItem(SelectIndex));
-
-    int NewFrameStartX = m_FrameStartPosX->GetValueInt();
-    int NewFrameStartY = m_FrameStartPosY->GetValueInt();
-    int NewFrameEndX = m_FrameEndPosX->GetValueInt();
-    int NewFrameEndY = m_FrameEndPosY->GetValueInt();
-
-    int Index = m_AnimationFrameList->GetSelectIndex();
-
-    if (Index == -1)
-        return;
-
-    Vector2 NewStarPos = Vector2((float)NewFrameStartX, (float)NewFrameStartY);
-    Vector2 NewSize = Vector2((float)(NewFrameEndX - NewFrameStartX), (float)(NewFrameEndY - NewFrameStartY));
-
-    Sequence->SetFrameData(Index, NewStarPos, NewSize);
-
-    CDragObject* DragObj = CEditorManager::GetInst()->GetDragObj();
-
-    // 드래그 영역 갱신
-    DragObj->SetStartPos(Vector2(m_SpriteObject->GetWorldPos().x + (float)NewFrameStartX, DragObj->GetStartPos().y));
-
-    CPivot* Pivot = CEditorManager::GetInst()->GetDragPivot();
-
-    float NewXPivotPos = (DragObj->GetStartPos().x + DragObj->GetEndPos().x) / 2.f;
-
-    Pivot->SetWorldPos(NewXPivotPos, Pivot->GetWorldPos().y, Pivot->GetWorldPos().z);
-
-    // Center 빨간점 위치 갱신
-    float FrameCenterX = (m_FrameStartPosX->GetValueInt() + m_FrameEndPosX->GetValueInt()) / 2.f;
-    float FrameCenterY = (m_FrameStartPosY->GetValueInt() + m_FrameEndPosY->GetValueInt()) / 2.f;
-
-    Vector2 Center = Vector2(FrameCenterX, FrameCenterY);
-
-    std::stringstream PosX;
-    PosX << Center.x;
-    std::stringstream PosY;
-    PosY << Center.y;
-
-    m_DragPivotXPos->SetText(PosX.str().c_str());
-    m_DragPivotYPos->SetText(PosY.str().c_str());
-}
-
-void CSpriteWindow::AdjustFrameDataStartY()
-{
-    int SelectIndex = m_AnimationList->GetSelectIndex();
-    if (SelectIndex == -1)
-        return;
-
-    CSceneResource* Resource = CSceneManager::GetInst()->GetScene()->GetResource();
-
-    CAnimationSequence2D* Sequence = Resource->FindAnimationSequence2D(m_AnimationList->GetItem(SelectIndex));
-
-    int NewFrameStartX = m_FrameStartPosX->GetValueInt();
-    int NewFrameStartY = m_FrameStartPosY->GetValueInt();
-    int NewFrameEndX = m_FrameEndPosX->GetValueInt();
-    int NewFrameEndY = m_FrameEndPosY->GetValueInt();
-
-    int Index = m_AnimationFrameList->GetSelectIndex();
-
-    if (Index == -1)
-        return;
-
-    Vector2 NewStarPos = Vector2((float)NewFrameStartX, (float)NewFrameStartY);
-    Vector2 NewSize = Vector2((float)(NewFrameEndX - NewFrameStartX), (float)(NewFrameEndY - NewFrameStartY));
-
-    Sequence->SetFrameData(Index, NewStarPos, NewSize);
-
-
-    CDragObject* DragObj = CEditorManager::GetInst()->GetDragObj();
-
-    unsigned int TexHeight = m_SpriteObject->GetSpriteComponent()->GetMaterial()->GetTexture()->GetHeight();
-
-    // 드래그 영역 갱신
-    DragObj->SetStartPos(Vector2(DragObj->GetStartPos().x, m_SpriteObject->GetWorldPos().y + TexHeight - (float)NewFrameStartY));
-
-    CPivot* Pivot = CEditorManager::GetInst()->GetDragPivot();
-
-    float NewYPivotPos = (DragObj->GetStartPos().y + DragObj->GetEndPos().y) / 2.f;
-
-    Pivot->SetWorldPos(Pivot->GetWorldPos().x, NewYPivotPos, Pivot->GetWorldPos().z);
-
-    // Center 빨간점 위치 갱신
-    float FrameCenterX = (m_FrameStartPosX->GetValueInt() + m_FrameEndPosX->GetValueInt()) / 2.f;
-    float FrameCenterY = (m_FrameStartPosY->GetValueInt() + m_FrameEndPosY->GetValueInt()) / 2.f;
-
-    Vector2 Center = Vector2(FrameCenterX, FrameCenterY);
-
-    std::stringstream PosX;
-    PosX << Center.x;
-    std::stringstream PosY;
-    PosY << Center.y;
-
-    m_DragPivotXPos->SetText(PosX.str().c_str());
-    m_DragPivotYPos->SetText(PosY.str().c_str());
-}
-
-void CSpriteWindow::AdjustFrameDataEndX()
-{
-    int SelectIndex = m_AnimationList->GetSelectIndex();
-    if (SelectIndex == -1)
-        return;
-
-    CSceneResource* Resource = CSceneManager::GetInst()->GetScene()->GetResource();
-
-    CAnimationSequence2D* Sequence = Resource->FindAnimationSequence2D(m_AnimationList->GetItem(SelectIndex));
-
-    int NewFrameStartX = m_FrameStartPosX->GetValueInt();
-    int NewFrameStartY = m_FrameStartPosY->GetValueInt();
-    int NewFrameEndX = m_FrameEndPosX->GetValueInt();
-    int NewFrameEndY = m_FrameEndPosY->GetValueInt();
-
-    int Index = m_AnimationFrameList->GetSelectIndex();
-
-    if (Index == -1)
-        return;
-
-    Vector2 NewStarPos = Vector2((float)NewFrameStartX, (float)NewFrameStartY);
-    Vector2 NewSize = Vector2((float)(NewFrameEndX - NewFrameStartX), (float)(NewFrameEndY - NewFrameStartY));
-
-    Sequence->SetFrameData(Index, NewStarPos, NewSize);
-
-
-    CDragObject* DragObj = CEditorManager::GetInst()->GetDragObj();
-
-    // 드래그 영역 갱신
-    DragObj->SetEndPos(Vector2(m_SpriteObject->GetWorldPos().x + (float)NewFrameEndX, DragObj->GetEndPos().y));
-
-    CPivot* Pivot = CEditorManager::GetInst()->GetDragPivot();
-
-    float NewXPivotPos = (DragObj->GetStartPos().x + DragObj->GetEndPos().x)/2.f;
-
-    Pivot->SetWorldPos(NewXPivotPos, Pivot->GetWorldPos().y, Pivot->GetWorldPos().z);
-
-    // Center 빨간점 위치 갱신
-    float FrameCenterX = (m_FrameStartPosX->GetValueInt() + m_FrameEndPosX->GetValueInt()) / 2.f;
-    float FrameCenterY = (m_FrameStartPosY->GetValueInt() + m_FrameEndPosY->GetValueInt()) / 2.f;
-
-    Vector2 Center = Vector2(FrameCenterX, FrameCenterY);
-
-    std::stringstream PosX;
-    PosX << Center.x;
-    std::stringstream PosY;
-    PosY << Center.y;
-
-    m_DragPivotXPos->SetText(PosX.str().c_str());
-    m_DragPivotYPos->SetText(PosY.str().c_str());
-}
-
-void CSpriteWindow::AdjustFrameDataEndY()
-{
-    int SelectIndex = m_AnimationList->GetSelectIndex();
-    if (SelectIndex == -1)
-        return;
-
-    CSceneResource* Resource = CSceneManager::GetInst()->GetScene()->GetResource();
-
-    CAnimationSequence2D* Sequence = Resource->FindAnimationSequence2D(m_AnimationList->GetItem(SelectIndex));
-
-    int NewFrameStartX = m_FrameStartPosX->GetValueInt();
-    int NewFrameStartY = m_FrameStartPosY->GetValueInt();
-    int NewFrameEndX = m_FrameEndPosX->GetValueInt();
-    int NewFrameEndY = m_FrameEndPosY->GetValueInt();
-
-    int Index = m_AnimationFrameList->GetSelectIndex();
-
-    if (Index == -1)
-        return;
-
-    Vector2 NewStarPos = Vector2((float)NewFrameStartX, (float)NewFrameStartY);
-    Vector2 NewSize = Vector2((float)(NewFrameEndX - NewFrameStartX), (float)(NewFrameEndY - NewFrameStartY));
-
-    Sequence->SetFrameData(Index, NewStarPos, NewSize);
-
-
-    CDragObject* DragObj = CEditorManager::GetInst()->GetDragObj();
-
-    unsigned int TexHeight = m_SpriteObject->GetSpriteComponent()->GetMaterial()->GetTexture()->GetHeight();
-
-    // 드래그 영역 갱신
-    DragObj->SetEndPos(Vector2(DragObj->GetEndPos().x, m_SpriteObject->GetWorldPos().y + TexHeight - (float)NewFrameEndY));
-
-    CPivot* Pivot = CEditorManager::GetInst()->GetDragPivot();
-
-    float NewYPivotPos = (DragObj->GetStartPos().y + DragObj->GetEndPos().y) / 2.f;
-
-    Pivot->SetWorldPos(Pivot->GetWorldPos().x, NewYPivotPos, Pivot->GetWorldPos().z);
-
-    // Center 빨간점 위치 갱신
-    float FrameCenterX = (m_FrameStartPosX->GetValueInt() + m_FrameEndPosX->GetValueInt()) / 2.f;
-    float FrameCenterY = (m_FrameStartPosY->GetValueInt() + m_FrameEndPosY->GetValueInt()) / 2.f;
-
-    Vector2 Center = Vector2(FrameCenterX, FrameCenterY);
-
-    std::stringstream PosX;
-    PosX << Center.x;
-    std::stringstream PosY;
-    PosY << Center.y;
-
-    m_DragPivotXPos->SetText(PosX.str().c_str());
-    m_DragPivotYPos->SetText(PosY.str().c_str());
-}
-
 void CSpriteWindow::ChangeLoop()
 {
     if (m_AnimationList->GetSelectIndex() == -1)
@@ -1029,7 +818,7 @@ void CSpriteWindow::ChangePlayTime()
     if (Obj->GetRootComponent()->GetTypeID() == typeid(CSpriteComponent).hash_code())
     {
         CSpriteComponent* Sprite = (CSpriteComponent*)Obj->GetRootComponent();
-        
+
         Sprite->GetCurrentAnimation()->SetPlayTime(m_AnimPlayTime->GetValueFloat());
     }
 }
@@ -1065,12 +854,6 @@ void CSpriteWindow::MyShowStyleEditor(ImGuiStyle* ref)
     ImGui::ShowFontSelector("Fonts##Selector");
 
 }
-
-void CSpriteWindow::ClickObjInEditor()
-{
-    int a = 3;
-}
-
 
 void CSpriteWindow::PlayAnimation()
 {
@@ -1144,6 +927,219 @@ void CSpriteWindow::DeleteFrameButton()
     // Load된 sqc파일의 Frame을 지운것일 수도 있으니 sqc파일을 새로 저장
     SaveSequence();
 }
+
+
+void CSpriteWindow::AdjustFrameDataStartX()
+{
+    int SelectIndex = m_AnimationList->GetSelectIndex();
+    if (SelectIndex == -1)
+        return;
+
+    CSceneResource* Resource = CSceneManager::GetInst()->GetScene()->GetResource();
+
+    CAnimationSequence2D* Sequence = Resource->FindAnimationSequence2D(m_AnimationList->GetItem(SelectIndex));
+
+    float NewFrameStartX = m_FrameStartPosX->GetValueFloat();
+    float NewFrameStartY = m_FrameStartPosY->GetValueFloat();
+    float NewFrameEndX = m_FrameEndPosX->GetValueFloat();
+    float NewFrameEndY = m_FrameEndPosY->GetValueFloat();
+
+    int Index = m_AnimationFrameList->GetSelectIndex();
+
+    if (Index == -1)
+        return;
+
+    Vector2 NewStarPos = Vector2((float)NewFrameStartX, (float)NewFrameStartY);
+    Vector2 NewSize = Vector2((float)(NewFrameEndX - NewFrameStartX), (float)(NewFrameEndY - NewFrameStartY));
+
+    Sequence->SetFrameData(Index, NewStarPos, NewSize);
+
+    CDragObject* DragObj = CEditorManager::GetInst()->GetDragObj();
+
+    // 드래그 영역 갱신
+    DragObj->SetStartPos(Vector2(m_SpriteObject->GetWorldPos().x + (float)NewFrameStartX, DragObj->GetStartPos().y));
+
+    CPivot* Pivot = CEditorManager::GetInst()->GetDragPivot();
+
+    float NewXPivotPos = (DragObj->GetStartPos().x + DragObj->GetEndPos().x) / 2.f;
+
+    Pivot->SetWorldPos(NewXPivotPos, Pivot->GetWorldPos().y, Pivot->GetWorldPos().z);
+
+    // Center 빨간점 위치 갱신
+    float FrameCenterX = (m_FrameStartPosX->GetValueFloat() + m_FrameEndPosX->GetValueFloat()) / 2.f;
+    float FrameCenterY = (m_FrameStartPosY->GetValueFloat() + m_FrameEndPosY->GetValueFloat()) / 2.f;
+
+    Vector2 Center = Vector2(FrameCenterX, FrameCenterY);
+
+    std::stringstream PosX;
+    PosX << Center.x;
+    std::stringstream PosY;
+    PosY << Center.y;
+
+    m_DragPivotXPos->SetText(PosX.str().c_str());
+    m_DragPivotYPos->SetText(PosY.str().c_str());
+}
+
+void CSpriteWindow::AdjustFrameDataStartY()
+{
+    int SelectIndex = m_AnimationList->GetSelectIndex();
+    if (SelectIndex == -1)
+        return;
+
+    CSceneResource* Resource = CSceneManager::GetInst()->GetScene()->GetResource();
+
+    CAnimationSequence2D* Sequence = Resource->FindAnimationSequence2D(m_AnimationList->GetItem(SelectIndex));
+
+    float NewFrameStartX = m_FrameStartPosX->GetValueFloat();
+    float NewFrameStartY = m_FrameStartPosY->GetValueFloat();
+    float NewFrameEndX = m_FrameEndPosX->GetValueFloat();
+    float NewFrameEndY = m_FrameEndPosY->GetValueFloat();
+
+    int Index = m_AnimationFrameList->GetSelectIndex();
+
+    if (Index == -1)
+        return;
+
+    Vector2 NewStarPos = Vector2((float)NewFrameStartX, (float)NewFrameStartY);
+    Vector2 NewSize = Vector2((float)(NewFrameEndX - NewFrameStartX), (float)(NewFrameEndY - NewFrameStartY));
+
+    Sequence->SetFrameData(Index, NewStarPos, NewSize);
+
+
+    CDragObject* DragObj = CEditorManager::GetInst()->GetDragObj();
+
+    unsigned int TexHeight = m_SpriteObject->GetSpriteComponent()->GetMaterial()->GetTexture()->GetHeight();
+
+    // 드래그 영역 갱신
+    DragObj->SetStartPos(Vector2(DragObj->GetStartPos().x, m_SpriteObject->GetWorldPos().y + TexHeight - (float)NewFrameStartY));
+
+    CPivot* Pivot = CEditorManager::GetInst()->GetDragPivot();
+
+    float NewYPivotPos = (DragObj->GetStartPos().y + DragObj->GetEndPos().y) / 2.f;
+
+    Pivot->SetWorldPos(Pivot->GetWorldPos().x, NewYPivotPos, Pivot->GetWorldPos().z);
+
+    // Center 빨간점 위치 갱신
+    float FrameCenterX = (m_FrameStartPosX->GetValueFloat() + m_FrameEndPosX->GetValueFloat()) / 2.f;
+    float FrameCenterY = (m_FrameStartPosY->GetValueFloat() + m_FrameEndPosY->GetValueFloat()) / 2.f;
+
+    Vector2 Center = Vector2(FrameCenterX, FrameCenterY);
+
+    std::stringstream PosX;
+    PosX << Center.x;
+    std::stringstream PosY;
+    PosY << Center.y;
+
+    m_DragPivotXPos->SetText(PosX.str().c_str());
+    m_DragPivotYPos->SetText(PosY.str().c_str());
+}
+
+void CSpriteWindow::AdjustFrameDataEndX()
+{
+    int SelectIndex = m_AnimationList->GetSelectIndex();
+    if (SelectIndex == -1)
+        return;
+
+    CSceneResource* Resource = CSceneManager::GetInst()->GetScene()->GetResource();
+
+    CAnimationSequence2D* Sequence = Resource->FindAnimationSequence2D(m_AnimationList->GetItem(SelectIndex));
+
+    float NewFrameStartX = m_FrameStartPosX->GetValueFloat();
+    float NewFrameStartY = m_FrameStartPosY->GetValueFloat();
+    float NewFrameEndX = m_FrameEndPosX->GetValueFloat();
+    float NewFrameEndY = m_FrameEndPosY->GetValueFloat();
+
+    int Index = m_AnimationFrameList->GetSelectIndex();
+
+    if (Index == -1)
+        return;
+
+    Vector2 NewStarPos = Vector2((float)NewFrameStartX, (float)NewFrameStartY);
+    Vector2 NewSize = Vector2((float)(NewFrameEndX - NewFrameStartX), (float)(NewFrameEndY - NewFrameStartY));
+
+    Sequence->SetFrameData(Index, NewStarPos, NewSize);
+
+
+    CDragObject* DragObj = CEditorManager::GetInst()->GetDragObj();
+
+    // 드래그 영역 갱신
+    DragObj->SetEndPos(Vector2(m_SpriteObject->GetWorldPos().x + (float)NewFrameEndX, DragObj->GetEndPos().y));
+
+    CPivot* Pivot = CEditorManager::GetInst()->GetDragPivot();
+
+    float NewXPivotPos = (DragObj->GetStartPos().x + DragObj->GetEndPos().x)/2.f;
+
+    Pivot->SetWorldPos(NewXPivotPos, Pivot->GetWorldPos().y, Pivot->GetWorldPos().z);
+
+    // Center 빨간점 위치 갱신
+    float FrameCenterX = (m_FrameStartPosX->GetValueFloat() + m_FrameEndPosX->GetValueFloat()) / 2.f;
+    float FrameCenterY = (m_FrameStartPosY->GetValueFloat() + m_FrameEndPosY->GetValueFloat()) / 2.f;
+
+    Vector2 Center = Vector2(FrameCenterX, FrameCenterY);
+
+    std::stringstream PosX;
+    PosX << Center.x;
+    std::stringstream PosY;
+    PosY << Center.y;
+
+    m_DragPivotXPos->SetText(PosX.str().c_str());
+    m_DragPivotYPos->SetText(PosY.str().c_str());
+}
+
+void CSpriteWindow::AdjustFrameDataEndY()
+{
+    int SelectIndex = m_AnimationList->GetSelectIndex();
+    if (SelectIndex == -1)
+        return;
+
+    CSceneResource* Resource = CSceneManager::GetInst()->GetScene()->GetResource();
+
+    CAnimationSequence2D* Sequence = Resource->FindAnimationSequence2D(m_AnimationList->GetItem(SelectIndex));
+
+    float NewFrameStartX = m_FrameStartPosX->GetValueFloat();
+    float NewFrameStartY = m_FrameStartPosY->GetValueFloat();
+    float NewFrameEndX = m_FrameEndPosX->GetValueFloat();
+    float NewFrameEndY = m_FrameEndPosY->GetValueFloat();
+
+    int Index = m_AnimationFrameList->GetSelectIndex();
+
+    if (Index == -1)
+        return;
+
+    Vector2 NewStarPos = Vector2((float)NewFrameStartX, (float)NewFrameStartY);
+    Vector2 NewSize = Vector2((float)(NewFrameEndX - NewFrameStartX), (float)(NewFrameEndY - NewFrameStartY));
+
+    Sequence->SetFrameData(Index, NewStarPos, NewSize);
+
+
+    CDragObject* DragObj = CEditorManager::GetInst()->GetDragObj();
+
+    unsigned int TexHeight = m_SpriteObject->GetSpriteComponent()->GetMaterial()->GetTexture()->GetHeight();
+
+    // 드래그 영역 갱신
+    DragObj->SetEndPos(Vector2(DragObj->GetEndPos().x, m_SpriteObject->GetWorldPos().y + TexHeight - (float)NewFrameEndY));
+
+    CPivot* Pivot = CEditorManager::GetInst()->GetDragPivot();
+
+    float NewYPivotPos = (DragObj->GetStartPos().y + DragObj->GetEndPos().y) / 2.f;
+
+    Pivot->SetWorldPos(Pivot->GetWorldPos().x, NewYPivotPos, Pivot->GetWorldPos().z);
+
+    // Center 빨간점 위치 갱신
+    float FrameCenterX = (m_FrameStartPosX->GetValueFloat() + m_FrameEndPosX->GetValueFloat()) / 2.f;
+    float FrameCenterY = (m_FrameStartPosY->GetValueFloat() + m_FrameEndPosY->GetValueFloat()) / 2.f;
+
+    Vector2 Center = Vector2(FrameCenterX, FrameCenterY);
+
+    std::stringstream PosX;
+    PosX << Center.x;
+    std::stringstream PosY;
+    PosY << Center.y;
+
+    m_DragPivotXPos->SetText(PosX.str().c_str());
+    m_DragPivotYPos->SetText(PosY.str().c_str());
+}
+
 
 
 

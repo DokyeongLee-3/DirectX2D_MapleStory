@@ -23,5 +23,15 @@ public:
 	{
 		m_BufferData.AnimationEnable = Enable ? 1 : 0;
 	}
+
+	void SetFadeAmount(float Amount)
+	{
+		m_BufferData.FadeAmount = Amount;
+	}
+
+	float GetFadeAmount()	const
+	{
+		return m_BufferData.FadeAmount;
+	}
 };
 

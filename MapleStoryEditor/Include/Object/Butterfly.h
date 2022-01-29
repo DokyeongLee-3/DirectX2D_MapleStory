@@ -2,6 +2,7 @@
 
 #include "GameObject/GameObject.h"
 #include "Component/SpriteComponent.h"
+#include "../Component/DragCollider.h"
 
 class CButterfly :
     public CGameObject
@@ -15,6 +16,7 @@ protected:
 
 private:
     CSharedPtr<CSpriteComponent>    m_Sprite;
+    CSharedPtr<CDragCollider>      m_DragCollider;
 
 public:
     virtual void Start();

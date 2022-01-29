@@ -28,9 +28,12 @@ void CBlinkTree::Start()
 bool CBlinkTree::Init()
 {
 	m_Sprite = CreateComponent<CSpriteComponent>("BlinkTreeSprite");
+	m_DragCollider = CreateComponent<CDragCollider>("DragCollider");
 
+	m_DragCollider->SetCollisionProfile("DragCollider"); 
 
 	SetRootComponent(m_Sprite);
+	m_Sprite->AddChild(m_DragCollider);
 
 	m_Sprite->SetTransparency(true);
 

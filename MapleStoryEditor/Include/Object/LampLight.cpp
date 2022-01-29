@@ -6,8 +6,7 @@
 #include "../Window/SpriteWindow.h"
 
 CLampLight::CLampLight() :
-	m_Sprite(nullptr),
-	m_Body(nullptr)
+	m_Sprite(nullptr)
 {
 	SetTypeID<CLampLight>();
 }
@@ -16,7 +15,7 @@ CLampLight::CLampLight(const CLampLight& obj) :
 	CGameObject(obj)
 {
 	m_Sprite = (CSpriteComponent*)FindComponent("LampLightSprite");
-	m_Body = (CColliderBox2D*)FindComponent("Body");
+	//m_Body = (CColliderBox2D*)FindComponent("Body");
 }
 
 CLampLight::~CLampLight()
@@ -31,12 +30,14 @@ void CLampLight::Start()
 bool CLampLight::Init()
 {
 	m_Sprite = CreateComponent<CSpriteComponent>("LampLightSprite");
-	m_Body = CreateComponent<CColliderBox2D>("Body");
+	m_DragCollider = CreateComponent<CDragCollider>("DragCollider");
 
-	m_Body->SetCollisionProfile("MapCollider");
+	m_DragCollider->SetCollisionProfile("DragCollider");
 
 	SetRootComponent(m_Sprite);
-	m_Sprite->AddChild(m_Body);
+	m_Sprite->AddChild(m_DragCollider);
+
+	SetRootComponent(m_Sprite);
 
 	m_Sprite->SetTransparency(true);
 
@@ -46,7 +47,7 @@ bool CLampLight::Init()
 	m_Sprite->SetRelativePos(500.f, 300.f, 0.f);
 	m_Sprite->SetPivot(0.5f, 0.5f, 0.f);
 
-
+	m_DragCollider->SetWorldScale(40.f, 40.f, 1.f);
 
 
 	CAnimationSequence2DInstance* Anim = m_Sprite->GetAnimationInstance();
@@ -82,5 +83,9 @@ void CLampLight::Load(FILE* File)
 	CGameObject::Load(File);
 
 	m_Sprite = (CSpriteComponent*)FindComponent("LampLightSprite");
+
+	m_Sprite->SetTransparency(true);
+
+	m_Sprite->GetCurrentAnimation()->SetPlayTime(1.3f);
 }
 

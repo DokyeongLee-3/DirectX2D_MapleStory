@@ -55,7 +55,7 @@ public:
 		CWidget::Enable(bEnable);
 	}
 
-	void SetTexture(Button_State State, CTexture* Texture)
+	void SetTexture(CTexture* Texture)
 	{
 		m_Info.Texture = Texture;
 

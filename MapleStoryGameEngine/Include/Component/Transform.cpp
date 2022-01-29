@@ -468,6 +468,8 @@ void CTransform::AddRelativeRotationZ(float z)
 
 void CTransform::AddRelativePos(const Vector3& Pos)
 {
+	std::string Name = m_Owner->GetName();
+
 	m_RelativePos += Pos;
 
 	m_WorldPos = m_RelativePos;

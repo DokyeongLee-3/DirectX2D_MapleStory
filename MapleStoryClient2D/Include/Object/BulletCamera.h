@@ -28,6 +28,9 @@ public:
     virtual void PostUpdate(float DeltaTime);
     virtual CBulletCamera* Clone();
 
+public:
+    void SetCollisionProfile(const std::string& Name);
+
 private:
     void CollisionCallback(const CollisionResult& result);
 };

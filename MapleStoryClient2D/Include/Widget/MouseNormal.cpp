@@ -40,6 +40,9 @@ bool CMouseNormal::Init()
     }
 
     m_Image->SetTexture("MouseNormal", vecFileName);
+    m_Image->SetSize(32.f, 31.f);
+
+    m_Image->AddFrameData(13);
 
     for (int i = 0; i <= 12; ++i)
     {

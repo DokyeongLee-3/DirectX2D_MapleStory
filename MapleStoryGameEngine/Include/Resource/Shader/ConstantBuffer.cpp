@@ -62,21 +62,21 @@ void CConstantBuffer::UpdateBuffer(void* Data)
 	// 셰이더에선 ShaderInfo.fx에 정의한 상수버퍼에 접근해서 World, View, Proj행렬들을
 	// 얻으려고 할 것이다. 따라서 C++로 정의한 구조체의 데이터를 위에서 Map/UnMap을 통해
 	// 각 셰이더 단계에게 ShaderInfo.fx의 상수버퍼에 매핑해줘야 한다
-	if (m_ConstantBufferShaderType & (int)ConstantBuffer_Shader_Type::Vertex)
+	if (m_ConstantBufferShaderType & (int)Buffer_Shader_Type::Vertex)
 		CDevice::GetInst()->GetContext()->VSSetConstantBuffers(m_Register, 1, &m_Buffer);
 
-	if (m_ConstantBufferShaderType & (int)ConstantBuffer_Shader_Type::Pixel)
+	if (m_ConstantBufferShaderType & (int)Buffer_Shader_Type::Pixel)
 		CDevice::GetInst()->GetContext()->PSSetConstantBuffers(m_Register, 1, &m_Buffer);
 
-	if (m_ConstantBufferShaderType & (int)ConstantBuffer_Shader_Type::Domain)
+	if (m_ConstantBufferShaderType & (int)Buffer_Shader_Type::Domain)
 		CDevice::GetInst()->GetContext()->DSSetConstantBuffers(m_Register, 1, &m_Buffer);
 
-	if (m_ConstantBufferShaderType & (int)ConstantBuffer_Shader_Type::Hull)
+	if (m_ConstantBufferShaderType & (int)Buffer_Shader_Type::Hull)
 		CDevice::GetInst()->GetContext()->HSSetConstantBuffers(m_Register, 1, &m_Buffer);
 
-	if (m_ConstantBufferShaderType & (int)ConstantBuffer_Shader_Type::Geometry)
+	if (m_ConstantBufferShaderType & (int)Buffer_Shader_Type::Geometry)
 		CDevice::GetInst()->GetContext()->GSSetConstantBuffers(m_Register, 1, &m_Buffer);
 
-	if (m_ConstantBufferShaderType & (int)ConstantBuffer_Shader_Type::Compute)
+	if (m_ConstantBufferShaderType & (int)Buffer_Shader_Type::Compute)
 		CDevice::GetInst()->GetContext()->CSSetConstantBuffers(m_Register, 1, &m_Buffer);
 }

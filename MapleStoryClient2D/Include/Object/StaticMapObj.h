@@ -23,6 +23,7 @@ public:
         return m_Sprite;
     }
 
+
 public:
     virtual void Start();
     virtual bool Init();
@@ -31,7 +32,5 @@ public:
     virtual CStaticMapObj* Clone();
     virtual void Save(FILE* File);
     virtual void Load(FILE* File);
-
-
 };
 

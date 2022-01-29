@@ -5,7 +5,8 @@
 #include "../Resource/Shader/Standard2DConstantBuffer.h"
 #include "../Scene/SceneManager.h"
 
-CSceneComponent::CSceneComponent()
+CSceneComponent::CSceneComponent()	:
+	m_ZOrder(0)
 {
 	SetTypeID<CSceneComponent>();
 
@@ -329,6 +330,9 @@ void CSceneComponent::PrevRender()
 // 렌더 직전에 셰이더로 넘겨준다
 void CSceneComponent::Render()
 {
+	if (!m_Enable)
+		return;
+
 	m_Transform->SetTransform();
 
 	CRenderManager::GetInst()->GetStandard2DCBuffer()->SetAnimation2DEnable(false);
@@ -353,6 +357,7 @@ void CSceneComponent::Save(FILE* File)
 	int	Length = (int)m_LayerName.length();
 	fwrite(&Length, sizeof(int), 1, File);
 	fwrite(m_LayerName.c_str(), sizeof(char), Length, File);
+	fwrite(&m_ZOrder, sizeof(int), 1, File);
 
 	m_Transform->Save(File);
 
@@ -379,6 +384,7 @@ void CSceneComponent::Load(FILE* File)
 	char	LayerName[256] = {};
 	fread(&Length, sizeof(int), 1, File);
 	fread(LayerName, sizeof(char), Length, File);
+	fread(&m_ZOrder, sizeof(int), 1, File);
 
 	m_LayerName = LayerName;
 

@@ -7,9 +7,10 @@
 #include "../Input.h"
 #include "../Resource/Shader/WidgetConstantBuffer.h"
 
-CImage::CImage()	:
+CImage::CImage() :
 	m_MoveXAllowed(false),
-	m_MoveYAllowed(false)
+	m_MoveYAllowed(false),
+	m_Clicked(false)
 {
 }
 
@@ -137,6 +138,18 @@ void CImage::AddFrameData(const Vector2& Start, const Vector2& Size)
 	m_Info.vecFrameData.push_back(Data);
 }
 
+void CImage::AddFrameData(int Count)
+{
+	for (int i = 0; i < Count; ++i)
+	{
+		AnimationFrameData	Data;
+		Data.Start = Vector2(0.f, 0.f);
+		Data.Size = Vector2((float)m_Info.Texture->GetWidth(i), (float)m_Info.Texture->GetHeight(i));
+
+		m_Info.vecFrameData.push_back(Data);
+	}
+}
+
 void CImage::SetPlayTime(float PlayTime)
 {
 	m_Info.PlayTime = PlayTime;
@@ -144,6 +157,43 @@ void CImage::SetPlayTime(float PlayTime)
 
 void CImage::SetPlayScale(float PlayScale)
 {
+	m_Info.PlayScale = PlayScale;
+}
+
+void CImage::LoadSequence2D(const char* FileName, const std::string& PathName, float PlayTime, float PlayScale)
+{
+	std::string	SequenceName;
+
+	CScene* Scene = m_Owner->GetViewport()->GetScene();
+	std::string resultName;
+
+	CAnimationSequence2D* Sequence = nullptr;
+
+	if (Scene)
+	{
+		Scene->GetResource()->LoadSequence2D(resultName, FileName);
+
+		Sequence = Scene->GetResource()->FindAnimationSequence2D(resultName);
+	}
+
+	else
+	{
+		CResourceManager::GetInst()->LoadSequence2D(resultName, FileName);
+
+		Sequence = CResourceManager::GetInst()->FindAnimationSequence2D(resultName);
+	}
+
+	m_Info.Texture = Sequence->GetTexture();
+	SetUseTexture(true);
+
+	int Count = Sequence->GetFrameCount();
+
+	for (int i = 0; i < Count; ++i)
+	{
+		m_Info.vecFrameData.push_back(Sequence->GetFrameData(i));
+	}
+
+	m_Info.PlayTime = PlayTime;
 	m_Info.PlayScale = PlayScale;
 }
 
@@ -178,6 +228,12 @@ void CImage::Update(float DeltaTime)
 
 			if (m_MoveYAllowed)
 				m_Pos.y += MouseMove.y;
+
+			if (m_ClickCallback && !m_Clicked)
+			{
+				m_ClickCallback();
+				m_Clicked = true;
+			}
 		}
 	}
 }
@@ -217,10 +273,13 @@ void CImage::Render()
 		{
 		case Image_Type::Atlas:
 		{
+			std::string Name = m_Name;
+			
 			Vector2	StartUV, EndUV;
 
 			Vector2	Start = m_Info.vecFrameData[m_Info.Frame].Start;
 			Vector2	FrameSize = m_Info.vecFrameData[m_Info.Frame].Size;
+			m_Size = FrameSize;
 
 			StartUV = Start /
 				Vector2((float)m_Info.Texture->GetWidth(), (float)m_Info.Texture->GetHeight());
@@ -248,7 +307,7 @@ void CImage::Render()
 		m_CBuffer->SetAnimEnable(false);
 
 	if (m_Info.Texture)
-		m_Info.Texture->SetShader(0, (int)ConstantBuffer_Shader_Type::Pixel, Frame);
+		m_Info.Texture->SetShader(0, (int)Buffer_Shader_Type::Pixel, Frame);
 
 	m_Tint = m_Info.Tint;
 

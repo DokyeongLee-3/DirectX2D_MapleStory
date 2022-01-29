@@ -8,6 +8,7 @@
 #include "Input.h"
 #include "IMGUIManager.h"
 #include "Collision/CollisionManager.h"
+#include "Resource/Shader/GlobalConstantBuffer.h"
 
 DEFINITION_SINGLE(CEngine)
 
@@ -19,18 +20,23 @@ CEngine::CEngine()	:
 	m_Start(false),
 	m_Play(true),
 	m_Space(Engine_Space::Space2D),
-	m_MouseState(Mouse_State::Normal)
+	m_MouseState(Mouse_State::Normal),
+	m_ShowCursorCount(0),
+	m_GlobalCBuffer(nullptr),
+	m_GlobalAccTime(0.f)
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	//_CrtSetBreakAlloc(679);
-	m_ClearColor[0] = 1.f;
-	m_ClearColor[1] = 1.f;
-	m_ClearColor[2] = 1.f;
+	m_ClearColor[0] = 0.f;
+	m_ClearColor[1] = 0.f;
+	m_ClearColor[2] = 0.f;
 }
 
 CEngine::~CEngine()
 {
 	CSceneManager::DestroyInst();
+
+	SAFE_DELETE(m_GlobalCBuffer);
 
 	CInput::DestroyInst();
 
@@ -47,6 +53,16 @@ CEngine::~CEngine()
 	CDevice::DestroyInst();
 
 	SAFE_DELETE(m_Timer);
+}
+
+void CEngine::SetMouseState(Mouse_State State)
+{
+	if (m_MouseWidget[(int)m_MouseState])
+	{
+		// 초기화?
+	}
+
+	m_MouseState = State;
 }
 
 bool CEngine::Init(HINSTANCE hInst, const TCHAR* Name,
@@ -99,9 +115,25 @@ bool CEngine::Init(HINSTANCE hInst, HWND hWnd,
 	if (!CRenderManager::GetInst()->Init())
 		return false;
 
+	m_GlobalCBuffer = new CGlobalConstantBuffer;
+
+	if (!m_GlobalCBuffer->Init())
+		return false;
+
+	m_GlobalCBuffer->SetResolution(m_RS);
+
 	// 장면 관리자 초기화
 	if (!CSceneManager::GetInst()->Init())
 		return false;
+
+	// NoiseTexture
+	CResourceManager::GetInst()->LoadTexture("GlobalNoiseTexture", TEXT("noise_01.png"));
+
+	m_GlobalNoiseTexture = CResourceManager::GetInst()->FindTexture("GlobalNoiseTexture");
+
+	m_GlobalNoiseTexture->SetShader(100, (int)Buffer_Shader_Type::All, 0);
+
+	m_GlobalCBuffer->SetNoiseResolution((float)m_GlobalNoiseTexture->GetWidth(), (float)m_GlobalNoiseTexture->GetHeight());
 
 	return true;
 }
@@ -156,6 +188,13 @@ void CEngine::Logic()
 	if (!m_Play)
 		DeltaTime = 0.f;
 
+	m_GlobalAccTime += DeltaTime;
+
+	m_GlobalCBuffer->SetDeltaTime(DeltaTime);
+	m_GlobalCBuffer->SetAccTime(m_GlobalAccTime);
+
+	m_GlobalCBuffer->UpdateCBuffer();
+
 	CInput::GetInst()->Update(DeltaTime);
 
 	CIMGUIManager::GetInst()->Update(DeltaTime);
@@ -174,6 +213,42 @@ bool CEngine::Update(float DeltaTime)
 	if (CSceneManager::GetInst()->Update(DeltaTime))
 		return true;
 
+	if (m_MouseWidget[(int)m_MouseState])
+	{
+		// 마우스 위치를 얻어온다.
+		Vector2 Pos = CInput::GetInst()->GetMousePos();
+
+		// 마우스가 윈도우 창을 벗어났다면 보이게 한다.
+		// ShowCursor(false)를 맨처음 하면 -1을 리턴하고 한 횟수만큼 1씩 감소시켜서 리턴하는데
+		// ShowCursor(true)로 커서를 다시 보이게 하고 싶으면 ShowCursor(true)를 하면
+		// 1씩 다시 증가시킨 값을 리턴하는데 이 리턴값이 0이 될만큼 호출해줘야 다시 커서가 보인다
+		if (Pos.x < 0.f || Pos.x > m_RS.Width || Pos.y < 0.f || Pos.y > m_RS.Height)
+		{
+			if (m_ShowCursorCount < 0)
+			{
+				ShowCursor(true);
+				m_ShowCursorCount = 0;
+			}
+		}
+
+		else
+		{
+			if (m_ShowCursorCount == 0)
+			{
+				ShowCursor(false);
+				--m_ShowCursorCount;
+			}
+		}
+
+		// GetMousePos로 마우스 위치를 얻어오면 커서 좌상단의 좌표를 넘겨주므로 그 상태에서 이미지가 좌상단
+		// 방향으로 Scaling되면, 커서 이미지랑 완벽하게 겹쳐지지 않아서 커서 이미지의 Height만큼 아래로 내려준다
+		Pos.y -= m_MouseWidget[(int)m_MouseState]->GetWindowSize().y;
+
+		m_MouseWidget[(int)m_MouseState]->SetPos(Pos);
+
+		m_MouseWidget[(int)m_MouseState]->Update(DeltaTime);
+	}
+
 	return false;
 }
 
@@ -181,6 +256,11 @@ bool CEngine::PostUpdate(float DeltaTime)
 {
 	if (CSceneManager::GetInst()->PostUpdate(DeltaTime))
 		return true;
+
+	if (m_MouseWidget[(int)m_MouseState])
+	{
+		m_MouseWidget[(int)m_MouseState]->PostUpdate(DeltaTime);
+	}
 
 	return false;
 }

@@ -29,5 +29,6 @@ public:
 	{
 		m_BufferData.Opacity = Opacity;
 	}
+
 };
 

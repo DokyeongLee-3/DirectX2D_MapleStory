@@ -64,6 +64,8 @@ void CStage::Load(FILE* File)
 	CGameObject::Load(File);
 
 	m_Sprite = (CSpriteComponent*)FindComponent("StageSprite");
+
+	m_Sprite->SetTransparency(true);
 }
 
 

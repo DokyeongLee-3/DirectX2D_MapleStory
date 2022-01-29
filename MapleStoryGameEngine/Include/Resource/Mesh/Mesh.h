@@ -24,6 +24,8 @@ public:
         DXGI_FORMAT Fmt = DXGI_FORMAT_UNKNOWN);
     virtual bool Init();
     virtual void Render();
+    virtual void RenderInstancing(int Count);
+    virtual void RenderInstancing(ID3D11Buffer* InstancingBuffer, unsigned int InstanceSize, int Count);
 
 protected:
     /*

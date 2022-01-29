@@ -14,7 +14,6 @@ protected:
 	virtual ~CSceneComponent();
 
 protected:
-
 	CTransform* m_Transform;
 	CSceneComponent* m_Parent;
 	std::vector<CSharedPtr<CSceneComponent>> m_vecChild;
@@ -26,8 +25,20 @@ protected:
 	bool    m_Render;
 	// 어떤 Layer에 속해 있는지
 	std::string		m_LayerName;
+	int m_ZOrder;
+
 
 public:
+	int GetZOrder()	const
+	{
+		return m_ZOrder;
+	}
+
+	void SetZOrder(int ZOrder)
+	{
+		m_ZOrder = ZOrder;
+	}
+
 	std::string GetLayerName()	const
 	{
 		return m_LayerName;

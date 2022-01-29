@@ -4,6 +4,7 @@
 #include "Resource/Material/Material.h"
 #include "MonsterAnimation.h"
 #include "../Widget/SimpleHUD.h"
+#include "Engine.h"
 
 CMonster::CMonster()	:
 	m_HP(50.f)
@@ -56,10 +57,13 @@ bool CMonster::Init()
 	Instance->SetEndFunction<CMonster>("RadishDieLeft", this, &CMonster::Die);
 	
 
-
 	m_Sprite->SetRelativeScale(100.f, 100.f, 1.f);
 	m_Sprite->SetRelativePos(500.f, 300.f, 0.f);
 	m_Sprite->SetPivot(0.5f, 0.5f, 0.f);
+
+
+	m_Body->AddCollisionMouseCallback(Collision_State::Begin, this, &CMonster::OnMouseBegin);
+	m_Body->AddCollisionMouseCallback(Collision_State::End, this, &CMonster::OnMouseEnd);
 
 	return true;
 }
@@ -86,7 +90,9 @@ void CMonster::CollisionCallback(const CollisionResult& result)
 
 	if (m_HP <= 0.f)
 	{
+		GetRootComponent()->DeleteChild("Body");
 		m_Sprite->GetAnimationInstance()->ChangeAnimation("RadishDieLeft");
+		m_Body->Destroy();
 	}
 }
 
@@ -98,4 +104,14 @@ void CMonster::Die()
 void CMonster::ReturnIdle()
 {
 	m_Sprite->ChangeAnimation("RadishIdleLeft");
+}
+
+void CMonster::OnMouseBegin(const CollisionResult& result)
+{
+	CEngine::GetInst()->SetMouseState(Mouse_State::State1);
+}
+
+void CMonster::OnMouseEnd(const CollisionResult& result)
+{
+	CEngine::GetInst()->SetMouseState(Mouse_State::Normal);
 }

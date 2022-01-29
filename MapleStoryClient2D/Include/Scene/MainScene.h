@@ -18,6 +18,7 @@ private:
     CSharedPtr<CMainWidget> m_MainWidget;
     CSharedPtr<CConfigurationWindow> m_ConfigurationWindow;
     class CStage* m_StageObject;
+    std::function<void(bool, float)> m_LoadingFunction;
 
 public:
     class CStage* GetStageObject()    const
@@ -33,8 +34,16 @@ private:
     void CreatePlayerAnimationSequence();
     void CreateSkillAnimationSequence();
     void CreateMonsterAnimationSequence();
+    void CreateParticle();
 
 private:
     void TestLoadScene();
+
+public:
+    template <typename T>
+    void SetLoadingFunction(T* Obj, void(T::* Func)(bool, float))
+    {
+        m_LoadingFunction = std::bind(Func, Obj, std::placeholders::_1, std::placeholders::_2);
+    }
 };
 

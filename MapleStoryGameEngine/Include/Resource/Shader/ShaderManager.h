@@ -20,7 +20,7 @@ public:
 	void ReleaseShader(const std::string& Name);
 
 	bool CreateConstantBuffer(const std::string& Name, int Size, int Register, 
-		int ConstantBufferShaderType = (int)ConstantBuffer_Shader_Type::All);
+		int ConstantBufferShaderType = (int)Buffer_Shader_Type::All);
 	class CConstantBuffer* FindConstantBuffer(const std::string& Name);
 
 public:

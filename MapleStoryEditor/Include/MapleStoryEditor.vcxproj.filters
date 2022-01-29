@@ -126,6 +126,9 @@
     <ClCompile Include="Component\DragCollider.cpp">
       <Filter>04. Collider</Filter>
     </ClCompile>
+    <ClCompile Include="Object\CharacterSelectBackLight.cpp">
+      <Filter>05. UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene\DefaultScene.h">
@@ -214,6 +217,9 @@
     </ClInclude>
     <ClInclude Include="Component\DragCollider.h">
       <Filter>04. Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\CharacterSelectBackLight.h">
+      <Filter>05. UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

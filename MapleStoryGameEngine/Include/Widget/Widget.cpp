@@ -17,7 +17,8 @@ CWidget::CWidget() :
 	m_Size(50.f, 50.f),
 	m_MouseHovered(false),
 	m_CollisionMouseEnable(true),
-	m_Tint(1.f, 1.f, 1.f, 1.f)
+	m_Tint(1.f, 1.f, 1.f, 1.f),
+	m_Opacity(1.f)
 {
 }
 
@@ -122,6 +123,7 @@ void CWidget::Render()
 
 	m_CBuffer->SetWP(matWP);
 	m_CBuffer->SetTint(m_Tint);
+	m_CBuffer->SetOpacity(m_Opacity);
 
 	m_CBuffer->UpdateCBuffer();
 
@@ -146,10 +148,6 @@ bool CWidget::CollisionMouse(const Vector2& MousePos)
 
 	else if (m_RenderPos.y + m_Size.y < MousePos.y)
 		return false;
-
-
-	// 매 프레임의 끝에서 이렇게 false로 다시 초기화
-	m_MouseHovered = false;
 
 	return true;
 }

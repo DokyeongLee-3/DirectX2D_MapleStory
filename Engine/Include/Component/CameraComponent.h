@@ -51,6 +51,11 @@ public:
 		return LB;
 	}
 
+	Vector2	GetRatio()	const
+	{
+		return m_Ratio;
+	}
+
 public:
 	void SetViewAngle(float Angle)
 	{

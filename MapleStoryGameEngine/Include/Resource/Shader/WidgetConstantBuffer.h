@@ -53,5 +53,10 @@ public:
 	{
 		m_BufferData.WidgetAnimEnable = Enable ? 1 : 0;
 	}
+
+	void SetOpacity(float Opacity)
+	{
+		m_BufferData.Opacity = Opacity;
+	}
 };
 

@@ -112,6 +112,16 @@ bool CMeshManager::Init()
 	m_mapMesh.insert(std::make_pair("WidgetMesh", WidgetMesh));
 
 
+	CMesh* ParticlePointMesh = new CStaticMesh;
+
+	Vector3	Point;
+
+	ParticlePointMesh->SetName("ParticlePointMesh");
+	ParticlePointMesh->CreateMesh(&Point, sizeof(Vector3), 1, D3D11_USAGE_IMMUTABLE,
+		D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+
+	m_mapMesh.insert(std::make_pair("ParticlePointMesh", ParticlePointMesh));
+
 	return true;
 }
 

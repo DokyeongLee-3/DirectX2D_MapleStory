@@ -79,7 +79,7 @@ public:
 		const std::string& PathName = SOUND_PATH);
 
 	void LoadSequence2D(Button_State State, const char* FileName, const std::string& PathName = ANIMATION_PATH, float PlayTime = 1.f, 
-		float PlayScale = 1.f, bool Loop = true, bool Reverse = false);
+		float PlayScale = 1.f);
 
 public:
 	virtual void Start();

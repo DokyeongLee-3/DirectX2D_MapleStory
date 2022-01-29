@@ -30,6 +30,7 @@ CMaterial::~CMaterial()
 {
 }
 
+
 void CMaterial::SetRenderState(CRenderState* State)
 {
 	m_RenderStateArray[(int)RenderState_Type::Blend] = State;
@@ -67,6 +68,7 @@ void CMaterial::AddOpacity(float Opacity)
 	else if (m_Opacity > 1.f)
 		m_Opacity = 1.f;
 }
+
 
 void CMaterial::SetBaseColor(const Vector4& Color)
 {

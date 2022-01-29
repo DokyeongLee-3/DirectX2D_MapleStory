@@ -44,6 +44,7 @@ protected:
 	Vector2	m_RenderPos;
 	Vector2	m_Size;
 	float	m_Angle;
+	float	m_Opacity;
 	bool	m_Start;
 	Vector4	m_Tint;
 	bool	m_MouseHovered;
@@ -83,7 +84,17 @@ public:
 		return m_Angle;
 	}
 
+	float GetOpacity()	const
+	{
+		return m_Opacity;
+	}
+
 public:
+	void SetOpacity(float Opacity)
+	{
+		m_Opacity = Opacity;
+	}
+
 	void SetZOrder(int ZOrder)
 	{
 		m_ZOrder = ZOrder;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../GameInfo.h"
+#include "../Component/SceneComponent.h"
 
 struct RenderLayer
 {
@@ -16,6 +17,11 @@ struct RenderLayer
 		LayerPriority = 0;
 		RenderCount = 0;
 		RenderList.resize(500);
+	}
+
+	static bool SortSceneComponent(CSceneComponent* Src, CSceneComponent* Dest)
+	{
+		return Src->GetZOrder() < Dest->GetZOrder();
 	}
 };
 
@@ -33,6 +39,30 @@ private:
 	class CStandard2DConstantBuffer* m_Standard2DCBuffer;
 	class CRenderState* m_DepthDisable;
 	class CRenderState* m_AlphaBlend;
+	float m_FadeAmount;
+	bool m_StartFadeIn;
+	bool m_StartFadeOut;
+
+public:
+	bool GetStartFadeIn()	const
+	{
+		return m_StartFadeIn;
+	}
+
+	bool GetStartFadeOut()	const
+	{
+		return m_StartFadeOut;
+	}
+
+	void SetStartFadeIn(bool FadeInStart)
+	{
+		m_StartFadeIn = FadeInStart;
+	}
+
+	void SetStartFadeOut(bool FadeOutStart)
+	{
+		m_StartFadeOut = FadeOutStart;
+	}
 
 public:
 	class CStandard2DConstantBuffer* GetStandard2DCBuffer()	const
@@ -49,6 +79,13 @@ public:
 	void AddRenderList(class CSceneComponent* Component);
 	void CreateLayer(const std::string& Name, int Priority);
 	void SetLayerPriority(const std::string& Name, int Priority);
+	void SetFadeAmount(float FadeAmount);
+
+public:
+	float GetFadeAmount()	const
+	{
+		return m_FadeAmount;
+	}
 
 public:
 	bool Init();
@@ -69,6 +106,11 @@ public:
 
 private:
 	static bool Sortlayer(RenderLayer* Src, RenderLayer* Dest);
+
+
+public:
+	void FadeIn(float DeltaTime);
+	void FadeOut(float DeltaTime);
 
 	DECLARE_SINGLE(CRenderManager)
 };
