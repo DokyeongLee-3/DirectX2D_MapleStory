@@ -12,7 +12,7 @@ CDragCollider::CDragCollider()
 {
 	SetTypeID<CDragCollider>();
 	m_ComponentType = Component_Type::SceneComponent;
-	m_Render = true;
+	m_Render = false;
 
 	m_ColliderType = Collider_Type::Box2D;
 }

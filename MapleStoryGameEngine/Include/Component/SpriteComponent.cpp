@@ -6,14 +6,20 @@
 #include "../Animation/AnimationSequence2DData.h"
 #include "../Render/RenderManager.h"
 #include "../Resource/Shader/Standard2DConstantBuffer.h"
+#include "../Resource/Shader/StructuredBuffer.h"
 #include "../Scene/SceneManager.h"
+#include "../Resource/Mesh/StaticMesh.h"
 
 CSpriteComponent::CSpriteComponent() :
-	m_Animation(nullptr)
+	m_Animation(nullptr),
+	m_IsInstance(false),
+	m_Info{},
+	m_InfoShared{}
 {
 	SetTypeID<CSpriteComponent>();
 	m_Render = true;
 	m_Flip = false;
+	
 }
 
 CSpriteComponent::CSpriteComponent(const CSpriteComponent& com) :
@@ -59,6 +65,55 @@ void CSpriteComponent::SetMaterial(CMaterial* Material)
 	m_Material = Material->Clone();
 
 	m_Material->SetScene(m_Scene);
+}
+
+void CSpriteComponent::SetMesh(const std::string& Name)
+{
+	m_Mesh = (CSpriteMesh*)m_Scene->GetResource()->FindMesh(Name);
+}
+
+void CSpriteComponent::AddStructuredBuffer(const std::string& Name, unsigned int Size, unsigned int Count,
+	int Register, bool Dynamic, int StructuredBufferShaderType)
+{
+	CStructuredBuffer* Buffer = new CStructuredBuffer;
+
+	if (!Buffer->Init(Name, Size, Count, Register, Dynamic, StructuredBufferShaderType))
+	{
+		SAFE_DELETE(Buffer);
+		return;
+	}
+
+	m_vecStructuredBuffer.push_back(Buffer);
+
+}
+
+bool CSpriteComponent::ResizeBuffer(const std::string& Name, unsigned int Size, unsigned int Count, int Register, bool Dynamic, int StructuredBufferShaderType)
+{
+	size_t	BufferCount = m_vecStructuredBuffer.size();
+
+	for (size_t i = 0; i < BufferCount; ++i)
+	{
+		if (m_vecStructuredBuffer[i]->GetName() == Name)
+		{
+			m_vecStructuredBuffer[i]->Init(Name, Size, Count, Register, Dynamic, StructuredBufferShaderType);
+
+			return true;
+		}
+	}
+
+	return false;
+}
+
+void CSpriteComponent::CloneStructuredBuffer(std::vector<CStructuredBuffer*>& vecBuffer)
+{
+	size_t	BufferCount = m_vecStructuredBuffer.size();
+
+	for (size_t i = 0; i < BufferCount; ++i)
+	{
+		CStructuredBuffer* Buffer = m_vecStructuredBuffer[i]->Clone();
+
+		vecBuffer.push_back(Buffer);
+	}
 }
 
 void CSpriteComponent::SetBaseColor(const Vector4& Color)
@@ -151,7 +206,15 @@ void CSpriteComponent::Start()
 
 bool CSpriteComponent::Init()
 {
-	m_Mesh = (CSpriteMesh*)m_Scene->GetResource()->FindMesh("SpriteMesh");
+	if (!m_IsInstance)
+		m_Mesh = (CSpriteMesh*)m_Scene->GetResource()->FindMesh("SpriteMesh");
+
+	else
+	{
+		m_PointMesh = (CStaticMesh*)m_Scene->GetResource()->FindMesh("MonsterInstancingPointMesh");
+		AddStructuredBuffer("MonsterInfo", sizeof(MonsterInfo), 20, 2);
+		AddStructuredBuffer("MonsterInfoShared", sizeof(MonsterInfoShared), 1, 3);
+	}
 
 	// MaterialManager에서 만들어준 디폴트 Material로 Set
 	// 이 디폴트 Material은 EngineTexture를 텍스쳐를 디폴트로 갖고 있음

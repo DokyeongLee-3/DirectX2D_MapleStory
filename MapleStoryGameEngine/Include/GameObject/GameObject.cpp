@@ -253,8 +253,17 @@ void CGameObject::Load(FILE* File)
 		size_t	TypeID = 0;
 		fread(&TypeID, sizeof(size_t), 1, File);
 
-		if(CSceneManager::GetInst()->CallCreateComponent(this, TypeID))
+		if (CSceneManager::GetInst()->CallCreateComponent(this, TypeID))
+		{
 			m_RootComponent->Load(File);
+			
+			CScene* NextScene = CSceneManager::GetInst()->GetNextScene();
+
+			if (NextScene)
+				m_RootComponent->SetScene(NextScene);
+			else
+				m_RootComponent->SetScene(m_Scene);
+		}
 	}
 
 	int	ObjComponentCount = 0;

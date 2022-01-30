@@ -27,6 +27,11 @@ private:
 
 
 public:
+	void AddObject(CGameObject* Object)
+	{
+		m_ObjList.push_back(Object);
+	}
+
 	void SetAutoChange(bool Change)
 	{
 		m_Change = Change;
@@ -165,9 +170,19 @@ public:
 	{
 		T* Obj = new T;
 
-		Obj->SetScene(this);
+		CScene* NextScene = CSceneManager::GetInst()->GetNextScene();
 
-		m_ObjList.push_back(Obj);
+		if (NextScene)
+		{
+			NextScene->AddObject(Obj);
+			Obj->SetScene(NextScene);
+		}
+
+		else
+		{
+			m_ObjList.push_back(Obj);
+			Obj->SetScene(this);
+		}
 
 		if (m_Start)
 			Obj->Start();

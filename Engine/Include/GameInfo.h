@@ -380,3 +380,25 @@ struct GlobalCBuffer
 	Vector2	NoiseResolution;
 	Vector2	Empty;
 };
+
+struct MonsterInfo
+{
+	Vector3	WorldPos;
+	int		Alive;
+};
+
+struct MonsterInfoShared
+{
+	unsigned int	SpawnEnable;
+	unsigned int	CurrentSpawnCount;
+	unsigned int	SpawnCountMax;
+	float			Empty;
+};
+
+struct MonsterCBuffer
+{
+	unsigned int	MonsterSpawnEnable;
+	unsigned int	MonsterCurrentSpawnCount;
+	unsigned int	MonsterSpawnCountMax;
+	float			MonsterEmpty;
+};

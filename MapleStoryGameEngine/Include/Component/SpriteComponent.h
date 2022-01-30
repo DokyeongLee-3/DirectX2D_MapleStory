@@ -2,7 +2,9 @@
 
 #include "SceneComponent.h"
 #include "../Resource/Mesh/SpriteMesh.h"
+#include "../Resource/Mesh/StaticMesh.h"
 #include "../Resource/Material/Material.h"
+#include "../Resource/Shader/MonsterInstancingUpdateShader.h"
 
 class CSpriteComponent :
     public CSceneComponent
@@ -16,11 +18,25 @@ protected:
 
 protected:
     CSharedPtr<CSpriteMesh> m_Mesh;
+    CSharedPtr<CStaticMesh> m_PointMesh;
     CSharedPtr<CMaterial> m_Material;
     class CAnimationSequence2DInstance* m_Animation;
     bool m_Flip;
 
+
+    std::vector<class CStructuredBuffer*>	    m_vecStructuredBuffer;
+    CSharedPtr<CMonsterInstancingUpdateShader>	m_UpdateShader;
+    class MonsterInstancingConstantBuffer*      m_CBuffer;
+    MonsterInfo                                 m_Info;
+    MonsterInfoShared                           m_InfoShared;
+    bool                                        m_IsInstance;
+
 public:
+    bool IsInstance()   const
+    {
+        return m_IsInstance;
+    }
+
     bool IsFlip()   const
     {
         return m_Flip;
@@ -31,6 +47,11 @@ public:
         return m_Material;
     }
 
+    void SetInstance(bool Instance)
+    {
+        m_IsInstance = Instance == true ? true : false;
+    }
+
     class CAnimationSequence2DInstance* GetAnimationInstance()  const;
     class CAnimationSequence2DData* GetCurrentAnimation()    const;
 
@@ -39,7 +60,16 @@ public:
     void ChangeAnimation(const std::string& AnimationName);
 
     void SetMaterial(CMaterial* Material);
+    void SetMesh(const std::string& Name);
 
+public:
+    void AddStructuredBuffer(const std::string& Name, unsigned int Size, unsigned int Count,
+        int Register, bool Dynamic = false,
+        int StructuredBufferShaderType = (int)Buffer_Shader_Type::Compute);
+    bool ResizeBuffer(const std::string& Name, unsigned int Size, unsigned int Count,
+        int Register, bool Dynamic = false,
+        int StructuredBufferShaderType = (int)Buffer_Shader_Type::Compute);
+    void CloneStructuredBuffer(std::vector<CStructuredBuffer*>& vecBuffer);
 
 public:
     void SetBaseColor(const Vector4& Color);

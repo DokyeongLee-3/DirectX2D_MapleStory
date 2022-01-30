@@ -1,6 +1,7 @@
 
 #include "SceneMode.h"
 #include "../GameObject/GameObject.h"
+#include "../Engine.h"
 
 CSceneMode::CSceneMode()
 {
@@ -29,6 +30,18 @@ bool CSceneMode::Init()
 
 void CSceneMode::Update(float DeltaTime)
 {
+
+#ifdef _DEBUG
+	char FPSStr[256] = {};
+
+	float FPS = CEngine::GetInst()->GetFPS();
+
+	sprintf_s(FPSStr, "FPS : %f\n", FPS);
+
+	OutputDebugStringA(FPSStr);
+#else
+
+#endif	// _DEBUG
 }
 
 void CSceneMode::PostUpdate(float DeltaTime)

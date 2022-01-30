@@ -35,6 +35,17 @@ bool CMaterialManager::Init()
 
 	Mtrl->AddTexture(0, (int)Buffer_Shader_Type::Pixel, "EngineTexture", Texture);
 
+
+
+	// Monster Instancing ¿ëµµ
+	CreateMaterial<CMaterial>("MonsterInstancingTexture");
+
+	Mtrl = FindMaterial("MonsterInstancingTexture");
+
+	Mtrl->SetShader("MonsterInstancingRenderShader");
+
+	Mtrl->AddTexture(0, (int)Buffer_Shader_Type::Pixel, "EngineTexture", Texture);
+
 	return true;
 }
 

@@ -133,6 +133,9 @@ void CSceneComponent::SetGameObject(CGameObject* Object)
 
 void CSceneComponent::AddChild(CSceneComponent* Child)
 {
+	if (!Child)
+		nullptr;
+
 	Child->m_Parent = this;
 
 	m_vecChild.push_back(Child);
@@ -265,9 +268,13 @@ void CSceneComponent::Update(float DeltaTime)
 	{
 		if (!m_vecChild[i]->IsActive())
 		{
-			auto iter = m_vecChild.begin();
-			std::advance(iter, i);
-			m_vecChild.erase(iter);
+			// Transform에서의 자식 먼저 지워주기 
+		/*	auto iter2 = m_Transform->m_vecChild.begin();
+			std::advance(iter2, i);
+			m_Transform->m_vecChild.erase(iter2);*/
+
+			DeleteChild(m_vecChild[i]);
+
 			continue;
 		}
 
@@ -291,9 +298,8 @@ void CSceneComponent::PostUpdate(float DeltaTime)
 	{
 		if (!m_vecChild[i]->IsActive())
 		{
-			auto iter = m_vecChild.begin();
-			std::advance(iter, i);
-			m_vecChild.erase(iter);
+			DeleteChild(m_vecChild[i]);
+
 			continue;
 		}
 
@@ -401,10 +407,17 @@ void CSceneComponent::Load(FILE* File)
 
 		CComponent* Component = CSceneManager::GetInst()->CallCreateComponent(m_Object, TypeID);
 
+		Component->Load(File);
+
 		AddChild((CSceneComponent*)Component);
 
-		Component->Load(File);
-		//Component->Start();
+		CScene* NextScene = CSceneManager::GetInst()->GetNextScene();
+
+		if (NextScene)
+			Component->SetScene(NextScene);
+		else
+			Component->SetScene(m_Scene);
+
 
 		//CSceneManager::GetInst()->GetScene()->GetSceneMode()->AddComponentList(Component->GetName().c_str());
 	}

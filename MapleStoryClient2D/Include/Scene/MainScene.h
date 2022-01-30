@@ -34,6 +34,7 @@ private:
     void CreatePlayerAnimationSequence();
     void CreateSkillAnimationSequence();
     void CreateMonsterAnimationSequence();
+    void CreateMapAnimationSequence();
     void CreateParticle();
 
 private:

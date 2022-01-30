@@ -199,6 +199,12 @@
     <Filter Include="02. Resource\08. Particle">
       <UniqueIdentifier>{a979c4bf-db06-4992-ab24-6bb2b360018d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Resource\02. Shader\02. ShaderClass\06. Instancing">
+      <UniqueIdentifier>{6d70e099-b5fc-433d-bbce-13ce63db5f70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Resource\02. Shader\03. ConstantBuffer\09. Instancing">
+      <UniqueIdentifier>{e971bb34-654c-465f-be88-a3155494f357}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -542,6 +548,15 @@
     </ClCompile>
     <ClCompile Include="Resource\Shader\ParticleRenderShader.cpp">
       <Filter>02. Resource\02. Shader\02. ShaderClass\05. Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\MonsterInstancingRenderShader.cpp">
+      <Filter>02. Resource\02. Shader\02. ShaderClass\06. Instancing</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\MonsterInstancingUpdateShader.cpp">
+      <Filter>02. Resource\02. Shader\02. ShaderClass\06. Instancing</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\MonsterInstancingConstantBuffer.cpp">
+      <Filter>02. Resource\02. Shader\03. ConstantBuffer\09. Instancing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -934,6 +949,15 @@
     </ClInclude>
     <ClInclude Include="Resource\Shader\ParticleRenderShader.h">
       <Filter>02. Resource\02. Shader\02. ShaderClass\05. Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Shader\MonsterInstancingRenderShader.h">
+      <Filter>02. Resource\02. Shader\02. ShaderClass\06. Instancing</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Shader\MonsterInstancingUpdateShader.h">
+      <Filter>02. Resource\02. Shader\02. ShaderClass\06. Instancing</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Shader\MonsterInstancingConstantBuffer.h">
+      <Filter>02. Resource\02. Shader\03. ConstantBuffer\09. Instancing</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

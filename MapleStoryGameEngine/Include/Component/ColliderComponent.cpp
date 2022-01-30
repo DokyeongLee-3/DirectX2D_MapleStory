@@ -39,9 +39,9 @@ CColliderComponent::~CColliderComponent()
 
 	for (; iter != iterEnd; ++iter)
 	{
-		(*iter)->DeletePrevCollision(this);
 		(*iter)->CallCollisionCallback(Collision_State::End);
 		CallCollisionCallback(Collision_State::End);
+		(*iter)->DeletePrevCollision(this);
 	}
 }
 
@@ -195,6 +195,7 @@ void CColliderComponent::Start()
 {
 	CSceneComponent::Start();
 
+	// CColliderComponent::Start이 두번 호출되고 있음
 	m_Scene->GetCollision()->AddCollider(this);
 }
 

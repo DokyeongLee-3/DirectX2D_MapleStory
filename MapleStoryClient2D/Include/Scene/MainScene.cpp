@@ -76,14 +76,6 @@ bool CMainScene::Init()
 	CBubbleParticle* BubbleParticle = m_Scene->CreateGameObject<CBubbleParticle>("BubbleParticle");
 
 
-
-
-
-
-
-
-
-
 	// For Test
 	//TestLoadScene();
 
@@ -110,6 +102,7 @@ void CMainScene::CreateAnimationSequence()
 	CreatePlayerAnimationSequence();
 	CreateSkillAnimationSequence();
 	CreateMonsterAnimationSequence();
+	CreateMapAnimationSequence();
 }
 
 void CMainScene::CreateParticle()
@@ -157,6 +150,17 @@ void CMainScene::CreateMonsterAnimationSequence()
 	m_Scene->GetResource()->LoadSequence2D("RadishWalkLeft.sqc");
 	m_Scene->GetResource()->LoadSequence2D("RadishHitLeft.sqc");
 	m_Scene->GetResource()->LoadSequence2D("RadishDieLeft.sqc");
+}
+
+void CMainScene::CreateMapAnimationSequence()
+{
+	m_Scene->GetResource()->LoadSequence2D("SingleHelixBlinkTree.sqc");
+	m_Scene->GetResource()->LoadSequence2D("DoubleHelixBlinkTree.sqc");
+	m_Scene->GetResource()->LoadSequence2D("BlinkTree.sqc");
+
+	m_Scene->GetResource()->LoadSequence2D("Portal.sqc");
+	m_Scene->GetResource()->LoadSequence2D("Butterfly.sqc");
+	m_Scene->GetResource()->LoadSequence2D("LampLight.sqc");
 }
 
 void CMainScene::TestLoadScene()

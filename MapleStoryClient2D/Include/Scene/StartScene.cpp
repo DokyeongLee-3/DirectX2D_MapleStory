@@ -11,6 +11,7 @@
 #include "Resource/Sound/SoundManager.h"
 #include "LoadingThread.h"
 #include "Render/RenderManager.h"
+#include "MainScene.h"
 
 CStartScene::CStartScene()	:
 	m_LoadingThread(nullptr)
@@ -53,8 +54,6 @@ void CStartScene::Update(float DeltaTime)
 	{
 		CThreadQueue<LoadingMessage>* Queue = m_LoadingThread->GetLoadingQueue();
 
-		m_LoadingThread->Start();
-
 		if (!m_LoadingThread)
 		{
 			CSceneManager::GetInst()->ChangeNextScene();
@@ -82,7 +81,9 @@ void CStartScene::Update(float DeltaTime)
 void CStartScene::CreateNextScene()
 {
 	CSceneManager::GetInst()->CreateNextScene(false);
-	CSceneManager::GetInst()->CreateSceneMode<CStartScene>(false);
+	CSceneManager::GetInst()->CreateSceneMode<CMainScene>(false);
 
 	m_LoadingThread = CThread::CreateThread<CLoadingThread>("LoadingThread");
+
+	m_LoadingThread->Start();
 }

@@ -4,7 +4,8 @@
 #include "Component/SpriteComponent.h"
 #include "Component/ColliderCircle.h"
 #include "Component/WidgetComponent.h"
-
+#include "Resource/Shader/MonsterInstancingUpdateShader.h"
+#include "Resource/Shader/MonsterInstancingConstantBuffer.h"
 
 class CMonster :
     public CGameObject
@@ -23,6 +24,13 @@ private:
 
     CSharedPtr<CWidgetComponent>     m_SimpleHUDWidget;
     class CSimpleHUD* m_SimpleHUD;
+
+    // Instancing할때 필요한 UpdateShader
+    CSharedPtr<CMonsterInstancingUpdateShader>		m_UpdateShader;
+    MonsterInfo                                     m_Info;
+    MonsterInfoShared                               m_SharedInfo;
+    CMonsterInstancingConstantBuffer*               m_CBuffer;
+
 
 public:
     virtual bool Init();

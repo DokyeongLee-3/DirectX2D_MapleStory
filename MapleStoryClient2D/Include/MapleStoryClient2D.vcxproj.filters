@@ -171,6 +171,18 @@
     <ClCompile Include="Object\BubbleParticle.cpp">
       <Filter>02. Object\09. Particle</Filter>
     </ClCompile>
+    <ClCompile Include="Object\BlinkTree.cpp">
+      <Filter>02. Object\08. StaticMapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\Butterfly.cpp">
+      <Filter>02. Object\08. StaticMapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\DoubleHelixBlinkTree.cpp">
+      <Filter>02. Object\08. StaticMapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\LampLight.cpp">
+      <Filter>02. Object\08. StaticMapObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -280,6 +292,18 @@
     </ClInclude>
     <ClInclude Include="Object\BubbleParticle.h">
       <Filter>02. Object\09. Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\BlinkTree.h">
+      <Filter>02. Object\08. StaticMapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Butterfly.h">
+      <Filter>02. Object\08. StaticMapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\DoubleHelixBlinkTree.h">
+      <Filter>02. Object\08. StaticMapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\LampLight.h">
+      <Filter>02. Object\08. StaticMapObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

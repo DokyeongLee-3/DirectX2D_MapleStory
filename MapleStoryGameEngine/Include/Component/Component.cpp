@@ -54,5 +54,6 @@ void CComponent::Load(FILE* File)
 {
 	CRef::Load(File);
 
+
 	fread(&m_ComponentType, sizeof(Component_Type), 1, File);
 }

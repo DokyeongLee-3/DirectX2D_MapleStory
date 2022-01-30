@@ -255,6 +255,9 @@
     <ClInclude Include="Resource\Shader\GraphicShader.h" />
     <ClInclude Include="Resource\Shader\MaterialConstantBuffer.h" />
     <ClInclude Include="Resource\Shader\Mesh2DShader.h" />
+    <ClInclude Include="Resource\Shader\MonsterInstancingConstantBuffer.h" />
+    <ClInclude Include="Resource\Shader\MonsterInstancingRenderShader.h" />
+    <ClInclude Include="Resource\Shader\MonsterInstancingUpdateShader.h" />
     <ClInclude Include="Resource\Shader\NumberShader.h" />
     <ClInclude Include="Resource\Shader\ParticleConstantBuffer.h" />
     <ClInclude Include="Resource\Shader\ParticleRenderShader.h" />
@@ -375,6 +378,9 @@
     <ClCompile Include="Resource\Shader\GraphicShader.cpp" />
     <ClCompile Include="Resource\Shader\MaterialConstantBuffer.cpp" />
     <ClCompile Include="Resource\Shader\Mesh2DShader.cpp" />
+    <ClCompile Include="Resource\Shader\MonsterInstancingConstantBuffer.cpp" />
+    <ClCompile Include="Resource\Shader\MonsterInstancingRenderShader.cpp" />
+    <ClCompile Include="Resource\Shader\MonsterInstancingUpdateShader.cpp" />
     <ClCompile Include="Resource\Shader\NumberShader.cpp" />
     <ClCompile Include="Resource\Shader\ParticleConstantBuffer.cpp" />
     <ClCompile Include="Resource\Shader\ParticleRenderShader.cpp" />

@@ -8,6 +8,10 @@
 #include "Object/Stage.h"
 #include "Object/StaticMapObj.h"
 #include "Object/Portal.h"
+#include "Object/BlinkTree.h"
+#include "Object/LampLight.h"
+#include "Object/DoubleHelixBlinkTree.h"
+#include "Object/Butterfly.h"
 #include "Component/ColliderBox2D.h"
 #include "Component/ColliderCircle.h"
 #include "Component/ColliderPixel.h"
@@ -113,40 +117,33 @@ CGameObject* CClientManager::CreateObject(CScene* Scene, size_t Type)
 	//	return Obj;
 	//}
 
-	//else if (Type == typeid(CPortal).hash_code())
-	//{
-	//	CPortal* Obj = Scene->LoadGameObject<CPortal>();
+	else if (Type == typeid(CLampLight).hash_code())
+	{
+		CLampLight* Obj = Scene->LoadGameObject<CLampLight>();
 
-	//	return Obj;
-	//}
+		return Obj;
+	}
 
-	//else if (Type == typeid(CLampLight).hash_code())
-	//{
-	//	CLampLight* Obj = Scene->LoadGameObject<CLampLight>();
+	else if (Type == typeid(CBlinkTree).hash_code())
+	{
+		CBlinkTree* Obj = Scene->LoadGameObject<CBlinkTree>();
 
-	//	return Obj;
-	//}
+		return Obj;
+	}
 
-	//else if (Type == typeid(CBlinkTree).hash_code())
-	//{
-	//	CBlinkTree* Obj = Scene->LoadGameObject<CBlinkTree>();
+	else if (Type == typeid(CButterfly).hash_code())
+	{
+		CButterfly* Obj = Scene->LoadGameObject<CButterfly>();
 
-	//	return Obj;
-	//}
+		return Obj;
+	}
 
-	//else if (Type == typeid(CButterfly).hash_code())
-	//{
-	//	CButterfly* Obj = Scene->LoadGameObject<CButterfly>();
+	else if (Type == typeid(CDoubleHelixBlinkTree).hash_code())
+	{
+		CDoubleHelixBlinkTree* Obj = Scene->LoadGameObject<CDoubleHelixBlinkTree>();
 
-	//	return Obj;
-	//}
-
-	//else if (Type == typeid(CDoubleHelixBlinkTree).hash_code())
-	//{
-	//	CDoubleHelixBlinkTree* Obj = Scene->LoadGameObject<CDoubleHelixBlinkTree>();
-
-	//	return Obj;
-	//}
+		return Obj;
+	}
 
 	//else if (Type == typeid(CSingleHelixBlinkTree).hash_code())
 	//{
@@ -195,8 +192,19 @@ CGameObject* CClientManager::CreateObject(CScene* Scene, size_t Type)
 	{
 		CStage* Obj = Scene->LoadGameObject<CStage>();
 
-		CMainScene* MainScene = (CMainScene*)CSceneManager::GetInst()->GetScene()->GetSceneMode();
-		MainScene->SetStageObject(Obj);
+		CScene* NextScene = CSceneManager::GetInst()->GetNextScene();
+
+		if (NextScene)
+		{
+			CSceneMode* NextSceneMode = NextScene->GetSceneMode();
+			if (NextSceneMode)
+			{
+				if (NextSceneMode->GetTypeID() == typeid(CMainScene).hash_code())
+				{
+					((CMainScene*)(NextSceneMode))->SetStageObject(Obj);
+				}
+			}
+		}
 
 		return Obj;
 	}

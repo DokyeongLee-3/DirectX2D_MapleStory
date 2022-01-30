@@ -72,6 +72,9 @@ void CCollisionSection::Collision(float DeltaTime)
 				// 즉, 이전 프레임에 충돌된 목록에 없다면 지금 막 충돌이 시작된 것이다.
 				if (!Src->CheckPrevCollision(Dest))
 				{
+					if (Src == Dest)
+						int a = 3;
+
 					Src->AddPrevCollision(Dest);
 					Dest->AddPrevCollision(Src);
 

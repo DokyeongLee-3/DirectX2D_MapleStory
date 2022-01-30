@@ -38,6 +38,10 @@ void CScene::Start()
 {
 	m_Mode->Start();
 
+	m_CameraManager->Start();
+	m_Collision->Start();
+	m_Viewport->Start();
+
 	auto	iter = m_ObjList.begin();
 	auto	iterEnd = m_ObjList.end();
 
@@ -47,10 +51,6 @@ void CScene::Start()
 	}
 
 	m_Start = true;
-
-	m_CameraManager->Start();
-	m_Collision->Start();
-	m_Viewport->Start();
 
 	if (m_Mode->GetPlayerObject())
 	{
@@ -258,7 +258,7 @@ void CScene::LoadFullPath(const char* FullPath)
 
 		Obj->Load(File);
 
-		// virtual로 정의해서 에디터에서만 ObjectList에 추가하는 동작을 한다. Hierarachy에 Load한 Scene에 들어있는 Object추가
+		// virtual로 정의해서 에디터에서만 HierarchyWindow의 ObjectList에 추가하는 동작을 한다. Hierarachy에 Load한 Scene에 들어있는 Object추가
 		m_Mode->AddObjectList(Obj->GetName().c_str());
 	}
 

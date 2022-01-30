@@ -24,6 +24,7 @@ private:
 	class CGlobalConstantBuffer* m_GlobalCBuffer;
 	float			m_GlobalAccTime;
 	CSharedPtr<class CTexture>	m_GlobalNoiseTexture;
+	class CStructuredBuffer* m_RandomBuffer;
 
 public:
 	void SetMouseState(Mouse_State State);
