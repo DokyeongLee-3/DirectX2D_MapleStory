@@ -5,6 +5,7 @@
 
 CWidgetWindow::CWidgetWindow() :
 	m_Viewport(nullptr),
+	m_Visibility(true),
 	m_OwnerComponent(nullptr),
 	m_ZOrder(0),
 	m_Size(100.f, 100.f),
@@ -152,18 +153,35 @@ bool CWidgetWindow::CollisionMouse(const Vector2& MousePos)
 {
 	m_WidgetList.sort(CWidgetWindow::SortWidget);
 
+	bool	Hovered = true;
+
 	// 우선 마우스가 윈도우 영역 안에 들어오는지 판단한다.
 	if (m_Pos.x > MousePos.x)
-		return false;
+		Hovered = false;
 
 	else if (m_Pos.x + m_Size.x < MousePos.x)
-		return false;
+		Hovered = false;
 
 	else if (m_Pos.y > MousePos.y)
-		return false;
+		Hovered = false;
 
 	else if (m_Pos.y + m_Size.y < MousePos.y)
+		Hovered = false;
+
+	// 이 윈도우 자체에 마우스가 Hovered되지 않았다면 이 함수를 리턴하기 전에 직전 프레임에 Hovered도 되어있는 이 윈도우 내에 Widget의
+	// m_MouserHovered 멤버들 전부를 false로 만들어주고 리턴해야함
+	if (!Hovered)
+	{
+		auto	iter = m_WidgetList.rbegin();
+		auto	iterEnd = m_WidgetList.rend();
+
+		for (; iter != iterEnd; ++iter)
+		{
+			(*iter)->m_MouseHovered = false;
+		}
+		
 		return false;
+	}
 
 	// Window내 Widget들이 ZOrder의 오름차순으로 정렬되어 있으므로
 	// 충돌은 거꾸로 확인해야한다

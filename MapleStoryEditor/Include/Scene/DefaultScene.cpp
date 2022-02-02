@@ -112,6 +112,11 @@ bool CDefaultScene::LoadAnimationSequence2D()
     m_Scene->GetResource()->LoadSequence2D("Portal.sqc");
     m_Scene->GetResource()->LoadSequence2D("Butterfly.sqc");
     m_Scene->GetResource()->LoadSequence2D("LampLight.sqc");
+    m_Scene->GetResource()->LoadSequence2D("VerticalLampLight.sqc");
+    m_Scene->GetResource()->LoadSequence2D("Library2ndButterfly.sqc");
+    m_Scene->GetResource()->LoadSequence2D("Library2ndSmallButterfly.sqc");
+    m_Scene->GetResource()->LoadSequence2D("LampBigHelix.sqc");
+    m_Scene->GetResource()->LoadSequence2D("LampSmallHelix.sqc");
 
     return true;
 }

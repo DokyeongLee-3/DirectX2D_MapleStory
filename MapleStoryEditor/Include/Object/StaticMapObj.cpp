@@ -84,13 +84,6 @@ void CStaticMapObj::DeleteAllDragCollider()
 		m_RootComponent->Destroy();
 		return;
 	}
-
-	int ChildCount = m_RootComponent->GetChildCount();
-
-	for (int i = 0; i < ChildCount; ++i)
-	{
-		//m_RootComponent->GetChild
-	}
 }
 
 

@@ -21,7 +21,7 @@ private:
 	CSceneCollision* m_Collision;
 	CCameraManager* m_CameraManager;
 	CViewport* m_Viewport;
-	std::list<CSharedPtr<CGameObject>> m_ObjList;
+	std::list<CSharedPtr<CGameObject>>		m_ObjList;
 	bool		m_Start;
 	bool		m_Change;
 

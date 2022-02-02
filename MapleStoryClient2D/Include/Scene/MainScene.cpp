@@ -15,6 +15,7 @@
 #include "../Widget/CharacterStatusWindow.h"
 #include "../Widget/CharacterEXP.h"
 #include "../Object/BubbleParticle.h"
+#include "Input.h"
 
 CMainScene::CMainScene()
 {
@@ -40,18 +41,6 @@ bool CMainScene::Init()
 
 	Player->SetAllSceneComponentsLayer("MovingObjFront");
 
-	/*for (int i = 0; i < 20; ++i)
-	{
-		char MonsterName[MAX_PATH] = {};
-
-		sprintf_s(MonsterName,"Monster%d", i);
-
-		CMonster* Monster = m_Scene->CreateGameObject<CMonster>(MonsterName);
-		Monster->SetWorldPos(i * 50.f, i * 50.f, 0.f);
-	}*/
-
-	//CPixelTest* PixelTest = m_Scene->CreateGameObject<CPixelTest>("PixelTest");
-
 	m_MainWidget = m_Scene->GetViewport()->CreateWidgetWindow<CMainWidget>("MainWidget");
 
 
@@ -59,14 +48,17 @@ bool CMainScene::Init()
 	m_ConfigurationWindow->SetZOrder(2);
 	m_ConfigurationWindow->SetPos(200.f, 200.f);
 
-	CInventory* Inventory = m_Scene->GetViewport()->CreateWidgetWindow<CInventory>("Inventory");
-	Inventory->SetZOrder(3);
-	Inventory->SetPos(300.f, 100.f);
+	m_Inventory = m_Scene->GetViewport()->CreateWidgetWindow<CInventory>("Inventory");
+	m_Inventory->SetZOrder(3);
+	m_Inventory->SetPos(300.f, 100.f);
 
-	CCharacterStatusWindow* MainStatus = m_Scene->GetViewport()->CreateWidgetWindow<CCharacterStatusWindow>("MainStatus");
-	MainStatus->SetPos(550.f, 30.f);
+	m_CharacterStatusWindow = m_Scene->GetViewport()->CreateWidgetWindow<CCharacterStatusWindow>("MainStatus");
+	m_CharacterStatusWindow->SetPos(550.f, 13.f);
 
-	CCharacterEXP* EXPWindow = m_Scene->GetViewport()->CreateWidgetWindow<CCharacterEXP>("EXPWindow");
+	m_CharacterEXPWindow = m_Scene->GetViewport()->CreateWidgetWindow<CCharacterEXP>("EXPWindow");
+
+	m_SkillQuickSlot = m_Scene->GetViewport()->CreateWidgetWindow<CSkillQuickSlotWindow>("SkillQuickSlot");
+	m_SkillQuickSlot->SetZOrder(2);
 
 
 	m_Scene->GetResource()->LoadSound("Master", true, "BGM", "GlacierAdventure.mp3");
@@ -74,6 +66,11 @@ bool CMainScene::Init()
 
 
 	CBubbleParticle* BubbleParticle = m_Scene->CreateGameObject<CBubbleParticle>("BubbleParticle");
+
+
+	CInput::GetInst()->CreateKey("TurnOffUIWindow", VK_ESCAPE);
+
+	CInput::GetInst()->SetKeyCallback<CMainScene>("TurnOffUIWindow", Key_State::KeyState_Down, this, &CMainScene::TurnOffWindow);
 
 
 	// For Test
@@ -136,6 +133,7 @@ void CMainScene::CreatePlayerAnimationSequence()
 
 }
 
+
 void CMainScene::CreateSkillAnimationSequence()
 {
 	m_Scene->GetResource()->LoadSequence2D("PlayerOrb.sqc");
@@ -185,6 +183,22 @@ void CMainScene::TestLoadScene()
 
 		CSceneManager::GetInst()->GetScene()->LoadFullPath(ConvertFullPath);
 	}
-	
+}
 
+void CMainScene::TurnOffWindow(float DeltaTime)
+{
+	CWidgetWindow* TopMostWindow = m_Scene->GetViewport()->FindTopMostWindow();
+
+	// 캐릭터 정보창이나 경험치 UI Window같은 것들은 끄면 안됨
+	//if(TopMostWindow == )
+	if (TopMostWindow)
+	{	
+		std::string Name = TopMostWindow->GetName();
+
+		if (Name.find("MainStatus") != std::string::npos || Name.find("EXPWindow") != std::string::npos || Name.find("SkillQuickSlot") != std::string::npos)
+			return;
+
+		TopMostWindow->SetZOrder(0);
+		TopMostWindow->Enable(false);
+	}
 }

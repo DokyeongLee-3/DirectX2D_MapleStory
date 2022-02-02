@@ -54,12 +54,6 @@ bool CShaderManager::Init()
 	if (!CreateShader<CParticleRenderShader>("ParticleRenderShader"))
 		return false;
 
-	if (!CreateShader<CParticleUpdateShader>("MonsterInstancingUpdateShader"))
-		return false;
-
-	if (!CreateShader<CParticleRenderShader>("MonsterInstancingRenderShader"))
-		return false;
-
 
 	// ================= 상수 버퍼 =================
 	CreateConstantBuffer("TransformCBuffer", sizeof(TransformCBuffer),
@@ -89,9 +83,6 @@ bool CShaderManager::Init()
 		(int)Buffer_Shader_Type::Graphic);
 
 	CreateConstantBuffer("ParticleCBuffer", sizeof(ParticleCBuffer), 11,
-		(int)Buffer_Shader_Type::Compute);
-
-	CreateConstantBuffer("MonsterInstancingCBuffer", sizeof(MonsterCBuffer), 13,
 		(int)Buffer_Shader_Type::Compute);
 
 	return true;

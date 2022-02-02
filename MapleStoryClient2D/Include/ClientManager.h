@@ -15,6 +15,9 @@ public:
 	class CComponent* CreateComponent(class CGameObject* Obj, size_t Type);
 	void CreateAnimInstance(class CSpriteComponent* Sprite, size_t Type);
 
+	// 최상위 UI Window 꺼주기
+	void TurnOffWindow(float DeltaTime);
+
 	DECLARE_SINGLE(CClientManager)
 };
 

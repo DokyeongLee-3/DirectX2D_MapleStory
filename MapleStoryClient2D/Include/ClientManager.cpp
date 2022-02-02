@@ -21,6 +21,7 @@
 #include "Input.h"
 #include "Widget/MouseNormal.h"
 #include "Widget/MouseAttack.h"
+#include "Widget/MouseClick.h"
 
 DEFINITION_SINGLE(CClientManager)
 
@@ -63,6 +64,7 @@ bool CClientManager::Init(HINSTANCE hInst)
 
 	// 마우스 위젯 설정
 	CMouseNormal* MouseNormal = CEngine::GetInst()->CreateMouse<CMouseNormal>(Mouse_State::Normal, "MouseNormal");
+	CMouseClick* MouseClick = CEngine::GetInst()->CreateMouse<CMouseClick>(Mouse_State::Click, "MouseClick");
 	CMouseAttack* MouseAttack = CEngine::GetInst()->CreateMouse<CMouseAttack>(Mouse_State::State1, "MouseAttack");
 
 	return true;
@@ -279,3 +281,4 @@ void CClientManager::CreateAnimInstance(CSpriteComponent* Sprite, size_t Type)
 	}
 
 }
+

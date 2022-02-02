@@ -183,6 +183,12 @@
     <ClCompile Include="Object\LampLight.cpp">
       <Filter>02. Object\08. StaticMapObject</Filter>
     </ClCompile>
+    <ClCompile Include="Widget\SkillQuickSlotWindow.cpp">
+      <Filter>03. UI\02. InGame</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\MouseClick.cpp">
+      <Filter>03. UI\01. Mouse</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -304,6 +310,12 @@
     </ClInclude>
     <ClInclude Include="Object\LampLight.h">
       <Filter>02. Object\08. StaticMapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\SkillQuickSlotWindow.h">
+      <Filter>03. UI\02. InGame</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\MouseClick.h">
+      <Filter>03. UI\01. Mouse</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -49,6 +49,7 @@ bool CConfigurationWindow::Init()
     m_BGMSoundSliderRightMostXPos = 147.f;
     m_BGMSoundSlider->SetMoveXAllowed(true);
 
+
     float SliderXPos = m_BGMSoundSlider->GetWidgetPos().x;
     m_Viewport->GetScene()->GetResource()->SetVolume("BGM", (int)((SliderXPos - m_BGMSoundSliderLeftMostXPos) / (m_BGMSoundSliderRightMostXPos - m_BGMSoundSliderLeftMostXPos) * 100));
 
@@ -88,5 +89,6 @@ CConfigurationWindow* CConfigurationWindow::Clone()
 {
     return new CConfigurationWindow(*this);
 }
+
 
 

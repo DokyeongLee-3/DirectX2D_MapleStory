@@ -1,9 +1,6 @@
 
 #include "LampLight.h"
 #include "Animation/AnimationSequence2DInstance.h"
-#include "Input.h"
-#include "../EditorManager.h"
-#include "../Window/SpriteWindow.h"
 
 CLampLight::CLampLight() :
 	m_Sprite(nullptr)

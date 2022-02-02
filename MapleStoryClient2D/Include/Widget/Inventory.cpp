@@ -31,6 +31,8 @@ bool CInventory::Init()
     if (!CWidgetWindow::Init())
         return false;
 
+    SetSize(197.f, 380.f);
+
     m_InventoryBackground = CreateWidget<CImage>("InventoryBackground");
     m_InventoryBackground->SetTexture("InventoryBackground", TEXT("UI/Inventory/InventoryBackground.png"));
     m_InventoryBackground->SetSize(197.f, 380.f);
@@ -65,6 +67,14 @@ bool CInventory::Init()
     m_CashTab->SetPos(134.f, 335.f);
     m_CashTab->SetSize(29.f, 17.f);
     m_CashTab->SetMouseCollisionEnable(true);
+
+    m_BlankCollider = CreateWidget<CImage>("BlankCollider");
+    m_BlankCollider->SetTexture("BlankCollider", TEXT("UI/BlankCollider.png"));
+    m_BlankCollider->SetPos(10.f, 360.f);
+    m_BlankCollider->SetSize(180.f, 20.f);
+    m_BlankCollider->SetMouseCollisionEnable(true);
+    m_BlankCollider->SetClickCallback(this, &CInventory::DragWindow);
+    m_BlankCollider->SetZOrder(2);
 
     return true;
 }
@@ -119,6 +129,15 @@ void CInventory::Render()
 CInventory* CInventory::Clone()
 {
     return new CInventory(*this);
+}
+
+void CInventory::DragWindow()
+{
+    Vector2 MouseMove = CInput::GetInst()->GetMouseMove();
+
+    m_Pos += MouseMove;
+
+    m_BlankCollider->SetClicked(false);
 }
 
 

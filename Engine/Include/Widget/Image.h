@@ -20,6 +20,11 @@ protected:
 	bool m_Clicked;
 
 public:
+	void SetClicked(bool Clicked)
+	{
+		m_Clicked = Clicked;
+	}
+
 	void SetMoveXAllowed(bool Allowed)
 	{
 		m_MoveXAllowed = Allowed;
@@ -94,5 +99,6 @@ public:
 	{
 		m_ClickCallback = std::bind(Func);
 	}
+
 };
 

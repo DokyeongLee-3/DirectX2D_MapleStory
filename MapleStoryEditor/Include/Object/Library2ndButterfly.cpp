@@ -43,7 +43,7 @@ bool CLibrary2ndButterfly::Init()
 
 	CAnimationSequence2DInstance* Anim = m_Sprite->GetAnimationInstance();
 
-	Anim->AddAnimation(TEXT("Library2ndButterfly.sqc"), ANIMATION_PATH, "Library2ndButterfly", true, 1.f);
+	Anim->AddAnimation(TEXT("Library2ndButterfly.sqc"), ANIMATION_PATH, "Library2ndButterfly", true, 0.8f);
 
 	CInput::GetInst()->CreateKey("Flip", 'F');
 	CInput::GetInst()->SetKeyCallback<CLibrary2ndButterfly>("Flip", KeyState_Down, this, &CLibrary2ndButterfly::FlipAll);
@@ -76,6 +76,10 @@ void CLibrary2ndButterfly::Load(FILE* File)
 	CGameObject::Load(File);
 
 	m_Sprite = (CSpriteComponent*)FindComponent("Library2ndButterflySprite");
+
+	m_Sprite->SetTransparency(true);
+
+	m_Sprite->GetCurrentAnimation()->SetPlayTime(0.8f);
 }
 
 void CLibrary2ndButterfly::FlipAll(float DeltaTime)

@@ -189,7 +189,7 @@ void CMaterial::SetShader(const std::string& Name)
 
 void CMaterial::Render()
 {
-	// 말 그대로 완성된 m_VS, m_Ps등을 SetShader해주는 함수
+	// 말 그대로 완성된 m_VS, m_PS등을 SetShader해주는 함수
 	if (m_Shader)
 		m_Shader->SetShader();
 

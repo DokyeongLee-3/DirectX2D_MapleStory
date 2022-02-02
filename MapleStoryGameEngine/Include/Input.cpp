@@ -272,10 +272,20 @@ void CInput::UpdateKeyState()
 			m_Shift = false;
 
 		if (m_MouseState.rgbButtons[0] & 0x80)
+		{
+			if (!m_LButtonClick)
+				CEngine::GetInst()->SetMouseState(Mouse_State::Click);
+
 			m_LButtonClick = true;
+		}
 
 		else
+		{
+			if (m_LButtonClick)
+				CEngine::GetInst()->SetMouseState(Mouse_State::Normal);
+
 			m_LButtonClick = false;
+		}
 
 		if (m_MouseState.rgbButtons[1] & 0x80)
 			m_RButtonClick = true;

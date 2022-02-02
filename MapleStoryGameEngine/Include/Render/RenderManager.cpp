@@ -161,14 +161,11 @@ void CRenderManager::Render()
 	m_DepthDisable->SetState();
 
 
-
 	if (m_StartFadeIn)
 		FadeIn(CEngine::GetInst()->GetDeltaTime());
 
 	else if(m_StartFadeOut)
 		FadeOut(CEngine::GetInst()->GetDeltaTime());
-
-
 
 	m_Standard2DCBuffer->SetFadeAmount(m_FadeAmount);
 	m_Standard2DCBuffer->UpdateCBuffer();

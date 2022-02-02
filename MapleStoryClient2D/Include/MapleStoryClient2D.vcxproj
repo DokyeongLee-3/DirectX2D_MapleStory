@@ -193,8 +193,10 @@
     <ClCompile Include="Widget\MainWidget.cpp" />
     <ClCompile Include="Widget\MouseAttack.cpp" />
     <ClCompile Include="Widget\MouseCatch.cpp" />
+    <ClCompile Include="Widget\MouseClick.cpp" />
     <ClCompile Include="Widget\MouseNormal.cpp" />
     <ClCompile Include="Widget\SimpleHUD.cpp" />
+    <ClCompile Include="Widget\SkillQuickSlotWindow.cpp" />
     <ClCompile Include="Widget\StartWidget.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -235,8 +237,10 @@
     <ClInclude Include="Widget\MainWidget.h" />
     <ClInclude Include="Widget\MouseAttack.h" />
     <ClInclude Include="Widget\MouseCatch.h" />
+    <ClInclude Include="Widget\MouseClick.h" />
     <ClInclude Include="Widget\MouseNormal.h" />
     <ClInclude Include="Widget\SimpleHUD.h" />
+    <ClInclude Include="Widget\SkillQuickSlotWindow.h" />
     <ClInclude Include="Widget\StartWidget.h" />
   </ItemGroup>
   <ItemGroup>

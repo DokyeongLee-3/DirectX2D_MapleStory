@@ -122,17 +122,6 @@ bool CMeshManager::Init()
 
 	m_mapMesh.insert(std::make_pair("ParticlePointMesh", ParticlePointMesh));
 
-	// 몬스터 Instancing 용도 Point Mesh
-	CMesh* MonsterInstancingPointMesh = new CStaticMesh;
-
-	Vector3 MonsterPoint = {};
-
-	MonsterInstancingPointMesh->SetName("MonsterInstancingPointMesh");
-	MonsterInstancingPointMesh->CreateMesh(&MonsterPoint, sizeof(Vector3), 1, D3D11_USAGE_IMMUTABLE,
-		D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
-
-	m_mapMesh.insert(std::make_pair("MonsterInstancingPointMesh", MonsterInstancingPointMesh));
-
 	return true;
 }
 

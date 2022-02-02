@@ -6,6 +6,8 @@
 #include "Object/Portal.h"
 #include "Object/PlayerSkillSet.h"
 #include "Object/LampLight.h"
+#include "Object/LobbyBigLamp.h"
+#include "Object/LobbySmallLamp.h"
 #include "Object/BlinkTree.h"
 #include "Object/Butterfly.h"
 #include "Object/DoubleHelixBlinkTree.h"

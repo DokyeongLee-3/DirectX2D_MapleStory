@@ -35,6 +35,9 @@ public:
 private:
 	static bool SortWindow(CSharedPtr<CWidgetWindow> Src, CSharedPtr<CWidgetWindow> Dest);
 
+public:
+	// ZOrder가 가장 높은 Window를 찾아서 리턴
+	CWidgetWindow* FindTopMostWindow();
 
 public:
 	template <typename T>
@@ -67,6 +70,7 @@ public:
 		}
 
 		m_WindowList.push_back((CWidgetWindow*)Window);
+
 
 		return Window;
 	}

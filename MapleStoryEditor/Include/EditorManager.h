@@ -22,6 +22,8 @@ private:
 	class CEditorMenu* m_EditorMenu;
 	class CConfigurationWindow* m_ConfigurationWindow;
 	class CObjectHierarchy* m_ObjectHierarchy;
+	// 마우스로 이전프레임에 드래그하던 Collider
+	class CColliderComponent* m_PrevCollision;
 
 
 public:

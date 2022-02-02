@@ -3,6 +3,10 @@
 #include "Scene/SceneMode.h"
 #include "../Widget/MainWidget.h"
 #include "../Widget/ConfigurationWindow.h"
+#include "../Widget/Inventory.h"
+#include "../Widget/SkillQuickSlotWindow.h"
+#include "../Widget/CharacterEXP.h"
+#include "../Widget/CharacterStatusWindow.h"
 
 class CMainScene :
     public CSceneMode
@@ -15,10 +19,15 @@ public:
     virtual bool Init();
 
 private:
-    CSharedPtr<CMainWidget> m_MainWidget;
-    CSharedPtr<CConfigurationWindow> m_ConfigurationWindow;
-    class CStage* m_StageObject;
-    std::function<void(bool, float)> m_LoadingFunction;
+    CSharedPtr<CMainWidget>             m_MainWidget;
+    CSharedPtr<CConfigurationWindow>    m_ConfigurationWindow;
+    CSharedPtr<CInventory>              m_Inventory;
+    CSharedPtr<CSkillQuickSlotWindow>   m_SkillQuickSlot;
+    CSharedPtr<CCharacterStatusWindow>  m_CharacterStatusWindow;
+    CSharedPtr<CCharacterEXP>           m_CharacterEXPWindow;
+    class CStage*                       m_StageObject;
+    std::function<void(bool, float)>    m_LoadingFunction;
+
 
 public:
     class CStage* GetStageObject()    const
@@ -36,9 +45,12 @@ private:
     void CreateMonsterAnimationSequence();
     void CreateMapAnimationSequence();
     void CreateParticle();
-
+    
 private:
     void TestLoadScene();
+
+public:
+    void TurnOffWindow(float DeltaTime);
 
 public:
     template <typename T>

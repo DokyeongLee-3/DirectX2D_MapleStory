@@ -13,7 +13,7 @@ protected:
 
 protected:
     class CScene* m_Scene;
-    CSharedPtr<class CGameObject> m_PlayerObject;
+    CSharedPtr<class CGameObject>   m_PlayerObject;
 
 public:
     void SetPlayerObject(class CGameObject* Obj);

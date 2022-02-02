@@ -56,7 +56,17 @@ public:
 		return m_ZOrder;
 	}
 
+	bool GetVisibility()	const
+	{
+		return m_Visibility;
+	}
+
 public:
+	void SetVisibility(bool Visibility)
+	{
+		m_Visibility = Visibility;
+	}
+
 	void SetZOrder(int ZOrder)
 	{
 		m_ZOrder = ZOrder;

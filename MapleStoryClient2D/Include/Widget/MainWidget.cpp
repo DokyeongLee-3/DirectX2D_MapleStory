@@ -156,17 +156,17 @@ bool CMainWidget::Init()
 
     vecFileName.clear();*/
 
-    m_FPSText = CreateWidget<CText>("FPSText");
+    //m_FPSText = CreateWidget<CText>("FPSText");
 
-    m_FPSText->SetText(TEXT("Button1"));
-    m_FPSText->SetPos(900.f, 650.f);
-    m_FPSText->SetSize(300.f, 40.f);
-    m_FPSText->SetZOrder(1);
-    m_FPSText->SetColor(1.f, 0.f, 0.f);
-    //m_Button1Text->SetOpacity(0.5f);
-    m_FPSText->SetAlignH(TEXT_ALIGN_H::Center);
-    m_FPSText->SetShadowEnable(true);
-    m_FPSText->SetShadowOffset(2.f, 2.f);
+    //m_FPSText->SetText(TEXT("Button1"));
+    //m_FPSText->SetPos(900.f, 650.f);
+    //m_FPSText->SetSize(300.f, 40.f);
+    //m_FPSText->SetZOrder(1);
+    //m_FPSText->SetColor(1.f, 0.f, 0.f);
+    ////m_Button1Text->SetOpacity(0.5f);
+    //m_FPSText->SetAlignH(TEXT_ALIGN_H::Center);
+    //m_FPSText->SetShadowEnable(true);
+    //m_FPSText->SetShadowOffset(2.f, 2.f);
 
     return true;
 }
@@ -183,15 +183,15 @@ void CMainWidget::Update(float DeltaTime)
     m_Minute->SetNumber((int)time.wMinute);
     m_Second->SetNumber((int)time.wSecond);*/
 
-    char    FPS[256] = {};
-    sprintf_s(FPS, "FPS : %.5f", CEngine::GetInst()->GetFPS());
+    //char    FPS[256] = {};
+    //sprintf_s(FPS, "FPS : %.5f", CEngine::GetInst()->GetFPS());
 
-    TCHAR   ConvertFPS[256] = {};
+    //TCHAR   ConvertFPS[256] = {};
 
-    int Length = MultiByteToWideChar(CP_ACP, 0, FPS, -1, 0, 0);
-    MultiByteToWideChar(CP_ACP, 0, FPS, -1, ConvertFPS, Length);
+    //int Length = MultiByteToWideChar(CP_ACP, 0, FPS, -1, 0, 0);
+    //MultiByteToWideChar(CP_ACP, 0, FPS, -1, ConvertFPS, Length);
 
-    m_FPSText->SetText(ConvertFPS);
+    //m_FPSText->SetText(ConvertFPS);
 }
 
 void CMainWidget::PostUpdate(float DeltaTime)

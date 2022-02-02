@@ -183,15 +183,11 @@ enum class ProgressBar_Dir
 enum class Mouse_State
 {
 	Normal,
+	Click,
 	State1,
 	State2,
 	State3,
 	State4,
 	State5,
-	State6,
-	State7,
-	State8,
-	State9,
-	State10,
 	Max
 };

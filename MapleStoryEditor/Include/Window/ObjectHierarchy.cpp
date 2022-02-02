@@ -309,8 +309,11 @@ void CObjectHierarchy::ZOrderChangeCallback()
 
 	CComponent* Comp = Obj->FindComponent(m_ComponentListWidget->GetSelectItem());
 
-	if (Comp->GetTypeID() == typeid(CSceneComponent).hash_code() || Comp->GetTypeID() == typeid(CSpriteComponent).hash_code())
+	if (Comp)
 	{
-		((CSceneComponent*)Comp)->SetZOrder(m_ZOrder->GetValueInt());
+		if (Comp->GetTypeID() == typeid(CSceneComponent).hash_code() || Comp->GetTypeID() == typeid(CSpriteComponent).hash_code())
+		{
+			((CSceneComponent*)Comp)->SetZOrder(m_ZOrder->GetValueInt());
+		}
 	}
 }

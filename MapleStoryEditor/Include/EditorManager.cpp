@@ -36,7 +36,8 @@ DEFINITION_SINGLE(CEditorManager)
 CEditorManager::CEditorManager() :
 	m_EditMode(EditMode::Scene),
 	m_DragObj(nullptr),
-	m_DragPivot(nullptr)
+	m_DragPivot(nullptr),
+	m_PrevCollision(nullptr)
 {
 }
 
@@ -84,13 +85,6 @@ bool CEditorManager::Init(HINSTANCE hInst)
 	CSceneManager::GetInst()->SetCreateComponentFunction<CEditorManager>(this, &CEditorManager::CreateComponent);
 	CSceneManager::GetInst()->SetCreateAnimInstanceFunction<CEditorManager>(this, &CEditorManager::CreateAnimInstance);
 
-	/*
-	CInput::GetInst()->CreateKey("MoveDown", 'S');
-	CInput::GetInst()->CreateKey("RotationZInv", 'A');
-	CInput::GetInst()->CreateKey("RotationZ", 'D');
-	CInput::GetInst()->CreateKey("Attack", VK_SPACE);
-	CInput::GetInst()->CreateKey("Attack1", VK_LBUTTON);*/
-
 	// IMGUI로 에디터에서 사용할 윈도우를 만들어준다.
 	m_SpriteWindow = CIMGUIManager::GetInst()->AddWindow<CSpriteWindow>("SpriteWindow");
 	m_DetailWindow = CIMGUIManager::GetInst()->AddWindow<CDetailWindow>("DetailWindow");
@@ -103,15 +97,6 @@ bool CEditorManager::Init(HINSTANCE hInst)
 	CInput::GetInst()->SetKeyCallback("MouseLButton", KeyState_Down, this, &CEditorManager::MouseLButtonDown);
 	CInput::GetInst()->SetKeyCallback("MouseLButton", KeyState_Push, this, &CEditorManager::MouseLButtonPush);
 	CInput::GetInst()->SetKeyCallback("MouseLButton", KeyState_Up, this, &CEditorManager::MouseLButtonUp);
-
-	/*CInput::GetInst()->CreateKey("EditObjMoveDown", 'S');
-	CInput::GetInst()->SetKeyCallback("EditObjMoveDown", KeyState_Push, this, &CEditorManager::EditObjDown);
-	CInput::GetInst()->CreateKey("EditObjMoveUp", 'W');
-	CInput::GetInst()->SetKeyCallback("EditObjMoveUp", KeyState_Push, this, &CEditorManager::EditObjUp);
-	CInput::GetInst()->CreateKey("EditObjMoveRight", 'D');
-	CInput::GetInst()->SetKeyCallback("EditObjMoveRight", KeyState_Push, this, &CEditorManager::EditObjRight);
-	CInput::GetInst()->CreateKey("EditObjMoveLeft", 'A');
-	CInput::GetInst()->SetKeyCallback("EditObjMoveLeft", KeyState_Push, this, &CEditorManager::EditObjLeft);*/
 
 	return true;
 }
@@ -155,13 +140,14 @@ void CEditorManager::MouseLButtonDown(float DeltaTime)
 
 	else if (m_EditMode == EditMode::Scene)
 	{
-		CColliderComponent* Comp = CSceneManager::GetInst()->GetScene()->GetCollision()->GetMouseCollision();
+		m_PrevCollision = CSceneManager::GetInst()->GetScene()->GetCollision()->GetMouseCollision();
+		//CColliderComponent* Comp = CSceneManager::GetInst()->GetScene()->GetCollision()->GetMouseCollision();
 
-		if (Comp)
+		if (m_PrevCollision)
 		{
 			Vector2 MouseMove = CInput::GetInst()->GetMouseMove();
 
-			CGameObject* Owner = Comp->GetGameObject();
+			CGameObject* Owner = m_PrevCollision->GetGameObject();
 			Owner->AddWorldPos(MouseMove.x, MouseMove.y, 0.f);
 
 			m_DetailWindow->GetPosXInput()->SetValueFloat(Owner->GetWorldPos().x);
@@ -223,6 +209,17 @@ void CEditorManager::MouseLButtonPush(float DeltaTime)
 	{
 		CColliderComponent* Comp = CSceneManager::GetInst()->GetScene()->GetCollision()->GetMouseCollision();
 
+		if (m_PrevCollision)
+		{
+			if (Comp != m_PrevCollision)
+			{
+				Comp = m_PrevCollision;
+			}
+		}
+
+		else
+			m_PrevCollision = Comp;
+
 		if (Comp)
 		{
 			Vector2 MouseMove = CInput::GetInst()->GetMouseMove();
@@ -240,6 +237,7 @@ void CEditorManager::MouseLButtonPush(float DeltaTime)
 
 void CEditorManager::MouseLButtonUp(float DeltaTime)
 {
+	m_PrevCollision = nullptr;
 }
 
 void CEditorManager::MouseClickCallback(float DeltaTime)
@@ -404,16 +402,16 @@ CGameObject* CEditorManager::CreateObject(CScene* Scene, size_t Type)
 		return Obj;
 	}
 
-	else if (Type == typeid(CLibrary2ndLampLight).hash_code())
+	else if (Type == typeid(CLobbyBigLamp).hash_code())
 	{
-		CLibrary2ndLampLight* Obj = Scene->LoadGameObject<CLibrary2ndLampLight>();
+		CLobbyBigLamp* Obj = Scene->LoadGameObject<CLobbyBigLamp>();
 
 		return Obj;
 	}
 
-	else if (Type == typeid(CLibrary2ndButterfly).hash_code())
+	else if (Type == typeid(CLobbySmallLamp).hash_code())
 	{
-		CLibrary2ndButterfly* Obj = Scene->LoadGameObject<CLibrary2ndButterfly>();
+		CLobbySmallLamp* Obj = Scene->LoadGameObject<CLobbySmallLamp>();
 
 		return Obj;
 	}

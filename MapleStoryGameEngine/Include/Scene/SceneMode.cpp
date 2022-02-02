@@ -42,6 +42,7 @@ void CSceneMode::Update(float DeltaTime)
 #else
 
 #endif	// _DEBUG
+
 }
 
 void CSceneMode::PostUpdate(float DeltaTime)

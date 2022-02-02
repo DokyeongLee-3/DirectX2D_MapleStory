@@ -43,6 +43,12 @@
     <Filter Include="05. UI">
       <UniqueIdentifier>{d1423fd7-fa26-410e-983f-2ad97bc28891}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Object\04. MapObject\01. Lobby">
+      <UniqueIdentifier>{f4b83a88-c910-4d2e-abdc-9493c960bb60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Object\04. MapObject\02. OnionMap">
+      <UniqueIdentifier>{c688ad9c-6a4e-4609-86f8-bcba9c25d7c4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scene\DefaultScene.cpp">
@@ -87,9 +93,6 @@
     <ClCompile Include="Object\PlayerSkillSet.cpp">
       <Filter>03. Object\02. Skill</Filter>
     </ClCompile>
-    <ClCompile Include="Object\LampLight.cpp">
-      <Filter>03. Object\04. MapObject</Filter>
-    </ClCompile>
     <ClCompile Include="Object\Portal.cpp">
       <Filter>03. Object\04. MapObject</Filter>
     </ClCompile>
@@ -111,12 +114,6 @@
     <ClCompile Include="Object\LowerClassBook.cpp">
       <Filter>03. Object\03. Monster</Filter>
     </ClCompile>
-    <ClCompile Include="Object\Library2ndLampLight.cpp">
-      <Filter>03. Object\04. MapObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\Library2ndButterfly.cpp">
-      <Filter>03. Object\04. MapObject</Filter>
-    </ClCompile>
     <ClCompile Include="Object\StaticMapObj.cpp">
       <Filter>03. Object\04. MapObject</Filter>
     </ClCompile>
@@ -128,6 +125,21 @@
     </ClCompile>
     <ClCompile Include="Object\CharacterSelectBackLight.cpp">
       <Filter>05. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\Library2ndButterfly.cpp">
+      <Filter>03. Object\04. MapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\Library2ndLampLight.cpp">
+      <Filter>03. Object\04. MapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\LobbyBigLamp.cpp">
+      <Filter>03. Object\04. MapObject\01. Lobby</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\LobbySmallLamp.cpp">
+      <Filter>03. Object\04. MapObject\01. Lobby</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\LampLight.cpp">
+      <Filter>03. Object\04. MapObject\02. OnionMap</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -176,9 +188,6 @@
     <ClInclude Include="Object\PlayerSkillSet.h">
       <Filter>03. Object\02. Skill</Filter>
     </ClInclude>
-    <ClInclude Include="Object\LampLight.h">
-      <Filter>03. Object\04. MapObject</Filter>
-    </ClInclude>
     <ClInclude Include="Object\Portal.h">
       <Filter>03. Object\04. MapObject</Filter>
     </ClInclude>
@@ -197,17 +206,8 @@
     <ClInclude Include="Object\SingleHelixBlinkTree.h">
       <Filter>03. Object\04. MapObject</Filter>
     </ClInclude>
-    <ClInclude Include="ObjectSet.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Object\LowerClassBook.h">
       <Filter>03. Object\03. Monster</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\Library2ndLampLight.h">
-      <Filter>03. Object\04. MapObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\Library2ndButterfly.h">
-      <Filter>03. Object\04. MapObject</Filter>
     </ClInclude>
     <ClInclude Include="Object\StaticMapObj.h">
       <Filter>03. Object\04. MapObject</Filter>
@@ -220,6 +220,24 @@
     </ClInclude>
     <ClInclude Include="Object\CharacterSelectBackLight.h">
       <Filter>05. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Library2ndButterfly.h">
+      <Filter>03. Object\04. MapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Library2ndLampLight.h">
+      <Filter>03. Object\04. MapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectSet.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\LobbyBigLamp.h">
+      <Filter>03. Object\04. MapObject\01. Lobby</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\LobbySmallLamp.h">
+      <Filter>03. Object\04. MapObject\01. Lobby</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\LampLight.h">
+      <Filter>03. Object\04. MapObject\02. OnionMap</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

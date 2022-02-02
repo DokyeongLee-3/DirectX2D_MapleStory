@@ -124,7 +124,6 @@ private:
 	void UpdateKeyInfo(float DeltaTime);
 
 
-
 public:
 	void ClearCallback();
 	template <typename T>

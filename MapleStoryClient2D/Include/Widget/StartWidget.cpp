@@ -70,7 +70,6 @@ bool CStartWidget::Init()
     m_Player->SetPos(210.f, 401.f);
     m_Player->LoadSequence2D("CharacterSelectPlayerStandRight.sqc");
     m_Player->SetClickCallback(this, &CStartWidget::CharacterClick);
-    //m_Player->LoadSequence2D("CharacterSelectPlayerWalkRight.sqc");
     m_Player->SetZOrder(1);
 
     m_PlayerNameTagBack = CreateWidget<CImage>("PlayerNameTagBack");

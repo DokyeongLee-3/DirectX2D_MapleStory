@@ -49,12 +49,12 @@ bool CEditorMenu::Init()
 	m_ObjectCombo->AddItem("PlayerSkillSet");
 	m_ObjectCombo->AddItem("Portal");
 	m_ObjectCombo->AddItem("LampLight");
+	m_ObjectCombo->AddItem("LobbyBigLamp");
+	m_ObjectCombo->AddItem("LobbySmallLamp");
 	m_ObjectCombo->AddItem("BlinkTree");
 	m_ObjectCombo->AddItem("Butterfly");
 	m_ObjectCombo->AddItem("DoubleHelixBlinkTree");
 	m_ObjectCombo->AddItem("SingleHelixBlinkTree");
-	m_ObjectCombo->AddItem("Library2ndLampLight");
-	m_ObjectCombo->AddItem("Library2ndButterfly");
 	m_ObjectCombo->AddItem("CharacterSelectBackLight");
 	m_ObjectCombo->AddItem("StaticMapObj");
 	m_ObjectCombo->AddItem("Stage");
@@ -138,6 +138,9 @@ void CEditorMenu::ObjectCreateButton()
 	case CreateObject_Type::MonsterOnion:
 		CSceneManager::GetInst()->GetScene()->CreateGameObject<CMonsterOnion>(m_ObjectNameInput->GetTextMultibyte());
 		break;
+	case CreateObject_Type::LowerClassBook:
+		CSceneManager::GetInst()->GetScene()->CreateGameObject<CLowerClassBook>(m_ObjectNameInput->GetTextMultibyte());
+		break;
 	case CreateObject_Type::PlayerSkillSet:
 		CSceneManager::GetInst()->GetScene()->CreateGameObject<CPlayerSkillSet>(m_ObjectNameInput->GetTextMultibyte());
 		break;
@@ -146,6 +149,12 @@ void CEditorMenu::ObjectCreateButton()
 		break;
 	case CreateObject_Type::LampLight:
 		CSceneManager::GetInst()->GetScene()->CreateGameObject<CLampLight>(m_ObjectNameInput->GetTextMultibyte());
+		break;
+	case CreateObject_Type::LobbyBigLamp:
+		CSceneManager::GetInst()->GetScene()->CreateGameObject<CLobbyBigLamp>(m_ObjectNameInput->GetTextMultibyte());
+		break;
+	case CreateObject_Type::LobbySmallLamp:
+		CSceneManager::GetInst()->GetScene()->CreateGameObject<CLobbySmallLamp>(m_ObjectNameInput->GetTextMultibyte());
 		break;
 	case CreateObject_Type::BlinkTree:
 		CSceneManager::GetInst()->GetScene()->CreateGameObject<CBlinkTree>(m_ObjectNameInput->GetTextMultibyte());
@@ -158,15 +167,6 @@ void CEditorMenu::ObjectCreateButton()
 		break;
 	case CreateObject_Type::SingleHelixBlinkTree:
 		CSceneManager::GetInst()->GetScene()->CreateGameObject<CSingleHelixBlinkTree>(m_ObjectNameInput->GetTextMultibyte());
-		break;
-	case CreateObject_Type::LowerClassBook:
-		CSceneManager::GetInst()->GetScene()->CreateGameObject<CLowerClassBook>(m_ObjectNameInput->GetTextMultibyte());
-		break;
-	case CreateObject_Type::Library2ndLampLight:
-		CSceneManager::GetInst()->GetScene()->CreateGameObject<CLibrary2ndLampLight>(m_ObjectNameInput->GetTextMultibyte());
-		break;
-	case CreateObject_Type::Library2ndButterfly:
-		CSceneManager::GetInst()->GetScene()->CreateGameObject<CLibrary2ndButterfly>(m_ObjectNameInput->GetTextMultibyte());
 		break;
 	case CreateObject_Type::CharacterSelectBackLight:
 		CSceneManager::GetInst()->GetScene()->CreateGameObject<CCharacterSelectBackLight>(m_ObjectNameInput->GetTextMultibyte());
@@ -224,8 +224,10 @@ void CEditorMenu::ComponentCreateButton()
 	{
 	case SceneComponent_Type::Sprite:
 		Com = Obj->CreateComponent<CSpriteComponent>(m_ComponentNameInput->GetTextMultibyte());
-		if(!Obj->GetRootComponent())
+		if (!Obj->GetRootComponent())
 			Obj->SetRootComponent(Com);
+		else
+			Obj->GetRootComponent()->AddChild(Com);
 		break;
 	case SceneComponent_Type::StaticMesh:
 		Com = Obj->CreateComponent<CStaticMeshComponent>(m_ComponentNameInput->GetTextMultibyte());
@@ -327,10 +329,11 @@ void CEditorMenu::SelectObjTexture()
 		if (!SelectObject)
 			return;
 
-		if (SelectObject->GetTypeID() != typeid(CStage).hash_code() && SelectObject->GetTypeID() != typeid(CStaticMapObj).hash_code())
-			return;
+		std::string ComponentName = CEditorManager::GetInst()->GetObjectHierarchy()->GetComponentList()->GetSelectItem();
 
-		if (SelectObject->GetRootComponent()->GetTypeID() != typeid(CSpriteComponent).hash_code())
+		CSpriteComponent* SpriteComp = (CSpriteComponent*)SelectObject->FindComponent(ComponentName);
+
+		if (!SpriteComp)
 			return;
 
 		//////////
@@ -360,8 +363,6 @@ void CEditorMenu::SelectObjTexture()
 
 			Length = WideCharToMultiByte(CP_ACP, 0, FileExt, -1, 0, 0, 0, 0);
 			WideCharToMultiByte(CP_ACP, 0, FileExt, -1, ConvertFileExt, Length, 0, 0);
-
-			CSpriteComponent* SpriteComp = ((CStaticMapObj*)SelectObject)->GetSpriteComponent();
 
 			SpriteComp->SetTextureFullPath(0, 0, (int)Buffer_Shader_Type::Pixel, ConvertFileName, FilePath);
 

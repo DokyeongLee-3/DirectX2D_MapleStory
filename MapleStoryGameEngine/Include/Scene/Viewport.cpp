@@ -89,6 +89,9 @@ bool CViewport::CollisionMouse()
 
 	for (; iter != iterEnd; ++iter)
 	{
+		if ((*iter)->GetName() == "Inventory")
+			int a = 3;
+
 		if (!(*iter)->IsEnable())
 		{
 			continue;
@@ -150,6 +153,12 @@ void CViewport::Render()
 
 	for (; iter != iterEnd; ++iter)
 	{
+		if (!(*iter)->IsEnable())
+			continue;
+
+		if (!(*iter)->GetVisibility())
+			continue;
+
 		(*iter)->Render();
 	}
 }
@@ -157,4 +166,11 @@ void CViewport::Render()
 bool CViewport::SortWindow(CSharedPtr<CWidgetWindow> Src, CSharedPtr<CWidgetWindow> Dest)
 {
 	return Src->GetZOrder() > Dest->GetZOrder();
+}
+
+CWidgetWindow* CViewport::FindTopMostWindow()
+{
+	m_WindowList.sort(CViewport::SortWindow);
+
+	return (*(m_WindowList.begin()));
 }

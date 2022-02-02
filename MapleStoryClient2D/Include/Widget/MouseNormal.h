@@ -19,6 +19,12 @@ private:
 	CSharedPtr<CImage>	m_Image;
 
 public:
+	CImage* GetCursorImage()	const
+	{
+		return m_Image;
+	}
+
+public:
 	virtual void Start();
 	virtual bool Init();
 	virtual void Update(float DeltaTime);

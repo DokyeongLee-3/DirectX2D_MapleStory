@@ -171,6 +171,8 @@
     <ClInclude Include="Object\LampLight.h" />
     <ClInclude Include="Object\Library2ndButterfly.h" />
     <ClInclude Include="Object\Library2ndLampLight.h" />
+    <ClInclude Include="Object\LobbyBigLamp.h" />
+    <ClInclude Include="Object\LobbySmallLamp.h" />
     <ClInclude Include="Object\LowerClassBook.h" />
     <ClInclude Include="Object\MonsterOnion.h" />
     <ClInclude Include="Object\MonsterRadish.h" />
@@ -202,6 +204,8 @@
     <ClCompile Include="Object\LampLight.cpp" />
     <ClCompile Include="Object\Library2ndButterfly.cpp" />
     <ClCompile Include="Object\Library2ndLampLight.cpp" />
+    <ClCompile Include="Object\LobbyBigLamp.cpp" />
+    <ClCompile Include="Object\LobbySmallLamp.cpp" />
     <ClCompile Include="Object\LowerClassBook.cpp" />
     <ClCompile Include="Object\MonsterOnion.cpp" />
     <ClCompile Include="Object\MonsterRadish.cpp" />

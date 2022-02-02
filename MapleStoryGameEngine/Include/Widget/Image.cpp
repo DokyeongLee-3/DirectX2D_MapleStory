@@ -216,6 +216,11 @@ bool CImage::Init()
 void CImage::Update(float DeltaTime)
 {
 	CWidget::Update(DeltaTime);
+}
+
+void CImage::PostUpdate(float DeltaTime)
+{
+	CWidget::PostUpdate(DeltaTime);
 
 	if (m_CollisionMouseEnable && m_MouseHovered)
 	{
@@ -223,7 +228,7 @@ void CImage::Update(float DeltaTime)
 		{
 			Vector2 MouseMove = CInput::GetInst()->GetMouseMove();
 
-			if(m_MoveXAllowed)
+			if (m_MoveXAllowed)
 				m_Pos.x += MouseMove.x;
 
 			if (m_MoveYAllowed)
@@ -231,16 +236,11 @@ void CImage::Update(float DeltaTime)
 
 			if (m_ClickCallback && !m_Clicked)
 			{
-				m_ClickCallback();
 				m_Clicked = true;
+				m_ClickCallback();
 			}
 		}
 	}
-}
-
-void CImage::PostUpdate(float DeltaTime)
-{
-	CWidget::PostUpdate(DeltaTime);
 
 	if (!m_Info.vecFrameData.empty())
 	{

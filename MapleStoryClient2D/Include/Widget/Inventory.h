@@ -28,6 +28,7 @@ private:
 	CSharedPtr<CImage>	m_MesoImage;
 	CSharedPtr<CImage>	m_MaplePointImage;
 	CSharedPtr<CImage>	m_SideScroll;
+	CSharedPtr<CImage>	m_BlankCollider;
 
 	Vector2 m_SlotSize;
 
@@ -38,5 +39,8 @@ public:
 	virtual void PostUpdate(float DeltaTime);
 	virtual void Render();
 	virtual CInventory* Clone();
+
+public:
+	void DragWindow();
 };
 

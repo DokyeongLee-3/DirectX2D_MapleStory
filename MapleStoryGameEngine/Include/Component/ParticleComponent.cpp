@@ -125,8 +125,6 @@ void CParticleComponent::PostUpdate(float DeltaTime)
 {
 	CSceneComponent::PostUpdate(DeltaTime);
 
-	CSceneComponent::PostUpdate(DeltaTime);
-
 	CParticleConstantBuffer* CBuffer = m_Particle->GetCBuffer();
 
 	// Update Shader를 동작시킨다.
