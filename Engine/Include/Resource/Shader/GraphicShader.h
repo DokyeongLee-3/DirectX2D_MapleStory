@@ -9,6 +9,7 @@ class CGraphicShader :
 
 protected:
     CGraphicShader();
+    CGraphicShader(const CGraphicShader& shader);
     virtual ~CGraphicShader() = 0;
 
 private:
@@ -72,6 +73,7 @@ public:
     virtual bool Init() = 0;
     // Shader를 렌더링 파이프라인에 세팅해주는 함수
     virtual void SetShader();
+    virtual CGraphicShader* Clone();
 
     // Shader코드를 로딩하는 함수들
 public:

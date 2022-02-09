@@ -18,7 +18,6 @@ CLobbySmallLamp::CLobbySmallLamp(const CLobbySmallLamp& obj) :
 	m_HelixSprite = (CSpriteComponent*)FindComponent("LobbySmallLampHelixSprite");
 	m_ButterflySprite = (CSpriteComponent*)FindComponent("LobbySmallLampButterflySprite");
 	m_VerticalLightSprite = (CSpriteComponent*)FindComponent("VerticalLightSprite");
-	m_LampBrightImage = (CSpriteComponent*)FindComponent("LampBrightImage");
 }
 
 CLobbySmallLamp::~CLobbySmallLamp()
@@ -36,7 +35,6 @@ bool CLobbySmallLamp::Init()
 	m_HelixSprite = CreateComponent<CSpriteComponent>("LobbySmallLampHelixSprite");
 	m_ButterflySprite = CreateComponent<CSpriteComponent>("LobbySmallLampButterflySprite");
 	m_VerticalLightSprite = CreateComponent<CSpriteComponent>("VerticalLightSprite");
-	m_LampBrightImage = CreateComponent<CSpriteComponent>("LampBrightImage");
 
 	m_DragCollider = CreateComponent<CDragCollider>("DragCollider");
 
@@ -47,7 +45,6 @@ bool CLobbySmallLamp::Init()
 	m_Sprite->AddChild(m_HelixSprite);
 	m_Sprite->AddChild(m_ButterflySprite);
 	m_Sprite->AddChild(m_VerticalLightSprite);
-	m_Sprite->AddChild(m_LampBrightImage);
 
 	SetRootComponent(m_Sprite);
 
@@ -55,7 +52,6 @@ bool CLobbySmallLamp::Init()
 	m_HelixSprite->SetTransparency(true);
 	m_ButterflySprite->SetTransparency(true);
 	m_VerticalLightSprite->SetTransparency(true);
-	m_LampBrightImage->SetTransparency(true);
 
 	//m_Sprite->CreateAnimationInstance<CAnimationSequence2DInstance>();
 	m_HelixSprite->CreateAnimationInstance<CAnimationSequence2DInstance>();
@@ -69,7 +65,6 @@ bool CLobbySmallLamp::Init()
 	m_HelixSprite->SetPivot(0.5f, 0.5f, 0.f);
 	m_ButterflySprite->SetPivot(0.5f, 0.5f, 0.f);
 	m_VerticalLightSprite->SetPivot(0.5f, 0.5f, 0.f);
-	m_LampBrightImage->SetPivot(0.5f, 0.5f, 0.f);
 
 	m_DragCollider->SetWorldScale(40.f, 40.f, 1.f);
 

@@ -22,6 +22,8 @@ private:
 	CCameraManager* m_CameraManager;
 	CViewport* m_Viewport;
 	std::list<CSharedPtr<CGameObject>>		m_ObjList;
+	// 이펙트들을 저장해놓은 map 
+	std::unordered_map<std::string, CSharedPtr<CGameObject>> m_mapPrototype;
 	bool		m_Start;
 	bool		m_Change;
 
@@ -76,6 +78,21 @@ public:
 		for (; iter != iterEnd; ++iter)
 		{
 			if ((*iter)->GetName() == Name)
+				return *iter;
+		}
+
+		return nullptr;
+	}
+
+	// 인자로 받은 Name을 포함하고, 인자로 넘겨준 Pos와 Distance이내의 거리에 있는 GameObject를 찾아서 리턴
+	CGameObject* FindIncludingNameObject(const std::string& Name, const Vector3& Pos, float Distance)
+	{
+		auto	iter = m_ObjList.begin();
+		auto	iterEnd = m_ObjList.end();
+
+		for (; iter != iterEnd; ++iter)
+		{
+			if ((*iter)->GetName().find(Name) != std::string::npos && (*iter)->GetWorldPos().Distance(Pos) < Distance)
 				return *iter;
 		}
 
@@ -190,5 +207,50 @@ public:
 		return Obj;
 	}
 
+	template <typename T>
+	T* CreatePrototype(const std::string& Name)
+	{
+		T* Obj = new T;
+
+		Obj->SetScene(this);
+		Obj->SetName(Name);
+
+
+		m_mapPrototype.insert(std::make_pair(Name, Obj));
+
+		return Obj;
+	}
+
+	template <typename T>
+	T* CloneFromPrototype(const std::string& Name, const std::string& PrototypeName,
+		const Vector3& Pos = Vector3(0.f, 0.f, 0.f),
+		const Vector3& Size = Vector3(100.f, 100.f, 0.f))
+	{
+		CGameObject* Prototype = FindPrototype(PrototypeName);
+
+		if (!Prototype)
+			return nullptr;
+
+		T* Obj = (T*)Prototype->Clone();
+
+		if (!Obj->Init())
+			return nullptr;
+
+		Obj->SetScene(this);
+		Obj->SetName(Name);
+		Obj->SetWorldPos(Pos);
+		Obj->SetWorldScale(Size);
+
+
+		if (m_Start)
+			Obj->Start();
+
+		m_ObjList.push_back(Obj);
+
+		return Obj;
+	}
+
+private:
+	CGameObject* FindPrototype(const std::string& Name);
 };
 

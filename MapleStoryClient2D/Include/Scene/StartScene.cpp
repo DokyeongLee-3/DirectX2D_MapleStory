@@ -12,6 +12,7 @@
 #include "LoadingThread.h"
 #include "Render/RenderManager.h"
 #include "MainScene.h"
+#include "LobbyScene.h"
 
 CStartScene::CStartScene()	:
 	m_LoadingThread(nullptr)
@@ -81,9 +82,12 @@ void CStartScene::Update(float DeltaTime)
 void CStartScene::CreateNextScene()
 {
 	CSceneManager::GetInst()->CreateNextScene(false);
-	CSceneManager::GetInst()->CreateSceneMode<CMainScene>(false);
+	CSceneManager::GetInst()->CreateSceneModeEmpty<CLobbyScene>(false);
 
-	m_LoadingThread = CThread::CreateThread<CLoadingThread>("LoadingThread");
+	m_LoadingThread = CThread::CreateThread<CLoadingThread>("LobbyLoadingThread");
+
+	m_LoadingThread->SetLoadingScene(ThreadLoadingScene::Lobby);
+	//m_LoadingThread->SetLoadingScene(ThreadLoadingScene::Main);
 
 	m_LoadingThread->Start();
 }

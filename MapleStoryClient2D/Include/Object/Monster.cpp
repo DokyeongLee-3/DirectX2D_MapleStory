@@ -7,7 +7,7 @@
 #include "Engine.h"
 
 CMonster::CMonster()	:
-	m_HP(50.f)
+	m_HP(3)
 {
 	SetTypeID<CMonster>();
 }
@@ -18,18 +18,27 @@ CMonster::CMonster(const CMonster& obj) :
 	m_Sprite = (CSpriteComponent*)FindComponent("MonsterSprite");
 	m_Body = (CColliderCircle*)FindComponent("Body");
 	m_SimpleHUDWidget = (CWidgetComponent*)FindComponent("SimpleHUD");
+	m_PaperBurn = (CPaperBurnComponent*)FindComponent("PaperBurn");
 }
 
 CMonster::~CMonster()
 {
 }
 
+void CMonster::Start()
+{
+	CGameObject::Start();
+
+	m_PaperBurn->SetFinishCallback<CMonster>(this, &CMonster::PaperBurnEnd);
+}
+
 bool CMonster::Init()
 {
 	m_Sprite = CreateComponent<CSpriteComponent>("MonsterSprite");
 	m_Body = CreateComponent<CColliderCircle>("Body");
+	m_PaperBurn = CreateComponent<CPaperBurnComponent>("PaperBurn");
 
-	m_Body->AddCollisionCallback<CMonster>(Collision_State::Begin, this, &CMonster::CollisionCallback);
+	//m_Body->AddCollisionCallback<CMonster>(Collision_State::Begin, this, &CMonster::CollisionCallback);
 
 	m_SimpleHUDWidget = CreateComponent<CWidgetComponent>("SimpleHUD");
 
@@ -40,6 +49,9 @@ bool CMonster::Init()
 
 	m_Sprite->AddChild(m_Body);
 	m_Sprite->AddChild(m_SimpleHUDWidget);
+
+	m_PaperBurn->SetMaterial(m_Sprite->GetMaterial());
+	m_PaperBurn->SetFinishTime(8.f);
 
 	m_SimpleHUDWidget->SetRelativePos(-50.f, 50.f, 0.f);
 
@@ -65,6 +77,13 @@ bool CMonster::Init()
 	m_Body->AddCollisionMouseCallback(Collision_State::Begin, this, &CMonster::OnMouseBegin);
 	m_Body->AddCollisionMouseCallback(Collision_State::End, this, &CMonster::OnMouseEnd);
 
+	m_Body->AddCollisionCallback(Collision_State::Begin, this, &CMonster::OnCollisionBegin);
+	m_Body->AddCollisionCallback(Collision_State::End, this, &CMonster::OnCollisionEnd);
+
+
+
+	m_HP = 3;
+
 	return true;
 }
 
@@ -85,7 +104,7 @@ CMonster* CMonster::Clone()
 
 void CMonster::CollisionCallback(const CollisionResult& result)
 {
-	m_HP -= 10.f;
+	m_HP -= 10;
 	m_Sprite->ChangeAnimation("RadishHitLeft");
 
 	if (m_HP <= 0.f)
@@ -114,4 +133,24 @@ void CMonster::OnMouseBegin(const CollisionResult& result)
 void CMonster::OnMouseEnd(const CollisionResult& result)
 {
 	CEngine::GetInst()->SetMouseState(Mouse_State::Normal);
+}
+
+void CMonster::OnCollisionBegin(const CollisionResult& result)
+{
+	--m_HP;
+
+	if (m_HP <= 0)
+	{
+		m_PaperBurn->StartPaperBurn();
+		m_Body->Enable(false);
+	}
+}
+
+void CMonster::OnCollisionEnd(const CollisionResult & result)
+{
+}
+
+void CMonster::PaperBurnEnd()
+{
+	Destroy();
 }

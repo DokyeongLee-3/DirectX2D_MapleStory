@@ -329,6 +329,13 @@ void CEditorMenu::SelectObjTexture()
 		if (!SelectObject)
 			return;
 
+		int Index = -1;
+
+		Index = CEditorManager::GetInst()->GetObjectHierarchy()->GetComponentList()->GetSelectIndex();
+
+		if (Index == -1)
+			return;
+
 		std::string ComponentName = CEditorManager::GetInst()->GetObjectHierarchy()->GetComponentList()->GetSelectItem();
 
 		CSpriteComponent* SpriteComp = (CSpriteComponent*)SelectObject->FindComponent(ComponentName);

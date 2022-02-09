@@ -17,7 +17,11 @@ CImage::CImage() :
 CImage::CImage(const CImage& widget) :
 	CWidget(widget)
 {
-	m_ClickCallback = nullptr;
+	m_Info = widget.m_Info;
+	m_ClickCallback = widget.m_ClickCallback;
+	m_MoveXAllowed = widget.m_MoveXAllowed;
+	m_MoveYAllowed = widget.m_MoveYAllowed;
+	m_Clicked = widget.m_Clicked;
 }
 
 CImage::~CImage()

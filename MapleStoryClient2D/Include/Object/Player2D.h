@@ -7,6 +7,30 @@
 #include "Component/WidgetComponent.h"
 #include "../Client.h"
 
+struct SecondPhaseSkillInfo
+{
+    int LevelSylphideLancer;
+    int LevelVoidPressure;
+
+    SecondPhaseSkillInfo()
+    {
+        LevelSylphideLancer = 20;
+        LevelVoidPressure = 20;
+    }
+};
+
+struct ThirdPhaseSkillInfo
+{
+    int LevelNoxSpear;
+    int LevelDeathSide;
+
+    ThirdPhaseSkillInfo()
+    {
+        LevelNoxSpear = 10;
+        LevelDeathSide = 5;
+    }
+};
+
 class CPlayer2D :
     public CGameObject
 {
@@ -60,15 +84,21 @@ public:
         return m_PlayerInfo;
     }
 
+    CWidgetComponent*    GetWidgetComponent()    const
+    {
+        return m_SimpleHUDWidget;
+    }
+
 public:
     virtual bool Init();
     virtual void Update(float DeltaTime);
     virtual void PostUpdate(float DeltaTime);
     virtual CPlayer2D* Clone();
 
+public:
+    virtual void SetScene(class CScene* Scene);
+
 private:
-    void Stand();
-    void Stand(float DeltaTime);
     void MoveUp(float DeltaTime);
     void MoveDown(float DeltaTime);
     void RotationZInv(float DeltaTime);
@@ -80,5 +110,7 @@ private:
 
 public:
     void FlipAll(float DeltaTime);
+    void GotoNextMap(float DeltaTime);
+    void ProduceSecondSylphideLander(float DeltaTime);
 };
 

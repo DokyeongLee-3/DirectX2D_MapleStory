@@ -15,6 +15,18 @@ CCharacterStatusWindow::CCharacterStatusWindow()
 CCharacterStatusWindow::CCharacterStatusWindow(const CCharacterStatusWindow& window) :
     CWidgetWindow(window)
 {
+    m_HPMPBackground = window.m_HPMPBackground;
+    m_Level = window.m_Level;
+    m_LevelNumber = window.m_LevelNumber;
+    m_PlayerName = window.m_PlayerName;
+    m_HPBar = window.m_HPBar;
+    m_MPBar = window.m_MPBar;
+    m_HPMaxNumber = window.m_HPMaxNumber;
+    m_MPMaxNumber = window.m_MPMaxNumber;
+    m_CurrentHPNumber = window.m_CurrentHPNumber;
+    m_CurrentMPNumber = window.m_CurrentMPNumber;
+    m_HPDelimiter = window.m_HPDelimiter;
+    m_MPDelimiter = window.m_MPDelimiter;
 
 }
 
@@ -102,22 +114,22 @@ bool CCharacterStatusWindow::Init()
 
     m_HPMaxNumber = CreateWidget<CNumber>("PlayerMaxHP");
     m_HPMaxNumber->SetSize(7.f, 9.f);
-    m_HPMaxNumber->SetPos(120.f, 31.f);
+    m_HPMaxNumber->SetPos(125.f, 31.f);
     m_HPMaxNumber->SetNumber(Info.HPMax);
     
     m_MPMaxNumber = CreateWidget<CNumber>("PlayerMaxMP");
     m_MPMaxNumber->SetSize(7.f, 9.f);
-    m_MPMaxNumber->SetPos(120.f, 15.f);
+    m_MPMaxNumber->SetPos(125.f, 15.f);
     m_MPMaxNumber->SetNumber(Info.MPMax);
 
     m_CurrentHPNumber = CreateWidget<CNumber>("PlayerHP");
     m_CurrentHPNumber->SetSize(7.f, 9.f);
-    m_CurrentHPNumber->SetPos(70.f, 31.f);
+    m_CurrentHPNumber->SetPos(90.f, 31.f);
     m_CurrentHPNumber->SetNumber(Info.HP);
 
     m_CurrentMPNumber = CreateWidget<CNumber>("PlayerMP");
     m_CurrentMPNumber->SetSize(7.f, 9.f);
-    m_CurrentMPNumber->SetPos(60.f, 15.f);
+    m_CurrentMPNumber->SetPos(80.f, 15.f);
     m_CurrentMPNumber->SetNumber(Info.MP);
 
 
@@ -149,13 +161,13 @@ bool CCharacterStatusWindow::Init()
 
     m_HPDelimiter = CreateWidget<CImage>("HPDelimiter");
     m_HPDelimiter->SetTexture("HPDelimiter", TEXT("UI/Status/HPMPDelimiter.png"));
-    m_HPDelimiter->SetPos((m_HPMaxNumber->GetWidgetPos().x + m_CurrentHPNumber->GetWidgetPos().x + m_CurrentHPNumber->GetWidgetSize().x * CurrentHPDigit) / 2.f, 
+    m_HPDelimiter->SetPos((m_HPMaxNumber->GetWidgetPos().x + m_CurrentHPNumber->GetWidgetPos().x + m_CurrentHPNumber->GetWidgetSize().x * CurrentHPDigit) / 2.f - 3.f, 
         m_HPMaxNumber->GetWidgetPos().y);
     m_HPDelimiter->SetSize(6.f, 10.f);
 
     m_MPDelimiter = CreateWidget<CImage>("MPDelimiter");
     m_MPDelimiter->SetTexture("MPDelimiter", TEXT("UI/Status/HPMPDelimiter.png"));
-    m_MPDelimiter->SetPos((m_MPMaxNumber->GetWidgetPos().x + m_CurrentMPNumber->GetWidgetPos().x + m_CurrentMPNumber->GetWidgetSize().x * CurrentMPDigit) / 2.f,
+    m_MPDelimiter->SetPos((m_MPMaxNumber->GetWidgetPos().x + m_CurrentMPNumber->GetWidgetPos().x + m_CurrentMPNumber->GetWidgetSize().x * CurrentMPDigit) / 2.f - 3.f,
         m_MPMaxNumber->GetWidgetPos().y);
     m_MPDelimiter->SetSize(6.f, 10.f);
 

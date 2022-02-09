@@ -13,6 +13,7 @@ class CShader :
 
 protected:
     CShader();
+    CShader(const CShader& shader);
     virtual ~CShader() = 0;
 
 protected:
@@ -28,5 +29,6 @@ public:
     virtual bool Init() = 0;
     // Shader를 렌더링 파이프라인에 세팅해주는 함수
     virtual void SetShader() = 0;
+    virtual CShader* Clone() = 0;
 };
 

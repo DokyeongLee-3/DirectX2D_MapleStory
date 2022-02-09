@@ -36,6 +36,7 @@ public:
 	void SetParticle(const std::string& Name);
 	void SetParticle(CParticle* Particle);
 	void SetSpawnTime(float Time);
+	void SetSpawnTimeMax(float Time);
 
 public:
 	virtual void Start();

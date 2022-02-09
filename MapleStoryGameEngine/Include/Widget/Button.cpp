@@ -22,6 +22,18 @@ CButton::CButton(const CButton& widget) :
 	m_ClickCallback = nullptr;
 	m_MouseOnSound = false;
 	m_ClickSound = false;
+	m_UseAnimation = widget.m_UseAnimation;
+
+	for (int i = 0; i < (int)Button_State::Max; ++i)
+	{
+		m_Info[i] = widget.m_Info[i];
+	}
+
+	for (int i = 0; i < (int)Button_Sound_State::Max; ++i)
+	{
+		m_Sound[i] = widget.m_Sound[i];
+	}
+
 }
 
 CButton::~CButton()

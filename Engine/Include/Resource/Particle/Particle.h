@@ -40,6 +40,11 @@ public:
 		return m_UpdateShader;
 	}
 
+	CParticleUpdateShader* CloneUpdateShader()	const
+	{
+		return m_UpdateShader->Clone();
+	}
+
 	CParticleConstantBuffer* CloneConstantBuffer()	const
 	{
 		return m_CBuffer->Clone();

@@ -126,8 +126,8 @@ void CScene::PostUpdate(float DeltaTime)
 
 	m_Viewport->PostUpdate(DeltaTime);
 
-	// 충돌체들을 충돌 영역에 포함시킨다.
-	iter = m_ObjList.begin();
+	// 충돌체들을 충돌 영역에 포함시킨다 
+	/*iter = m_ObjList.begin();
 	iterEnd = m_ObjList.end();
 
 	for (; iter != iterEnd; ++iter)
@@ -136,7 +136,7 @@ void CScene::PostUpdate(float DeltaTime)
 			continue;
 
 		(*iter)->AddCollision();
-	}
+	}*/
 
 	// 포함된 충돌체들을 이용해서 충돌처리를 진행한다.
 	m_Collision->Collision(DeltaTime);
@@ -263,4 +263,14 @@ void CScene::LoadFullPath(const char* FullPath)
 	}
 
 	fclose(File);
+}
+
+CGameObject* CScene::FindPrototype(const std::string& Name)
+{
+	auto iter = m_mapPrototype.find(Name);
+
+	if (iter == m_mapPrototype.end())
+		return nullptr;
+
+	return iter->second;
 }

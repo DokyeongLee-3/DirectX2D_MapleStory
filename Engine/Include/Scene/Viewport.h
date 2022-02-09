@@ -20,6 +20,11 @@ public:
 		return m_Scene;
 	}
 
+	void SetScene(CScene* Scene)
+	{
+		m_Scene = Scene;
+	}
+
 private:
 	std::list<CSharedPtr<CWidgetWindow>>	m_WindowList;
 
@@ -41,7 +46,7 @@ public:
 
 public:
 	template <typename T>
-	T* FindWidgetWindow(const std::string& Name)
+	CWidgetWindow* FindWidgetWindow(const std::string& Name)
 	{
 		auto	iter = m_WindowList.begin();
 		auto	iterEnd = m_WindowList.end();
@@ -49,7 +54,7 @@ public:
 		for (; iter != iterEnd; ++iter)
 		{
 			if ((*iter)->GetName() == Name)
-				return (T*)*iter;
+				return *iter;
 		}
 
 		return nullptr;

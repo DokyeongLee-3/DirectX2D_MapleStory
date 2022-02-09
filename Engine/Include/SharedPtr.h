@@ -79,7 +79,7 @@ public:
 
 	// 변환 연산자
 	// CSharedPtr<T>타입이 아니라 T* 타입으로 변환해준다
-	operator T* () const
+	operator T* ()	const
 	{
 		return m_Ptr;
 	}

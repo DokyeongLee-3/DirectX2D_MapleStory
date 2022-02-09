@@ -21,15 +21,29 @@ CMaterial::CMaterial(const CMaterial& Material)
 {
 	*this = Material;
 
+	m_CBuffer = new CMaterialConstantBuffer;
+
+	m_CBuffer->Init();
+
 	m_RefCount = 0;
 
 	m_Scene = nullptr;
+
+	m_RenderCallback.clear();
 }
 
 CMaterial::~CMaterial()
 {
-}
+	auto    iter = m_RenderCallback.begin();
+	auto    iterEnd = m_RenderCallback.end();
 
+	for (; iter != iterEnd; ++iter)
+	{
+		SAFE_DELETE((*iter));
+	}
+
+	SAFE_DELETE(m_CBuffer);
+}
 
 void CMaterial::SetRenderState(CRenderState* State)
 {
@@ -182,6 +196,11 @@ void CMaterial::SetTexture(int Index, int Register, int ShaderType, const std::s
 {
 }
 
+void CMaterial::SetPaperBurn(bool Enable)
+{
+	m_CBuffer->SetPaperBurn(Enable);
+}
+
 void CMaterial::SetShader(const std::string& Name)
 {
 	m_Shader = (CGraphicShader*)CResourceManager::GetInst()->FindShader(Name);
@@ -217,6 +236,14 @@ void CMaterial::Render()
 	{
 		// Texture에 대한 Resource view를 Set해주는 함수
 		m_TextureInfo[i].Texture->SetShader(m_TextureInfo[i].Register, m_TextureInfo[i].ShaderType, 0);
+	}
+
+	auto    iter = m_RenderCallback.begin();
+	auto    iterEnd = m_RenderCallback.end();
+
+	for (; iter != iterEnd; ++iter)
+	{
+		(*iter)->Func();
 	}
 }
 

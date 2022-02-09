@@ -16,6 +16,14 @@ CNumber::CNumber(const CNumber& widget) :
 	CWidget(widget)
 {
 	m_Number = widget.m_Number;
+	m_Info = widget.m_Info;
+
+	size_t Size = widget.m_vecNumber.size();
+
+	for (size_t i = 0; i < Size; ++i)
+	{
+		m_vecNumber.push_back(widget.m_vecNumber[i]);
+	}
 }
 
 CNumber::~CNumber()
@@ -241,6 +249,8 @@ void CNumber::Render()
 
 	for (size_t i = 0; i < Count; ++i)
 	{
+		Vector2 Offset;
+
 		if (m_Info.Texture)
 		{
 			int	Frame = 0;
@@ -270,6 +280,13 @@ void CNumber::Render()
 				m_CBuffer->SetEndUV(Vector2(1.f, 1.f));
 				// 모든 숫자 이미지가 같은 사이즈가 아닐 수도 있으니 여기서 새로 업데이트
 				m_Size = Vector2((float)m_Info.Texture->GetWidth(Frame), (float)m_Info.Texture->GetHeight(Frame));
+				
+				if (i > 0)
+				{
+					int PrevFrame = m_vecNumber[i - 1];
+					Offset = Vector2((float)m_Info.Texture->GetWidth(PrevFrame), (float)m_Info.Texture->GetHeight(PrevFrame));
+				}
+
 				break;
 			case Image_Type::Array:
 				break;
@@ -280,7 +297,8 @@ void CNumber::Render()
 
 		m_Tint = m_Info.Tint;
 
-		m_RenderPos.x += (m_Size.x);
+		//m_RenderPos.x += (m_Size.x);
+		m_RenderPos.x += Offset.x;
 
 		CWidget::Render();
 	}

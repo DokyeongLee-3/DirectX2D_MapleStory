@@ -1,6 +1,11 @@
+
 #include "Bullet.h"
+#include "Player2D.h"
 #include "Component/SpriteComponent.h"
 #include "Animation/AnimationSequence2DInstance.h"
+#include "Scene/Scene.h"
+#include "Scene/SceneMode.h"
+#include <time.h>
 
 CBullet::CBullet() :
 	m_Distance(0.f),
@@ -33,7 +38,7 @@ bool CBullet::Init()
 	m_Sprite->SetTransparency(true);
 
 	m_Body = CreateComponent<CColliderBox2D>("Body");
-	//m_Body->SetCollisionProfile("PlayerAttack");
+	m_Body->SetCollisionProfile("PlayerAttack");
 	m_Body->SetExtent(40.f, 20.f);
 	m_Body->AddCollisionCallback<CBullet>(Collision_State::Begin, this,
 		&CBullet::CollisionBeginCallback);
@@ -93,6 +98,14 @@ void CBullet::FlipAll(float DeltaTime)
 void CBullet::CollisionBeginCallback(const CollisionResult& result)
 {
 	Destroy();
+
+	PlayerInfo Info = ((CPlayer2D*)m_Scene->GetSceneMode()->GetPlayerObject())->GetInfo();
+
+	int random = rand() % 1001 - 500;
+
+	float Damage = Info.INT * Info.Level / 12.f + random;
+
+	result.Dest->GetGameObject()->SetDamage(Damage);
 }
 
 void CBullet::CollisionEndCallback(const CollisionResult& result)

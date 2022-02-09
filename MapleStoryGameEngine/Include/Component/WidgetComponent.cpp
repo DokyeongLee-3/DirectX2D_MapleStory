@@ -4,8 +4,10 @@
 #include "../Scene/Scene.h"
 #include "../Scene/CameraManager.h"
 #include "../Device.h"
+#include "../Render/RenderManager.h"
 
-CWidgetComponent::CWidgetComponent()
+CWidgetComponent::CWidgetComponent() :
+	m_SetAlphaBlendState(false)
 {
 	SetTypeID<CWidgetComponent>();
 
@@ -159,7 +161,13 @@ void CWidgetComponent::Render()
 {
 	CSceneComponent::Render();
 
+	if(m_SetAlphaBlendState)
+		CRenderManager::GetInst()->SetAlphaBlendState();
+
 	m_WidgetWindow->Render();
+
+	if (m_SetAlphaBlendState)
+		CRenderManager::GetInst()->ResetAlphaBlendState();
 }
 
 void CWidgetComponent::PostRender()

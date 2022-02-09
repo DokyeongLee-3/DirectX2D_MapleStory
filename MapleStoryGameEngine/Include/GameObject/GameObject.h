@@ -25,7 +25,7 @@ public:
 
 
 public:
-	void SetScene(class CScene* Scene);
+	virtual void SetScene(class CScene* Scene);
 	virtual void Destroy();
 
 protected:
@@ -37,7 +37,8 @@ protected:
 
 	CGameObject* m_Parent;
 	std::vector<CSharedPtr<CGameObject>>   m_vecChildObject;
-
+	float		m_LifeSpan;
+	
 public:
 	bool IsSceneComponentListEmpty()	const
 	{
@@ -80,6 +81,13 @@ public:
 
 		return nullptr;
 	}
+
+	void SetLifeSpan(float LifeSpan)
+	{
+		m_LifeSpan = LifeSpan;
+	}
+
+	virtual void SetDamage(float Damage, bool Critical = false);
 
 public:
 	virtual void Start();

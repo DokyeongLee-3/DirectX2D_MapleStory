@@ -16,7 +16,10 @@ CConfigurationWindow::CConfigurationWindow()
 CConfigurationWindow::CConfigurationWindow(const CConfigurationWindow& window) :
     CWidgetWindow(window)
 {
-
+    m_BGMSoundSlider = window.m_BGMSoundSlider;
+    m_Configuration = window.m_Configuration;
+    m_BGMSoundSliderLeftMostXPos = window.m_BGMSoundSliderLeftMostXPos;
+    m_BGMSoundSliderRightMostXPos = window.m_BGMSoundSliderRightMostXPos;
 }
 
 CConfigurationWindow::~CConfigurationWindow()

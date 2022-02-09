@@ -11,9 +11,11 @@ class CParticleUpdateShader :
 
 protected:
     CParticleUpdateShader();
+    CParticleUpdateShader(const CParticleUpdateShader& shader);
     virtual ~CParticleUpdateShader();
 
 public:
     virtual bool Init();
+    virtual CParticleUpdateShader* Clone();
 };
 

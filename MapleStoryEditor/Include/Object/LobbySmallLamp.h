@@ -19,7 +19,6 @@ private:
     CSharedPtr<CSpriteComponent>    m_HelixSprite;
     CSharedPtr<CSpriteComponent>    m_ButterflySprite;
     CSharedPtr<CSpriteComponent>    m_VerticalLightSprite;
-    CSharedPtr<CSpriteComponent>    m_LampBrightImage;
     CSharedPtr<CDragCollider>      m_DragCollider;
 
 public:

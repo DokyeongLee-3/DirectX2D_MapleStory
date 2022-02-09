@@ -1,14 +1,23 @@
 
 #include "Player2D.h"
+#include "Stage.h"
+#include "Device.h"
 #include "BulletTornaido.h"
+#include "Portal.h"
 #include "Scene/Scene.h"
+#include "../Scene/LobbyScene.h"
+#include "../Scene/OnionScene.h"
 #include "Input.h"
 #include "PlayerAnimation2D.h"
 #include "SylphideLancerEffectAnimation2D.h"
 #include "PlayerSkillBodyEffect.h"
 #include "BulletCamera.h"
 #include "Bullet.h"
+#include "SylphideLancer.h"
 #include "../Widget/SimpleHUD.h"
+#include "Scene/SceneManager.h"
+#include "Render/RenderManager.h"
+#include "BubbleParticle.h"
 
 CPlayer2D::CPlayer2D()	:
 	m_BodySprite(nullptr),
@@ -109,7 +118,7 @@ bool CPlayer2D::Init()
 	CInput::GetInst()->SetKeyCallback<CPlayer2D>("Skill2", KeyState_Down, this, &CPlayer2D::Skill2);
 	CInput::GetInst()->SetKeyCallback<CPlayer2D>("Flip", KeyState_Down, this, &CPlayer2D::FlipAll);
 
-	//CInput::GetInst()->SetKeyCallback("MoveLeft", KeyState_Up, this, &CPlayer2D::Stand);
+	//CInput::GetInst()->SetKeyCallback("DirUp", KeyState_Down, this, &CPlayer2D::GotoNextMap);
 	//CInput::GetInst()->SetKeyCallback("MoveRight", KeyState_Up, this, &CPlayer2D::Stand);
 
 	return true;
@@ -118,12 +127,68 @@ bool CPlayer2D::Init()
 void CPlayer2D::Update(float DeltaTime)
 {
 	CGameObject::Update(DeltaTime);
-
-	
 }
 
 void CPlayer2D::PostUpdate(float DeltaTime)
 {
+	CComponent* Component = GetRootComponent()->FindComponent("Camera");
+
+	if (Component)
+	{
+		CSceneMode* SceneMode = m_Scene->GetSceneMode();
+
+		CStage* Stage = nullptr;
+
+		if (SceneMode->GetTypeID() == typeid(CLobbyScene).hash_code())
+		{
+			// Stage는 Pivot이 (0.f, 0.f)
+			Stage = ((CLobbyScene*)SceneMode)->GetStageObject();
+		}
+
+		else if (SceneMode->GetTypeID() == typeid(COnionScene).hash_code())
+		{
+			Stage = ((COnionScene*)SceneMode)->GetStageObject();
+		}
+
+		if(Stage)
+		{
+			Vector3 WorldSize = Stage->GetWorldScale();
+			Resolution RS = CDevice::GetInst()->GetResolution();
+
+			Vector2 Ratio = ((CCameraComponent*)Component)->GetRatio();
+			Vector3 PlayerWorldPos = GetWorldPos();
+
+			if (PlayerWorldPos.x + RS.Width * (1 - Ratio.x) >= WorldSize.x)
+			{
+				Vector3 CamWorldPos = ((CCameraComponent*)Component)->GetWorldPos();
+				float Pos = WorldSize.x - RS.Width * Ratio.x;
+				Pos += -1.f * RS.Width * Ratio.x;
+				((CCameraComponent*)Component)->SetWorldPos(Pos, CamWorldPos.y, CamWorldPos.z);
+			}
+
+			if (PlayerWorldPos.x - RS.Width * Ratio.x <= 0.f)
+			{
+				Vector3 CamWorldPos = ((CCameraComponent*)Component)->GetWorldPos();
+				((CCameraComponent*)Component)->SetWorldPos(0.f, CamWorldPos.y, CamWorldPos.z);
+			}
+
+			if (PlayerWorldPos.y + RS.Height * (1 - Ratio.y) >= WorldSize.y)
+			{
+				Vector3 CamWorldPos = ((CCameraComponent*)Component)->GetWorldPos();
+				float Pos = WorldSize.y - RS.Height * Ratio.y;
+				Pos += -1.f * RS.Height * Ratio.y;
+				((CCameraComponent*)Component)->SetWorldPos(CamWorldPos.x, Pos, CamWorldPos.z);
+			}
+
+			if (PlayerWorldPos.y - RS.Height * Ratio.y <= 0.f)
+			{
+				Vector3 CamWorldPos = ((CCameraComponent*)Component)->GetWorldPos();
+				((CCameraComponent*)Component)->SetWorldPos(CamWorldPos.x, 0.f, CamWorldPos.z);
+			}
+		}
+
+	}
+
 	CGameObject::PostUpdate(DeltaTime);
 }
 
@@ -132,87 +197,25 @@ CPlayer2D* CPlayer2D::Clone()
 	return new CPlayer2D(*this);
 }
 
-void CPlayer2D::Stand()
+void CPlayer2D::SetScene(CScene* Scene)
 {
-	std::string CurAnim = m_BodySprite->GetCurrentAnimationName();
+	m_Scene = Scene;
 
-	if (CurAnim.find("Left") != std::string::npos)
-	{
-		m_BodySprite->ChangeAnimation("PlayerStandLeft");
-	}
-
-	else
-	{
-		m_BodySprite->ChangeAnimation("PlayerStandRight");
-	}
-
-	CAnimationSequence2DData* CurrentAnimation = m_BodySprite->GetCurrentAnimation();
-	AnimationFrameData FrameData = CurrentAnimation->GetFrameData(0);
-
-	Vector3 ScalingFactor = Vector3(FrameData.Size.x, FrameData.Size.y, 1.f);
-
-	m_BodySprite->SetRelativeScale(ScalingFactor * m_ScaleFactor);
-}
-
-void CPlayer2D::Stand(float DeltaTime)
-{
-	std::string CurAnim = m_BodySprite->GetCurrentAnimationName();
-
-	if (CurAnim.find("Left") != std::string::npos)
-	{
-		m_BodySprite->ChangeAnimation("PlayerStandLeft");
-	}
-
-	else
-	{
-		m_BodySprite->ChangeAnimation("PlayerStandRight");
-	}
-
-	CAnimationSequence2DData* CurrentAnimation = m_BodySprite->GetCurrentAnimation();
-	AnimationFrameData FrameData = CurrentAnimation->GetFrameData(0);
-
-	Vector3 ScalingFactor = Vector3(FrameData.Size.x, FrameData.Size.y, 1.f);
-
-	m_BodySprite->SetRelativeScale(ScalingFactor * m_ScaleFactor);
+	if(m_SimpleHUDWidget)
+		m_SimpleHUDWidget->GetWidgetWindow()->GetViewport()->SetScene(Scene);
 }
 
 void CPlayer2D::MoveUp(float DeltaTime)
 {
 	m_BodySprite->AddRelativePos(m_BodySprite->GetWorldAxis(AXIS_Y) * 300.f * DeltaTime);
+
+	GotoNextMap(DeltaTime);
 }
 
 void CPlayer2D::MoveDown(float DeltaTime)
 {
 	m_BodySprite->AddRelativePos(m_BodySprite->GetWorldAxis(AXIS_Y) * -300.f * DeltaTime);
 }
-
-//void CPlayer2D::MoveLeft(float DeltaTime)
-//{
-//	m_BodySprite->AddRelativePos(m_BodySprite->GetWorldAxis(AXIS_X) * -300.f * DeltaTime);
-//
-//	m_BodySprite->ChangeAnimation("PlayerWalkLeft");
-//
-//	CAnimationSequence2DData* CurrentAnimation = m_BodySprite->GetCurrentAnimation();
-//	AnimationFrameData FrameData = CurrentAnimation->GetFrameData(0);
-//
-//	Vector3 ScalingFactor = Vector3(FrameData.Size.x, FrameData.Size.y, 1.f);
-//
-//	m_BodySprite->SetRelativeScale(ScalingFactor * m_ScaleFactor);
-//}
-//
-//void CPlayer2D::MoveRight(float DeltaTime)
-//{
-//	m_BodySprite->AddRelativePos(m_BodySprite->GetWorldAxis(AXIS_X) * 300.f * DeltaTime);
-//
-//	m_BodySprite->ChangeAnimation("PlayerWalkRight");
-//
-//		CAnimationSequence2DData* CurrentAnimation = m_BodySprite->GetCurrentAnimation();
-//	AnimationFrameData FrameData = CurrentAnimation->GetFrameData(0);
-//
-//	Vector3 ScalingFactor = Vector3(FrameData.Size.x, FrameData.Size.y, 1.f);
-//
-//	m_BodySprite->SetRelativeScale(ScalingFactor * m_ScaleFactor);
-//}
 
 void CPlayer2D::RotationZInv(float DeltaTime)
 {
@@ -262,21 +265,42 @@ void CPlayer2D::SylphideLancer(float DeltaTime)
 
 	m_SkillBodyEffect->SetRelativeScale(ScalingFactor * m_ScaleFactor);*/
 
+	// Scene의 m_ObjList에서 몬스터 찾아서 여기서 실피드랜서 방향 설정해주기
 
-	///////
+	Vector3 WorldPos = GetWorldPos();
 
-	CBullet* Bullet = m_Scene->CreateGameObject<CBullet>("Bullet");
+	CGameObject* NearMonster = m_Scene->FindIncludingNameObject("Monster", WorldPos, 400.f);
 
-	//Bullet->SetWorldPos(GetWorldPos() + GetWorldAxis(AXIS_Y) * 75.f);
-	Bullet->SetWorldPos(GetWorldPos());
-	Bullet->SetWorldRotation(GetWorldRot());
-	Bullet->SetCollisionProfile("PlayerAttack");
-
-	if (m_BodySprite->IsFlip())
+	for (int i = 0; i < 2; ++i)
 	{
-		Bullet->FlipAll(DeltaTime);
-	}
+		CSylphideLancer* Lancer = m_Scene->CreateGameObject<CSylphideLancer>("SylphideLancer");
+		Lancer->SetAllSceneComponentsLayer("MovingObjFront");
+		Lancer->SetLancerID(i);
 
+		Vector3 MonsterWorldPos;
+
+		if (NearMonster)
+		{
+			MonsterWorldPos = NearMonster->GetWorldPos();
+			float Radian = atan((MonsterWorldPos.y - WorldPos.y)/(MonsterWorldPos.x - WorldPos.x));
+			float Degree = RadianToDegree(Radian);
+
+			Lancer->SetWorldRotation(0.f, 0.f, Degree);
+		}
+
+		else
+		{
+			Lancer->SetWorldRotation(GetWorldRot());
+		}
+
+		if (m_BodySprite->IsFlip())
+		{
+			Lancer->FlipAll(DeltaTime);
+		}
+
+		Lancer->SetWorldPos(WorldPos.x, WorldPos.y + i * 30.f, 0.f);
+		Lancer->SetCollisionProfile("PlayerAttack");
+	}
 }
 
 void CPlayer2D::VoidPressure(float DeltaTime)
@@ -304,6 +328,73 @@ void CPlayer2D::FlipAll(float DeltaTime)
 	//m_OrbSprite->SetRelativePos(-RelativeOrbXPos, m_OrbSprite->GetRelativePos().y, m_OrbSprite->GetRelativePos().z);
 	//// OrbSprite의 중심 기준으로 이미지 Flip
 	//m_OrbSprite->Flip();
+}
+
+void CPlayer2D::GotoNextMap(float DeltaTime)
+{
+	if (m_Scene->GetSceneMode()->GetTypeID() == typeid(CLobbyScene).hash_code())
+	{
+		CGameObject* Portal = m_Scene->FindObject("RightPortal");
+
+		if (Portal)
+		{
+			CComponent* Body = ((CPortal*)Portal)->FindComponent("Body");
+
+			if (Body)
+			{
+				// GotoNextMap함수는 CInput::Update에서 호출하는거라 아직 이번 프레임의 충돌 조사가 아직 안됐을 때니까
+				// 이전 프레임 기준으로 검사한다
+				bool Collision = ((CColliderBox2D*)Body)->CheckPrevCollision(m_Body);
+
+				// LobbyScene의 오른쪽 Entrance 포탈에 충돌했고, 위쪽 방향키를 누르고 있을때 여기로 들어온다
+				// ==> 양파 재배지 맵을 멀티쓰레드 활용해서 로딩후 SceneChange하기
+				if (Collision)
+				{
+					CLobbyScene* Scene = (CLobbyScene*)(GetScene()->GetSceneMode());
+					CRenderManager::GetInst()->SetStartFadeIn(true);
+					CSceneManager::GetInst()->SetFadeInEndCallback<CLobbyScene>(Scene, &CLobbyScene::CreateOnionScene);
+				}
+			}
+		}
+	}
+}
+
+void CPlayer2D::ProduceSecondSylphideLander(float DeltaTime)
+{
+	Vector3 WorldPos = GetWorldPos();
+
+	CGameObject* NearMonster = m_Scene->FindIncludingNameObject("Monster", WorldPos, 400.f);
+
+	for (int i = 0; i < 2; ++i)
+	{
+		CSylphideLancer* Lancer = m_Scene->CreateGameObject<CSylphideLancer>("SylphideLancer");
+		Lancer->SetAllSceneComponentsLayer("MovingObjFront");
+		Lancer->SetLancerID(i + 2);
+
+		Vector3 MonsterWorldPos;
+
+		if (NearMonster)
+		{
+			MonsterWorldPos = NearMonster->GetWorldPos();
+			float Radian = atan((MonsterWorldPos.y - WorldPos.y) / (MonsterWorldPos.x - WorldPos.x));
+			float Degree = RadianToDegree(Radian);
+
+			Lancer->SetWorldRotation(0.f, 0.f, Degree);
+		}
+
+		else
+		{
+			Lancer->SetWorldRotation(GetWorldRot());
+		}
+
+		if (m_BodySprite->IsFlip())
+		{
+			Lancer->FlipAll(DeltaTime);
+		}
+
+		Lancer->SetWorldPos(WorldPos.x, WorldPos.y + i * 30.f, 0.f);
+		Lancer->SetCollisionProfile("PlayerAttack");
+	}
 }
 
 

@@ -2,6 +2,7 @@
 
 #include "../Shader/GraphicShader.h"
 #include "../Texture/Texture.h"
+#include "../Shader/MaterialConstantBuffer.h"
 
 struct MaterialTextureInfo
 {
@@ -29,6 +30,13 @@ struct MaterialTextureInfo
     {
     }
 };
+
+struct RenderCallback
+{
+    std::function<void()>   Func;
+    void* Obj;
+};
+
 
 // Material도 상수버퍼를 갖고 있어야 한다
 // Material도 Material만의 셰이더를 갖고 있어야 한다
@@ -64,11 +72,13 @@ protected:
     // Render State들이 출력 병합기단계에 Set되도록 한다
     CSharedPtr<class CRenderState>  m_RenderStateArray[(int)RenderState_Type::Max];
     class CMaterialConstantBuffer* m_CBuffer;
+    std::list<RenderCallback*>    m_RenderCallback;
 
 private:
     void SetConstantBuffer(class CMaterialConstantBuffer* Buffer)
     {
-        m_CBuffer = Buffer;
+        //m_CBuffer = Buffer;
+        m_CBuffer = Buffer->Clone();
     }
 
 public:
@@ -120,6 +130,35 @@ public:
     void SetTexture(int Index, int Register, int ShaderType, const std::string& Name, const TCHAR* FileName, const std::string& PathName = TEXTURE_PATH);
     void SetTextureFullPath(int Index, int Register, int ShaderType, const std::string& Name, const TCHAR* FullPath);
     void SetTexture(int Index, int Register, int ShaderType, const std::string& Name, const std::vector<TCHAR*>& vecFileName, const std::string& PathName = TEXTURE_PATH);
+
+public:
+    void SetPaperBurn(bool Enable);
+
+public:
+    template <typename T>
+    void AddRenderCallback(T* Obj, void(T::*Func)())
+    {
+        RenderCallback* Callback = new RenderCallback;
+        Callback->Obj = Obj;
+        Callback->Func = std::bind(Func, Obj);
+        m_RenderCallback.push_back(Callback);
+    }
+
+    void DeleteRenderCallback(void* Obj)
+    {
+        auto    iter = m_RenderCallback.begin();
+        auto    iterEnd = m_RenderCallback.end();
+
+        for (; iter != iterEnd; ++iter)
+        {
+            if ((*iter)->Obj == Obj)
+            {
+                SAFE_DELETE((*iter));
+                m_RenderCallback.erase(iter);
+                break;
+            }
+        }
+    }
 
 public:
     void SetShader(const std::string& Name);

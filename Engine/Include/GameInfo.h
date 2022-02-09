@@ -196,8 +196,9 @@ struct VertexUV
 struct MaterialCBuffer
 {
 	Vector4	BaseColor;
-	float Opacity;
-	Vector3 Empty;
+	float	Opacity;
+	int		PaperBurnEnable;
+	Vector2	Empty;
 };
 
 struct AnimationFrameData
@@ -380,6 +381,20 @@ struct GlobalCBuffer
 	Vector2	NoiseResolution;
 	Vector2	Empty;
 };
+
+struct PaperBurnCBuffer
+{
+	Vector4	InLineColor;	// 안쪽 라인 색깔
+	Vector4	OutLineColor;	// 바깥쪽 라인 색깔
+	Vector4	CenterLineColor;// 중간 라인 색깔
+	float	Filter;		// 흐른 시간값
+	int		Inverse;		// 역실행 여부
+	float	InFilter;		// 안쪽 두깨
+	float	OutFilter;		// 바깥쪽 두께
+	float	CenterFilter;	// 중간 라인 두께
+	Vector3	Empty;
+};
+
 
 struct MonsterInfo
 {

@@ -15,27 +15,8 @@ protected:
 
 private:
 	CSharedPtr<CImage>	m_QuickSlotBack;
+	CSharedPtr<CImage>	m_QuickSlotLayer;
 	CSharedPtr<CImage>	m_ExtendBar;
-	CSharedPtr<CImage>	m_Shift;
-	CSharedPtr<CImage>	m_Insert;
-	CSharedPtr<CImage>	m_Home;
-	CSharedPtr<CImage>	m_PageUp;
-	CSharedPtr<CImage>	m_PageDown;
-	CSharedPtr<CImage>	m_End;
-	CSharedPtr<CImage>	m_Ctrl;
-	CSharedPtr<CImage>	m_Delete;
-	CSharedPtr<CImage>	m_KeyQ;
-	CSharedPtr<CImage>	m_KeyW;
-	CSharedPtr<CImage>	m_KeyE;
-	CSharedPtr<CImage>	m_KeyR;
-	CSharedPtr<CImage>	m_KeyT;
-	CSharedPtr<CImage>	m_KeyA;
-	CSharedPtr<CImage>	m_Key1;
-	CSharedPtr<CImage>	m_Key2;
-	CSharedPtr<CImage>	m_Key3;
-	CSharedPtr<CImage>	m_Key4;
-	CSharedPtr<CImage>	m_Key5;
-	CSharedPtr<CImage>	m_Key6;
 
 
 public:

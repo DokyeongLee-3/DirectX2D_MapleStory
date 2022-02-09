@@ -24,6 +24,24 @@ struct WidgetImageInfo
 		PlayTime = 1.f;
 		PlayScale = 1.f;
 	}
+
+	WidgetImageInfo(const WidgetImageInfo& Info)
+	{
+		Texture = Info.Texture;
+		Tint = Info.Tint;
+		Frame = Info.Frame;
+		Time = Info.Time;
+		FrameTime = Info.FrameTime;
+		PlayTime = Info.PlayTime;
+		PlayScale = Info.PlayScale;
+		
+		size_t Size = Info.vecFrameData.size();
+
+		for (size_t i = 0; i < Size; ++i)
+		{
+			vecFrameData.push_back(Info.vecFrameData[i]);
+		}
+	}
 };
 
 // 위젯의 위치는 좌하단 기준

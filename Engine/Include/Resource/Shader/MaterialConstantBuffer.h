@@ -30,5 +30,9 @@ public:
 		m_BufferData.Opacity = Opacity;
 	}
 
+	void SetPaperBurn(bool Enable)
+	{
+		m_BufferData.PaperBurnEnable = Enable ? 1 : 0;
+	}
 };
 

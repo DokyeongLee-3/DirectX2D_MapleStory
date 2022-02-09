@@ -46,9 +46,6 @@
     <Filter Include="02. Object\07. Stage">
       <UniqueIdentifier>{4e0197bf-f8eb-468a-b329-c4b59abe38bc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. Object\08. StaticMapObject">
-      <UniqueIdentifier>{d47bbbee-e3d4-40d7-a108-8ca61c2604b0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="04. Component">
       <UniqueIdentifier>{384b3b05-e324-49d3-98da-44585b1ccdc9}</UniqueIdentifier>
     </Filter>
@@ -63,6 +60,21 @@
     </Filter>
     <Filter Include="02. Object\09. Particle">
       <UniqueIdentifier>{5cdbcfc1-d09e-496e-a27c-6a565ca05f73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\08. MapObject">
+      <UniqueIdentifier>{d47bbbee-e3d4-40d7-a108-8ca61c2604b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\08. MapObject\01. Lobby">
+      <UniqueIdentifier>{0d994efc-f2a6-4301-8396-317fd1f7bf7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\04. Monster\01. Object">
+      <UniqueIdentifier>{a76f0114-44ad-4189-a5e2-11b4b377615d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\04. Monster\02. Animation">
+      <UniqueIdentifier>{b6ca54af-6da5-442a-83e5-b9ff3c74e405}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\03. Effect\02. HitEffect">
+      <UniqueIdentifier>{cd9eac02-7df6-4dd2-9aa3-b0085f5a74f4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -96,12 +108,6 @@
     <ClCompile Include="Object\PlayerSkillBodyEffect.cpp">
       <Filter>02. Object\03. Effect\01. PlayerEffect</Filter>
     </ClCompile>
-    <ClCompile Include="Object\Monster.cpp">
-      <Filter>02. Object\04. Monster</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\MonsterAnimation.cpp">
-      <Filter>02. Object\04. Monster</Filter>
-    </ClCompile>
     <ClCompile Include="Object\BulletCamera.cpp">
       <Filter>02. Object\05. Bullet</Filter>
     </ClCompile>
@@ -118,7 +124,7 @@
       <Filter>02. Object\07. Stage</Filter>
     </ClCompile>
     <ClCompile Include="Object\StaticMapObj.cpp">
-      <Filter>02. Object\08. StaticMapObject</Filter>
+      <Filter>02. Object\08. MapObject</Filter>
     </ClCompile>
     <ClCompile Include="Component\DragCollider.cpp">
       <Filter>04. Component</Filter>
@@ -127,7 +133,7 @@
       <Filter>03. UI</Filter>
     </ClCompile>
     <ClCompile Include="Object\Portal.cpp">
-      <Filter>02. Object\08. StaticMapObject</Filter>
+      <Filter>02. Object\08. MapObject</Filter>
     </ClCompile>
     <ClCompile Include="Widget\MouseNormal.cpp">
       <Filter>03. UI\01. Mouse</Filter>
@@ -172,22 +178,64 @@
       <Filter>02. Object\09. Particle</Filter>
     </ClCompile>
     <ClCompile Include="Object\BlinkTree.cpp">
-      <Filter>02. Object\08. StaticMapObject</Filter>
+      <Filter>02. Object\08. MapObject</Filter>
     </ClCompile>
     <ClCompile Include="Object\Butterfly.cpp">
-      <Filter>02. Object\08. StaticMapObject</Filter>
+      <Filter>02. Object\08. MapObject</Filter>
     </ClCompile>
     <ClCompile Include="Object\DoubleHelixBlinkTree.cpp">
-      <Filter>02. Object\08. StaticMapObject</Filter>
+      <Filter>02. Object\08. MapObject</Filter>
     </ClCompile>
     <ClCompile Include="Object\LampLight.cpp">
-      <Filter>02. Object\08. StaticMapObject</Filter>
+      <Filter>02. Object\08. MapObject</Filter>
     </ClCompile>
     <ClCompile Include="Widget\SkillQuickSlotWindow.cpp">
       <Filter>03. UI\02. InGame</Filter>
     </ClCompile>
     <ClCompile Include="Widget\MouseClick.cpp">
       <Filter>03. UI\01. Mouse</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\LobbyScene.cpp">
+      <Filter>01. SceneMode</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\LobbyBigLamp.cpp">
+      <Filter>02. Object\08. MapObject\01. Lobby</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\LobbySmallLamp.cpp">
+      <Filter>02. Object\08. MapObject\01. Lobby</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\OnionScene.cpp">
+      <Filter>01. SceneMode</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\SmokeParticle.cpp">
+      <Filter>02. Object\09. Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\SparkParticle.cpp">
+      <Filter>02. Object\09. Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\RainParticle.cpp">
+      <Filter>02. Object\09. Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\Monster.cpp">
+      <Filter>02. Object\04. Monster\01. Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\OnionMonster.cpp">
+      <Filter>02. Object\04. Monster\01. Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\MonsterAnimation.cpp">
+      <Filter>02. Object\04. Monster\02. Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\OnionMonsterAnimation.cpp">
+      <Filter>02. Object\04. Monster\02. Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\SylphideLancer.cpp">
+      <Filter>02. Object\05. Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\DamageFont.cpp">
+      <Filter>03. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\SylphideLancerHitEffect.cpp">
+      <Filter>02. Object\03. Effect\02. HitEffect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -221,12 +269,6 @@
     <ClInclude Include="Object\PlayerSkillBodyEffect.h">
       <Filter>02. Object\03. Effect\01. PlayerEffect</Filter>
     </ClInclude>
-    <ClInclude Include="Object\Monster.h">
-      <Filter>02. Object\04. Monster</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\MonsterAnimation.h">
-      <Filter>02. Object\04. Monster</Filter>
-    </ClInclude>
     <ClInclude Include="Object\BulletCamera.h">
       <Filter>02. Object\05. Bullet</Filter>
     </ClInclude>
@@ -243,7 +285,7 @@
       <Filter>02. Object\07. Stage</Filter>
     </ClInclude>
     <ClInclude Include="Object\StaticMapObj.h">
-      <Filter>02. Object\08. StaticMapObject</Filter>
+      <Filter>02. Object\08. MapObject</Filter>
     </ClInclude>
     <ClInclude Include="Component\DragCollider.h">
       <Filter>04. Component</Filter>
@@ -252,7 +294,7 @@
       <Filter>03. UI</Filter>
     </ClInclude>
     <ClInclude Include="Object\Portal.h">
-      <Filter>02. Object\08. StaticMapObject</Filter>
+      <Filter>02. Object\08. MapObject</Filter>
     </ClInclude>
     <ClInclude Include="Widget\MouseNormal.h">
       <Filter>03. UI\01. Mouse</Filter>
@@ -300,22 +342,64 @@
       <Filter>02. Object\09. Particle</Filter>
     </ClInclude>
     <ClInclude Include="Object\BlinkTree.h">
-      <Filter>02. Object\08. StaticMapObject</Filter>
+      <Filter>02. Object\08. MapObject</Filter>
     </ClInclude>
     <ClInclude Include="Object\Butterfly.h">
-      <Filter>02. Object\08. StaticMapObject</Filter>
+      <Filter>02. Object\08. MapObject</Filter>
     </ClInclude>
     <ClInclude Include="Object\DoubleHelixBlinkTree.h">
-      <Filter>02. Object\08. StaticMapObject</Filter>
+      <Filter>02. Object\08. MapObject</Filter>
     </ClInclude>
     <ClInclude Include="Object\LampLight.h">
-      <Filter>02. Object\08. StaticMapObject</Filter>
+      <Filter>02. Object\08. MapObject</Filter>
     </ClInclude>
     <ClInclude Include="Widget\SkillQuickSlotWindow.h">
       <Filter>03. UI\02. InGame</Filter>
     </ClInclude>
     <ClInclude Include="Widget\MouseClick.h">
       <Filter>03. UI\01. Mouse</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\LobbyScene.h">
+      <Filter>01. SceneMode</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\LobbyBigLamp.h">
+      <Filter>02. Object\08. MapObject\01. Lobby</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\LobbySmallLamp.h">
+      <Filter>02. Object\08. MapObject\01. Lobby</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\OnionScene.h">
+      <Filter>01. SceneMode</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\SmokeParticle.h">
+      <Filter>02. Object\09. Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\SparkParticle.h">
+      <Filter>02. Object\09. Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\RainParticle.h">
+      <Filter>02. Object\09. Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Monster.h">
+      <Filter>02. Object\04. Monster\01. Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\OnionMonster.h">
+      <Filter>02. Object\04. Monster\01. Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\MonsterAnimation.h">
+      <Filter>02. Object\04. Monster\02. Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\OnionMonsterAnimation.h">
+      <Filter>02. Object\04. Monster\02. Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\SylphideLancer.h">
+      <Filter>02. Object\05. Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\DamageFont.h">
+      <Filter>03. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\SylphideLancerHitEffect.h">
+      <Filter>02. Object\03. Effect\02. HitEffect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -3,9 +3,8 @@
 #include "GameObject/GameObject.h"
 #include "Component/SpriteComponent.h"
 #include "Component/ColliderCircle.h"
+#include "Component/PaperBurnComponent.h"
 #include "Component/WidgetComponent.h"
-#include "Resource/Shader/MonsterInstancingUpdateShader.h"
-#include "Resource/Shader/MonsterInstancingConstantBuffer.h"
 
 class CMonster :
     public CGameObject
@@ -20,19 +19,15 @@ protected:
 private:
     CSharedPtr<CSpriteComponent>    m_Sprite;
     CSharedPtr<CColliderCircle>       m_Body;
-    float   m_HP;
+    CSharedPtr<CPaperBurnComponent>   m_PaperBurn;
+    int   m_HP;
 
     CSharedPtr<CWidgetComponent>     m_SimpleHUDWidget;
     class CSimpleHUD* m_SimpleHUD;
 
-    // Instancing할때 필요한 UpdateShader
-    CSharedPtr<CMonsterInstancingUpdateShader>		m_UpdateShader;
-    MonsterInfo                                     m_Info;
-    MonsterInfoShared                               m_SharedInfo;
-    CMonsterInstancingConstantBuffer*               m_CBuffer;
-
 
 public:
+    virtual void Start();
     virtual bool Init();
     virtual void Update(float DeltaTime);
     virtual void PostUpdate(float DeltaTime);
@@ -56,5 +51,13 @@ public:
 public:
     void OnMouseBegin(const CollisionResult& result);
     void OnMouseEnd(const CollisionResult& result);
+
+
+public:
+    void OnCollisionBegin(const CollisionResult& result);
+    void OnCollisionEnd(const CollisionResult& result);
+
+private:
+    void PaperBurnEnd();
 };
 

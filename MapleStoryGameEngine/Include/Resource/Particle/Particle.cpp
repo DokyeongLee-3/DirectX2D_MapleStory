@@ -8,9 +8,9 @@
 
 CParticle::CParticle() :
 	m_CBuffer(nullptr),
-	m_SpawnTime(0.001f),
+	m_SpawnTime(0.0001f),
 	m_2D(true),
-	m_SpawnCountMax(100)
+	m_SpawnCountMax(1000)
 {
 }
 

@@ -84,7 +84,7 @@ bool CCharacterSelectInfoWidget::Init()
 
     m_LevelNumber = CreateWidget<CNumber>("CharacterSelectLevelNumber");
     m_LevelNumber->SetTexture("CharacterSelectLevelNumber", vecFileName);
-    m_LevelNumber->SetPos(90.f, 220.f);
+    m_LevelNumber->SetPos(95.f, 220.f);
     m_LevelNumber->SetNumber(Info.Level);
 
     m_Name = CreateWidget<CText>("CharacterName");
@@ -132,22 +132,22 @@ bool CCharacterSelectInfoWidget::Init()
     m_LUK = CreateWidget<CNumber>("CharacterSelectLUKNumber");
 
     m_STR->SetTexture("CharacterSelectSTRNumber", vecFileName);
-    m_STR->SetPos(60.f, 143.f);
+    m_STR->SetPos(63.f, 143.f);
     m_STR->SetNumber(Info.STR);
     m_STR->SetSize(7.f, 9.f);
 
     m_INT->SetTexture("CharacterSelectINTNumber", vecFileName);
-    m_INT->SetPos(125.f, 143.f);
+    m_INT->SetPos(128.f, 143.f);
     m_INT->SetNumber(Info.INT);
     m_INT->SetSize(7.f, 9.f);
 
     m_DEX->SetTexture("CharacterSelectDEXNumber", vecFileName);
-    m_DEX->SetPos(60.f, 118.f);
+    m_DEX->SetPos(63.f, 118.f);
     m_DEX->SetNumber(Info.DEX);
     m_DEX->SetSize(7.f, 9.f);
 
     m_LUK->SetTexture("CharacterSelectLUKNumber", vecFileName);
-    m_LUK->SetPos(130.f, 118.f);
+    m_LUK->SetPos(133.f, 118.f);
     m_LUK->SetNumber(Info.LUK);
     m_LUK->SetSize(7.f, 9.f);
 

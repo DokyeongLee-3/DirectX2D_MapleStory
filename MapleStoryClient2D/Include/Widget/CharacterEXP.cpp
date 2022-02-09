@@ -17,7 +17,11 @@ CCharacterEXP::CCharacterEXP()
 CCharacterEXP::CCharacterEXP(const CCharacterEXP& window) :
     CWidgetWindow(window)
 {
-
+    m_EXPBackground = window.m_EXPBackground;
+    m_EXPBar = window.m_EXPBar;
+    m_EXPMaxNumber = window.m_EXPMaxNumber;
+    m_EXPNumber = window.m_EXPNumber;
+    m_EXPDelimiter = window.m_EXPDelimiter;
 }
 
 CCharacterEXP::~CCharacterEXP()
@@ -68,10 +72,10 @@ bool CCharacterEXP::Init()
     m_EXPNumber->SetTexture("EXPNumber", vecFileName);
     m_EXPMaxNumber->SetTexture("EXPMaxNumber", vecFileName);
 
-    m_EXPNumber->SetPos(650.f, 0.f);
+    m_EXPNumber->SetPos(663.f, 0.f);
     m_EXPNumber->SetNumber(Info.EXP);
 
-    m_EXPMaxNumber->SetPos(700.f, 0.f);
+    m_EXPMaxNumber->SetPos(717.f, 0.f);
     m_EXPMaxNumber->SetNumber(Info.EXPMax);
 
     for (int i = 0; i < 10; ++i)
@@ -83,7 +87,7 @@ bool CCharacterEXP::Init()
 
     m_EXPDelimiter = CreateWidget<CImage>("EXPDelimiter");
     m_EXPDelimiter->SetTexture("EXPDelimiter", TEXT("UI/Status/HPMPDelimiter.png"));
-    m_EXPDelimiter->SetPos((m_EXPNumber->GetWidgetPos().x + m_EXPNumber->GetWidgetSize().x + m_EXPMaxNumber->GetWidgetPos().x) / 2.f - 3.f, 0.f);
+    m_EXPDelimiter->SetPos((m_EXPNumber->GetWidgetPos().x + m_EXPNumber->GetWidgetSize().x + m_EXPMaxNumber->GetWidgetPos().x) / 2.f - 10.f, 0.f);
     m_EXPDelimiter->SetSize(6.f, 10.f);
 
     return true;

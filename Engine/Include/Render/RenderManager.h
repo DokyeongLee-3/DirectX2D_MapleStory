@@ -91,6 +91,10 @@ public:
 	bool Init();
 	void Render();
 
+public:
+	void SetAlphaBlendState();
+	void ResetAlphaBlendState();
+
 	// Render State
 public:
 	void SetBlendFactor(const std::string& Name, float r, float g, float b, float a);

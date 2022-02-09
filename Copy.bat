@@ -22,6 +22,10 @@ rem xcopy .\MapleStoryEditor\Include\Object\LampLight.h		.\MapleStoryClient2D\In
 rem xcopy .\MapleStoryEditor\Include\Object\LampLight.cpp	.\MapleStoryClient2D\Include\Object\ /s /d /y
 rem xcopy .\MapleStoryEditor\Include\Object\BlinkTree.h		.\MapleStoryClient2D\Include\Object\ /s /d /y
 rem xcopy .\MapleStoryEditor\Include\Object\BlinkTree.cpp	.\MapleStoryClient2D\Include\Object\ /s /d /y
+rem xcopy .\MapleStoryEditor\Include\Object\LobbyBigLamp.h		.\MapleStoryClient2D\Include\Object\ /s /d /y
+rem xcopy .\MapleStoryEditor\Include\Object\LobbyBigLamp.cpp	.\MapleStoryClient2D\Include\Object\ /s /d /y
+rem xcopy .\MapleStoryEditor\Include\Object\LobbySmallLamp.h		.\MapleStoryClient2D\Include\Object\ /s /d /y
+rem xcopy .\MapleStoryEditor\Include\Object\LobbySmallLamp.cpp	.\MapleStoryClient2D\Include\Object\ /s /d /y
 
 xcopy .\MapleStoryEditor\Bin\Texture\*.*	.\MapleStoryClient2D\Bin\Texture\ /s /d /y
 xcopy .\MapleStoryEditor\Bin\Animation\*.*	.\MapleStoryClient2D\Bin\Animation\ /s /d /y

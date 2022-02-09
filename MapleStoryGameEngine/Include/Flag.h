@@ -191,3 +191,23 @@ enum class Mouse_State
 	State5,
 	Max
 };
+
+// Thread가 Loading하게 될 Scene을 CLoadingThread에 설정해준다
+enum class ThreadLoadingScene
+{
+	Lobby,
+	Onion
+};
+
+
+enum class Tile_Shape
+{
+	Rect,
+	Rhombus
+};
+
+enum class Tile_Type
+{
+	Normal,
+	Wall
+};

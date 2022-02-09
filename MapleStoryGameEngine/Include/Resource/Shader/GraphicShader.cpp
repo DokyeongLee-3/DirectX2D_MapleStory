@@ -20,6 +20,23 @@ CGraphicShader::CGraphicShader()	:
 	m_Type = Shader_Type::Graphic;
 }
 
+CGraphicShader::CGraphicShader(const CGraphicShader& shader)	:
+	CShader(shader)
+{
+	m_InputLayout = nullptr;
+	m_InputSize = shader.m_InputSize;
+	m_VS = nullptr;
+	m_PS = nullptr;
+	m_HS = nullptr;
+	m_DS = nullptr;
+	m_GS = nullptr;
+	m_VSBlob = nullptr;
+	m_PSBlob = nullptr;
+	m_HSBlob = nullptr;
+	m_DSBlob = nullptr;
+	m_GSBlob = nullptr;
+}
+
 CGraphicShader::~CGraphicShader()
 {
 	SAFE_RELEASE(m_InputLayout);
@@ -84,6 +101,11 @@ void CGraphicShader::SetShader()
 	CDevice::GetInst()->GetContext()->GSSetShader(m_GS, nullptr, 0);
 
 	CDevice::GetInst()->GetContext()->IASetInputLayout(m_InputLayout);
+}
+
+CGraphicShader* CGraphicShader::Clone()
+{
+	return nullptr;
 }
 
 bool CGraphicShader::LoadVertexShader(const char* EntryName,

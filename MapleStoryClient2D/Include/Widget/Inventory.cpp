@@ -15,6 +15,27 @@ CInventory::CInventory(const CInventory& window) :
     CWidgetWindow(window)
 {
     m_SlotSize = Vector2(30.f, 30.f);
+
+    m_InventoryBackground = window.m_InventoryBackground;
+
+    m_EquipmentTab = window.m_EquipmentTab;
+    m_ConsumeTab = window.m_ConsumeTab;
+    m_EtcTab = window.m_EtcTab;
+    m_InstallTab = window.m_InstallTab;
+    m_CashTab = window.m_CashTab;
+    m_DecorationTab = window.m_DecorationTab;
+    m_MesoImage = window.m_MesoImage;
+    m_MaplePointImage = window.m_MaplePointImage;
+    m_SideScroll = window.m_SideScroll;
+    m_BlankCollider = window.m_BlankCollider;
+
+    auto iter = m_vecInventoryItem.begin();
+    auto iterEnd = m_vecInventoryItem.end();
+
+    for (; iter != iterEnd; ++iter)
+    {
+        m_vecInventoryItem.push_back(*iter);
+    }
 }
 
 CInventory::~CInventory()

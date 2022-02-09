@@ -13,6 +13,8 @@ CParticleComponent::CParticleComponent()	:
 {
 	SetTypeID<CParticleComponent>();
 	m_Render = true;
+
+	m_LayerName = "Particle";
 }
 
 CParticleComponent::CParticleComponent(const CParticleComponent& com) :
@@ -78,7 +80,7 @@ void CParticleComponent::SetParticle(CParticle* Particle)
 
 	m_Particle->CloneStructuredBuffer(m_vecStructuredBuffer);
 
-	m_UpdateShader = m_Particle->GetUpdateShader();
+	m_UpdateShader = m_Particle->CloneUpdateShader();
 
 	m_CBuffer = m_Particle->CloneConstantBuffer();
 
@@ -90,6 +92,11 @@ void CParticleComponent::SetSpawnTime(float Time)
 	m_SpawnTimeMax = Time;
 
 	m_Particle->SetSpawnTime(m_SpawnTimeMax);
+}
+
+void CParticleComponent::SetSpawnTimeMax(float Time)
+{
+	m_SpawnTimeMax = Time;
 }
 
 void CParticleComponent::Start()
@@ -118,7 +125,9 @@ void CParticleComponent::Update(float DeltaTime)
 
 	// Spawn할 타이밍이 아니면 Position정보만 Update
 	else
+	{
 		m_CBuffer->SetSpawnEnable(0);
+	}
 }
 
 void CParticleComponent::PostUpdate(float DeltaTime)

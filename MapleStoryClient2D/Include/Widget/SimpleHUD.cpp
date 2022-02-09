@@ -56,6 +56,7 @@ bool CSimpleHUD::Init()
     m_HPBar->SetSize(100.f, 20.f);
     m_HPBar->SetTextureTint(255, 0, 0, 255);
 
+
     return true;
 }
 

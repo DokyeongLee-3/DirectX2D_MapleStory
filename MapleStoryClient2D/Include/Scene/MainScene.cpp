@@ -15,6 +15,9 @@
 #include "../Widget/CharacterStatusWindow.h"
 #include "../Widget/CharacterEXP.h"
 #include "../Object/BubbleParticle.h"
+#include "../Object/SmokeParticle.h"
+#include "../Object/SparkParticle.h"
+#include "../Object/RainParticle.h"
 #include "Input.h"
 
 CMainScene::CMainScene()
@@ -41,8 +44,11 @@ bool CMainScene::Init()
 
 	Player->SetAllSceneComponentsLayer("MovingObjFront");
 
-	m_MainWidget = m_Scene->GetViewport()->CreateWidgetWindow<CMainWidget>("MainWidget");
+	CMonster* Monster = m_Scene->CreateGameObject<CMonster>("Monster");
 
+
+
+	m_MainWidget = m_Scene->GetViewport()->CreateWidgetWindow<CMainWidget>("MainWidget");
 
 	m_ConfigurationWindow = m_Scene->GetViewport()->CreateWidgetWindow<CConfigurationWindow>("ConfigurationWindow");
 	m_ConfigurationWindow->SetZOrder(2);
@@ -65,7 +71,27 @@ bool CMainScene::Init()
 	m_Scene->GetResource()->SoundPlay("BGM");
 
 
+	//CSmokeParticle* SmokeParticleLeft = m_Scene->CreateGameObject<CSmokeParticle>("SmokeParticleLeft");
+	//SmokeParticleLeft->SetParticle("SmokeLeft");
+
+	//CSmokeParticle* SmokeParticleRight = m_Scene->CreateGameObject<CSmokeParticle>("SmokeParticleRight");
+	//SmokeParticleRight->SetParticle("SmokeRight");
+
+	//CSmokeParticle* SmokeParticleCenter = m_Scene->CreateGameObject<CSmokeParticle>("SmokeParticleCenter");
+	//SmokeParticleCenter->SetParticle("SmokeCenter");
+
+	/*CRainParticle* RainParticle = m_Scene->CreateGameObject<CRainParticle>("RainParticle1");
+	RainParticle->SetParticle("Rain1");*/
+
+	//CRainParticle* RainParticle = m_Scene->CreateGameObject<CRainParticle>("RainParticle2");
+	//RainParticle->SetParticle("Rain2");
+	//RainParticle->GetRootComponent()->SetRelativePos(100.f, 520.f, 0.f);
+
 	CBubbleParticle* BubbleParticle = m_Scene->CreateGameObject<CBubbleParticle>("BubbleParticle");
+
+	BubbleParticle = m_Scene->CreateGameObject<CBubbleParticle>("BubbleParticle");
+
+	BubbleParticle->SetRelativePos(-100.f, 0.f, 0.f);
 
 
 	CInput::GetInst()->CreateKey("TurnOffUIWindow", VK_ESCAPE);
@@ -91,7 +117,13 @@ void CMainScene::CreateMaterial()
 
 	Material->AddTexture(0, (int)Buffer_Shader_Type::Pixel, "Bubble", TEXT("Particle/Bubbles99px.png"));
 
+	/*m_Scene->GetResource()->CreateMaterial<CMaterial>("Rain");
+	CMaterial* Material = m_Scene->GetResource()->FindMaterial("Rain");
+
+	Material->AddTexture(0, (int)Buffer_Shader_Type::Pixel, "Rain", TEXT("Particle/HardRain.png"));*/
+
 	Material->SetShader("ParticleRenderShader");
+	Material->SetRenderState("AlphaBlend");
 }
 
 void CMainScene::CreateAnimationSequence()
@@ -111,16 +143,135 @@ void CMainScene::CreateParticle()
 
 	Particle->SetMaterial(Material);
 	Particle->SetSpawnCountMax(1000);
-	Particle->SetLifeTimeMin(1.f);
-	Particle->SetLifeTimeMax(2.f);
+	Particle->SetLifeTimeMin(3.f);
+	Particle->SetLifeTimeMax(5.f);
 	Particle->SetScaleMin(Vector3(20.f, 20.f, 1.f));
 	Particle->SetScaleMax(Vector3(50.f, 50.f, 1.f));
 	Particle->SetSpeedMin(100.f);
 	Particle->SetSpeedMax(300.f);
 	Particle->SetMoveDir(Vector3(0.f, 1.f, 0.f));
-	Particle->SetStartMin(Vector3(-300.f, -300.f, 0.f));
-	Particle->SetStartMax(Vector3(300.f, 300.f, 0.f));
+	Particle->SetStartMin(Vector3(-30.f, -30.f, 0.f));
+	Particle->SetStartMax(Vector3(30.f, 30.f, 0.f));
+	Particle->SetColorMin(Vector4(0.2f, 0.1f, 0.8f, 1.f));
+	Particle->SetColorMax(Vector4(0.2f, 0.1f, 0.8f, 1.f));
+	Particle->SetMoveAngle(Vector3(0.f, 0.f, 30.f));
+	Particle->SetGravity(true);
 	Particle->SetMove(true);
+
+	//m_Scene->GetResource()->CreateParticle("SmokeLeft");
+	//CParticle* Particle = m_Scene->GetResource()->FindParticle("SmokeLeft");
+
+	//CMaterial* Material = m_Scene->GetResource()->FindMaterial("Smoke");
+
+	//Particle->SetMaterial(Material);
+	//Particle->SetSpawnCountMax(1000);
+	//Particle->SetLifeTimeMin(2.f);
+	//Particle->SetLifeTimeMax(2.5f);
+	//Particle->SetScaleMin(Vector3(64.f, 64.f, 1.f));
+	//Particle->SetScaleMax(Vector3(64.f, 64.f, 1.f));
+	//Particle->SetSpeedMin(30.f);
+	//Particle->SetSpeedMax(50.f);
+	//Particle->SetMoveDir(Vector3(-0.7f, 0.25f, 0.f));
+	//Particle->SetStartMin(Vector3(-40.f, -10.f, 0.f));
+	//Particle->SetStartMax(Vector3(40.f, 10.f, 0.f));
+	//Particle->SetColorMin(Vector4(1.f, 1.f, 1.f, 0.9f));
+	//Particle->SetColorMax(Vector4(1.f, 1.f, 1.f, 0.f));
+	//Particle->SetMoveAngle(Vector3(0.f, 0.f, 10.f));
+	////Particle->SetGravity(true);
+	//Particle->SetMove(true);
+
+	//////////////////////////////////////////
+
+	//m_Scene->GetResource()->CreateParticle("SmokeRight");
+	//Particle = m_Scene->GetResource()->FindParticle("SmokeRight");
+
+	//Material = m_Scene->GetResource()->FindMaterial("Smoke");
+
+	//Particle->SetMaterial(Material);
+	//Particle->SetSpawnCountMax(1000);
+	//Particle->SetLifeTimeMin(2.f);
+	//Particle->SetLifeTimeMax(2.5f);
+	//Particle->SetScaleMin(Vector3(64.f, 64.f, 1.f));
+	//Particle->SetScaleMax(Vector3(64.f, 64.f, 1.f));
+	//Particle->SetSpeedMin(30.f);
+	//Particle->SetSpeedMax(50.f);
+	//Particle->SetMoveDir(Vector3(0.7f, 0.25f, 0.f));
+	//Particle->SetStartMin(Vector3(-40.f, -10.f, 0.f));
+	//Particle->SetStartMax(Vector3(40.f, 10.f, 0.f));
+	//Particle->SetColorMin(Vector4(1.f, 1.f, 1.f, 0.9f));
+	//Particle->SetColorMax(Vector4(1.f, 1.f, 1.f, 0.f));
+	//Particle->SetMoveAngle(Vector3(0.f, 0.f, 10.f));
+	////Particle->SetGravity(true);
+	//Particle->SetMove(true);
+
+	//////////////////////////////////////////
+
+	//m_Scene->GetResource()->CreateParticle("SmokeCenter");
+	//Particle = m_Scene->GetResource()->FindParticle("SmokeCenter");
+
+	//Material = m_Scene->GetResource()->FindMaterial("Smoke");
+
+	//Particle->SetMaterial(Material);
+	//Particle->SetSpawnCountMax(3000);
+	//Particle->SetLifeTimeMin(2.f);
+	//Particle->SetLifeTimeMax(2.5f);
+	//Particle->SetScaleMin(Vector3(64.f, 64.f, 1.f));
+	//Particle->SetScaleMax(Vector3(64.f, 64.f, 1.f));
+	//Particle->SetSpeedMin(10.f);
+	//Particle->SetSpeedMax(30.f);
+	//Particle->SetMoveDir(Vector3(0.f, 1.f, 0.f));
+	//Particle->SetStartMin(Vector3(-20.f, -20.f, 0.f));
+	//Particle->SetStartMax(Vector3(20.f, 20.f, 0.f));
+	//Particle->SetColorMin(Vector4(1.f, 1.f, 1.f, 0.9f));
+	//Particle->SetColorMax(Vector4(1.f, 1.f, 1.f, 0.f));
+	//Particle->SetMoveAngle(Vector3(0.f, 0.f, 90.f));
+	////Particle->SetGravity(true);
+	//Particle->SetMove(true);
+
+	/*m_Scene->GetResource()->CreateParticle("Rain1");
+	CParticle* Particle = m_Scene->GetResource()->FindParticle("Rain1");
+
+	CMaterial* Material = m_Scene->GetResource()->FindMaterial("Rain");
+
+	Particle->SetMaterial(Material);
+	Particle->SetSpawnCountMax(80);
+	Particle->SetLifeTimeMin(3.f);
+	Particle->SetLifeTimeMax(4.5f);
+	Particle->SetScaleMin(Vector3(50.f, 85.f, 1.f));
+	Particle->SetScaleMax(Vector3(50.f, 85.f, 1.f));
+	Particle->SetSpeedMin(100.f);
+	Particle->SetSpeedMax(150.f);
+	Particle->SetMoveDir(Vector3(0.f, -1.f, 0.f));
+	Particle->SetStartMin(Vector3(500.f, -50.f, 0.f));
+	Particle->SetStartMax(Vector3(-500.f, 50.f, 0.f));
+	Particle->SetColorMin(Vector4(1.f, 1.f, 1.f, 1.f));
+	Particle->SetColorMax(Vector4(1.f, 1.f, 1.f, 0.7f));
+	Particle->SetMoveAngle(Vector3(0.f, 0.f, 0.f));
+	Particle->SetGravity(true);
+	Particle->SetMove(true);*/
+
+	/*m_Scene->GetResource()->CreateParticle("Rain2");
+	CParticle* Particle = m_Scene->GetResource()->FindParticle("Rain2");
+
+	CMaterial* Material = m_Scene->GetResource()->FindMaterial("Rain");
+
+	Particle->SetSpawnTime(0.05f);
+	Particle->SetMaterial(Material);
+	Particle->SetSpawnCountMax(100);
+	Particle->SetLifeTimeMin(3.f);
+	Particle->SetLifeTimeMax(4.5f);
+	Particle->SetScaleMin(Vector3(50.f, 85.f, 1.f));
+	Particle->SetScaleMax(Vector3(50.f, 85.f, 1.f));
+	Particle->SetSpeedMin(150.f);
+	Particle->SetSpeedMax(200.f);
+	Particle->SetMoveDir(Vector3(0.f, -1.f, 0.f));
+	Particle->SetStartMin(Vector3(600.f, -40.f, 0.f));
+	Particle->SetStartMax(Vector3(-600.f, 40.f, 0.f));
+	Particle->SetColorMin(Vector4(1.f, 1.f, 1.f, 0.9f));
+	Particle->SetColorMax(Vector4(1.f, 1.f, 1.f, 0.6f));
+	Particle->SetMoveAngle(Vector3(0.f, 0.f, 0.f));
+	Particle->SetGravity(true);
+	Particle->SetMove(true);*/
 }
 
 void CMainScene::CreatePlayerAnimationSequence()
@@ -190,7 +341,6 @@ void CMainScene::TurnOffWindow(float DeltaTime)
 	CWidgetWindow* TopMostWindow = m_Scene->GetViewport()->FindTopMostWindow();
 
 	// 캐릭터 정보창이나 경험치 UI Window같은 것들은 끄면 안됨
-	//if(TopMostWindow == )
 	if (TopMostWindow)
 	{	
 		std::string Name = TopMostWindow->GetName();

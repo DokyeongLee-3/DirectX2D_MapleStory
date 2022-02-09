@@ -60,6 +60,18 @@ CSceneComponent::~CSceneComponent()
 	SAFE_DELETE(m_Transform);
 }
 
+void CSceneComponent::SetAllChildComponentScene(CScene* Scene)
+{
+	size_t Count = m_vecChild.size();
+
+	for (size_t i = 0; i < Count; ++i)
+	{
+		m_vecChild[i]->SetAllChildComponentScene(Scene);
+	}
+
+	SetScene(Scene);
+}
+
 void CSceneComponent::SetSceneComponent(CGameObject* Object)
 {
 	Object->AddSceneComponent(this);
@@ -153,6 +165,13 @@ bool CSceneComponent::DeleteChild(CSceneComponent* Child)
 	{
 		if (m_vecChild[i] == Child)
 		{
+			size_t ChildSizeofChild = Child->m_vecChild.size();
+
+			for (size_t i = 0; i < ChildSizeofChild; ++i)
+			{
+				Child->ClearChild();
+			}
+
 			auto	iter = m_vecChild.begin() + i;
 
 			m_vecChild.erase(iter);
@@ -162,9 +181,6 @@ bool CSceneComponent::DeleteChild(CSceneComponent* Child)
 			m_Transform->m_vecChild.erase(iterTr);
 			return true;
 		}
-
-		if (m_vecChild[i]->DeleteChild(Child))
-			return true;
 	}
 
 	return false;
@@ -178,13 +194,19 @@ bool CSceneComponent::DeleteChild(const std::string& Name)
 	{
 		if (m_vecChild[i]->GetName() == Name)
 		{
+			size_t OriginSize = m_vecChild.size();
+
 			auto	iter = m_vecChild.begin() + i;
+			(*iter)->Destroy();
 
 			m_vecChild.erase(iter);
 
 			auto	iterTr = m_Transform->m_vecChild.begin() + i;
 
 			m_Transform->m_vecChild.erase(iterTr);
+
+			Size = m_vecChild.size();
+
 			return true;
 		}
 
@@ -202,6 +224,7 @@ void CSceneComponent::ClearChild()
 	for (int i = 0; i < ChildCount; ++i)
 	{
 		DeleteChild(m_vecChild[i]);
+		ChildCount = (int)m_vecChild.size();
 	}
 
 	Destroy();
@@ -246,6 +269,26 @@ void CSceneComponent::Start()
 	{
 		m_vecChild[i]->Start();
 	}
+
+
+	if (!IsActive())
+	{
+		ClearChild();
+		return;
+	}
+
+
+	Size = m_vecChild.size();
+
+	for (size_t i = 0; i < Size; ++i)
+	{
+		if (!m_vecChild[i]->IsActive())
+		{
+			DeleteChild(m_vecChild[i]);
+			Size = m_vecChild.size();
+			continue;
+		}
+	}
 }
 
 bool CSceneComponent::Init()
@@ -268,13 +311,8 @@ void CSceneComponent::Update(float DeltaTime)
 	{
 		if (!m_vecChild[i]->IsActive())
 		{
-			// Transform에서의 자식 먼저 지워주기 
-		/*	auto iter2 = m_Transform->m_vecChild.begin();
-			std::advance(iter2, i);
-			m_Transform->m_vecChild.erase(iter2);*/
-
 			DeleteChild(m_vecChild[i]);
-
+			Size = m_vecChild.size();
 			continue;
 		}
 
@@ -285,10 +323,10 @@ void CSceneComponent::Update(float DeltaTime)
 
 void CSceneComponent::PostUpdate(float DeltaTime)
 {
-	if (!IsActive())
-	{
-		ClearChild();
-	}
+	//if (!IsActive())
+	//{
+	//	ClearChild();
+	//}
 
 	m_Transform->PostUpdate(DeltaTime);
 
@@ -296,15 +334,9 @@ void CSceneComponent::PostUpdate(float DeltaTime)
 
 	for (size_t i = 0; i < Size; ++i)
 	{
-		if (!m_vecChild[i]->IsActive())
-		{
-			DeleteChild(m_vecChild[i]);
-
-			continue;
-		}
-
 		m_vecChild[i]->PostUpdate(DeltaTime);
 	}
+
 }
 
 void CSceneComponent::CheckCollision()

@@ -4,6 +4,8 @@
 #include "resource.h"
 #include "Scene/SceneManager.h"
 #include "Scene/MainScene.h"
+#include "Scene/LobbyScene.h"
+#include "Scene/OnionScene.h"
 #include "Scene/StartScene.h"
 #include "Object/Stage.h"
 #include "Object/StaticMapObj.h"
@@ -12,6 +14,8 @@
 #include "Object/LampLight.h"
 #include "Object/DoubleHelixBlinkTree.h"
 #include "Object/Butterfly.h"
+#include "Object/LobbyBigLamp.h"
+#include "Object/LobbySmallLamp.h"
 #include "Component/ColliderBox2D.h"
 #include "Component/ColliderCircle.h"
 #include "Component/ColliderPixel.h"
@@ -56,6 +60,13 @@ bool CClientManager::Init(HINSTANCE hInst)
 	CInput::GetInst()->CreateKey("Skill1", 'Q');
 	CInput::GetInst()->CreateKey("Skill2", '1');
 	CInput::GetInst()->CreateKey("Flip", 'F');
+	CInput::GetInst()->CreateKey("Inventory", 'I');
+	CInput::GetInst()->CreateKey("Configuration", 'C');	
+	CInput::GetInst()->CreateKey("TurnOffUIWindow", VK_ESCAPE);
+
+	CInput::GetInst()->SetKeyCallback<CClientManager>("Inventory", KeyState_Down, this, &CClientManager::OnOffInventory);
+	CInput::GetInst()->SetKeyCallback<CClientManager>("Configuration", KeyState_Down, this, &CClientManager::OnOffConfiguration);
+	CInput::GetInst()->SetKeyCallback<CClientManager>("TurnOffUIWindow", Key_State::KeyState_Down, this, &CClientManager::TurnOffWindow);
 
 	CResourceManager::GetInst()->CreateSoundChannelGroup("UI");
 	CResourceManager::GetInst()->CreateSoundChannelGroup("BGM");
@@ -66,6 +77,8 @@ bool CClientManager::Init(HINSTANCE hInst)
 	CMouseNormal* MouseNormal = CEngine::GetInst()->CreateMouse<CMouseNormal>(Mouse_State::Normal, "MouseNormal");
 	CMouseClick* MouseClick = CEngine::GetInst()->CreateMouse<CMouseClick>(Mouse_State::Click, "MouseClick");
 	CMouseAttack* MouseAttack = CEngine::GetInst()->CreateMouse<CMouseAttack>(Mouse_State::State1, "MouseAttack");
+
+
 
 	return true;
 }
@@ -118,6 +131,21 @@ CGameObject* CClientManager::CreateObject(CScene* Scene, size_t Type)
 
 	//	return Obj;
 	//}
+
+	else if (Type == typeid(CLobbyBigLamp).hash_code())
+	{
+		CLobbyBigLamp* Obj = Scene->LoadGameObject<CLobbyBigLamp>();
+
+		return Obj;
+	}
+
+	else if (Type == typeid(CLobbySmallLamp).hash_code())
+	{
+		CLobbySmallLamp* Obj = Scene->LoadGameObject<CLobbySmallLamp>();
+
+		return Obj;
+	}
+
 
 	else if (Type == typeid(CLampLight).hash_code())
 	{
@@ -205,6 +233,16 @@ CGameObject* CClientManager::CreateObject(CScene* Scene, size_t Type)
 				{
 					((CMainScene*)(NextSceneMode))->SetStageObject(Obj);
 				}
+
+				else if (NextSceneMode->GetTypeID() == typeid(CLobbyScene).hash_code())
+				{
+					((CLobbyScene*)(NextSceneMode))->SetStageObject(Obj);
+				}
+
+				else if (NextSceneMode->GetTypeID() == typeid(COnionScene).hash_code())
+				{
+					((COnionScene*)(NextSceneMode))->SetStageObject(Obj);
+				}
 			}
 		}
 
@@ -281,4 +319,102 @@ void CClientManager::CreateAnimInstance(CSpriteComponent* Sprite, size_t Type)
 	}
 
 }
+
+void CClientManager::TurnOffWindow(float DeltaTime)
+{
+	CScene* Scene = CSceneManager::GetInst()->GetScene();
+	if (Scene)
+	{
+		CSceneMode* Mode = Scene->GetSceneMode();
+		if (Mode->GetTypeID() == typeid(CStartScene).hash_code())
+			return;
+
+		CWidgetWindow* TopMostWindow = Scene->GetViewport()->FindTopMostWindow();
+
+		// 캐릭터 정보창이나 경험치 UI Window같은 것들은 끄면 안됨
+		if (TopMostWindow)
+		{
+			std::string Name = TopMostWindow->GetName();
+
+			if (Name.find("MainStatus") != std::string::npos || Name.find("EXPWindow") != std::string::npos || Name.find("SkillQuickSlot") != std::string::npos)
+			{
+				return;
+			}
+
+			// 캐릭터 HP/MP UI, 경험치UI, 스킬 퀵슬롯 UI들은 전부 ZOrder가 1로 되어있으므로 1보다는 무조건 크게해야함
+			TopMostWindow->SetZOrder(2);
+			TopMostWindow->Enable(false);
+		}
+	}
+
+}
+
+void CClientManager::OnOffInventory(float DeltaTime)
+{
+	CScene* Scene = CSceneManager::GetInst()->GetScene();
+
+	CSceneMode* Mode = Scene->GetSceneMode();
+	if (Mode->GetTypeID() == typeid(CStartScene).hash_code())
+		return;
+
+	if (Scene)
+	{
+		CViewport* Viewport = Scene->GetViewport();
+		if (Viewport)
+		{
+			CInventory* Inventory = (CInventory*)Viewport->FindWidgetWindow<CInventory>("Inventory");
+
+			if (Inventory)
+			{
+				bool IsEnable = Inventory->IsEnable();
+
+				if (IsEnable)
+					Inventory->Enable(false);
+				else
+					Inventory->Enable(true);
+			}
+		}
+	}
+}
+
+void CClientManager::OnOffConfiguration(float DeltaTime)
+{
+	CScene* Scene = CSceneManager::GetInst()->GetScene();
+
+	CSceneMode* Mode = Scene->GetSceneMode();
+	if (Mode->GetTypeID() == typeid(CStartScene).hash_code())
+		return;
+
+	if (Scene)
+	{
+		CViewport* Viewport = Scene->GetViewport();
+		if (Viewport)
+		{
+			CInventory* Inventory = (CInventory*)Viewport->FindWidgetWindow<CInventory>("ConfigurationWindow");
+
+			if (Inventory)
+			{
+				bool IsEnable = Inventory->IsEnable();
+
+				if (IsEnable)
+					Inventory->Enable(false);
+				else
+					Inventory->Enable(true);
+			}
+		}
+	}
+}
+
+//bool CClientManager::IsCritical(int Factor)
+//{
+//	int RamdomNumber = rand();
+//
+//	int random = (RamdomNumber % (Factor / 20 + 1)) - (Factor / 30);
+//
+//	float Damage = Factor / 10.f + random;
+//
+//
+//	// 크리티컬 데미지가 뜬 경우 -> 추가적으로 이펙트 달아주기
+//	return random > 0;
+//}
 

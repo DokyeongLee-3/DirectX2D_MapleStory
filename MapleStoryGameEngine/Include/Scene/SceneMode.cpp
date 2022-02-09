@@ -2,6 +2,7 @@
 #include "SceneMode.h"
 #include "../GameObject/GameObject.h"
 #include "../Engine.h"
+#include "Scene.h"
 
 CSceneMode::CSceneMode()
 {
@@ -14,13 +15,25 @@ CSceneMode::~CSceneMode()
 
 void CSceneMode::SetPlayerObject(CGameObject* Obj)
 {
-
 	m_PlayerObject = Obj;
-
 }
 
 void CSceneMode::Start()
 {
+	if (m_PlayerObject)
+	{
+		CGameObject* Player = m_Scene->FindObject(m_PlayerObject->GetName());
+
+		if (!Player)
+		{
+			m_Scene->AddObject(m_PlayerObject);
+			m_PlayerObject->SetScene(m_Scene);
+
+			CSceneComponent* Component = m_PlayerObject->GetRootComponent();
+			Component->SetScene(m_Scene);
+			Component->SetAllChildComponentScene(m_Scene);
+		}
+	}
 }
 
 bool CSceneMode::Init()

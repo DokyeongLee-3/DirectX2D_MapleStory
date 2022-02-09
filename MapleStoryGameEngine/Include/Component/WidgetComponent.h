@@ -17,6 +17,19 @@ protected:
 protected:
     CSharedPtr<CWidgetWindow>   m_WidgetWindow;
     WidgetComponent_Space       m_Space;
+    // 알파채널 사용할 것인지 안할것인지
+    bool                        m_SetAlphaBlendState;
+
+public:
+    void UseAlphaBlend(bool Use)
+    {
+        m_SetAlphaBlendState = Use;
+    }
+
+    bool GetAlphablendState()   const
+    {
+        return m_SetAlphaBlendState;
+    }
 
 public:
     void SetWidgetSpace(WidgetComponent_Space Space)

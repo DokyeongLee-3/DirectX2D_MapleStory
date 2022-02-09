@@ -89,11 +89,15 @@ bool CViewport::CollisionMouse()
 
 	for (; iter != iterEnd; ++iter)
 	{
-		if ((*iter)->GetName() == "Inventory")
-			int a = 3;
-
 		if (!(*iter)->IsEnable())
 		{
+			continue;
+		}
+
+		if (!(*iter)->IsActive())
+		{
+			iter = m_WindowList.erase(iter);
+			iterEnd = m_WindowList.end();
 			continue;
 		}
 
@@ -103,17 +107,17 @@ bool CViewport::CollisionMouse()
 
 	// 마우스로 UI창을 닫거나 할 수 있으니까 위에서 UI와 마우스 충돌 돌려보고
 	// 여기서 Active = false인건 Destroy
-	for (; iter != iterEnd;)
-	{
-		if (!(*iter)->IsActive())
-		{
-			iter = m_WindowList.erase(iter);
-			iterEnd = m_WindowList.end();
-			continue;
-		}
+	//for (; iter != iterEnd;)
+	//{
+	//	if (!(*iter)->IsActive())
+	//	{
+	//		iter = m_WindowList.erase(iter);
+	//		iterEnd = m_WindowList.end();
+	//		continue;
+	//	}
 
-		++iter;
-	}
+	//	++iter;
+	//}
 
 	return false;
 }
@@ -170,7 +174,13 @@ bool CViewport::SortWindow(CSharedPtr<CWidgetWindow> Src, CSharedPtr<CWidgetWind
 
 CWidgetWindow* CViewport::FindTopMostWindow()
 {
-	m_WindowList.sort(CViewport::SortWindow);
+	if (m_WindowList.size() > 2)
+		m_WindowList.sort(CViewport::SortWindow);
 
-	return (*(m_WindowList.begin()));
+	auto iter = m_WindowList.begin();
+
+	while (!(*iter)->IsEnable())
+		++iter;
+
+	return (*iter);
 }

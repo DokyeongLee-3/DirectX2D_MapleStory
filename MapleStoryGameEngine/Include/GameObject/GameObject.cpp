@@ -5,7 +5,8 @@
 
 CGameObject::CGameObject()	:
 	m_Scene(nullptr),
-	m_Parent(nullptr)
+	m_Parent(nullptr),
+	m_LifeSpan(0.f)
 {
 	SetTypeID<CGameObject>();
 }
@@ -113,6 +114,10 @@ void CGameObject::ClearSceneComponents()
 
 }
 
+void CGameObject::SetDamage(float Damage, bool Critical)
+{
+}
+
 void CGameObject::Start()
 {
 	if (m_RootComponent)
@@ -133,6 +138,18 @@ bool CGameObject::Init()
 
 void CGameObject::Update(float DeltaTime)
 {
+	// 처음 m_LiftSpan의 초기값이 0.f라는건 정해진 LiftSpan이 무한이라는 의미
+	if (m_LifeSpan > 0.f)
+	{
+		m_LifeSpan -= DeltaTime;
+
+		if (m_LifeSpan <= 0.f)
+		{
+			Destroy();
+			return;
+		}
+	}
+
 	size_t Size = m_vecObjectComponent.size();
 
 	for (size_t i = 0; i < Size; ++i)

@@ -106,7 +106,14 @@ bool CRenderManager::Init()
 
 	m_Standard2DCBuffer->Init();
 
-	// 기본 레이어 생성
+
+	// 레이어 생성
+	//RenderLayer* Layer = new RenderLayer;
+	//Layer->Name = "Back";
+	//Layer->LayerPriority = 0;
+
+	//m_RenderLayerList.push_back(Layer);
+
 	RenderLayer* Layer = new RenderLayer;
 	Layer->Name = "Default";
 	Layer->LayerPriority = 0;
@@ -138,8 +145,14 @@ bool CRenderManager::Init()
 	m_RenderLayerList.push_back(Layer);
 
 	Layer = new RenderLayer;
-	Layer->Name = "ScreenWidgetComponent";
+	Layer->Name = "Particle";
 	Layer->LayerPriority = 5;
+
+	m_RenderLayerList.push_back(Layer);
+
+	Layer = new RenderLayer;
+	Layer->Name = "ScreenWidgetComponent";
+	Layer->LayerPriority = 6;
 
 	m_RenderLayerList.push_back(Layer);
 
@@ -238,6 +251,18 @@ void CRenderManager::Render()
 	m_DepthDisable->ResetState();
 }
 
+void CRenderManager::SetAlphaBlendState()
+{
+	if(m_AlphaBlend)
+		m_AlphaBlend->SetState();
+}
+
+void CRenderManager::ResetAlphaBlendState()
+{
+	if (m_AlphaBlend)
+		m_AlphaBlend->ResetState();
+}
+
 void CRenderManager::SetBlendFactor(const std::string& Name, float r, float g,
 	float b, float a)
 {
@@ -286,7 +311,7 @@ void CRenderManager::FadeIn(float DeltaTime)
 
 void CRenderManager::FadeOut(float DeltaTime)
 {
-	m_FadeAmount += DeltaTime * 0.4f;
+	m_FadeAmount += DeltaTime * 0.35f;
 
 	if (m_FadeAmount >= 1.f)
 	{

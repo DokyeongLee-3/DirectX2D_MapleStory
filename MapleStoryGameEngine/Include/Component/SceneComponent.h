@@ -65,6 +65,8 @@ public:
 		m_LayerName = Name;
 	}
 
+	void SetAllChildComponentScene(class CScene* Scene);
+
 public:
 	// Obj에 m_SceneComponentList에 나와 내 자식 컴포넌트들을 넣어준다
 	void SetSceneComponent(class CGameObject* Object);

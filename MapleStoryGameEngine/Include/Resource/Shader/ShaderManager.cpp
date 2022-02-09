@@ -68,6 +68,8 @@ bool CShaderManager::Init()
 	CreateConstantBuffer("GlobalCBuffer", sizeof(GlobalCBuffer), 3,
 		(int)Buffer_Shader_Type::All);
 
+	CreateConstantBuffer("PaperBurnCBuffer", sizeof(PaperBurnCBuffer), 4,
+		(int)Buffer_Shader_Type::Pixel);
 
 
 	CreateConstantBuffer("Animation2DCBuffer", sizeof(Animation2DCBuffer), 10,

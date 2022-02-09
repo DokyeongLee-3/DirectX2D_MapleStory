@@ -8,6 +8,9 @@ CSkillQuickSlotWindow::CSkillQuickSlotWindow()
 CSkillQuickSlotWindow::CSkillQuickSlotWindow(const CSkillQuickSlotWindow& window)	:
 	CWidgetWindow(window)
 {
+	m_QuickSlotBack = window.m_QuickSlotBack;
+	m_QuickSlotLayer = window.m_QuickSlotLayer;
+	m_ExtendBar = window.m_ExtendBar;
 }
 
 CSkillQuickSlotWindow::~CSkillQuickSlotWindow()
@@ -30,11 +33,11 @@ bool CSkillQuickSlotWindow::Init()
 	m_QuickSlotBack->SetSize(347.f, 67.f);
 	m_QuickSlotBack->SetMouseCollisionEnable(true);
 
-	CImage* QuickSlogLayer = CreateWidget<CImage>("QuickSlogLayer");
-	QuickSlogLayer->SetTexture("QuickSlogLayer", TEXT("UI/Skill/QuickSlotLayer.png"));
-	QuickSlogLayer->SetSize(351.f, 73.f);
-	QuickSlogLayer->SetMouseCollisionEnable(true);
-	QuickSlogLayer->SetZOrder(5);
+	m_QuickSlotLayer = CreateWidget<CImage>("QuickSlogLayer");
+	m_QuickSlotLayer->SetTexture("QuickSlogLayer", TEXT("UI/Skill/QuickSlotLayer.png"));
+	m_QuickSlotLayer->SetSize(351.f, 73.f);
+	m_QuickSlotLayer->SetMouseCollisionEnable(true);
+	m_QuickSlotLayer->SetZOrder(5);
 
 	m_ExtendBar = CreateWidget<CImage>("SkillQuickSlotExtendBar");
 	m_ExtendBar->SetTexture("SkillQuickSlotExtendBar", TEXT("UI/Skill/QuickSlotNormal.png"));
