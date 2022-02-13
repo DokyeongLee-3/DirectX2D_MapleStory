@@ -108,53 +108,74 @@ bool CRenderManager::Init()
 
 
 	// 레이어 생성
-	//RenderLayer* Layer = new RenderLayer;
-	//Layer->Name = "Back";
-	//Layer->LayerPriority = 0;
-
-	//m_RenderLayerList.push_back(Layer);
-
 	RenderLayer* Layer = new RenderLayer;
-	Layer->Name = "Default";
+	Layer->Name = "Stage";
 	Layer->LayerPriority = 0;
 
 	m_RenderLayerList.push_back(Layer);
 
 	Layer = new RenderLayer;
-	Layer->Name = "Stage";
+	Layer->Name = "Back";
 	Layer->LayerPriority = 1;
 
 	m_RenderLayerList.push_back(Layer);
 
 	Layer = new RenderLayer;
-	Layer->Name = "MapObjBack";
+	Layer->Name = "Default";
 	Layer->LayerPriority = 2;
 
 	m_RenderLayerList.push_back(Layer);
 
 	Layer = new RenderLayer;
-	Layer->Name = "MapObjFront";
+	Layer->Name = "MapObjBackMost";
 	Layer->LayerPriority = 3;
 
 	m_RenderLayerList.push_back(Layer);
 
 	Layer = new RenderLayer;
-	Layer->Name = "MovingObjFront";
+	Layer->Name = "MapObjBack";
 	Layer->LayerPriority = 4;
 
 	m_RenderLayerList.push_back(Layer);
 
 	Layer = new RenderLayer;
-	Layer->Name = "Particle";
+	Layer->Name = "MapObjMiddle";
 	Layer->LayerPriority = 5;
 
 	m_RenderLayerList.push_back(Layer);
 
 	Layer = new RenderLayer;
-	Layer->Name = "ScreenWidgetComponent";
+	Layer->Name = "MapObjFront";
 	Layer->LayerPriority = 6;
 
 	m_RenderLayerList.push_back(Layer);
+
+	Layer = new RenderLayer;
+	Layer->Name = "MovingObjFront";
+	Layer->LayerPriority = 7;
+
+	m_RenderLayerList.push_back(Layer);
+
+	// 플레이어도 가려버리는 MapObj
+	Layer = new RenderLayer;
+	Layer->Name = "CoveringMapObj";
+	Layer->LayerPriority = 8;
+
+	m_RenderLayerList.push_back(Layer);
+
+	Layer = new RenderLayer;
+	Layer->Name = "Particle";
+	Layer->LayerPriority = 9;
+
+	m_RenderLayerList.push_back(Layer);
+
+	Layer = new RenderLayer;
+	Layer->Name = "ScreenWidgetComponent";
+	Layer->LayerPriority = 10;
+
+	m_RenderLayerList.push_back(Layer);
+
+
 
 	m_DepthDisable = m_RenderStateManager->FindRenderState("DepthDisable");
 	m_AlphaBlend = m_RenderStateManager->FindRenderState("AlphaBlend");

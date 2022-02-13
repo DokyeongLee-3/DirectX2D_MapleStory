@@ -1,5 +1,6 @@
 
 #include "OnionScene.h"
+#include "WayToZakumScene.h"
 #include "Scene/Scene.h"
 #include "Scene/SceneResource.h"
 #include "Scene/SceneManager.h"
@@ -7,6 +8,9 @@
 #include "../Object/SylphideLancerHitEffect.h"
 #include "Input.h"
 #include "PathManager.h"
+#include "../ClientManager.h"
+#include "LoadingThread.h"
+#include "Render/RenderManager.h"
 
 COnionScene::COnionScene()
 {
@@ -15,6 +19,9 @@ COnionScene::COnionScene()
 
 COnionScene::~COnionScene()
 {
+	m_Scene->GetResource()->SoundStop("OnionSceneBGM");
+
+	SAFE_DELETE(m_LoadingThread);
 }
 
 void COnionScene::SetStageObject(CStage* Stage)
@@ -22,8 +29,26 @@ void COnionScene::SetStageObject(CStage* Stage)
 	m_StageObject = Stage;
 }
 
+CLoadingThread* COnionScene::GetLoadingThread() const
+{
+	return m_LoadingThread;
+}
+
 bool COnionScene::Init()
 {
+	CCharacterStatusWindow* StatusWindow = CClientManager::GetInst()->GetCharacterStatusWindow();
+	CInventory* Inventory = CClientManager::GetInst()->GetInventoryWindow();
+	CSkillQuickSlotWindow* SkillQuickSlot = CClientManager::GetInst()->GetSkillQuickSlotWindow();
+	CConfigurationWindow* ConfigurationWindow = CClientManager::GetInst()->GetConfigurationWindow();
+	CCharacterEXP* EXPWindow = CClientManager::GetInst()->GetCharacterEXPWindow();
+	CBossMatching* BossMatching = CClientManager::GetInst()->GetBossMatchingWindow();
+	m_Scene->GetViewport()->AddWindow(StatusWindow);
+	m_Scene->GetViewport()->AddWindow(Inventory);
+	m_Scene->GetViewport()->AddWindow(SkillQuickSlot);
+	m_Scene->GetViewport()->AddWindow(ConfigurationWindow);
+	m_Scene->GetViewport()->AddWindow(EXPWindow);
+	m_Scene->GetViewport()->AddWindow(BossMatching);
+
 	CreateAnimationSequence();
 	// Effect Hit들을 Scene의 m_mapPrototype에 만들어놓기
 	CreateEffectPrototype();
@@ -52,16 +77,44 @@ bool COnionScene::Init()
 		OnionMonster->SetWorldPos(400.f + i * 250.f, 200.f, 0.f);
 	}
 
-	CInput::GetInst()->CreateKey("TurnOffUIWindow", VK_ESCAPE);
 
-	CInput::GetInst()->SetKeyCallback<COnionScene>("TurnOffUIWindow", Key_State::KeyState_Down, this, &COnionScene::TurnOffWindow);
-
-
-	m_Scene->GetResource()->LoadSound("Master", true, "BGM", "TheFairyForest.mp3");
-	m_Scene->GetResource()->SoundPlay("BGM");
+	m_Scene->GetResource()->LoadSound("Master", true, "OnionSceneBGM", "TheFairyForest.mp3");
+	m_Scene->GetResource()->SoundPlay("OnionSceneBGM");
 
 
 	return true;
+}
+
+void COnionScene::Update(float DeltaTime)
+{
+	CSceneMode::Update(DeltaTime);
+
+	if (m_LoadingThread)
+	{
+		CThreadQueue<LoadingMessage>* Queue = m_LoadingThread->GetLoadingQueue();
+
+		if (!m_LoadingThread)
+		{
+			CSceneManager::GetInst()->ChangeNextScene();
+			CRenderManager::GetInst()->SetStartFadeOut(true);
+			return;
+		}
+
+		else if (!Queue->empty())
+		{
+			LoadingMessage	Msg = Queue->front();
+
+			Queue->pop();
+
+			//m_LoadingWidget->SetLoadingPercent(Msg.Percent);
+
+			if (Msg.Complete)
+			{
+				CSceneManager::GetInst()->ChangeNextScene();
+				CRenderManager::GetInst()->SetStartFadeOut(true);
+			}
+		}
+	}
 }
 
 void COnionScene::CreateMaterial()
@@ -119,19 +172,18 @@ void COnionScene::CreateEffectPrototype()
 	CSylphideLancerHitEffect* SylphideLancerHitEffect = m_Scene->CreatePrototype<CSylphideLancerHitEffect>("SylphideLancerHitEffect");
 }
 
-void COnionScene::TurnOffWindow(float DeltaTime)
+void COnionScene::CreateWayToZakumScene()
 {
-	CWidgetWindow* TopMostWindow = m_Scene->GetViewport()->FindTopMostWindow();
+	CSceneManager::GetInst()->CreateNextScene(false);
+	CWayToZakumScene* WayToZakumScene = CSceneManager::GetInst()->CreateSceneModeEmpty<CWayToZakumScene>(false);
 
-	// 캐릭터 정보창이나 경험치 UI Window같은 것들은 끄면 안됨
-	if (TopMostWindow)
-	{
-		std::string Name = TopMostWindow->GetName();
+	WayToZakumScene->SetPlayerObject(m_PlayerObject);
 
-		if (Name.find("MainStatus") != std::string::npos || Name.find("EXPWindow") != std::string::npos || Name.find("SkillQuickSlot") != std::string::npos)
-			return;
+	// 다음 Scene에서의 위치를 Scene의 왼쪽에 위치하도록 잡아주기
+	m_PlayerObject->SetWorldPos(180.f, 200.f, 0.f);
 
-		TopMostWindow->SetZOrder(0);
-		TopMostWindow->Enable(false);
-	}
+	m_LoadingThread = CThread::CreateThread<CLoadingThread>("WayToZakumSceneLoadingThread");
+	m_LoadingThread->SetLoadingScene(ThreadLoadingScene::WayToZakum);
+
+	m_LoadingThread->Start();
 }

@@ -9,7 +9,8 @@ CWidgetWindow::CWidgetWindow() :
 	m_OwnerComponent(nullptr),
 	m_ZOrder(0),
 	m_Size(100.f, 100.f),
-	m_Start(false)
+	m_Start(false),
+	m_CollisionMouseEnable(true)
 {
 }
 

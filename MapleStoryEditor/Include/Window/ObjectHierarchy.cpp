@@ -68,9 +68,12 @@ bool CObjectHierarchy::Init()
 	m_LayerCombo->SetHideName(true);
 	m_LayerCombo->AddItem("Default");
 	m_LayerCombo->AddItem("Stage");
+	m_LayerCombo->AddItem("MapObjBackMost");
 	m_LayerCombo->AddItem("MapObjBack");
+	m_LayerCombo->AddItem("MapObjMiddle");
 	m_LayerCombo->AddItem("MapObjFront");
 	m_LayerCombo->AddItem("MovingObjFront");
+	m_LayerCombo->AddItem("CoveringMapObj");
 
 	Line = AddWidget<CIMGUISameLine>("Line");
 
@@ -204,7 +207,7 @@ void CObjectHierarchy::SelectComponent(int Index, const char* Item)
 		CEditorManager::GetInst()->GetDetailWindow()->GetScaleYInput()->SetValueFloat(WorldScale.y);
 
 
-		int Idx = m_LayerCombo->GetSelectIndex();
+	/*	int Idx = m_LayerCombo->GetSelectIndex();
 
 		if (Idx == -1)
 			return;
@@ -229,7 +232,7 @@ void CObjectHierarchy::SelectComponent(int Index, const char* Item)
 		else if (LayerName == "MapObjFront")
 		{
 			((CSceneComponent*)Com)->SetLayerName("MapObjFront");
-		}
+		}*/
 	}
 }
 

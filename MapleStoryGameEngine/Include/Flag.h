@@ -196,7 +196,9 @@ enum class Mouse_State
 enum class ThreadLoadingScene
 {
 	Lobby,
-	Onion
+	Onion,
+	WayToZakum,
+	Main
 };
 
 
@@ -209,5 +211,6 @@ enum class Tile_Shape
 enum class Tile_Type
 {
 	Normal,
-	Wall
+	Wall,
+	End
 };

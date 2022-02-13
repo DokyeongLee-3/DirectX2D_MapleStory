@@ -101,8 +101,11 @@ bool CViewport::CollisionMouse()
 			continue;
 		}
 
-		if ((*iter)->CollisionMouse(MousePos))
-			return true;
+		if ((*iter)->IsMouseCollisionEnable())
+		{
+			if ((*iter)->CollisionMouse(MousePos))
+				return true;
+		}
 	}
 
 	// 마우스로 UI창을 닫거나 할 수 있으니까 위에서 UI와 마우스 충돌 돌려보고
@@ -172,7 +175,7 @@ bool CViewport::SortWindow(CSharedPtr<CWidgetWindow> Src, CSharedPtr<CWidgetWind
 	return Src->GetZOrder() > Dest->GetZOrder();
 }
 
-CWidgetWindow* CViewport::FindTopMostWindow()
+CWidgetWindow* CViewport::FindTopmostWindow()
 {
 	if (m_WindowList.size() > 2)
 		m_WindowList.sort(CViewport::SortWindow);
@@ -183,4 +186,18 @@ CWidgetWindow* CViewport::FindTopMostWindow()
 		++iter;
 
 	return (*iter);
+}
+
+void CViewport::AddWindow(CWidgetWindow* Window)
+{
+	Window->m_Viewport = this;
+
+	m_WindowList.push_back(Window);
+}
+
+int CViewport::GetTopmostWindowZOrder()
+{
+	auto iter = m_WindowList.begin();
+
+	return (*iter)->GetZOrder();
 }

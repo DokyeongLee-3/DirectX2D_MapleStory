@@ -6,6 +6,7 @@
 #include "../Widget/SkillQuickSlotWindow.h"
 #include "../Widget/CharacterEXP.h"
 #include "../Widget/CharacterStatusWindow.h"
+#include "../Widget/BossMatching.h"
 
 class CLobbyScene :
     public CSceneMode
@@ -25,6 +26,7 @@ private:
     CSharedPtr<CSkillQuickSlotWindow>   m_SkillQuickSlot;
     CSharedPtr<CCharacterStatusWindow>  m_CharacterStatusWindow;
     CSharedPtr<CCharacterEXP>           m_CharacterEXPWindow;
+    CSharedPtr<CBossMatching>           m_BossMatchingWindow;
 
     std::function<void(bool, float)>    m_LoadingFunction;
     class CLoadingThread*               m_LoadingThread;
@@ -37,9 +39,11 @@ public:
 
     void SetStageObject(class CStage* Stage);
 
+    class CLoadingThread* GetLoadingThread()    const;
+
 public:
 	virtual bool Init();
-    void Update(float DeltaTime);
+    virtual void Update(float DeltaTime);
 
 private:
     void CreateMaterial();
@@ -51,6 +55,7 @@ private:
 
 public:
     void CreateOnionScene();
+    void CreateWayToZakumScene();
 
 public:
     template <typename T>

@@ -11,6 +11,8 @@
 #include "NumberShader.h"
 #include "ParticleUpdateShader.h"
 #include "ParticleRenderShader.h"
+#include "TileMapShader.h"
+#include "MovingTileMapShader.h"
 
 CShaderManager::CShaderManager()
 {
@@ -28,7 +30,6 @@ bool CShaderManager::Init()
 
 	if (!CreateShader<CPosMeshShader>("PosMeshShader"))
 		return false;
-
 
 	if (!CreateShader<CMesh2DShader>("Mesh2DShader"))
 		return false;
@@ -52,6 +53,12 @@ bool CShaderManager::Init()
 		return false;
 
 	if (!CreateShader<CParticleRenderShader>("ParticleRenderShader"))
+		return false;
+
+	if (!CreateShader<CTileMapShader>("TileMapShader"))
+		return false;
+
+	if (!CreateShader<CMovingTileMapShader>("MovingTileShader"))
 		return false;
 
 
@@ -86,6 +93,12 @@ bool CShaderManager::Init()
 
 	CreateConstantBuffer("ParticleCBuffer", sizeof(ParticleCBuffer), 11,
 		(int)Buffer_Shader_Type::Compute);
+
+	CreateConstantBuffer("TileMapCBuffer", sizeof(TileMapCBuffer), 11,
+		(int)Buffer_Shader_Type::Graphic);
+
+	CreateConstantBuffer("MovingTileMapCBuffer", sizeof(MovingTileMapCBuffer), 12,
+		(int)Buffer_Shader_Type::Graphic);
 
 	return true;
 }

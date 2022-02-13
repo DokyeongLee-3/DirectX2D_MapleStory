@@ -167,6 +167,7 @@
     <ClCompile Include="Object\BulletTornaido.cpp" />
     <ClCompile Include="Object\Butterfly.cpp" />
     <ClCompile Include="Object\DoubleHelixBlinkTree.cpp" />
+    <ClCompile Include="Object\FlowingVolcano.cpp" />
     <ClCompile Include="Object\LampLight.cpp" />
     <ClCompile Include="Object\LobbyBigLamp.cpp" />
     <ClCompile Include="Object\LobbySmallLamp.cpp" />
@@ -189,12 +190,15 @@
     <ClCompile Include="Object\SylphideLancerArrowAnimation2D.cpp" />
     <ClCompile Include="Object\SylphideLancerEffectAnimation2D.cpp" />
     <ClCompile Include="Object\SylphideLancerHitEffect.cpp" />
+    <ClCompile Include="Object\TileMap.cpp" />
     <ClCompile Include="Scene\LoadingScene.cpp" />
     <ClCompile Include="Scene\LoadingThread.cpp" />
     <ClCompile Include="Scene\LobbyScene.cpp" />
     <ClCompile Include="Scene\MainScene.cpp" />
     <ClCompile Include="Scene\OnionScene.cpp" />
     <ClCompile Include="Scene\StartScene.cpp" />
+    <ClCompile Include="Scene\WayToZakumScene.cpp" />
+    <ClCompile Include="Widget\BossMatching.cpp" />
     <ClCompile Include="Widget\CharacterEXP.cpp" />
     <ClCompile Include="Widget\CharacterSelectInfoWidget.cpp" />
     <ClCompile Include="Widget\CharacterStatusWindow.cpp" />
@@ -222,6 +226,7 @@
     <ClInclude Include="Object\BulletTornaido.h" />
     <ClInclude Include="Object\Butterfly.h" />
     <ClInclude Include="Object\DoubleHelixBlinkTree.h" />
+    <ClInclude Include="Object\FlowingVolcano.h" />
     <ClInclude Include="Object\LampLight.h" />
     <ClInclude Include="Object\LobbyBigLamp.h" />
     <ClInclude Include="Object\LobbySmallLamp.h" />
@@ -244,6 +249,7 @@
     <ClInclude Include="Object\SylphideLancerArrowAnimation2D.h" />
     <ClInclude Include="Object\SylphideLancerEffectAnimation2D.h" />
     <ClInclude Include="Object\SylphideLancerHitEffect.h" />
+    <ClInclude Include="Object\TileMap.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Scene\LoadingScene.h" />
     <ClInclude Include="Scene\LoadingThread.h" />
@@ -251,6 +257,8 @@
     <ClInclude Include="Scene\MainScene.h" />
     <ClInclude Include="Scene\OnionScene.h" />
     <ClInclude Include="Scene\StartScene.h" />
+    <ClInclude Include="Scene\WayToZakumScene.h" />
+    <ClInclude Include="Widget\BossMatching.h" />
     <ClInclude Include="Widget\CharacterEXP.h" />
     <ClInclude Include="Widget\CharacterSelectInfoWidget.h" />
     <ClInclude Include="Widget\CharacterStatusWindow.h" />

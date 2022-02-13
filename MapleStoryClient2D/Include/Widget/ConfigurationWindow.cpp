@@ -47,7 +47,8 @@ bool CConfigurationWindow::Init()
     m_BGMSoundSlider = CreateWidget<CImage>("BGMSoundSlider");
     m_BGMSoundSlider->SetTexture("BGMSoundSlider", TEXT("UI/Configuration/OptionScroll.png"));
     m_BGMSoundSlider->SetSize(28.f, 11.f);
-    m_BGMSoundSlider->SetPos(115.f, 333.f);
+
+    m_BGMSoundSlider->SetPos(130.f, 333.f);
     m_BGMSoundSliderLeftMostXPos = 90.f;
     m_BGMSoundSliderRightMostXPos = 147.f;
     m_BGMSoundSlider->SetMoveXAllowed(true);

@@ -108,7 +108,6 @@ void CCharacterEXP::PostUpdate(float DeltaTime)
 void CCharacterEXP::Render()
 {
     CWidgetWindow::Render();
-
 }
 
 CCharacterEXP* CCharacterEXP::Clone()

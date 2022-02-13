@@ -76,6 +76,12 @@
     <Filter Include="02. Object\03. Effect\02. HitEffect">
       <UniqueIdentifier>{cd9eac02-7df6-4dd2-9aa3-b0085f5a74f4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Object\10. TileMap">
+      <UniqueIdentifier>{3b5610dd-474e-458e-bffa-058735a53aaf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\08. MapObject\02. Zakum">
+      <UniqueIdentifier>{5ce0a072-d003-4d25-9b3f-9f51608998a3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -236,6 +242,18 @@
     </ClCompile>
     <ClCompile Include="Object\SylphideLancerHitEffect.cpp">
       <Filter>02. Object\03. Effect\02. HitEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\TileMap.cpp">
+      <Filter>02. Object\10. TileMap</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\BossMatching.cpp">
+      <Filter>03. UI\02. InGame</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\WayToZakumScene.cpp">
+      <Filter>01. SceneMode</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\FlowingVolcano.cpp">
+      <Filter>02. Object\08. MapObject\02. Zakum</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -400,6 +418,18 @@
     </ClInclude>
     <ClInclude Include="Object\SylphideLancerHitEffect.h">
       <Filter>02. Object\03. Effect\02. HitEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\TileMap.h">
+      <Filter>02. Object\10. TileMap</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\BossMatching.h">
+      <Filter>03. UI\02. InGame</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\WayToZakumScene.h">
+      <Filter>01. SceneMode</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\FlowingVolcano.h">
+      <Filter>02. Object\08. MapObject\02. Zakum</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

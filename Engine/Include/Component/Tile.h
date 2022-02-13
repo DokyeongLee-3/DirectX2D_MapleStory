@@ -24,8 +24,16 @@ private:
 	int			m_IndexX;		// 가로 인덱스
 	int			m_IndexY;		// 세로 인덱스
 	int			m_Index;		// 1차원 벡터에서 최종 인덱스
+	Vector2		m_FrameStart;
+	Vector2		m_FrameEnd;
+	float		m_Opacity;
 
 public:
+	float GetOpacity()	const
+	{
+		return m_Opacity;
+	}
+
 	Tile_Shape GetShape()	const
 	{
 		return m_Shape;
@@ -71,7 +79,47 @@ public:
 		return m_Index;
 	}
 
+	Vector2 GetFrameStart()	const
+	{
+		return m_FrameStart;
+	}
+
+	Vector2 GetFrameEnd()	const
+	{
+		return m_FrameEnd;
+	}
+
+	bool GetRender()	const
+	{
+		return m_FrameStart.x != 0.f || m_FrameStart.y != 0.f || m_FrameEnd.x != 0.f || m_FrameEnd.y != 0.f;
+	}
+
 public:
+	void SetOpacity(float Opacity)
+	{
+		m_Opacity = Opacity;
+	}
+
+	void SetFrameStart(const Vector2& Frame)
+	{
+		m_FrameStart = Frame;
+	}
+
+	void SetFrameStart(float x, float y)
+	{
+		m_FrameStart = Vector2(x, y);
+	}
+
+	void SetFrameEnd(const Vector2& Frame)
+	{
+		m_FrameEnd = Frame;
+	}
+
+	void SetFrameEnd(float x, float y)
+	{
+		m_FrameEnd = Vector2(x, y);
+	}
+
 	void SetIndex(int IndexX, int IndexY, int Index)
 	{
 		m_IndexX = IndexX;
@@ -122,6 +170,9 @@ public:
 	bool CheckCurrentAnimation(const std::string& Name);
 
 public:
+	void Start();
 	void Update(float DeltaTime);
+	void Save(FILE* File);
+	void Load(FILE* File);
 };
 

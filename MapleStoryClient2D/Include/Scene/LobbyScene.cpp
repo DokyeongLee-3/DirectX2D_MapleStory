@@ -1,6 +1,7 @@
 
 #include "LobbyScene.h"
 #include "OnionScene.h"
+#include "WayToZakumScene.h"
 #include "Scene/Scene.h"
 #include "Scene/SceneResource.h"
 #include "Scene/SceneManager.h"
@@ -29,6 +30,7 @@ void CLobbyScene::SetStageObject(CStage* Stage)
 	m_StageObject = Stage;
 }
 
+
 bool CLobbyScene::Init()
 {
 	CreateAnimationSequence();
@@ -45,23 +47,34 @@ bool CLobbyScene::Init()
 	m_ConfigurationWindow->SetZOrder(2);
 	m_ConfigurationWindow->SetPos(200.f, 200.f);
 	m_ConfigurationWindow->Enable(false);
+	CClientManager::GetInst()->SetConfigurationWindow(m_ConfigurationWindow);
 
 	m_Inventory = m_Scene->GetViewport()->CreateWidgetWindow<CInventory>("Inventory");
-	m_Inventory->SetZOrder(3);
-	m_Inventory->SetPos(300.f, 100.f);
+	m_Inventory->SetZOrder(2);
+	m_Inventory->SetPos(250.f, 150.f);
 	m_Inventory->Enable(false);
+	CClientManager::GetInst()->SetInventoryWindow(m_Inventory);
+
+	m_BossMatchingWindow = m_Scene->GetViewport()->CreateWidgetWindow<CBossMatching>("BossMatching");
+	m_BossMatchingWindow->SetZOrder(2);
+	m_BossMatchingWindow->SetPos(200.f, 100.f);
+	m_BossMatchingWindow->Enable(false);
+	CClientManager::GetInst()->SetBossMatchingWindow(m_BossMatchingWindow);
 
 	m_CharacterStatusWindow = m_Scene->GetViewport()->CreateWidgetWindow<CCharacterStatusWindow>("MainStatus");
 	m_CharacterStatusWindow->SetPos(550.f, 13.f);
 	m_CharacterStatusWindow->SetZOrder(1);
+	m_CharacterStatusWindow->SetMouseCollisionEnable(false);
 	CClientManager::GetInst()->SetCharacterStatusWindow(m_CharacterStatusWindow);
 
 	m_CharacterEXPWindow = m_Scene->GetViewport()->CreateWidgetWindow<CCharacterEXP>("EXPWindow");
 	m_CharacterEXPWindow->SetZOrder(1);
+	m_CharacterEXPWindow->SetMouseCollisionEnable(false);
+	CClientManager::GetInst()->SetEXPWindow(m_CharacterEXPWindow);
 
 	m_SkillQuickSlot = m_Scene->GetViewport()->CreateWidgetWindow<CSkillQuickSlotWindow>("SkillQuickSlot");
 	m_SkillQuickSlot->SetZOrder(1);
-
+	CClientManager::GetInst()->SetSkillQuickSlot(m_SkillQuickSlot);
 
 	m_Scene->GetResource()->LoadSound("BGM", true, "FairyAcademyBGM", "TheFairyAcademy.mp3");
 	m_Scene->GetResource()->SoundPlay("FairyAcademyBGM");
@@ -165,6 +178,22 @@ void CLobbyScene::CreateOnionScene()
 
 	m_LoadingThread = CThread::CreateThread<CLoadingThread>("OnionSceneLoadingThread");
 	m_LoadingThread->SetLoadingScene(ThreadLoadingScene::Onion);
+
+	m_LoadingThread->Start();
+}
+
+void CLobbyScene::CreateWayToZakumScene()
+{
+	CSceneManager::GetInst()->CreateNextScene(false);
+	CWayToZakumScene* WayToZakumScene = CSceneManager::GetInst()->CreateSceneModeEmpty<CWayToZakumScene>(false);
+
+	WayToZakumScene->SetPlayerObject(m_PlayerObject);
+
+	// 다음 Scene에서의 위치를 Scene의 왼쪽에 위치하도록 잡아주기
+	m_PlayerObject->SetWorldPos(180.f, 200.f, 0.f);
+
+	m_LoadingThread = CThread::CreateThread<CLoadingThread>("WayToZakumSceneLoadingThread");
+	m_LoadingThread->SetLoadingScene(ThreadLoadingScene::WayToZakum);
 
 	m_LoadingThread->Start();
 }

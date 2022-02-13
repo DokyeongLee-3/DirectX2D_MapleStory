@@ -1,5 +1,7 @@
 
 #include "Tile.h"
+#include "TileMapComponent.h"
+#include "../Resource/Animation/AnimationSequence2D.h"
 
 CTile::CTile() :
 	m_Shape(Tile_Shape::Rect),
@@ -8,7 +10,8 @@ CTile::CTile() :
 	m_Owner(nullptr),
 	m_IndexX(-1),
 	m_IndexY(-1),
-	m_Index(-1)
+	m_Index(-1),
+	m_Opacity(1.f)
 {
 }
 
@@ -98,19 +101,38 @@ bool CTile::CheckCurrentAnimation(const std::string& Name)
 	return m_AnimInstance->CheckCurrentAnimation(Name);
 }
 
+void CTile::Start()
+{
+	m_Center = m_Pos + m_Size / 2.f;
+}
+
 void CTile::Update(float DeltaTime)
 {
 	if (m_AnimInstance)
+	{
 		m_AnimInstance->Update(DeltaTime);
 
-	/*Vector3	OwnerPos = m_Owner->GetWorldPos();
+		int	Frame = m_AnimInstance->GetCurrentAnimation()->GetCurrentFrame();
+		m_FrameStart = m_AnimInstance->GetCurrentAnimation()->GetAnimationSequence()->GetFrameData(Frame).Start;
+		m_FrameEnd = m_FrameStart + m_AnimInstance->GetCurrentAnimation()->GetAnimationSequence()->GetFrameData(Frame).Size;
+	}
+
+	Vector3	OwnerPos = m_Owner->GetWorldPos();
 
 	Vector3	Pos = OwnerPos + m_Pos;
 
 	Matrix	matScale, matTranslate;
 
 	matScale.Scaling(m_Size.x, m_Size.y, 1.f);
-	matTranslate.Translation(m_Pos);
+	matTranslate.Translation(Pos);
 
-	m_matWorld = matScale * matTranslate;*/
+	m_matWorld = matScale * matTranslate;
+}
+
+void CTile::Save(FILE* File)
+{
+}
+
+void CTile::Load(FILE* File)
+{
 }

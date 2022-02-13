@@ -28,6 +28,7 @@ bool COnionMonster::Init()
 {
 	m_Sprite = CreateComponent<CSpriteComponent>("OnionMonsterSprite");
 	m_Body = CreateComponent<CColliderCircle>("Body");
+	m_Body->SetRadius(40.f);
 	//m_PaperBurn = CreateComponent<CPaperBurnComponent>("PaperBurn");
 
 

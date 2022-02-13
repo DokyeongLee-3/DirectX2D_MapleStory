@@ -188,6 +188,8 @@ void CNumber::AddFrameData(int Count)
 void CNumber::Start()
 {
 	CWidget::Start();
+
+	m_CBuffer->SetAnimEnable(false);
 }
 
 bool CNumber::Init()
@@ -242,8 +244,6 @@ void CNumber::Render()
 			stackNumber.pop();
 		}
 	}
-
-	m_CBuffer->SetAnimEnable(false);
 
 	size_t	Count = m_vecNumber.size();
 

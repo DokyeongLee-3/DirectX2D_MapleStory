@@ -6,6 +6,7 @@
 #include "Scene/MainScene.h"
 #include "Scene/LobbyScene.h"
 #include "Scene/OnionScene.h"
+#include "Scene/WayToZakumScene.h"
 #include "Scene/StartScene.h"
 #include "Object/Stage.h"
 #include "Object/StaticMapObj.h"
@@ -62,10 +63,12 @@ bool CClientManager::Init(HINSTANCE hInst)
 	CInput::GetInst()->CreateKey("Flip", 'F');
 	CInput::GetInst()->CreateKey("Inventory", 'I');
 	CInput::GetInst()->CreateKey("Configuration", 'C');	
+	CInput::GetInst()->CreateKey("BossMatching", 'B');
 	CInput::GetInst()->CreateKey("TurnOffUIWindow", VK_ESCAPE);
 
 	CInput::GetInst()->SetKeyCallback<CClientManager>("Inventory", KeyState_Down, this, &CClientManager::OnOffInventory);
 	CInput::GetInst()->SetKeyCallback<CClientManager>("Configuration", KeyState_Down, this, &CClientManager::OnOffConfiguration);
+	CInput::GetInst()->SetKeyCallback<CClientManager>("BossMatching", KeyState_Down, this, &CClientManager::OnOffBossMatching);
 	CInput::GetInst()->SetKeyCallback<CClientManager>("TurnOffUIWindow", Key_State::KeyState_Down, this, &CClientManager::TurnOffWindow);
 
 	CResourceManager::GetInst()->CreateSoundChannelGroup("UI");
@@ -83,7 +86,7 @@ bool CClientManager::Init(HINSTANCE hInst)
 	return true;
 }
 
-void CClientManager::CreateDefaultSceneMode()
+void CClientManager::CreateStartSceneMode()
 {
 	CSceneManager::GetInst()->CreateSceneMode<CStartScene>();
 }
@@ -243,6 +246,11 @@ CGameObject* CClientManager::CreateObject(CScene* Scene, size_t Type)
 				{
 					((COnionScene*)(NextSceneMode))->SetStageObject(Obj);
 				}
+
+				else if (NextSceneMode->GetTypeID() == typeid(CWayToZakumScene).hash_code())
+				{
+					((CWayToZakumScene*)(NextSceneMode))->SetStageObject(Obj);
+				}
 			}
 		}
 
@@ -329,7 +337,7 @@ void CClientManager::TurnOffWindow(float DeltaTime)
 		if (Mode->GetTypeID() == typeid(CStartScene).hash_code())
 			return;
 
-		CWidgetWindow* TopMostWindow = Scene->GetViewport()->FindTopMostWindow();
+		CWidgetWindow* TopMostWindow = Scene->GetViewport()->FindTopmostWindow();
 
 		// 캐릭터 정보창이나 경험치 UI Window같은 것들은 끄면 안됨
 		if (TopMostWindow)
@@ -369,9 +377,21 @@ void CClientManager::OnOffInventory(float DeltaTime)
 				bool IsEnable = Inventory->IsEnable();
 
 				if (IsEnable)
+				{
 					Inventory->Enable(false);
+					// 캐릭터 HP/MP UI, 경험치UI, 스킬 퀵슬롯 UI들은 전부 ZOrder가 1로 되어있으므로 1보다는 무조건 크게해야함
+					Inventory->SetZOrder(2);
+				}
+
 				else
+				{
 					Inventory->Enable(true);
+					int ZOrder = Viewport->GetTopmostWindowZOrder();
+					Inventory->SetZOrder(ZOrder + 1);
+				}
+
+				// 지금 창에 띄워져있는 UI창(Enable = true)들 간의 ZOrder 순서를 유지하면서
+				// 가장 높은 ZOrder를 갖고 있는 Window과 지금 띄우려는 Window가 서로 ZOrder를 Swap해서 지금 띄우려는 창이 제일 위로 오게하게
 			}
 		}
 	}
@@ -390,16 +410,61 @@ void CClientManager::OnOffConfiguration(float DeltaTime)
 		CViewport* Viewport = Scene->GetViewport();
 		if (Viewport)
 		{
-			CInventory* Inventory = (CInventory*)Viewport->FindWidgetWindow<CInventory>("ConfigurationWindow");
+			CConfigurationWindow* Configuaration = (CConfigurationWindow*)Viewport->FindWidgetWindow<CConfigurationWindow>("ConfigurationWindow");
 
-			if (Inventory)
+			if (Configuaration)
 			{
-				bool IsEnable = Inventory->IsEnable();
+				bool IsEnable = Configuaration->IsEnable();
 
 				if (IsEnable)
-					Inventory->Enable(false);
+				{
+					Configuaration->Enable(false);
+					// 캐릭터 HP/MP UI, 경험치UI, 스킬 퀵슬롯 UI들은 전부 ZOrder가 1로 되어있으므로 1보다는 무조건 크게해야함
+					Configuaration->SetZOrder(2);
+				}
+
 				else
-					Inventory->Enable(true);
+				{
+					Configuaration->Enable(true);
+					int ZOrder = Viewport->GetTopmostWindowZOrder();
+					Configuaration->SetZOrder(ZOrder + 1);
+				}
+			}
+		}
+	}
+}
+
+void CClientManager::OnOffBossMatching(float DeltaTime)
+{
+	CScene* Scene = CSceneManager::GetInst()->GetScene();
+
+	CSceneMode* Mode = Scene->GetSceneMode();
+	if (Mode->GetTypeID() == typeid(CStartScene).hash_code())
+		return;
+
+	if (Scene)
+	{
+		CViewport* Viewport = Scene->GetViewport();
+		if (Viewport)
+		{
+			CBossMatching* BossMatching = (CBossMatching*)Viewport->FindWidgetWindow<CBossMatching>("BossMatching");
+
+			if (BossMatching)
+			{
+				bool IsEnable = BossMatching->IsEnable();
+
+				if (IsEnable)
+				{
+					BossMatching->Enable(false);
+					BossMatching->SetZOrder(2);
+				}
+
+				else
+				{
+					BossMatching->Enable(true);
+					int ZOrder = Viewport->GetTopmostWindowZOrder();
+					BossMatching->SetZOrder(ZOrder + 1);
+				}
 			}
 		}
 	}

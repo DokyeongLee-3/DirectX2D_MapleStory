@@ -22,10 +22,21 @@ protected:
 	Vector2 m_Pos;
 	Vector2 m_Size;
 	bool m_Start;
+	bool m_CollisionMouseEnable;
 
 	std::list<CSharedPtr<CWidget>>    m_WidgetList;
 
 public:
+	bool IsMouseCollisionEnable()	const
+	{
+		return m_CollisionMouseEnable;
+	}
+
+	void SetMouseCollisionEnable(bool Enable)
+	{
+		m_CollisionMouseEnable = Enable ? 1 : 0;
+	}
+
 	class CWidgetComponent* GetWidgetComponent()	const
 	{
 		return m_OwnerComponent;

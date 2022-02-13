@@ -30,6 +30,5 @@ public:
 	virtual void Render();
 	virtual CCharacterEXP* Clone();
 
-public:
 };
 

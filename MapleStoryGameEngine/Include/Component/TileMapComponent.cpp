@@ -6,6 +6,10 @@
 #include "../Render/RenderManager.h"
 #include "../Resource/Shader/Standard2DConstantBuffer.h"
 #include "../Scene/SceneManager.h"
+#include "CameraComponent.h"
+#include "../Scene/CameraManager.h"
+#include "../Resource/Shader/TileMapConstantBuffer.h"
+#include "../Resource/Shader/StructuredBuffer.h"
 
 CTileMapComponent::CTileMapComponent()
 {
@@ -17,6 +21,16 @@ CTileMapComponent::CTileMapComponent()
 	m_RenderCount = 0;
 	m_TileShape = Tile_Shape::Rect;
 	m_LayerName = "Back";
+	m_TileInfoBuffer = nullptr;
+
+	for (int i = 0; i < (int)Tile_Type::End; ++i)
+	{
+		m_TileColor[i] = Vector4(1.f, 1.f, 1.f, 1.f);
+	}
+
+	m_TileColor[(int)Tile_Type::Wall] = Vector4(1.f, 0.f, 0.f, 1.f);
+
+	m_EditMode = false;
 }
 
 CTileMapComponent::CTileMapComponent(const CTileMapComponent& com) :
@@ -26,17 +40,53 @@ CTileMapComponent::CTileMapComponent(const CTileMapComponent& com) :
 
 	if (com.m_BackMaterial)
 		m_BackMaterial = com.m_BackMaterial->Clone();
+
+	if (com.m_TileMaterial)
+		m_TileMaterial = com.m_TileMaterial->Clone();
+
+	if (com.m_CBuffer)
+		m_CBuffer = com.m_CBuffer->Clone();
+
+	if (com.m_TileInfoBuffer)
+		m_TileInfoBuffer = com.m_TileInfoBuffer->Clone();
+	
+	for (int i = 0; i < (int)Tile_Type::End; ++i)
+	{
+		m_TileColor[i] = com.m_TileColor[i];
+	}
+
+	m_EditMode = com.m_EditMode;
 }
 
 CTileMapComponent::~CTileMapComponent()
 {
+	SAFE_DELETE(m_TileInfoBuffer);
+	SAFE_DELETE(m_CBuffer);
+
+	size_t	Size = m_vecTile.size();
+
+	for (size_t i = 0; i < Size; ++i)
+	{
+		SAFE_DELETE(m_vecTile[i]);
+	}
+
+	m_vecTile.clear();
 }
 
-void CTileMapComponent::SetMaterial(CMaterial* Material)
+void CTileMapComponent::SetBackMaterial(CMaterial* Material)
 {
 	m_BackMaterial = Material->Clone();
 
 	m_BackMaterial->SetScene(m_Scene);
+}
+
+void CTileMapComponent::SetTileMaterial(CMaterial* Material)
+{
+	m_TileMaterial = Material->Clone();
+
+	m_TileMaterial->SetScene(m_Scene);
+
+	m_CBuffer->SetImageSize(Vector2((float)m_TileMaterial->GetTextureWidth(), (float)m_TileMaterial->GetTextureHeight()));
 }
 
 void CTileMapComponent::SetBackBaseColor(const Vector4& Color)
@@ -241,7 +291,247 @@ void CTileMapComponent::CreateTile(Tile_Shape Shape, int CountX, int CountY, con
 	break;
 	}
 
-	//m_CBuffer->SetTileSize(Vector2(m_TileSize.x, m_TileSize.y));
+	m_CBuffer->SetTileSize(Vector2(m_TileSize.x, m_TileSize.y));
+
+	m_Count = m_CountX * m_CountY;
+
+	SetWorldInfo();
+}
+
+void CTileMapComponent::SetTileDefaultFrame(const Vector2& Start, const Vector2& End)
+{
+	for (int i = 0; i < m_Count; ++i)
+	{
+		m_vecTile[i]->SetFrameStart(Start);
+		m_vecTile[i]->SetFrameEnd(End);
+	}
+}
+
+void CTileMapComponent::SetTileDefaultFrame(float StartX, float StartY, float EndX, float EndY)
+{
+	for (int i = 0; i < m_Count; ++i)
+	{
+		m_vecTile[i]->SetFrameStart(StartX, StartY);
+		m_vecTile[i]->SetFrameEnd(EndX, EndY);
+	}
+}
+
+void CTileMapComponent::SetTileFrame(int IndexX, int IndexY, float StartX, float StartY, float EndX, float EndY)
+{
+	m_vecTile[IndexY * m_CountX + IndexX]->SetFrameStart(StartX, StartY);
+	m_vecTile[IndexY * m_CountX + IndexX]->SetFrameEnd(EndX, EndY);
+}
+
+void CTileMapComponent::SetTileFrame(int Index, float StartX, float StartY, float EndX, float EndY)
+{
+	m_vecTile[Index]->SetFrameStart(StartX, StartY);
+	m_vecTile[Index]->SetFrameEnd(EndX, EndY);
+}
+
+void CTileMapComponent::SetTileFrame(const Vector3& Pos, float StartX, float StartY, float EndX, float EndY)
+{
+}
+
+void CTileMapComponent::SetTileOpacity(int IndexX, int IndexY, float Opacity)
+{
+	m_vecTile[IndexY * m_CountX + IndexX]->SetOpacity(Opacity);
+}
+
+void CTileMapComponent::SetTileOpacity(int Index, float Opacity)
+{
+	m_vecTile[Index]->SetOpacity(Opacity);
+}
+
+void CTileMapComponent::SetTileOpacity(const Vector3& Pos, float Opacity)
+{
+}
+
+void CTileMapComponent::SetTileColor(Tile_Type Type, float r, float g, float b, float a)
+{
+	m_TileColor[(int)Type] = Vector4(r, g, b, a);
+}
+
+void CTileMapComponent::SetTileColor(Tile_Type Type, const Vector4& Color)
+{
+	m_TileColor[(int)Type] = Color;
+}
+
+int CTileMapComponent::GetTileIndexX(const Vector3& Pos)
+{
+	if (m_TileShape == Tile_Shape::Rect)
+	{
+		float	ConvertX = Pos.x - GetWorldPos().x;
+
+		int	IndexX = (int)(ConvertX / m_TileSize.x);
+
+		if (IndexX < 0 || IndexX >= m_CountX)
+			return -1;
+
+		return IndexX;
+	}
+
+	int	IndexY = GetTileIndexY(Pos);
+
+	if (IndexY < 0 || IndexY >= m_CountY)
+		return -1;
+
+	int	IndexX = -1;
+
+	float	ConvertX = Pos.x - GetWorldPos().x;
+
+	if (IndexY % 2 == 0)
+		IndexX = (int)(ConvertX / m_TileSize.x);
+
+	else
+		IndexX = (int)((ConvertX - m_TileSize.x * 0.5f) / m_TileSize.x);
+
+	if (IndexX < 0 || IndexX >= m_CountX)
+		return -1;
+
+	return IndexX;
+}
+
+int CTileMapComponent::GetTileIndexY(const Vector3& Pos)
+{
+	if (m_TileShape == Tile_Shape::Rect)
+	{
+		float	ConvertY = Pos.y - GetWorldPos().y;
+
+		int	IndexY = (int)(ConvertY / m_TileSize.y);
+
+		if (IndexY < 0 || IndexY >= m_CountY)
+			return -1;
+
+		return IndexY;
+	}
+
+	Vector3	ConvertPos = Pos - GetWorldPos();
+
+	float	RatioX = ConvertPos.x / m_TileSize.x;
+	float	RatioY = ConvertPos.y / m_TileSize.y;
+
+	int	IndexX = (int)RatioX;
+	int	IndexY = (int)RatioY;
+
+	if (IndexX < 0 || IndexX >= m_CountX)
+		return -1;
+
+	// 정수 부분을 제거하여 소수점 부분만을 남겨준다.
+	RatioX -= (int)RatioX;
+	RatioY -= (int)RatioY;
+
+	// 사각형의 아래쪽 부분일 경우
+	if (RatioY < 0.5f)
+	{
+		// 좌 하단 사각형중에서 좌 하단 삼각형 영역
+		if (RatioY < 0.5f - RatioX)
+		{
+			// 좌측 사각형들은 좌 하단 사각형의 좌 하단 삼각형은 비어있는 공간이다.
+			if (IndexX == 0)
+				return -1;
+
+			// 가장 아래 사각형들은 좌 하단 사각형의 좌 하단 삼각형은 비어있는 공간이다.
+			else if (IndexY == 0)
+				return -1;
+
+			else if (IndexY == 1)
+				return 1;
+
+			else
+				return IndexY * 2 - 1;
+		}
+
+		// 우 하단 사각형의 우 하단 삼각형일 경우
+		else if (RatioY < RatioX - 0.5f)
+		{
+			if (IndexY == 0)
+				return -1;
+
+			else if (IndexY == 1)
+				return 1;
+
+			else
+				return IndexY * 2 - 1;
+		}
+
+		else
+			return IndexY * 2;
+	}
+
+	// 사각형의 위쪽 부분일 경우
+	else if (RatioY > 0.5f)
+	{
+		// 좌 상단 사각형의 좌 상단 삼각형일 경우
+		if (RatioY - 0.5f > RatioX)
+		{
+			if (IndexX == 0)
+				return -1;
+
+			if (IndexY * 2 + 1 >= m_CountY)
+				return -1;
+
+			return IndexY * 2 + 1;
+		}
+
+		// 우 상단 사각형의 우 상단 삼각형일 경우
+		else if (RatioY - 0.5f > 1.f - RatioX)
+		{
+			if (IndexX >= m_CountX)
+				return -1;
+
+			if (IndexY * 2 + 1 >= m_CountY)
+				return -1;
+
+			return IndexY * 2 + 1;
+		}
+
+		else
+			return IndexY * 2;
+	}
+
+	// 가운데일 경우
+	else
+		return IndexY * 2;
+
+
+	return -1;
+}
+
+int CTileMapComponent::GetTileIndex(const Vector3& Pos)
+{
+	int	IndexX = GetTileIndexX(Pos);
+	int	IndexY = GetTileIndexY(Pos);
+
+	if (IndexX == -1 || IndexY == -1)
+		return -1;
+
+	return IndexY * m_CountX + IndexX;
+}
+
+CTile* CTileMapComponent::GetTile(const Vector3& Pos)
+{
+	int	Index = GetTileIndex(Pos);
+
+	if (Index == -1)
+		return nullptr;
+
+	return m_vecTile[Index];
+}
+
+CTile* CTileMapComponent::GetTile(int x, int y)
+{
+	if (x < 0 || x >= m_CountX || y < 0 || y >= m_CountY)
+		return nullptr;
+
+	return m_vecTile[y * m_CountX + x];
+}
+
+CTile* CTileMapComponent::GetTile(int Index)
+{
+	if (Index < 0 || Index >= m_CountX * m_CountY)
+		return nullptr;
+
+	return m_vecTile[Index];
 }
 
 int CTileMapComponent::GetTileRenderIndexX(const Vector3& Pos)
@@ -261,7 +551,31 @@ int CTileMapComponent::GetTileRenderIndexX(const Vector3& Pos)
 		return IndexX;
 	}
 
-	return 0;
+	int	IndexY = GetTileRenderIndexY(Pos);
+
+	if (IndexY < 0)
+		IndexY = 0;
+
+	else if (IndexY >= m_CountY)
+		IndexY = m_CountY - 1;
+
+	int	IndexX = -1;
+
+	float	ConvertX = Pos.x - GetWorldPos().x;
+
+	if (IndexY % 2 == 0)
+		IndexX = (int)(ConvertX / m_TileSize.x);
+
+	else
+		IndexX = (int)((ConvertX - m_TileSize.x * 0.5f) / m_TileSize.x);
+
+	if (IndexX < 0)
+		return 0;
+
+	else if (IndexX >= m_CountX)
+		return m_CountX - 1;
+
+	return IndexX;
 }
 
 int CTileMapComponent::GetTileRenderIndexY(const Vector3& Pos)
@@ -281,7 +595,125 @@ int CTileMapComponent::GetTileRenderIndexY(const Vector3& Pos)
 		return IndexY;
 	}
 
-	return 0;
+	Vector3	ConvertPos = Pos - GetWorldPos();
+
+	float	RatioX = ConvertPos.x / m_TileSize.x;
+	float	RatioY = ConvertPos.y / m_TileSize.y;
+
+	int	IndexX = (int)RatioX;
+	int	IndexY = (int)RatioY;
+
+	if (IndexX < 0)
+		IndexX = 0;
+
+	else if (IndexX >= m_CountX)
+		IndexX = m_CountX - 1;
+
+	// 정수 부분을 제거하여 소수점 부분만을 남겨준다.
+	RatioX -= (int)RatioX;
+	RatioY -= (int)RatioY;
+
+	// 사각형의 아래쪽 부분일 경우
+	if (RatioY < 0.5f)
+	{
+		// RatioX 가 0.5보다 크면 오른쪽 하단 사각형이 되는데 이경우 0.5에서 빼게 됰면 음수가 나오므로
+		// RatioY는 절대로 이 값보다 작을 수 없다. 즉 이 식은 좌 하단 사각형일 경우에만 성립이 가능하다.
+		// 좌 하단 사각형에서 좌 하단 삼각형이라는 의미이다.
+		if (RatioY < 0.5f - RatioX)
+		{
+			// 가장 좌측 타일들의 좌 하단 사각형의 좌 하단 삼각형은 비어있는 공간이다.
+			if (IndexX == 0)
+			{
+				if (IndexY < 0)
+					return 0;
+
+				else if (IndexY >= m_CountY)
+					return m_CountY - 1;
+
+				else
+				{
+					//return IndexY * 2 + 1;
+					return IndexY * 2;
+				}
+			}
+
+			// 가장 아래 사각형들은 좌 하단 사각형의 좌 하단 삼각형은 비어있는 공간이다.
+			else if (IndexY == 0)
+				return 0;
+
+			else if (IndexY == 1)
+				return 1;
+
+			else
+				return IndexY * 2 - 1;
+		}
+
+		// 우 하단 사각형의 우 하단 삼각형일 경우
+		else if (RatioY < RatioX - 0.5f)
+		{
+			if (IndexY == 0)
+				return 0;
+
+			else if (IndexY == 1)
+				return 1;
+
+			else
+				return IndexY * 2 - 1;
+		}
+
+		else
+			return IndexY * 2;
+	}
+
+	// 사각형의 위쪽 부분일 경우
+	else if (RatioY > 0.5f)
+	{
+		// 좌 상단 사각형의 좌 상단 삼각형일 경우
+		if (RatioY - 0.5f > RatioX)
+		{
+			if (IndexX == 0)
+			{
+				if (IndexY < 0)
+					return 0;
+
+				else if (IndexY >= m_CountY)
+					return m_CountY - 1;
+			}
+
+			if (IndexY * 2 + 1 >= m_CountY)
+				return m_CountY - 1;
+
+			return IndexY * 2 + 1;
+		}
+
+		// 우 상단 사각형의 우 상단 삼각형일 경우
+		else if (RatioY - 0.5f > 1.f - RatioX)
+		{
+			if (IndexX >= m_CountX)
+			{
+				if (IndexY < 0)
+					return IndexY;
+
+				else if (IndexY >= m_CountY)
+					return m_CountY - 1;
+			}
+
+			if (IndexY * 2 + 1 >= m_CountY)
+				return m_CountY - 1;
+
+			return IndexY * 2 + 1;
+		}
+
+		else
+			return IndexY * 2;
+	}
+
+	// 가운데일 경우
+	else
+		return IndexY * 2;
+
+
+	return -1;
 }
 
 void CTileMapComponent::Start()
@@ -298,6 +730,10 @@ bool CTileMapComponent::Init()
 	//SetWorldScale((float)m_BackMaterial->GetTextureWidth(),
 	//	(float)m_BackMaterial->GetTextureHeight(), 1.f);
 
+	m_CBuffer = new CTileMapConstantBuffer;
+
+	m_CBuffer->Init();
+
 	return true;
 }
 
@@ -309,6 +745,73 @@ void CTileMapComponent::Update(float DeltaTime)
 void CTileMapComponent::PostUpdate(float DeltaTime)
 {
 	CSceneComponent::PostUpdate(DeltaTime);
+
+	CCameraComponent* Camera = m_Scene->GetCameraManager()->GetCurrentCamera();
+
+	Resolution	RS = Camera->GetResolution();
+
+	Vector3	LB = Camera->GetWorldPos();
+	Vector3	RT = LB + Vector3((float)RS.Width, (float)RS.Height, 0.f);
+
+	int	StartX, StartY, EndX, EndY;
+
+	StartX = GetTileRenderIndexX(LB);
+	StartY = GetTileRenderIndexY(LB);
+
+	EndX = GetTileRenderIndexX(RT);
+	EndY = GetTileRenderIndexY(RT);
+
+	// 이걸 안해주면 예를 들어 RT가 우하단 사각형의 우하단 영역에 있다면 EndY를 else return IndexY * 2 - 1;에 의해서 홀수를 줄 것인데 그럼
+	// 짝수의 EndY인 줄은 전부 출력을 안하므로 EndY인 줄이 화면에서 (부분적이지만) 출력이안된다. 카메라를 이동하다보면 마치 핑킹가위로 자른거마냥 보일때가 있다 
+	if (m_TileShape == Tile_Shape::Rhombus)
+	{
+		--StartX;
+		--StartY;
+
+		++EndX;
+		++EndY;
+
+		StartX = StartX < 0 ? 0 : StartX;
+		StartY = StartY < 0 ? 0 : StartY;
+
+		EndX = EndX >= m_CountX ? m_CountX - 1 : EndX;
+		EndY = EndY >= m_CountY ? m_CountY - 1 : EndY;
+	}
+
+	Matrix	matView, matProj;
+	matView = Camera->GetViewMatrix();
+	matProj = Camera->GetProjMatrix();
+
+	m_RenderCount = 0;
+
+	for (int i = StartY; i <= EndY; ++i)
+	{
+		for (int j = StartX; j <= EndX; ++j)
+		{
+			int	Index = i * m_CountX + j;
+
+			m_vecTile[Index]->Update(DeltaTime);
+
+			if (m_vecTile[Index]->GetRender())
+			{
+				if (m_EditMode)
+				{
+					m_vecTileInfo[m_RenderCount].TileColor = m_TileColor[(int)m_vecTile[Index]->GetTileType()];
+				}
+
+				// CTileComponent만든 클라이언트 코드에서 Start/End 설정해놓았음
+				m_vecTileInfo[m_RenderCount].TileStart = m_vecTile[Index]->GetFrameStart();
+				m_vecTileInfo[m_RenderCount].TileEnd = m_vecTile[Index]->GetFrameEnd();
+				m_vecTileInfo[m_RenderCount].Opacity = m_vecTile[Index]->GetOpacity();
+				// 이미 각 타일의 World행렬은 CTile::Update에서 각자 갖고 있으므로 각자 World행렬을 인덱스에 맞는 구조화버퍼로 넘긴다
+				m_vecTileInfo[m_RenderCount].matWVP = m_vecTile[Index]->GetWorldMatrix() * matView * matProj;
+				m_vecTileInfo[m_RenderCount].matWVP.Transpose();
+				++m_RenderCount;
+			}
+		}
+	}
+
+	m_TileInfoBuffer->UpdateBuffer(&m_vecTileInfo[0], m_RenderCount);
 }
 
 void CTileMapComponent::PrevRender()
@@ -320,6 +823,7 @@ void CTileMapComponent::Render()
 {
 	CSceneComponent::Render();
 
+
 	if (m_BackMaterial)
 	{
 		m_BackMaterial->Render();
@@ -327,6 +831,21 @@ void CTileMapComponent::Render()
 		m_BackMesh->Render();
 
 		m_BackMaterial->Reset();
+	}
+
+	if (m_TileMaterial)
+	{
+		m_TileInfoBuffer->SetShader();
+
+		m_CBuffer->UpdateCBuffer();
+
+		m_TileMaterial->Render();
+
+		m_BackMesh->RenderInstancing(m_RenderCount);
+
+		m_TileMaterial->Reset();
+
+		m_TileInfoBuffer->ResetShader();
 	}
 }
 
@@ -370,4 +889,22 @@ void CTileMapComponent::Load(FILE* File)
 	m_BackMaterial->Load(File);
 
 	CSceneComponent::Load(File);
+}
+
+void CTileMapComponent::SetWorldInfo()
+{
+	SAFE_DELETE(m_TileInfoBuffer);
+
+	m_TileInfoBuffer = new CStructuredBuffer;
+
+	// C++코드에서 구조화버퍼 내용을 채워넣어야 하므로 Dynamic을 true로
+	m_TileInfoBuffer->Init("TileInfo", sizeof(TileInfo), m_CountX * m_CountY, 40, true, (int)Buffer_Shader_Type::Vertex);
+
+	m_vecTileInfo.resize(m_Count);
+
+	for (int i = 0; i < m_Count; ++i)
+	{
+		m_vecTileInfo[i].TileColor = Vector4(1.f, 1.f, 1.f, 1.f);
+		m_vecTileInfo[i].Opacity = 1.f;
+	}
 }

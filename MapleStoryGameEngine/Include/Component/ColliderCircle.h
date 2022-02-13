@@ -29,6 +29,13 @@ public:
         SetWorldScale(m_Info.Radius * 2.f, m_Info.Radius * 2.f, 1.f);
     }
 
+    void SetRadius(float Radius)
+    {
+        m_Info.Radius = Radius;
+
+        SetWorldScale(m_Info.Radius * 2.f, m_Info.Radius * 2.f, 1.f);
+    }
+
 public:
     virtual void Start();
     virtual bool Init();

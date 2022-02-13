@@ -22,7 +22,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		return 0;
 	}
 
-	CClientManager::GetInst()->CreateDefaultSceneMode();
+	CClientManager::GetInst()->CreateStartSceneMode();
 
 	int Ret = CClientManager::GetInst()->Run();
 

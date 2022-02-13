@@ -18,6 +18,7 @@
 #include "../Object/SmokeParticle.h"
 #include "../Object/SparkParticle.h"
 #include "../Object/RainParticle.h"
+#include "../Object/TileMap.h"
 #include "Input.h"
 
 CMainScene::CMainScene()
@@ -46,9 +47,9 @@ bool CMainScene::Init()
 
 	CMonster* Monster = m_Scene->CreateGameObject<CMonster>("Monster");
 
+	CTileMap* TileMap = m_Scene->CreateGameObject<CTileMap>("TileMap");
 
-
-	m_MainWidget = m_Scene->GetViewport()->CreateWidgetWindow<CMainWidget>("MainWidget");
+	//m_MainWidget = m_Scene->GetViewport()->CreateWidgetWindow<CMainWidget>("MainWidget");
 
 	m_ConfigurationWindow = m_Scene->GetViewport()->CreateWidgetWindow<CConfigurationWindow>("ConfigurationWindow");
 	m_ConfigurationWindow->SetZOrder(2);
@@ -123,6 +124,22 @@ void CMainScene::CreateMaterial()
 	Material->AddTexture(0, (int)Buffer_Shader_Type::Pixel, "Rain", TEXT("Particle/HardRain.png"));*/
 
 	Material->SetShader("ParticleRenderShader");
+	Material->SetRenderState("AlphaBlend");
+
+	m_Scene->GetResource()->CreateMaterial<CMaterial>("TileMap");
+	Material = m_Scene->GetResource()->FindMaterial("TileMap");
+
+	Material->AddTexture(0, (int)Buffer_Shader_Type::Pixel, "Tile", TEXT("Floors.png"));
+
+	Material->SetShader("TileMapShader");
+	Material->SetRenderState("AlphaBlend");
+
+	m_Scene->GetResource()->CreateMaterial<CMaterial>("DiabloTileMap");
+	Material = m_Scene->GetResource()->FindMaterial("DiabloTileMap");
+
+	Material->AddTexture(0, (int)Buffer_Shader_Type::Pixel, "DiabloTile", TEXT("Diablos_Lair_Floor_TRS/Diablos_Lair_Floor.png"));
+
+	Material->SetShader("TileMapShader");
 	Material->SetRenderState("AlphaBlend");
 }
 
@@ -338,7 +355,7 @@ void CMainScene::TestLoadScene()
 
 void CMainScene::TurnOffWindow(float DeltaTime)
 {
-	CWidgetWindow* TopMostWindow = m_Scene->GetViewport()->FindTopMostWindow();
+	CWidgetWindow* TopMostWindow = m_Scene->GetViewport()->FindTopmostWindow();
 
 	// 캐릭터 정보창이나 경험치 UI Window같은 것들은 끄면 안됨
 	if (TopMostWindow)

@@ -7,6 +7,7 @@
 #include "Scene/Scene.h"
 #include "../Scene/LobbyScene.h"
 #include "../Scene/OnionScene.h"
+#include "../Scene/WayToZakumScene.h"
 #include "Input.h"
 #include "PlayerAnimation2D.h"
 #include "SylphideLancerEffectAnimation2D.h"
@@ -66,9 +67,9 @@ bool CPlayer2D::Init()
 
 	m_Camera = CreateComponent<CCameraComponent>("Camera");
 
-	m_SimpleHUDWidget = CreateComponent<CWidgetComponent>("SimpleHUD");
+	/*m_SimpleHUDWidget = CreateComponent<CWidgetComponent>("SimpleHUD");
 
-	m_SimpleHUDWidget->CreateWidgetWindow<CSimpleHUD>("SimpleHUDWidget");
+	m_SimpleHUDWidget->CreateWidgetWindow<CSimpleHUD>("SimpleHUDWidget");*/
 
 	SetRootComponent(m_BodySprite);
 
@@ -83,9 +84,9 @@ bool CPlayer2D::Init()
 	
 	m_BodySprite->AddChild(m_Body);
 	m_BodySprite->AddChild(m_Camera);
-	m_BodySprite->AddChild(m_SimpleHUDWidget);
+	//m_BodySprite->AddChild(m_SimpleHUDWidget);
 
-	m_SimpleHUDWidget->SetRelativePos(-50.f, 50.f, 0.f);
+	//m_SimpleHUDWidget->SetRelativePos(-50.f, 50.f, 0.f);
 
 	m_BodySprite->SetTransparency(true);
 	//m_SylphideLancerMirror->SetTransparency(true);
@@ -148,6 +149,11 @@ void CPlayer2D::PostUpdate(float DeltaTime)
 		else if (SceneMode->GetTypeID() == typeid(COnionScene).hash_code())
 		{
 			Stage = ((COnionScene*)SceneMode)->GetStageObject();
+		}
+
+		else if (SceneMode->GetTypeID() == typeid(CWayToZakumScene).hash_code())
+		{
+			Stage = ((CWayToZakumScene*)SceneMode)->GetStageObject();
 		}
 
 		if(Stage)

@@ -24,7 +24,9 @@ private:
     CSharedPtr<CSkillQuickSlotWindow>   m_SkillQuickSlot;
     CSharedPtr<CCharacterStatusWindow>  m_CharacterStatusWindow;
     CSharedPtr<CCharacterEXP>           m_CharacterEXPWindow;
+
     std::function<void(bool, float)>    m_LoadingFunction;
+    class CLoadingThread* m_LoadingThread;
 
 public:
     class CStage* GetStageObject()    const
@@ -34,8 +36,11 @@ public:
 
     void SetStageObject(class CStage* Stage);
 
+    class CLoadingThread* GetLoadingThread()    const;
+
 public:
     virtual bool Init();
+    virtual void Update(float DeltaTime);
 
 private:
     void CreateMaterial();
@@ -47,7 +52,7 @@ private:
     void CreateEffectPrototype();
 
 public:
-    void TurnOffWindow(float DeltaTime);
+    void CreateWayToZakumScene();
 
 public:
     template <typename T>

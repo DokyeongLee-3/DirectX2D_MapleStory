@@ -12,6 +12,12 @@
       <FullPath>C:\AssortRock37th\Lecture\DirectX11\MapleStory\MapleStoryGameEngine\Bin\Mesh2D.cso</FullPath>
     </ContentFile>
     <ContentFile>
+      <FullPath>C:\AssortRock37th\Lecture\DirectX11\MapleStory\MapleStoryGameEngine\Bin\MovingTile.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>C:\AssortRock37th\Lecture\DirectX11\MapleStory\MapleStoryGameEngine\Bin\TileMap.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
       <FullPath>C:\AssortRock37th\Lecture\DirectX11\MapleStory\MapleStoryGameEngine\Bin\Widget.cso</FullPath>
     </ContentFile>
     <ContentFile>

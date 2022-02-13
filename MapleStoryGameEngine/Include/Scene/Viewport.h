@@ -42,7 +42,9 @@ private:
 
 public:
 	// ZOrder가 가장 높은 Window를 찾아서 리턴
-	CWidgetWindow* FindTopMostWindow();
+	CWidgetWindow* FindTopmostWindow();
+	void AddWindow(CWidgetWindow* Window);
+	int GetTopmostWindowZOrder();
 
 public:
 	template <typename T>
