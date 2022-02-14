@@ -10,7 +10,7 @@
 #include "../Scene/WayToZakumScene.h"
 #include "Input.h"
 #include "PlayerAnimation2D.h"
-#include "SylphideLancerEffectAnimation2D.h"
+#include "SylphideLancerMirrorAnimation.h"
 #include "PlayerSkillBodyEffect.h"
 #include "BulletCamera.h"
 #include "Bullet.h"
@@ -56,6 +56,7 @@ bool CPlayer2D::Init()
 {
 	m_BodySprite = CreateComponent<CSpriteComponent>("PlayerSprite");
 	m_SylphideLancerMuzzle = CreateComponent<CSceneComponent>("PlayerSylphideLancerMuzzle");
+	m_SylphideLancerMirror = CreateComponent<CSpriteComponent>("PlayerSylphideLancerMirror");
 	/*
 	m_SylphideLancerMirror = CreateComponent<CSpriteComponent>("PlayerSylphideLancerMirror");
 	m_SkillBodyEffect = CreateComponent<CSpriteComponent>("PlayerSkillBodyEffect");
@@ -78,6 +79,7 @@ bool CPlayer2D::Init()
 	m_Camera->OnViewportCenter();
 
 	m_BodySprite->AddChild(m_SylphideLancerMuzzle);
+	m_BodySprite->AddChild(m_SylphideLancerMirror);
 	//m_BodySprite->AddChild(m_SkillBodyEffect);
 	//m_BodySprite->AddChild(m_VoidPressureAttackSphere);
 	//m_BodySprite->AddChild(m_VoidPressureSphere);
@@ -89,6 +91,7 @@ bool CPlayer2D::Init()
 	//m_SimpleHUDWidget->SetRelativePos(-50.f, 50.f, 0.f);
 
 	m_BodySprite->SetTransparency(true);
+	m_SylphideLancerMirror->SetTransparency(true);
 	//m_SylphideLancerMirror->SetTransparency(true);
 	//m_SkillBodyEffect->SetTransparency(true);
 
@@ -97,16 +100,14 @@ bool CPlayer2D::Init()
 	//m_SkillBodyEffect->CreateAnimationInstance<CPlayerSkillBodyEffect>();
 
 
+	m_SylphideLancerMirror->CreateAnimationInstance<CSylphideLancerMirrorAnimation>();
+	m_SylphideLancerMirror->SetInheritRotZ(false);
+	m_SylphideLancerMirror->SetPivot(0.5f, 0.5f, 0.f);
+	m_SylphideLancerMirror->SetRelativeScale(120.f, 200.f, 1.f);
+	m_SylphideLancerMirror->SetPivot(0.5f, 0.5f, 0.f);
 
-	m_SylphideLancerMuzzle->SetInheritRotZ(true);
-	m_SylphideLancerMuzzle->SetPivot(0.5f, 0.5f, 0.f);
 
-	//m_SylphideLancerMirror->SetRelativeScale(120.f, 200.f, 1.f);
-	//m_SylphideLancerMirror->SetOpacity(0.f);
-	//m_SylphideLancerMirror->SetInheritRotZ(true);
-	//m_SylphideLancerMirror->SetPivot(0.5f, 0.5f, 0.f);
 
-	m_BodySprite->SetRelativeScale(Vector3(91.f, 82.f, 1.f) * m_ScaleFactor);
 	m_BodySprite->SetRelativePos(100.f, 100.f, 0.f);
 	m_BodySprite->SetPivot(0.5f, 0.5f, 0.f);
 
@@ -241,22 +242,6 @@ void CPlayer2D::SylphideLancer(float DeltaTime)
 
 	m_SylphideLancerMirror->ChangeAnimation("Blank");
 
-	if (CurAnim.find("Left") != std::string::npos)
-	{
-		m_BodySprite->ChangeAnimation("PlayerSkillActionLeft");
-		m_SylphideLancerMirror->ChangeAnimation("SylphideLancerMirrorLeft");
-		m_SkillBodyEffect->ChangeAnimation("SylphideLancerBodyEffectLeft");
-		m_SylphideLancerMuzzle->SetRelativePos(60.f, 70.f, 0.f);
-	}
-
-	else
-	{
-		m_BodySprite->ChangeAnimation("PlayerSkillActionRight");
-		m_SylphideLancerMirror->ChangeAnimation("SylphideLancerMirrorRight");
-		m_SkillBodyEffect->ChangeAnimation("SylphideLancerBodyEffectRight");
-		m_SylphideLancerMuzzle->SetRelativePos(-60.f, 70.f, 0.f);
-	}
-
 	CAnimationSequence2DData* CurrentAnimation = m_BodySprite->GetCurrentAnimation();
 	AnimationFrameData FrameData = CurrentAnimation->GetFrameData(0);
 
@@ -271,11 +256,16 @@ void CPlayer2D::SylphideLancer(float DeltaTime)
 
 	m_SkillBodyEffect->SetRelativeScale(ScalingFactor * m_ScaleFactor);*/
 
+
 	// Scene의 m_ObjList에서 몬스터 찾아서 여기서 실피드랜서 방향 설정해주기
 
 	Vector3 WorldPos = GetWorldPos();
 
 	CGameObject* NearMonster = m_Scene->FindIncludingNameObject("Monster", WorldPos, 400.f);
+
+	m_Scene->GetResource()->SoundPlay("SylphideLancerUse");
+
+	m_SylphideLancerMirror->ChangeAnimation("SylphideLancerMuzzle");
 
 	for (int i = 0; i < 2; ++i)
 	{
@@ -376,6 +366,8 @@ void CPlayer2D::ProduceSecondSylphideLander(float DeltaTime)
 		CSylphideLancer* Lancer = m_Scene->CreateGameObject<CSylphideLancer>("SylphideLancer");
 		Lancer->SetAllSceneComponentsLayer("MovingObjFront");
 		Lancer->SetLancerID(i + 2);
+		CSpriteComponent* Root = (CSpriteComponent*)Lancer->GetRootComponent();
+		Root->ChangeAnimation("SylphideLancerArrowPurple");
 
 		Vector3 MonsterWorldPos;
 
@@ -401,6 +393,10 @@ void CPlayer2D::ProduceSecondSylphideLander(float DeltaTime)
 		Lancer->SetWorldPos(WorldPos.x, WorldPos.y + i * 30.f, 0.f);
 		Lancer->SetCollisionProfile("PlayerAttack");
 	}
+}
+
+void CPlayer2D::EffectEnd(float DeltaTime)
+{
 }
 
 

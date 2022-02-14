@@ -55,6 +55,7 @@ bool CSylphideLancer::Init()
 	CAnimationSequence2DInstance* Anim = m_Sprite->GetAnimationInstance();
 
 	Anim->AddAnimation(TEXT("SylphideLancerArrowLeft.sqc"), ANIMATION_PATH, "SylphideLancerArrowLeft", true, 0.3f);
+	Anim->AddAnimation(TEXT("SylphideLancerArrowPurple.sqc"), ANIMATION_PATH, "SylphideLancerArrowPurple", true, 0.3f);
 
 	return true;
 }
@@ -108,10 +109,6 @@ void CSylphideLancer::FlipAll(float DeltaTime)
 	m_Sprite->Flip();
 }
 
-/*
-* 	int Factor = (int)Info.INT * Info.Level;
-*/
-
 void CSylphideLancer::CollisionBeginCallback(const CollisionResult& result)
 {
 	PlayerInfo Info = ((CPlayer2D*)m_Scene->GetSceneMode()->GetPlayerObject())->GetInfo();
@@ -128,6 +125,7 @@ void CSylphideLancer::CollisionBeginCallback(const CollisionResult& result)
 	bool IsCritical = random > 0;
 
 	result.Dest->GetGameObject()->SetDamage(Damage, IsCritical);
+	m_Scene->GetResource()->SoundPlay("SylphideLancerHit");
 
 	if (m_LancerID == 0)
 	{
@@ -152,6 +150,28 @@ void CSylphideLancer::CollisionBeginCallback(const CollisionResult& result)
 			Player->ProduceSecondSylphideLander(CEngine::GetInst()->GetDeltaTime());
 			m_ProduceLatterGroup = true;
 		}
+	}
+
+	// 두번째 그룹이 충돌
+	else if(m_LancerID == 2)
+	{
+		Vector3 HitEffectPos = GetWorldPos();
+
+		// 오른쪽으로 날아가다가 충돌
+		if (m_Sprite->IsFlip())
+			HitEffectPos.x += 30.f;
+
+		// 왼쪽으로 날아가다가 충돌
+		else
+			HitEffectPos.x -= 30.f;
+
+		CSylphideLancerHitEffect* HitEffect = m_Scene->CloneFromPrototype<CSylphideLancerHitEffect>(
+			"SylphideLancerHitEffect", "SylphideLancerHitEffect",
+			HitEffectPos);
+
+		CSpriteComponent* Root = (CSpriteComponent*)HitEffect->GetRootComponent();
+
+		Root->ChangeAnimation("SylphideLancerHitPurple");
 	}
 
 	Destroy();

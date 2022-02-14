@@ -86,7 +86,8 @@ void CTileMapComponent::SetTileMaterial(CMaterial* Material)
 
 	m_TileMaterial->SetScene(m_Scene);
 
-	m_CBuffer->SetImageSize(Vector2((float)m_TileMaterial->GetTextureWidth(), (float)m_TileMaterial->GetTextureHeight()));
+	if (!m_TileMaterial->EmptyTexture())
+		m_CBuffer->SetImageSize(Vector2((float)m_TileMaterial->GetTextureWidth(), (float)m_TileMaterial->GetTextureHeight()));
 }
 
 void CTileMapComponent::SetBackBaseColor(const Vector4& Color)
@@ -740,78 +741,87 @@ bool CTileMapComponent::Init()
 void CTileMapComponent::Update(float DeltaTime)
 {
 	CSceneComponent::Update(DeltaTime);
+
+	if (m_TileMaterial)
+	{
+		if (!m_TileMaterial->EmptyTexture())
+			m_CBuffer->SetImageSize(Vector2((float)m_TileMaterial->GetTextureWidth(), (float)m_TileMaterial->GetTextureHeight()));
+	}
 }
 
 void CTileMapComponent::PostUpdate(float DeltaTime)
 {
 	CSceneComponent::PostUpdate(DeltaTime);
 
-	CCameraComponent* Camera = m_Scene->GetCameraManager()->GetCurrentCamera();
-
-	Resolution	RS = Camera->GetResolution();
-
-	Vector3	LB = Camera->GetWorldPos();
-	Vector3	RT = LB + Vector3((float)RS.Width, (float)RS.Height, 0.f);
-
-	int	StartX, StartY, EndX, EndY;
-
-	StartX = GetTileRenderIndexX(LB);
-	StartY = GetTileRenderIndexY(LB);
-
-	EndX = GetTileRenderIndexX(RT);
-	EndY = GetTileRenderIndexY(RT);
-
-	// 이걸 안해주면 예를 들어 RT가 우하단 사각형의 우하단 영역에 있다면 EndY를 else return IndexY * 2 - 1;에 의해서 홀수를 줄 것인데 그럼
-	// 짝수의 EndY인 줄은 전부 출력을 안하므로 EndY인 줄이 화면에서 (부분적이지만) 출력이안된다. 카메라를 이동하다보면 마치 핑킹가위로 자른거마냥 보일때가 있다 
-	if (m_TileShape == Tile_Shape::Rhombus)
+	if (!m_vecTile.empty())
 	{
-		--StartX;
-		--StartY;
+		CCameraComponent* Camera = m_Scene->GetCameraManager()->GetCurrentCamera();
 
-		++EndX;
-		++EndY;
+		Resolution	RS = Camera->GetResolution();
 
-		StartX = StartX < 0 ? 0 : StartX;
-		StartY = StartY < 0 ? 0 : StartY;
+		Vector3	LB = Camera->GetWorldPos();
+		Vector3	RT = LB + Vector3((float)RS.Width, (float)RS.Height, 0.f);
 
-		EndX = EndX >= m_CountX ? m_CountX - 1 : EndX;
-		EndY = EndY >= m_CountY ? m_CountY - 1 : EndY;
-	}
+		int	StartX, StartY, EndX, EndY;
 
-	Matrix	matView, matProj;
-	matView = Camera->GetViewMatrix();
-	matProj = Camera->GetProjMatrix();
+		StartX = GetTileRenderIndexX(LB);
+		StartY = GetTileRenderIndexY(LB);
 
-	m_RenderCount = 0;
+		EndX = GetTileRenderIndexX(RT);
+		EndY = GetTileRenderIndexY(RT);
 
-	for (int i = StartY; i <= EndY; ++i)
-	{
-		for (int j = StartX; j <= EndX; ++j)
+		// 이걸 안해주면 예를 들어 RT가 우하단 사각형의 우하단 영역에 있다면 EndY를 else return IndexY * 2 - 1;에 의해서 홀수를 줄 것인데 그럼
+		// 짝수의 EndY인 줄은 전부 출력을 안하므로 EndY인 줄이 화면에서 (부분적이지만) 출력이안된다. 카메라를 이동하다보면 마치 핑킹가위로 자른거마냥 보일때가 있다 
+		if (m_TileShape == Tile_Shape::Rhombus)
 		{
-			int	Index = i * m_CountX + j;
+			--StartX;
+			--StartY;
 
-			m_vecTile[Index]->Update(DeltaTime);
+			++EndX;
+			++EndY;
 
-			if (m_vecTile[Index]->GetRender())
+			StartX = StartX < 0 ? 0 : StartX;
+			StartY = StartY < 0 ? 0 : StartY;
+
+			EndX = EndX >= m_CountX ? m_CountX - 1 : EndX;
+			EndY = EndY >= m_CountY ? m_CountY - 1 : EndY;
+		}
+
+		Matrix	matView, matProj;
+		matView = Camera->GetViewMatrix();
+		matProj = Camera->GetProjMatrix();
+
+		m_RenderCount = 0;
+
+		for (int i = StartY; i <= EndY; ++i)
+		{
+			for (int j = StartX; j <= EndX; ++j)
 			{
-				if (m_EditMode)
-				{
-					m_vecTileInfo[m_RenderCount].TileColor = m_TileColor[(int)m_vecTile[Index]->GetTileType()];
-				}
+				int	Index = i * m_CountX + j;
 
-				// CTileComponent만든 클라이언트 코드에서 Start/End 설정해놓았음
-				m_vecTileInfo[m_RenderCount].TileStart = m_vecTile[Index]->GetFrameStart();
-				m_vecTileInfo[m_RenderCount].TileEnd = m_vecTile[Index]->GetFrameEnd();
-				m_vecTileInfo[m_RenderCount].Opacity = m_vecTile[Index]->GetOpacity();
-				// 이미 각 타일의 World행렬은 CTile::Update에서 각자 갖고 있으므로 각자 World행렬을 인덱스에 맞는 구조화버퍼로 넘긴다
-				m_vecTileInfo[m_RenderCount].matWVP = m_vecTile[Index]->GetWorldMatrix() * matView * matProj;
-				m_vecTileInfo[m_RenderCount].matWVP.Transpose();
-				++m_RenderCount;
+				m_vecTile[Index]->Update(DeltaTime);
+
+				if (m_vecTile[Index]->GetRender())
+				{
+					if (m_EditMode)
+					{
+						m_vecTileInfo[m_RenderCount].TileColor = m_TileColor[(int)m_vecTile[Index]->GetTileType()];
+					}
+
+					// CTileComponent만든 클라이언트 코드에서 Start/End 설정해놓았음
+					m_vecTileInfo[m_RenderCount].TileStart = m_vecTile[Index]->GetFrameStart();
+					m_vecTileInfo[m_RenderCount].TileEnd = m_vecTile[Index]->GetFrameEnd();
+					m_vecTileInfo[m_RenderCount].Opacity = m_vecTile[Index]->GetOpacity();
+					// 이미 각 타일의 World행렬은 CTile::Update에서 각자 갖고 있으므로 각자 World행렬을 인덱스에 맞는 구조화버퍼로 넘긴다
+					m_vecTileInfo[m_RenderCount].matWVP = m_vecTile[Index]->GetWorldMatrix() * matView * matProj;
+					m_vecTileInfo[m_RenderCount].matWVP.Transpose();
+					++m_RenderCount;
+				}
 			}
 		}
-	}
 
-	m_TileInfoBuffer->UpdateBuffer(&m_vecTileInfo[0], m_RenderCount);
+		m_TileInfoBuffer->UpdateBuffer(&m_vecTileInfo[0], m_RenderCount);
+	}
 }
 
 void CTileMapComponent::PrevRender()
@@ -833,7 +843,7 @@ void CTileMapComponent::Render()
 		m_BackMaterial->Reset();
 	}
 
-	if (m_TileMaterial)
+	if (m_TileMaterial && !m_vecTile.empty())
 	{
 		m_TileInfoBuffer->SetShader();
 

@@ -59,8 +59,8 @@ bool CWayToZakumScene::Init()
 	m_Scene->LoadFullPath(FullPath);
 
 
-	m_Scene->GetResource()->LoadSound("Master", true, "BGM", "HellGate.mp3");
-	m_Scene->GetResource()->SoundPlay("BGM");
+	m_Scene->GetResource()->LoadSound("BGM", true, "WayToZakumBGM", "HellGate.mp3");
+	m_Scene->GetResource()->SoundPlay("WayToZakumBGM");
 
 
 	// ¸Ê ÇÏ´Ü¿¡ ¿ÞÂÊÀ¸·Î Èå¸£´Â ¿ë¾Ï
@@ -108,6 +108,7 @@ void CWayToZakumScene::CreateSkillAnimationSequence()
 
 	m_Scene->GetResource()->LoadSequence2D("SylphideLancerBodyEffectLeft.sqc");
 	m_Scene->GetResource()->LoadSequence2D("SylphideLancerArrowLeft.sqc");
+	m_Scene->GetResource()->LoadSequence2D("SylphideLancerArrowPurple.sqc");
 	m_Scene->GetResource()->LoadSequence2D("SylphideLancerHit.sqc");
 }
 

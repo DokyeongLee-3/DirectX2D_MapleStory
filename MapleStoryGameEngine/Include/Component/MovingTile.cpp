@@ -30,7 +30,6 @@ void CMovingTile::Update(float DeltaTime)
 
 	if (m_Owner)
 	{
-		// ** 용암 흐르는거 간격 생기는거 해결하기 **
 		if (m_Owner->IsRepeat())
 		{
 			if (m_Pos.x + m_Size.x <= 0.f)

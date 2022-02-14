@@ -67,6 +67,20 @@ public:
 	void SetAllSceneComponentsLayer(const std::string& Name);
 	void ClearSceneComponents();
 
+	CSceneComponent* FindComponentIncludingName(const std::string& Name)
+	{
+		auto	iter = m_SceneComponentList.begin();
+		auto	iterEnd = m_SceneComponentList.end();
+
+		for (; iter != iterEnd; ++iter)
+		{
+			if ((*iter)->GetName().find(Name) != std::string::npos)
+				return *iter;
+		}
+
+		return nullptr;
+	}
+
 	template <typename T>
 	T* FindComponentFromType()
 	{

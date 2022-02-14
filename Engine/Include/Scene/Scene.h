@@ -93,7 +93,12 @@ public:
 		for (; iter != iterEnd; ++iter)
 		{
 			if ((*iter)->GetName().find(Name) != std::string::npos && (*iter)->GetWorldPos().Distance(Pos) < Distance)
-				return *iter;
+			{
+				CSceneComponent* Body = (*iter)->FindComponentIncludingName("Body");
+
+				if(Body && Body->IsEnable())
+					return *iter;
+			}
 		}
 
 		return nullptr;
@@ -215,6 +220,11 @@ public:
 		Obj->SetScene(this);
 		Obj->SetName(Name);
 
+		if (!Obj->Init())
+		{
+			SAFE_DELETE(Obj);
+			return nullptr;
+		}
 
 		m_mapPrototype.insert(std::make_pair(Name, Obj));
 
@@ -233,17 +243,12 @@ public:
 
 		T* Obj = (T*)Prototype->Clone();
 
-		if (!Obj->Init())
-			return nullptr;
+		if (m_Start)
+			Obj->Start();
 
 		Obj->SetScene(this);
 		Obj->SetName(Name);
 		Obj->SetWorldPos(Pos);
-		Obj->SetWorldScale(Size);
-
-
-		if (m_Start)
-			Obj->Start();
 
 		m_ObjList.push_back(Obj);
 

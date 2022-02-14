@@ -52,8 +52,11 @@ bool CPlayerSkillSet::Init()
 	CAnimationSequence2DInstance* Anim = m_Sprite->GetAnimationInstance();
 
 	Anim->AddAnimation(TEXT("SylphideLancerArrowLeft.sqc"), ANIMATION_PATH, "SylphideLancerArrowLeft", true, 0.3f);
-	Anim->AddAnimation(TEXT("SylphideLancerBodyEffectLeft.sqc"), ANIMATION_PATH, "SylphideLancerBodyEffectLeft", true, 0.6f);
+	Anim->AddAnimation(TEXT("SylphideLancerArrowPurple.sqc"), ANIMATION_PATH, "SylphideLancerArrowPurple", true, 0.3f);
 	Anim->AddAnimation(TEXT("SylphideLancerHit.sqc"), ANIMATION_PATH, "SylphideLancerHit", true, 0.7f);
+	Anim->AddAnimation(TEXT("SylphideLancerHitPurple.sqc"), ANIMATION_PATH, "SylphideLancerHitPurple", true, 0.7f);
+
+	Anim->AddAnimation(TEXT("SylphideLancerBodyEffectLeft.sqc"), ANIMATION_PATH, "SylphideLancerBodyEffectLeft", true, 0.6f);
 	Anim->AddAnimation(TEXT("SylphideLancerMuzzleLeft.sqc"), ANIMATION_PATH, "SylphideLancerMuzzleLeft", true, 0.9f);
 
 	Anim->AddAnimation(TEXT("VoidPressureReadyLeft.sqc"), ANIMATION_PATH, "VoidPressureReadyLeft", true, 1.f);

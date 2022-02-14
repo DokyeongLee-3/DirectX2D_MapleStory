@@ -188,8 +188,8 @@
     <ClCompile Include="Object\SylphideLancer.cpp" />
     <ClCompile Include="Object\SylphideLancerArrow.cpp" />
     <ClCompile Include="Object\SylphideLancerArrowAnimation2D.cpp" />
-    <ClCompile Include="Object\SylphideLancerEffectAnimation2D.cpp" />
     <ClCompile Include="Object\SylphideLancerHitEffect.cpp" />
+    <ClCompile Include="Object\SylphideLancerMirrorAnimation.cpp" />
     <ClCompile Include="Object\TileMap.cpp" />
     <ClCompile Include="Scene\LoadingScene.cpp" />
     <ClCompile Include="Scene\LoadingThread.cpp" />
@@ -247,8 +247,8 @@
     <ClInclude Include="Object\SylphideLancer.h" />
     <ClInclude Include="Object\SylphideLancerArrow.h" />
     <ClInclude Include="Object\SylphideLancerArrowAnimation2D.h" />
-    <ClInclude Include="Object\SylphideLancerEffectAnimation2D.h" />
     <ClInclude Include="Object\SylphideLancerHitEffect.h" />
+    <ClInclude Include="Object\SylphideLancerMirrorAnimation.h" />
     <ClInclude Include="Object\TileMap.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Scene\LoadingScene.h" />

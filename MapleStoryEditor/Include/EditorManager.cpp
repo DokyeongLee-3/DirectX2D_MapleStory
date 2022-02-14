@@ -13,6 +13,7 @@
 #include "Window/DetailWindow.h"
 #include "Window/EditorMenu.h"
 #include "Window/ObjectHierarchy.h"
+#include "Window/TileMapWindow.h"
 #include "Object/DragObject.h"
 #include "Object/Pivot.h"
 #include "Render/RenderManager.h"
@@ -90,6 +91,7 @@ bool CEditorManager::Init(HINSTANCE hInst)
 	m_DetailWindow = CIMGUIManager::GetInst()->AddWindow<CDetailWindow>("DetailWindow");
 	m_EditorMenu = CIMGUIManager::GetInst()->AddWindow<CEditorMenu>("EditorMenu");
 	m_ObjectHierarchy = CIMGUIManager::GetInst()->AddWindow<CObjectHierarchy>("ObjectHierarchy");
+	m_TileMapWindow = CIMGUIManager::GetInst()->AddWindow<CTileMapWindow>("TileMapWindow");
 
 	CRenderManager::GetInst()->CreateLayer("DragLayer", INT_MAX);
 

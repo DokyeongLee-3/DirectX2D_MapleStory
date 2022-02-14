@@ -148,10 +148,14 @@ void CLobbyScene::CreatePlayerAnimationSequence()
 
 void CLobbyScene::CreateSkillAnimationSequence()
 {
+	m_Scene->GetResource()->LoadSequence2D("Blank.sqc");
+
 	m_Scene->GetResource()->LoadSequence2D("PlayerOrb.sqc");
 
+	m_Scene->GetResource()->LoadSequence2D("SylphideLancerMuzzleLeft.sqc");
 	m_Scene->GetResource()->LoadSequence2D("SylphideLancerBodyEffectLeft.sqc");
 	m_Scene->GetResource()->LoadSequence2D("SylphideLancerArrowLeft.sqc");
+	m_Scene->GetResource()->LoadSequence2D("SylphideLancerArrowPurple.sqc");
 }
 
 void CLobbyScene::CreateMapAnimationSequence()

@@ -50,6 +50,7 @@ private:
     void CreateMonsterAnimationSequence();
     void CreateMapAnimationSequence();
     void CreateEffectPrototype();
+    void LoadSound();
 
 public:
     void CreateWayToZakumScene();

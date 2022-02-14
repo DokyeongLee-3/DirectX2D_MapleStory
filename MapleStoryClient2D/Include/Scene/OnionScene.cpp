@@ -77,10 +77,7 @@ bool COnionScene::Init()
 		OnionMonster->SetWorldPos(400.f + i * 250.f, 200.f, 0.f);
 	}
 
-
-	m_Scene->GetResource()->LoadSound("Master", true, "OnionSceneBGM", "TheFairyForest.mp3");
-	m_Scene->GetResource()->SoundPlay("OnionSceneBGM");
-
+	LoadSound();
 
 	return true;
 }
@@ -143,9 +140,13 @@ void COnionScene::CreateSkillAnimationSequence()
 {
 	m_Scene->GetResource()->LoadSequence2D("PlayerOrb.sqc");
 
-	m_Scene->GetResource()->LoadSequence2D("SylphideLancerBodyEffectLeft.sqc");
+	m_Scene->GetResource()->LoadSequence2D("Blank.sqc");
 	m_Scene->GetResource()->LoadSequence2D("SylphideLancerArrowLeft.sqc");
+	m_Scene->GetResource()->LoadSequence2D("SylphideLancerArrowPurple.sqc");
 	m_Scene->GetResource()->LoadSequence2D("SylphideLancerHit.sqc");
+	m_Scene->GetResource()->LoadSequence2D("SylphideLancerHitPurple.sqc");
+
+	m_Scene->GetResource()->LoadSequence2D("SylphideLancerMuzzleLeft.sqc");
 }
 
 void COnionScene::CreateMonsterAnimationSequence()
@@ -170,6 +171,15 @@ void COnionScene::CreateMapAnimationSequence()
 void COnionScene::CreateEffectPrototype()
 {
 	CSylphideLancerHitEffect* SylphideLancerHitEffect = m_Scene->CreatePrototype<CSylphideLancerHitEffect>("SylphideLancerHitEffect");
+}
+
+void COnionScene::LoadSound()
+{
+	m_Scene->GetResource()->LoadSound("BGM", true, "OnionSceneBGM", "TheFairyForest.mp3");
+	m_Scene->GetResource()->SoundPlay("OnionSceneBGM");
+
+	m_Scene->GetResource()->LoadSound("Effect", false, "SylphideLancerUse", "SylphideLancerUse.mp3");
+	m_Scene->GetResource()->LoadSound("Effect", false, "SylphideLancerHit", "SylphideLancerHit.mp3");
 }
 
 void COnionScene::CreateWayToZakumScene()

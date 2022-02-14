@@ -25,6 +25,7 @@ public:
 
 private:
     bool LoadAnimationSequence2D();
+    bool CreateMaterial();
 
 private:
     void CameraRight(float DeltaTime);

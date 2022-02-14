@@ -14,10 +14,17 @@
 #include "IMGUIManager.h"
 #include "Scene/SceneManager.h"
 #include "Scene/Scene.h"
-#include "../Scene/DefaultScene.h"
 #include "Scene/SceneResource.h"
+#include "../Scene/DefaultScene.h"
 #include "Component/SpriteComponent.h"
 #include "Component/StaticMeshComponent.h"
+#include "Component/ColliderBox2D.h"
+#include "Component/ColliderCircle.h"
+#include "Component/ColliderPixel.h"
+#include "Component/CameraComponent.h"
+#include "Component/WidgetComponent.h"
+#include "Component/ParticleComponent.h"
+#include "Component/TileMapComponent.h"
 #include "Resource/Animation/AnimationSequence2D.h"
 #include "Animation/AnimationSequence2DInstance.h"
 #include "Animation/AnimationSequence2DData.h"
@@ -76,6 +83,13 @@ bool CEditorMenu::Init()
 	m_ComponentCombo->SetHideName(true);
 	m_ComponentCombo->AddItem("SpriteComponent");
 	m_ComponentCombo->AddItem("StaticMeshComponent");
+	m_ComponentCombo->AddItem("Box2DComponent");
+	m_ComponentCombo->AddItem("CircleComponent");
+	m_ComponentCombo->AddItem("PixelComponent");
+	m_ComponentCombo->AddItem("CameraComponent");
+	m_ComponentCombo->AddItem("WidgetComponent");
+	m_ComponentCombo->AddItem("ParticleComponent");
+	m_ComponentCombo->AddItem("TileMapComponent");
 
 	Line = AddWidget<CIMGUISameLine>("Line");
 
@@ -242,6 +256,27 @@ void CEditorMenu::ComponentCreateButton()
 		Com = Obj->CreateComponent<CColliderCircle>(m_ComponentNameInput->GetTextMultibyte());
 		Obj->GetRootComponent()->AddChild(Com);
 		break;
+	case SceneComponent_Type::ColliderPixel:
+		Obj->CreateComponent<CColliderPixel>(m_ComponentNameInput->GetTextMultibyte());
+		break;
+	case SceneComponent_Type::Camera:
+		Obj->CreateComponent<CCameraComponent>(m_ComponentNameInput->GetTextMultibyte());
+		break;
+	case SceneComponent_Type::Widget:
+		Obj->CreateComponent<CWidgetComponent>(m_ComponentNameInput->GetTextMultibyte());
+		break;
+	case SceneComponent_Type::Particle:
+		Obj->CreateComponent<CParticleComponent>(m_ComponentNameInput->GetTextMultibyte());
+		break;
+	case SceneComponent_Type::TileMap:
+	{
+		CTileMapComponent* TileMap = Obj->CreateComponent<CTileMapComponent>(m_ComponentNameInput->GetTextMultibyte());
+
+		CMaterial* Material = CSceneManager::GetInst()->GetScene()->GetResource()->FindMaterial("TileMap");
+
+		TileMap->SetTileMaterial(Material);
+	}
+	break;
 	case SceneComponent_Type::DragCollider:
 		Com = Obj->CreateComponent<CDragCollider>(m_ComponentNameInput->GetTextMultibyte());
 		Obj->GetRootComponent()->AddChild(Com);

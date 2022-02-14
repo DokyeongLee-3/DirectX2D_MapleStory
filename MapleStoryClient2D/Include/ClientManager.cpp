@@ -73,6 +73,7 @@ bool CClientManager::Init(HINSTANCE hInst)
 
 	CResourceManager::GetInst()->CreateSoundChannelGroup("UI");
 	CResourceManager::GetInst()->CreateSoundChannelGroup("BGM");
+	CResourceManager::GetInst()->CreateSoundChannelGroup("Effect");
 
 	CResourceManager::GetInst()->SetVolume("BGM", 70);
 

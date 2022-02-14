@@ -112,5 +112,6 @@ public:
     void FlipAll(float DeltaTime);
     void GotoNextMap(float DeltaTime);
     void ProduceSecondSylphideLander(float DeltaTime);
+    void EffectEnd(float DeltaTime);
 };
 

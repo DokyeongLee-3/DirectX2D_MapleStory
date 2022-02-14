@@ -93,7 +93,12 @@ public:
 		for (; iter != iterEnd; ++iter)
 		{
 			if ((*iter)->GetName().find(Name) != std::string::npos && (*iter)->GetWorldPos().Distance(Pos) < Distance)
-				return *iter;
+			{
+				CSceneComponent* Body = (*iter)->FindComponentIncludingName("Body");
+
+				if(Body && Body->IsEnable())
+					return *iter;
+			}
 		}
 
 		return nullptr;
@@ -238,11 +243,12 @@ public:
 
 		T* Obj = (T*)Prototype->Clone();
 
-		Obj->SetScene(this);
-		Obj->SetName(Name);
-
 		if (m_Start)
 			Obj->Start();
+
+		Obj->SetScene(this);
+		Obj->SetName(Name);
+		Obj->SetWorldPos(Pos);
 
 		m_ObjList.push_back(Obj);
 

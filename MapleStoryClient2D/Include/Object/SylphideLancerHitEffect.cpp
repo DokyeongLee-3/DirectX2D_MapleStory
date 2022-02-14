@@ -18,35 +18,35 @@ CSylphideLancerHitEffect::~CSylphideLancerHitEffect()
 
 bool CSylphideLancerHitEffect::Init()
 {
-	m_Sprite = CreateComponent<CSpriteComponent>("SylphideLancerHitEffectSprite");
-
-	SetRootComponent(m_Sprite);
-
-	m_Sprite->SetTransparency(true);
-	//m_Sprite->SetOpacity(0.5f);
-
-	m_Sprite->CreateAnimationInstance<CAnimationSequence2DInstance>();
-
-
-	m_Sprite->SetPivot(0.5f, 0.5f, 0.f);
-
-
 	return true;
 }
 
 void CSylphideLancerHitEffect::Start()
 {
+	m_Sprite = CreateComponent<CSpriteComponent>("SylphideLancerHitEffectSprite");
+
+	SetRootComponent(m_Sprite);
+	//m_Sprite->SetOpacity(0.5f);
+
+	m_Sprite->CreateAnimationInstance<CAnimationSequence2DInstance>();
+
+	m_Sprite->SetPivot(0.5f, 0.5f, 0.f);
 	SetAllSceneComponentsLayer("MovingObjFront");
 
 	CAnimationSequence2DInstance* Anim = m_Sprite->GetAnimationInstance();
+	m_Sprite->SetTransparency(true);
 
 	Anim->AddAnimation(TEXT("SylphideLancerHit.sqc"), ANIMATION_PATH, "SylphideLancerHit", false, 0.8f);
+	Anim->AddAnimation(TEXT("SylphideLancerHitPurple.sqc"), ANIMATION_PATH, "SylphideLancerHitPurple", false, 0.8f);
 
 	Anim->SetEndFunction<CSylphideLancerHitEffect>("SylphideLancerHit", this, &CSylphideLancerHitEffect::EffectEnd);
+	Anim->SetEndFunction<CSylphideLancerHitEffect>("SylphideLancerHitPurple", this, &CSylphideLancerHitEffect::EffectEnd);
 }
 
 void CSylphideLancerHitEffect::Update(float DeltaTime)
 {
+	CAnimationSequence2DData* Data = m_Sprite->GetCurrentAnimation();
+
 	CGameObject::Update(DeltaTime);
 }
 

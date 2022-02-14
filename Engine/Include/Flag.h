@@ -86,6 +86,11 @@ enum class SceneComponent_Type
 	StaticMesh,
 	ColliderBox2D,
 	ColliderCircle,
+	ColliderPixel,
+	Camera,
+	Widget,
+	Particle,
+	TileMap,
 	DragCollider,
 	Max
 };
@@ -205,7 +210,8 @@ enum class ThreadLoadingScene
 enum class Tile_Shape
 {
 	Rect,
-	Rhombus
+	Rhombus,
+	End
 };
 
 enum class Tile_Type

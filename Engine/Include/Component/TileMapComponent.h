@@ -36,9 +36,14 @@ protected:
     bool    m_EditMode;
 
 public:
-    CMaterial* GetMaterial()    const
+    CMaterial* GetBackMaterial()    const
     {
         return m_BackMaterial;
+    }
+
+    CMaterial* GetTileMaterial()    const
+    {
+        return m_TileMaterial;
     }
 
     Tile_Shape GetTileShape()   const

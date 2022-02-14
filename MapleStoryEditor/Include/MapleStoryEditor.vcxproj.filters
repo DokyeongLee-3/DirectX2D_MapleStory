@@ -141,6 +141,9 @@
     <ClCompile Include="Object\LampLight.cpp">
       <Filter>03. Object\04. MapObject\02. OnionMap</Filter>
     </ClCompile>
+    <ClCompile Include="Window\TileMapWindow.cpp">
+      <Filter>02. Editor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene\DefaultScene.h">
@@ -238,6 +241,9 @@
     </ClInclude>
     <ClInclude Include="Object\LampLight.h">
       <Filter>03. Object\04. MapObject\02. OnionMap</Filter>
+    </ClInclude>
+    <ClInclude Include="Window\TileMapWindow.h">
+      <Filter>02. Editor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

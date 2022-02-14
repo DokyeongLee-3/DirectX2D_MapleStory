@@ -102,6 +102,10 @@ public:
         return m_TextureInfo[TextureIndex].Name;
     }
 
+    bool EmptyTexture() const
+    {
+        return m_TextureInfo.empty();
+    }
 
 
 public:

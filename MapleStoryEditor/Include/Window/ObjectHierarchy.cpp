@@ -9,6 +9,7 @@
 #include "IMGUIListBox.h"
 #include "IMGUIComboBox.h"
 #include "IMGUIImage.h"
+#include "IMGUIManager.h"
 #include "Engine.h"
 #include "PathManager.h"
 #include "../EditorManager.h"
@@ -22,6 +23,7 @@
 #include "../EditorManager.h"
 #include "DetailWindow.h"
 #include "EditorMenu.h"
+#include "TileMapWindow.h"
 
 #include <sstream>
 
@@ -119,19 +121,23 @@ void CObjectHierarchy::Update(float DeltaTime)
 	if (Select != -1)
 	{
 		CGameObject* SelectObject = CSceneManager::GetInst()->GetScene()->FindObject(m_ObjectListWidget->GetSelectItem());
+		CSceneComponent* Root = SelectObject->GetRootComponent();
 
-		if (SelectObject->GetRootComponent()->GetTypeID() == typeid(CSpriteComponent).hash_code())
+		if (Root)
 		{
-			CSpriteComponent* Root = (CSpriteComponent*)(SelectObject->GetRootComponent());
-
-			if (Root->GetAnimationInstance() && Root->GetCurrentAnimation())
+			if (Root->GetTypeID() == typeid(CSpriteComponent).hash_code())
 			{
-				int CurrentFrame = Root->GetAnimationInstance()->GetCurrentAnimation()->GetCurrentFrame();
+				CSpriteComponent* SpriteRoot = (CSpriteComponent*)(SelectObject->GetRootComponent());
 
-				std::stringstream ss;
-				ss << CurrentFrame;
+				if (SpriteRoot->GetAnimationInstance() && SpriteRoot->GetCurrentAnimation())
+				{
+					int CurrentFrame = SpriteRoot->GetAnimationInstance()->GetCurrentAnimation()->GetCurrentFrame();
 
-				CEditorManager::GetInst()->GetSpriteWindow()->GetCurrentFrameText()->SetText(ss.str().c_str());
+					std::stringstream ss;
+					ss << CurrentFrame;
+
+					CEditorManager::GetInst()->GetSpriteWindow()->GetCurrentFrameText()->SetText(ss.str().c_str());
+				}
 			}
 		}
 	}
@@ -143,6 +149,8 @@ void CObjectHierarchy::SelectObject(int Index, const char* Item)
 
 	if (!Object)
 		return;
+
+	m_SelectObject = Object;
 
 	std::vector<FindComponentName>	vecNames;
 
@@ -156,56 +164,61 @@ void CObjectHierarchy::SelectObject(int Index, const char* Item)
 	{
 		m_ComponentListWidget->AddItem(vecNames[i].Name);
 	}
-
-	if (Object->GetRootComponent()->GetTypeID() == typeid(CSpriteComponent).hash_code())
+	
+	if (Size > 0)
 	{
-		CSpriteComponent* Sprite = (CSpriteComponent*)(Object->GetRootComponent());
-
-		if (Sprite->GetAnimationInstance() && Sprite->GetCurrentAnimation() && Sprite->GetCurrentAnimation()->GetFrameCount() > 0)
+		if (Object->GetRootComponent()->GetTypeID() == typeid(CSpriteComponent).hash_code())
 		{
-			float PlayTime = Sprite->GetCurrentAnimation()->GetPlayTime();
-			CEditorManager::GetInst()->GetSpriteWindow()->SetPlayTime(PlayTime);
+			CSpriteComponent* Sprite = (CSpriteComponent*)(Object->GetRootComponent());
+
+			if (Sprite->GetAnimationInstance() && Sprite->GetCurrentAnimation() && Sprite->GetCurrentAnimation()->GetFrameCount() > 0)
+			{
+				float PlayTime = Sprite->GetCurrentAnimation()->GetPlayTime();
+				CEditorManager::GetInst()->GetSpriteWindow()->SetPlayTime(PlayTime);
+			}
+
+			m_ObjectLayer->SetText(Object->GetRootComponent()->GetLayerName().c_str());
+			m_ZOrder->SetValueInt(Sprite->GetZOrder());
 		}
 
-		m_ObjectLayer->SetText(Object->GetRootComponent()->GetLayerName().c_str());
-		m_ZOrder->SetValueInt(Sprite->GetZOrder());
-	}
-
-	else if (Object->GetRootComponent()->GetTypeID() == typeid(CSceneComponent).hash_code())
-	{
-		CSceneComponent* Comp = (CSceneComponent*)(Object->GetRootComponent());
-		m_ZOrder->SetValueInt(Comp->GetZOrder());
+		else if (Object->GetRootComponent()->GetTypeID() == typeid(CSceneComponent).hash_code())
+		{
+			CSceneComponent* Comp = (CSceneComponent*)(Object->GetRootComponent());
+			m_ZOrder->SetValueInt(Comp->GetZOrder());
+		}
 	}
 }
 
 void CObjectHierarchy::SelectComponent(int Index, const char* Item)
 {
-	const std::string& ObjName = m_ObjectListWidget->GetSelectItem();
-
-	CGameObject* Obj = CSceneManager::GetInst()->GetScene()->FindObject(ObjName);
-
-	if (!Obj)
+	if (!m_SelectObject)
 		return;
 
-	CComponent* Com = Obj->FindComponent(Item);
+	// 선택된 컴포넌트를 저장해둔다.
+	m_SelectComponent = (CSceneComponent*)m_SelectObject->FindComponent(Item);
 
-	if (Com->GetComponentType() == Component_Type::SceneComponent)
+
+	Vector3 WorldPos = m_SelectComponent->GetWorldPos();
+	Vector3 WorldRotation = m_SelectComponent->GetWorldRot();
+	Vector3 WorldScale = m_SelectComponent->GetWorldScale();
+
+	CEditorManager::GetInst()->GetDetailWindow()->GetPosXInput()->SetValueFloat(WorldPos.x);
+	CEditorManager::GetInst()->GetDetailWindow()->GetPosYInput()->SetValueFloat(WorldPos.y);
+	CEditorManager::GetInst()->GetDetailWindow()->GetPosZInput()->SetValueFloat(WorldPos.z);
+
+	CEditorManager::GetInst()->GetDetailWindow()->GetRotXInput()->SetValueFloat(WorldRotation.x);
+	CEditorManager::GetInst()->GetDetailWindow()->GetRotYInput()->SetValueFloat(WorldRotation.y);
+	CEditorManager::GetInst()->GetDetailWindow()->GetRotZInput()->SetValueFloat(WorldRotation.z);
+
+	CEditorManager::GetInst()->GetDetailWindow()->GetScaleXInput()->SetValueFloat(WorldScale.x);
+	CEditorManager::GetInst()->GetDetailWindow()->GetScaleYInput()->SetValueFloat(WorldScale.y);
+
+	CTileMapWindow* TileMapWindow = (CTileMapWindow*)CIMGUIManager::GetInst()->FindIMGUIWindow("TileMapWindow");
+
+	if (TileMapWindow)
 	{
-		Vector3 WorldPos = ((CSceneComponent*)Com)->GetWorldPos();
-		Vector3 WorldRotation = ((CSceneComponent*)Com)->GetWorldRot();
-		Vector3 WorldScale = ((CSceneComponent*)Com)->GetWorldScale();
-
-		CEditorManager::GetInst()->GetDetailWindow()->GetPosXInput()->SetValueFloat(WorldPos.x);
-		CEditorManager::GetInst()->GetDetailWindow()->GetPosYInput()->SetValueFloat(WorldPos.y);
-		CEditorManager::GetInst()->GetDetailWindow()->GetPosZInput()->SetValueFloat(WorldPos.z);
-
-		CEditorManager::GetInst()->GetDetailWindow()->GetRotXInput()->SetValueFloat(WorldRotation.x);
-		CEditorManager::GetInst()->GetDetailWindow()->GetRotYInput()->SetValueFloat(WorldRotation.y);
-		CEditorManager::GetInst()->GetDetailWindow()->GetRotZInput()->SetValueFloat(WorldRotation.z);
-
-		CEditorManager::GetInst()->GetDetailWindow()->GetScaleXInput()->SetValueFloat(WorldScale.x);
-		CEditorManager::GetInst()->GetDetailWindow()->GetScaleYInput()->SetValueFloat(WorldScale.y);
-
+		TileMapWindow->SetTileMap((CTileMapComponent*)m_SelectComponent.Get());
+	}
 
 	/*	int Idx = m_LayerCombo->GetSelectIndex();
 
@@ -233,7 +246,6 @@ void CObjectHierarchy::SelectComponent(int Index, const char* Item)
 		{
 			((CSceneComponent*)Com)->SetLayerName("MapObjFront");
 		}*/
-	}
 }
 
 void CObjectHierarchy::LayerChangeCallback()
