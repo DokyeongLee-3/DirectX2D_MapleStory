@@ -14,6 +14,7 @@ private:
 	class CIMGUIImage* m_Sprite;
 	class CIMGUIImage* m_SpriteFrame;
 	class CIMGUITextInput* m_LoadFileName;
+	class CIMGUIRadioButton* m_RadioButton;
 
 	// 애니메이션들의 시퀀스들을 갖고 있는 리스트
 	class CIMGUIListBox* m_AnimationList;
@@ -45,6 +46,11 @@ private:
 	//class CAnimationLoadObject* m_EditorAnimationLoadObject;
 
 public:
+	CIMGUIRadioButton* GetRadioButton()	const
+	{
+		return m_RadioButton;
+	}
+
 	class CIMGUIText* GetCurrentFrameText()	const
 	{
 		return m_CurrentFrameText;
@@ -101,8 +107,6 @@ public:
 	void AddAnimationButton();
 	void AddAnimationFrameButton();
 	void SelectAnimationFrame(int Index, const char* Item);
-	void PlayAnimation();
-	void StopAnimation();
 	void DeleteSequenceButton();
 	void DeleteFrameButton();
 	void SelectAnimation(int Index, const char* Item);

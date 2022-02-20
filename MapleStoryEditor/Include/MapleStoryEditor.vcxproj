@@ -186,7 +186,6 @@
     <ClInclude Include="Object\StaticMapObj.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Scene\DefaultScene.h" />
-    <ClInclude Include="Window\ConfigurationWindow.h" />
     <ClInclude Include="Window\DetailWindow.h" />
     <ClInclude Include="Window\EditorMenu.h" />
     <ClInclude Include="Window\ObjectHierarchy.h" />
@@ -219,7 +218,6 @@
     <ClCompile Include="Object\Stage.cpp" />
     <ClCompile Include="Object\StaticMapObj.cpp" />
     <ClCompile Include="Scene\DefaultScene.cpp" />
-    <ClCompile Include="Window\ConfigurationWindow.cpp" />
     <ClCompile Include="Window\DetailWindow.cpp" />
     <ClCompile Include="Window\EditorMenu.cpp" />
     <ClCompile Include="Window\ObjectHierarchy.cpp" />

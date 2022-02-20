@@ -51,8 +51,11 @@ void CEditorManager::SetEditMode(EditMode Mode)
 {
 	m_EditMode = Mode;
 
-	if (m_EditMode == EditMode::Sprite)
+	switch (m_EditMode)
 	{
+	case EditMode::Scene:
+		break;
+	case EditMode::Sprite:
 		if (m_DragObj)
 			m_DragObj->Destroy();
 
@@ -66,7 +69,16 @@ void CEditorManager::SetEditMode(EditMode Mode)
 		m_DragPivot->SetWorldScale(2.f, 2.f, 1.f);
 		m_DragPivot->SetWorldPos(500.f, 500.f, 0.f);
 		m_DragPivot->SetPivot(0.5f, 0.5f, 0.f);
+		break;
+	case EditMode::TileMap:
+		if (m_DragObj)
+		{
+			m_DragObj->Destroy();
+			m_DragObj = nullptr;
+		}
+		break;
 	}
+
 }
 
 bool CEditorManager::Init(HINSTANCE hInst)
@@ -160,6 +172,8 @@ void CEditorManager::MouseLButtonDown(float DeltaTime)
 
 void CEditorManager::MouseLButtonPush(float DeltaTime)
 {
+	m_MousePush = true;
+
 	if (m_EditMode == EditMode::Sprite)
 	{
 		if (m_DragObj)
@@ -239,6 +253,7 @@ void CEditorManager::MouseLButtonPush(float DeltaTime)
 
 void CEditorManager::MouseLButtonUp(float DeltaTime)
 {
+	m_MousePush = false;
 	m_PrevCollision = nullptr;
 }
 
@@ -500,6 +515,15 @@ CComponent* CEditorManager::CreateComponent(CGameObject* Obj, size_t Type)
 		CDragCollider* Component = Obj->LoadComponent<CDragCollider>();
 
 		CSceneManager::GetInst()->GetScene()->GetCollision()->AddCollider(Component);
+
+		return Component;
+	}
+
+	else if (Type == typeid(CTileMapComponent).hash_code())
+	{
+		CTileMapComponent* Component = Obj->LoadComponent<CTileMapComponent>();
+
+		Component->EnableEditMode(true);
 
 		return Component;
 	}

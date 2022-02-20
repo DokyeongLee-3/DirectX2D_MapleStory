@@ -52,6 +52,7 @@ private:
     void CreateSkillAnimationSequence();
     void CreateMonsterAnimationSequence();
     void CreateMapAnimationSequence();
+    void LoadSound();
 
 public:
     void CreateOnionScene();

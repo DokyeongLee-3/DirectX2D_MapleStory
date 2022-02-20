@@ -119,6 +119,7 @@ public:
 	void SetReverse(const std::string& Name, bool Reverse);
 	void SetLoop(const std::string& Name, bool Loop);
 	void SetCurrentAnimation(const std::string& Name);
+	void SetCurrentAnimation(CAnimationSequence2DData* Current);
 	void ChangeAnimation(const std::string& Name);
 	bool CheckCurrentAnimation(const std::string& Name);
 	// 애니메이션 좌우 반전

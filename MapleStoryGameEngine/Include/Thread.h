@@ -13,6 +13,15 @@ private:
 	HANDLE		m_Thread;
 	HANDLE		m_StartEvent;
 
+protected:
+	bool		m_Loop;
+
+public:
+	void SetLoop(bool Loop)
+	{
+		m_Loop = Loop;
+	}
+
 public:
 	bool Init();
 	virtual void Run() = 0;

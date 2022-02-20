@@ -138,7 +138,12 @@ public:
 			m_vecObjectComponent.push_back((class CObjectComponent*)Component);
 
 		else
+		{
 			m_SceneComponentList.push_back((class CSceneComponent*)Component);
+
+			if (!m_RootComponent)
+				m_RootComponent = (class CSceneComponent*)Component;
+		}
 
 		return Component;
 	}

@@ -15,7 +15,7 @@ public:
 	virtual CPlayerAnimation2D* Clone();
 
 private:
-	void CreateSylphideLancerEffect();
+	void ReturnToIdle();
 };
 
 

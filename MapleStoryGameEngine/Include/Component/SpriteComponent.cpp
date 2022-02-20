@@ -178,17 +178,22 @@ void CSpriteComponent::Update(float DeltaTime)
 {
 	CSceneComponent::Update(DeltaTime);
 
-	if (m_Animation)
-		m_Animation->Update(DeltaTime);
-
 	if (!m_Animation || !m_Animation->GetCurrentAnimation() || m_Animation->GetCurrentAnimation()->GetAnimationSequence()->GetFrameCount() == 0)
 		return;
 
-	int Frame = m_Animation->GetCurrentAnimation()->GetCurrentFrame();
+	if (m_Animation)
+		m_Animation->Update(DeltaTime);
 
-	AnimationFrameData Data = m_Animation->GetCurrentAnimation()->GetFrameData(Frame);
+	CAnimationSequence2DData* Current = m_Animation->GetCurrentAnimation();
 
-	SetWorldScale(Data.Size.x, Data.Size.y, 0.f);
+	if (Current)
+	{
+		int Frame = m_Animation->GetCurrentAnimation()->GetCurrentFrame();
+
+		AnimationFrameData Data = m_Animation->GetCurrentAnimation()->GetFrameData(Frame);
+
+		SetWorldScale(Data.Size.x, Data.Size.y, 0.f);
+	}
 }
 
 void CSpriteComponent::PostUpdate(float DeltaTime)
@@ -207,11 +212,17 @@ void CSpriteComponent::Render()
 
 	if (m_Animation)
 	{
+		CAnimationSequence2DData* Current = m_Animation->GetCurrentAnimation();
+		if (!Current)
+			return;
+
 		CRenderManager::GetInst()->GetStandard2DCBuffer()->SetAnimation2DEnable(m_Animation->GetAnimationCount() > 0);
 		//CRenderManager::GetInst()->GetStandard2DCBuffer()->SetFadeAmount(1.f);
 		CRenderManager::GetInst()->GetStandard2DCBuffer()->UpdateCBuffer();
 
-		m_Animation->SetShader();
+
+		if (Current)
+			m_Animation->SetShader();
 	}
 
 	// 최종 완성된 Shader를 파이프라인에 Set해주고

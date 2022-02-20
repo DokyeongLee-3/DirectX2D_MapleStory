@@ -7,7 +7,7 @@
 #include "Animation/AnimationSequence2DInstance.h"
 #include "Scene/Scene.h"
 #include "Scene/SceneMode.h"
-#include "SylphideLancerHitEffect.h"
+#include "../Animation/SylphideLancerHitEffect.h"
 #include <time.h>
 
 CSylphideLancer::CSylphideLancer() :
@@ -68,8 +68,8 @@ void CSylphideLancer::Update(float DeltaTime)
 
 	AddRelativePos(Axis * m_Speed * DeltaTime);
 
-
-	m_Distance += m_Speed * DeltaTime;
+	float AbsoluteSpeed = abs(m_Speed);
+	m_Distance += AbsoluteSpeed * DeltaTime;
 
 
 	// 첫번째 그룹에 2개의 랜서(ID가 각각 0, 1)중 1번 ID인 랜서가 150이상의 거리를 이동했을때

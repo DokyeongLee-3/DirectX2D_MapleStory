@@ -10,23 +10,28 @@
 #include "../Scene/WayToZakumScene.h"
 #include "Input.h"
 #include "PlayerAnimation2D.h"
-#include "SylphideLancerMirrorAnimation.h"
-#include "PlayerSkillBodyEffect.h"
+#include "../Animation/SylphideLancerMirrorAnimation.h"
+#include "../Animation/PlayerSkillBodyEffect.h"
+#include "../Animation/VoidPressureAttackSphere.h"
+#include "../Animation/PlayerOrb.h"
 #include "BulletCamera.h"
 #include "Bullet.h"
 #include "SylphideLancer.h"
 #include "../Widget/SimpleHUD.h"
 #include "Scene/SceneManager.h"
 #include "Render/RenderManager.h"
-#include "BubbleParticle.h"
+#include "VoidPressure.h"
+#include "VoidPressureOrb.h"
 
-CPlayer2D::CPlayer2D()	:
+CPlayer2D::CPlayer2D() :
 	m_BodySprite(nullptr),
-	m_SylphideLancerMuzzle(nullptr),
 	m_SylphideLancerMirror(nullptr),
 	m_SkillBodyEffect(nullptr),
+	m_VoidPressure(nullptr),
+	m_VoidPressureOrb(nullptr),
 	m_ScaleFactor(1.f),
-	m_Opacity(1.f)
+	m_Opacity(1.f),
+	m_IsFlip(false)
 {
 	SetTypeID<CPlayer2D>();
 }
@@ -35,11 +40,9 @@ CPlayer2D::CPlayer2D(const CPlayer2D& obj) :
 	CGameObject(obj)
 {
 	m_BodySprite = (CSpriteComponent*)FindComponent("PlayerSprite");
-	m_SylphideLancerMuzzle = (CSceneComponent*)FindComponent("PlayerSylphideLancerMuzzle");
 	m_SylphideLancerMirror = (CSpriteComponent*)FindComponent("PlayerSylphideLancerMirror");
 	m_SkillBodyEffect = (CSpriteComponent*)FindComponent("PlayerSkillBodyEffect");
-	m_VoidPressureAttackSphere = (CSpriteComponent*)FindComponent("PlayerVoidPressureAttackSphere");
-	m_VoidPressureSphere = (CSpriteComponent*)FindComponent("PlayerVoidPressureSphere");
+	m_PlayerOrb = (CSpriteComponent*)FindComponent("PlayerOrb");
 
 	m_Body = (CColliderBox2D*)FindComponent("Body");
 	m_Camera = (CCameraComponent*)FindComponent("Camera");
@@ -52,18 +55,19 @@ CPlayer2D::~CPlayer2D()
 {
 }
 
+CVoidPressureOrb* CPlayer2D::GetVoidPressureOrb() const
+{
+	return m_VoidPressureOrb;
+}
+
 bool CPlayer2D::Init()
 {
 	m_BodySprite = CreateComponent<CSpriteComponent>("PlayerSprite");
-	m_SylphideLancerMuzzle = CreateComponent<CSceneComponent>("PlayerSylphideLancerMuzzle");
-	m_SylphideLancerMirror = CreateComponent<CSpriteComponent>("PlayerSylphideLancerMirror");
-	/*
 	m_SylphideLancerMirror = CreateComponent<CSpriteComponent>("PlayerSylphideLancerMirror");
 	m_SkillBodyEffect = CreateComponent<CSpriteComponent>("PlayerSkillBodyEffect");
-	m_VoidPressureAttackSphere = CreateComponent<CSpriteComponent>("PlayerVoidPressureAttackSphere");
-	m_VoidPressureSphere = CreateComponent<CSpriteComponent>("PlayerVoidPressureSphere");
-	*/
+	m_PlayerOrb = CreateComponent<CSpriteComponent>("PlayerOrb");
 	
+
 	m_Body = CreateComponent<CColliderBox2D>("PlayerBody");
 
 	m_Camera = CreateComponent<CCameraComponent>("Camera");
@@ -78,11 +82,9 @@ bool CPlayer2D::Init()
 
 	m_Camera->OnViewportCenter();
 
-	m_BodySprite->AddChild(m_SylphideLancerMuzzle);
+	m_BodySprite->AddChild(m_PlayerOrb);
 	m_BodySprite->AddChild(m_SylphideLancerMirror);
-	//m_BodySprite->AddChild(m_SkillBodyEffect);
-	//m_BodySprite->AddChild(m_VoidPressureAttackSphere);
-	//m_BodySprite->AddChild(m_VoidPressureSphere);
+	m_BodySprite->AddChild(m_SkillBodyEffect);
 	
 	m_BodySprite->AddChild(m_Body);
 	m_BodySprite->AddChild(m_Camera);
@@ -92,32 +94,47 @@ bool CPlayer2D::Init()
 
 	m_BodySprite->SetTransparency(true);
 	m_SylphideLancerMirror->SetTransparency(true);
-	//m_SylphideLancerMirror->SetTransparency(true);
-	//m_SkillBodyEffect->SetTransparency(true);
+	m_SkillBodyEffect->SetTransparency(true);
+	m_PlayerOrb->SetTransparency(true);
 
 	m_BodySprite->CreateAnimationInstance<CPlayerAnimation2D>();
-	//m_SylphideLancerMirror->CreateAnimationInstance<CSylphideLancerEffectAnimation2D>();
-	//m_SkillBodyEffect->CreateAnimationInstance<CPlayerSkillBodyEffect>();
+	m_SkillBodyEffect->CreateAnimationInstance<CPlayerSkillBodyEffect>();
+	m_PlayerOrb->CreateAnimationInstance<CPlayerOrb>();
 
+	m_SkillBodyEffect->SetPivot(0.5f, 0.5f, 0.f);
+	m_SkillBodyEffect->SetRelativePos(-10.f, 26.f, 0.f);
 
 	m_SylphideLancerMirror->CreateAnimationInstance<CSylphideLancerMirrorAnimation>();
 	m_SylphideLancerMirror->SetInheritRotZ(false);
 	m_SylphideLancerMirror->SetPivot(0.5f, 0.5f, 0.f);
-	m_SylphideLancerMirror->SetRelativeScale(120.f, 200.f, 1.f);
+	m_SylphideLancerMirror->SetRelativePos(50.f, 80.f, 0.f);
 	m_SylphideLancerMirror->SetPivot(0.5f, 0.5f, 0.f);
-
-
 
 	m_BodySprite->SetRelativePos(100.f, 100.f, 0.f);
 	m_BodySprite->SetPivot(0.5f, 0.5f, 0.f);
 
+	m_PlayerOrb->SetRelativePos(60.f, 50.f, 0.f);
+	m_PlayerOrb->SetPivot(0.5f, 0.5f, 0.f);
+
+
+	CInput::GetInst()->CreateKey("MoveUp", VK_UP);
+	CInput::GetInst()->CreateKey("MoveDown", VK_DOWN);
+	CInput::GetInst()->CreateKey("MoveLeft", VK_LEFT);
+	CInput::GetInst()->CreateKey("MoveRight", VK_RIGHT);
+	CInput::GetInst()->CreateKey("SylphideLancer", 'Q');
+	CInput::GetInst()->CreateKey("VoidPressure", 'W');
+	CInput::GetInst()->CreateKey("Flip", 'F');
+
 	CInput::GetInst()->SetKeyCallback<CPlayer2D>("MoveUp", KeyState_Push, this, &CPlayer2D::MoveUp);
 	CInput::GetInst()->SetKeyCallback<CPlayer2D>("MoveDown", KeyState_Push, this, &CPlayer2D::MoveDown);
-	CInput::GetInst()->SetKeyCallback<CPlayer2D>("RotationZInv", KeyState_Push, this, &CPlayer2D::RotationZInv);
-	CInput::GetInst()->SetKeyCallback<CPlayer2D>("RotationZ", KeyState_Push, this, &CPlayer2D::RotationZ);
-	CInput::GetInst()->SetKeyCallback<CPlayer2D>("Skill1", KeyState_Down, this, &CPlayer2D::SylphideLancer);
+	CInput::GetInst()->SetKeyCallback<CPlayer2D>("MoveLeft", KeyState_Push, this, &CPlayer2D::MoveLeft);
+	CInput::GetInst()->SetKeyCallback<CPlayer2D>("MoveRight", KeyState_Push, this, &CPlayer2D::MoveRight);
+	CInput::GetInst()->SetKeyCallback<CPlayer2D>("MoveLeft", KeyState_Up, this, &CPlayer2D::ReturnIdle);
+	CInput::GetInst()->SetKeyCallback<CPlayer2D>("MoveRight", KeyState_Up, this, &CPlayer2D::ReturnIdle);
 
-	CInput::GetInst()->SetKeyCallback<CPlayer2D>("Skill2", KeyState_Down, this, &CPlayer2D::Skill2);
+	CInput::GetInst()->SetKeyCallback<CPlayer2D>("SylphideLancer", KeyState_Down, this, &CPlayer2D::SylphideLancer);
+	CInput::GetInst()->SetKeyCallback<CPlayer2D>("VoidPressure", KeyState_Push, this, &CPlayer2D::VoidPressure);
+	CInput::GetInst()->SetKeyCallback<CPlayer2D>("VoidPressure", KeyState_Up, this, &CPlayer2D::VoidPressureCancle);
 	CInput::GetInst()->SetKeyCallback<CPlayer2D>("Flip", KeyState_Down, this, &CPlayer2D::FlipAll);
 
 	//CInput::GetInst()->SetKeyCallback("DirUp", KeyState_Down, this, &CPlayer2D::GotoNextMap);
@@ -224,61 +241,81 @@ void CPlayer2D::MoveDown(float DeltaTime)
 	m_BodySprite->AddRelativePos(m_BodySprite->GetWorldAxis(AXIS_Y) * -300.f * DeltaTime);
 }
 
-void CPlayer2D::RotationZInv(float DeltaTime)
+void CPlayer2D::MoveLeft(float DeltaTime)
 {
-	m_BodySprite->AddRelativeRotationZ(180.f * DeltaTime);
+	if (m_VoidPressure)
+	{
+		if (m_VoidPressure->IsEnable() && !m_VoidPressure->GetOnDestroy())
+		{
+			m_VoidPressure->AddWorldPos(-300.f * DeltaTime, 0.f, 0.f);
+			return;
+		}
+	}
+
+	// 보이드 프레셔 구체가 아직 생성된적 없거나 완전히 소멸되고나서 움직일 수 있게한다
+	if (!m_VoidPressure || !m_VoidPressure->IsEnable())
+	{
+		if (m_BodySprite->IsFlip())
+			FlipAll(DeltaTime);
+
+		m_BodySprite->AddRelativePos(m_BodySprite->GetWorldAxis(AXIS_X) * -300.f * DeltaTime);
+		m_BodySprite->ChangeAnimation("WalkLeft");
+	}
 }
 
-void CPlayer2D::RotationZ(float DeltaTime)
+void CPlayer2D::MoveRight(float DeltaTime)
 {
-	m_BodySprite->AddRelativeRotationZ(-180.f * DeltaTime);
+	if (m_VoidPressure)
+	{
+		if (m_VoidPressure->IsEnable() && !m_VoidPressure->GetOnDestroy())
+		{
+			m_VoidPressure->AddWorldPos(300.f * DeltaTime, 0.f, 0.f);
+			return;
+		}
+	}
+
+	// 보이드 프레셔 구체가 아직 생성된적 없거나 완전히 소멸되고나서 움직일 수 있게한다
+	if (!m_VoidPressure || !m_VoidPressure->IsEnable())
+	{
+		if (!m_BodySprite->IsFlip())
+			FlipAll(DeltaTime);
+
+		m_BodySprite->AddRelativePos(m_BodySprite->GetWorldAxis(AXIS_X) * 300.f * DeltaTime);
+		m_BodySprite->ChangeAnimation("WalkLeft");
+	}
 }
 
 void CPlayer2D::SylphideLancer(float DeltaTime)
 {
-	/*std::string CurAnim = m_BodySprite->GetCurrentAnimationName();
-	m_SylphideLancerMirror->SetOpacity(1.f);
-
-
-	m_SylphideLancerMirror->ChangeAnimation("Blank");
-
-	CAnimationSequence2DData* CurrentAnimation = m_BodySprite->GetCurrentAnimation();
-	AnimationFrameData FrameData = CurrentAnimation->GetFrameData(0);
-
-	Vector3 ScalingFactor = Vector3(FrameData.Size.x, FrameData.Size.y, 1.f);
-
-	m_BodySprite->SetRelativeScale(ScalingFactor * m_ScaleFactor);
-
-	CurrentAnimation = m_SkillBodyEffect->GetCurrentAnimation();
-	FrameData = CurrentAnimation->GetFrameData(0);
-
-	ScalingFactor = Vector3(FrameData.Size.x, FrameData.Size.y, 1.f);
-
-	m_SkillBodyEffect->SetRelativeScale(ScalingFactor * m_ScaleFactor);*/
-
-
 	// Scene의 m_ObjList에서 몬스터 찾아서 여기서 실피드랜서 방향 설정해주기
 
-	Vector3 WorldPos = GetWorldPos();
+	m_BodySprite->ChangeAnimation("HealLeft");
 
-	CGameObject* NearMonster = m_Scene->FindIncludingNameObject("Monster", WorldPos, 400.f);
+	CGameObject* NearMonster = m_Scene->FindIncludingNameObject("Monster", GetWorldPos(), 400.f);
 
 	m_Scene->GetResource()->SoundPlay("SylphideLancerUse");
 
 	m_SylphideLancerMirror->ChangeAnimation("SylphideLancerMuzzle");
 
+	Vector3 MirrorPos = m_SylphideLancerMirror->GetWorldPos();
+
 	for (int i = 0; i < 2; ++i)
 	{
 		CSylphideLancer* Lancer = m_Scene->CreateGameObject<CSylphideLancer>("SylphideLancer");
+
 		Lancer->SetAllSceneComponentsLayer("MovingObjFront");
 		Lancer->SetLancerID(i);
+		Lancer->SetWorldPos(MirrorPos.x, MirrorPos.y - 10.f + i * 30.f, MirrorPos.z);
+		Lancer->SetCollisionProfile("PlayerAttack");
+		Lancer->SetSpeed(-400.f);
+		Vector3 LancerPos = Lancer->GetWorldPos();
 
 		Vector3 MonsterWorldPos;
 
 		if (NearMonster)
 		{
 			MonsterWorldPos = NearMonster->GetWorldPos();
-			float Radian = atan((MonsterWorldPos.y - WorldPos.y)/(MonsterWorldPos.x - WorldPos.x));
+			float Radian = atan((MonsterWorldPos.y - LancerPos.y)/(MonsterWorldPos.x - LancerPos.x));
 			float Degree = RadianToDegree(Radian);
 
 			Lancer->SetWorldRotation(0.f, 0.f, Degree);
@@ -292,15 +329,122 @@ void CPlayer2D::SylphideLancer(float DeltaTime)
 		if (m_BodySprite->IsFlip())
 		{
 			Lancer->FlipAll(DeltaTime);
+			Lancer->SetSpeed(400.f);
 		}
-
-		Lancer->SetWorldPos(WorldPos.x, WorldPos.y + i * 30.f, 0.f);
-		Lancer->SetCollisionProfile("PlayerAttack");
 	}
 }
 
 void CPlayer2D::VoidPressure(float DeltaTime)
 {
+	if(!m_Scene->GetResource()->IsPlaying("VoidPressureLoop"))
+		m_Scene->GetResource()->SoundPlay("VoidPressureLoop");
+
+	if (!m_VoidPressure)
+	{
+		m_Scene->GetResource()->SoundPlay("VoidPressureUse");
+
+		m_BodySprite->ChangeAnimation("HealLeft");
+
+		// 충돌체를 가지는 GameObject를 상속받은 CVoidPressure 클래스를 생성할것(단순 SpriteComponent만 생성하는게 아니라)
+		m_VoidPressure = m_Scene->CreateGameObject<CVoidPressure>("VoidPressure");
+		m_VoidPressure->SetCollisionProfile("PlayerAttack");
+		m_VoidPressure->SetAllSceneComponentsLayer("MovingObjFront");
+		
+		if (m_IsFlip)
+			m_VoidPressure->FlipAll(DeltaTime);
+
+		Vector3 RelativePos = m_SylphideLancerMirror->GetRelativePos();
+		Vector3 WorldPos = m_SylphideLancerMirror->GetWorldPos();
+		Vector3 PlayerWorldPos = m_BodySprite->GetWorldPos();
+
+		float VoidPosX = PlayerWorldPos.x - RelativePos.x * 2.f;
+
+		m_VoidPressure->SetWorldPos(VoidPosX, WorldPos.y, 0.f);
+		m_VoidPressure->SetOriginPos(VoidPosX, WorldPos.y, 0.f);
+	}
+
+	if (m_VoidPressure && !m_VoidPressure->IsEnable())
+	{
+		m_VoidPressure->Enable(true);
+		CSpriteComponent* Root = (CSpriteComponent*)m_VoidPressure->GetRootComponent();
+		Root->ChangeAnimation("VoidPressureReadyLeft");
+
+		Vector3 RelativePos = m_SylphideLancerMirror->GetRelativePos();
+		Vector3 WorldPos = m_SylphideLancerMirror->GetWorldPos();
+		Vector3 PlayerWorldPos = m_BodySprite->GetWorldPos();
+
+		float VoidPosX = PlayerWorldPos.x - RelativePos.x * 2.f;
+
+		m_VoidPressure->SetWorldPos(VoidPosX, WorldPos.y, 0.f);
+		m_VoidPressure->SetOriginPos(VoidPosX, WorldPos.y, 0.f);
+		m_VoidPressure->SetOnDestroy(false);
+	}
+
+	if (!m_VoidPressureOrb)
+	{
+		m_VoidPressureOrb = m_Scene->CreateGameObject<CVoidPressureOrb>("VoidPressureOrb");
+
+		if (m_IsFlip)
+			m_VoidPressureOrb->FlipAll(DeltaTime);
+
+		m_VoidPressureOrb->SetAllSceneComponentsLayer("MovingObjFront");
+
+		Vector3 RelativePos = m_SylphideLancerMirror->GetRelativePos();
+		Vector3 WorldPos = m_SylphideLancerMirror->GetWorldPos();
+		Vector3 PlayerWorldPos = m_BodySprite->GetWorldPos();
+
+		float VoidPosX = PlayerWorldPos.x - RelativePos.x / 2.f;
+
+		if (m_IsFlip)
+			VoidPosX += 5.f;
+		else
+			VoidPosX -= 5.f;
+
+		m_VoidPressureOrb->SetWorldPos(VoidPosX, WorldPos.y - 39.f, 0.f);
+		m_VoidPressureOrb->SetOriginPos(VoidPosX, WorldPos.y - 39.f, 0.f);
+	}
+
+	if (m_VoidPressureOrb && !m_VoidPressureOrb->IsEnable())
+	{
+		m_VoidPressureOrb->Enable(true);
+		Vector3 RelativePos = m_SylphideLancerMirror->GetRelativePos();
+		Vector3 WorldPos = m_SylphideLancerMirror->GetWorldPos();
+		Vector3 PlayerWorldPos = m_BodySprite->GetWorldPos();
+
+		float VoidPosX = PlayerWorldPos.x - RelativePos.x / 2.f;
+
+		if (m_IsFlip)
+			VoidPosX += 5.f;
+		else
+			VoidPosX -= 5.f;
+
+		m_VoidPressureOrb->SetWorldPos(VoidPosX, WorldPos.y - 39.f, 0.f);
+		m_VoidPressureOrb->SetOriginPos(VoidPosX, WorldPos.y - 39.f, 0.f);
+	}
+}
+
+void CPlayer2D::LightTransforming(float DeltaTime)
+{
+}
+
+void CPlayer2D::VoidPressureCancle(float DeltaTime)
+{
+	m_Scene->GetResource()->SoundPlay("VoidPressureEnd");
+	m_BodySprite->ChangeAnimation("IdleLeft");
+
+	if (m_VoidPressure)
+	{
+		m_VoidPressure->SetVoidPressureLifeSpan(6.f);
+		CSpriteComponent* SpriteComp = (CSpriteComponent*)(m_VoidPressure->GetRootComponent());
+		SpriteComp->GetAnimationInstance()->ChangeAnimation("VoidPressureDestroy");
+		m_VoidPressure->SetOnDestroy(true);
+	}
+
+	if (m_VoidPressureOrb)
+	{
+		CSpriteComponent* SpriteComp = (CSpriteComponent*)(m_VoidPressureOrb->GetRootComponent());
+		SpriteComp->GetAnimationInstance()->ChangeAnimation("VoidPressureOrbDestroy");
+	}
 }
 
 void CPlayer2D::Skill2(float DeltaTime)
@@ -308,22 +452,91 @@ void CPlayer2D::Skill2(float DeltaTime)
 	CBulletCamera* Bullet = m_Scene->CreateGameObject<CBulletCamera>("Bullet");
 
 	//Bullet->SetWorldPos(GetWorldPos() + GetWorldAxis(AXIS_Y) * 75.f);
-	Bullet->SetWorldPos(m_SylphideLancerMuzzle->GetWorldPos());
+	//Bullet->SetWorldPos(m_SylphideLancerMuzzle->GetWorldPos());
 	Bullet->SetWorldRotation(GetWorldRot());
 	Bullet->SetCollisionProfile("PlayerAttack");
 	
 }
 
+void CPlayer2D::SetVoidPressure(CVoidPressure* VoidPressure)
+{
+	m_VoidPressure = VoidPressure;
+}
+
+void CPlayer2D::SetVoidPressureOrb(CVoidPressureOrb* VoidPressureOrb)
+{
+	m_VoidPressureOrb = VoidPressureOrb;
+}
+
 void CPlayer2D::FlipAll(float DeltaTime)
 {
+	if (!m_IsFlip)
+		m_IsFlip = true;
+
+	else
+		m_IsFlip = false;
+
 	m_BodySprite->Flip();
+	m_SkillBodyEffect->Flip();
+	m_SylphideLancerMirror->Flip();
+	m_PlayerOrb->Flip();
 
-	//float RelativeOrbXPos = m_OrbSprite->GetRelativePos().x;
+	Vector3 RelativePos = m_SylphideLancerMirror->GetRelativePos();
 
-	//// 플레이어와 간격(절대값)을 유지하면서 플레이어 기준으로 위치만 반대로 이동 
-	//m_OrbSprite->SetRelativePos(-RelativeOrbXPos, m_OrbSprite->GetRelativePos().y, m_OrbSprite->GetRelativePos().z);
-	//// OrbSprite의 중심 기준으로 이미지 Flip
-	//m_OrbSprite->Flip();
+	RelativePos.x *= -1;
+
+	m_SylphideLancerMirror->SetRelativePos(RelativePos);
+
+
+	RelativePos = m_SkillBodyEffect->GetRelativePos();
+
+	RelativePos.x *= -1;
+
+	m_SkillBodyEffect->SetRelativePos(RelativePos);
+
+
+	RelativePos = m_PlayerOrb->GetRelativePos();
+
+	RelativePos.x *= -1;
+
+	m_PlayerOrb->SetRelativePos(RelativePos);
+
+
+
+	if (m_VoidPressure)
+	{
+		CSpriteComponent* Root = (CSpriteComponent*)m_VoidPressure->GetRootComponent();
+		Root->Flip();
+
+		Vector3 RelativePos = m_SylphideLancerMirror->GetRelativePos();
+		Vector3 WorldPos = m_SylphideLancerMirror->GetWorldPos();
+		Vector3 PlayerWorldPos = m_BodySprite->GetWorldPos();
+
+		float VoidPosX = PlayerWorldPos.x - RelativePos.x * 2.f;
+
+		m_VoidPressure->SetWorldPos(VoidPosX, WorldPos.y, 0.f);
+		m_VoidPressure->SetOriginPos(VoidPosX, WorldPos.y, 0.f);
+	}
+
+	if (m_VoidPressureOrb)
+	{
+		CSpriteComponent* Root = (CSpriteComponent*)m_VoidPressureOrb->GetRootComponent();
+		Root->Flip();
+
+		Vector3 RelativePos = m_SylphideLancerMirror->GetRelativePos();
+		Vector3 WorldPos = m_SylphideLancerMirror->GetWorldPos();
+		Vector3 PlayerWorldPos = m_BodySprite->GetWorldPos();
+
+		float VoidPosX = PlayerWorldPos.x - RelativePos.x / 2.f;
+
+		if (m_IsFlip)
+			VoidPosX += 5.f;
+		else
+			VoidPosX -= 5.f;
+
+		m_VoidPressureOrb->SetWorldPos(VoidPosX, WorldPos.y - 39.f, 0.f);
+		m_VoidPressureOrb->SetOriginPos(VoidPosX, WorldPos.y - 39.f, 0.f);
+	}
 }
 
 void CPlayer2D::GotoNextMap(float DeltaTime)
@@ -357,15 +570,27 @@ void CPlayer2D::GotoNextMap(float DeltaTime)
 
 void CPlayer2D::ProduceSecondSylphideLander(float DeltaTime)
 {
+	m_SkillBodyEffect->ChangeAnimation("SylphideLancerBodyEffectLeft");
+	m_BodySprite->ChangeAnimation("IdleLeft");
+
+	//if (m_IsFlip)
+	//	m_BodySprite->Flip();
+
 	Vector3 WorldPos = GetWorldPos();
 
 	CGameObject* NearMonster = m_Scene->FindIncludingNameObject("Monster", WorldPos, 400.f);
+	Vector3 MirrorPos = m_SylphideLancerMirror->GetWorldPos();
 
 	for (int i = 0; i < 2; ++i)
 	{
 		CSylphideLancer* Lancer = m_Scene->CreateGameObject<CSylphideLancer>("SylphideLancer");
+
 		Lancer->SetAllSceneComponentsLayer("MovingObjFront");
 		Lancer->SetLancerID(i + 2);
+		Lancer->SetWorldPos(MirrorPos.x, MirrorPos.y - 10.f + i * 30.f, MirrorPos.z);
+		Lancer->SetCollisionProfile("PlayerAttack");
+		Lancer->SetSpeed(-400.f);
+
 		CSpriteComponent* Root = (CSpriteComponent*)Lancer->GetRootComponent();
 		Root->ChangeAnimation("SylphideLancerArrowPurple");
 
@@ -373,8 +598,9 @@ void CPlayer2D::ProduceSecondSylphideLander(float DeltaTime)
 
 		if (NearMonster)
 		{
+			Vector3 LancerPos = Lancer->GetWorldPos();
 			MonsterWorldPos = NearMonster->GetWorldPos();
-			float Radian = atan((MonsterWorldPos.y - WorldPos.y) / (MonsterWorldPos.x - WorldPos.x));
+			float Radian = atan((MonsterWorldPos.y - LancerPos.y) / (MonsterWorldPos.x - LancerPos.x));
 			float Degree = RadianToDegree(Radian);
 
 			Lancer->SetWorldRotation(0.f, 0.f, Degree);
@@ -388,15 +614,18 @@ void CPlayer2D::ProduceSecondSylphideLander(float DeltaTime)
 		if (m_BodySprite->IsFlip())
 		{
 			Lancer->FlipAll(DeltaTime);
+			Lancer->SetSpeed(400.f);
 		}
-
-		Lancer->SetWorldPos(WorldPos.x, WorldPos.y + i * 30.f, 0.f);
-		Lancer->SetCollisionProfile("PlayerAttack");
 	}
 }
 
 void CPlayer2D::EffectEnd(float DeltaTime)
 {
+}
+
+void CPlayer2D::ReturnIdle(float DeltaTime)
+{
+	m_BodySprite->ChangeAnimation("IdleLeft");
 }
 
 

@@ -113,6 +113,7 @@ public:	// =================== Sound =====================
 	bool SoundResume(const std::string& Name);
 	class CSound* FindSound(const std::string& Name);
 	FMOD::ChannelGroup* FindChannelGroup(const std::string& Name);
+	bool IsPlaying(const std::string& Name);
 
 	public:	// =================== Particle =====================
 		bool CreateParticle(const std::string& Name);

@@ -31,6 +31,16 @@ public:
     {
         return m_LancerID;
     }
+    
+    void SetSpeed(float Speed)
+    {
+        m_Speed = Speed;
+    }
+
+    float GetSpeed()    const
+    {
+        return m_Speed;
+    }
 
 public:
     virtual bool Init();

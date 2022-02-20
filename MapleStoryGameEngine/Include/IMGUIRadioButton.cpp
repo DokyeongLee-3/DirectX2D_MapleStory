@@ -22,10 +22,14 @@ void CIMGUIRadioButton::Render()
 
     for (int i = 0; i < Size; ++i)
     {
-        bool Click = ImGui::RadioButton(m_vecRadioData[i].TextUTF8, &Radio, i); 
+        //bool Click = ImGui::RadioButton(m_vecRadioData[i].TextUTF8, &Radio, i); 
 
+        bool Active = m_vecActive[i];
+
+        bool Click = ImGui::RadioButton(m_vecRadioData[i].TextUTF8, Active);
         if(i != Size - 1)
             ImGui::SameLine();
+
 
         if(Click)
         {

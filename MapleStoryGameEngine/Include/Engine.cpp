@@ -29,9 +29,9 @@ CEngine::CEngine()	:
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	//_CrtSetBreakAlloc(280);
-	m_ClearColor[0] = 0.f;
-	m_ClearColor[1] = 0.f;
-	m_ClearColor[2] = 0.f;
+	m_ClearColor[0] = 1.f;
+	m_ClearColor[1] = 1.f;
+	m_ClearColor[2] = 1.f;
 }
 
 CEngine::~CEngine()
@@ -64,7 +64,7 @@ void CEngine::SetMouseState(Mouse_State State)
 {
 	if (m_MouseWidget[(int)m_MouseState])
 	{
-		// 초기화?
+
 	}
 
 	m_MouseState = State;
@@ -131,13 +131,13 @@ bool CEngine::Init(HINSTANCE hInst, HWND hWnd,
 	if (!CSceneManager::GetInst()->Init())
 		return false;
 
+	srand((unsigned int)time(0));
+	rand();
+
 	// 난수 전용 구조화버퍼 생성
 	m_RandomBuffer = new CStructuredBuffer;
 
 	m_RandomBuffer->Init("RandomBuffer", sizeof(float), 10000, 10, true);
-
-	srand((unsigned int)time(0));
-	rand();
 
 	float	RandNumber[10000] = {};
 
@@ -222,6 +222,7 @@ void CEngine::Logic()
 	m_GlobalCBuffer->UpdateCBuffer();
 
 	CInput::GetInst()->Update(DeltaTime);
+	CResourceManager::GetInst()->Update();
 
 	CIMGUIManager::GetInst()->Update(DeltaTime);
 

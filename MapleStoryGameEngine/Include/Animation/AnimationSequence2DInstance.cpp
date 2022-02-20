@@ -232,19 +232,27 @@ void CAnimationSequence2DInstance::SetCurrentAnimation(const std::string& Name)
 	}
 }
 
+void CAnimationSequence2DInstance::SetCurrentAnimation(CAnimationSequence2DData* Current)
+{
+	m_CurrentAnimation = Current;
+}
+
 void CAnimationSequence2DInstance::ChangeAnimation(const std::string& Name)
 {
-	if (m_CurrentAnimation->m_Name == Name)
-		return;
-
-	m_CurrentAnimation->m_Frame = 0;
-	m_CurrentAnimation->m_Time = 0.f;
-
-	size_t	Size = m_CurrentAnimation->m_vecNotify.size();
-
-	for (size_t i = 0; i < Size; ++i)
+	if (m_CurrentAnimation)
 	{
-		m_CurrentAnimation->m_vecNotify[i]->Call = false;
+		if (m_CurrentAnimation->m_Name == Name)
+			return;
+
+		m_CurrentAnimation->m_Frame = 0;
+		m_CurrentAnimation->m_Time = 0.f;
+
+		size_t	Size = m_CurrentAnimation->m_vecNotify.size();
+
+		for (size_t i = 0; i < Size; ++i)
+		{
+			m_CurrentAnimation->m_vecNotify[i]->Call = false;
+		}
 	}
 
 	m_CurrentAnimation = FindAnimation(Name);
@@ -354,7 +362,7 @@ void CAnimationSequence2DInstance::Update(float DeltaTime)
 		}
 	}
 
-	if (AnimEnd)
+	if (AnimEnd && m_CurrentAnimation)
 	{
 		if (m_CurrentAnimation->m_Loop)
 		{
@@ -377,13 +385,16 @@ void CAnimationSequence2DInstance::Update(float DeltaTime)
 		if (m_CurrentAnimation->m_EndFunction)
 			m_CurrentAnimation->m_EndFunction();
 
-		if (m_CurrentAnimation->m_Loop)
+		if (m_CurrentAnimation)
 		{
-			size_t	Size = m_CurrentAnimation->m_vecNotify.size();
-
-			for (size_t i = 0; i < Size; ++i)
+			if (m_CurrentAnimation->m_Loop)
 			{
-				m_CurrentAnimation->m_vecNotify[i]->Call = false;
+				size_t	Size = m_CurrentAnimation->m_vecNotify.size();
+
+				for (size_t i = 0; i < Size; ++i)
+				{
+					m_CurrentAnimation->m_vecNotify[i]->Call = false;
+				}
 			}
 		}
 	}

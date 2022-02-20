@@ -6,11 +6,13 @@
 #include "Scene/SceneManager.h"
 #include "../Object/OnionMonster.h"
 #include "../Object/SylphideLancerHitEffect.h"
+#include "../Object/VoidPressureHitEffect.h"
 #include "Input.h"
 #include "PathManager.h"
 #include "../ClientManager.h"
 #include "LoadingThread.h"
 #include "Render/RenderManager.h"
+#include "../Object/Player2D.h"
 
 COnionScene::COnionScene()
 {
@@ -22,6 +24,14 @@ COnionScene::~COnionScene()
 	m_Scene->GetResource()->SoundStop("OnionSceneBGM");
 
 	SAFE_DELETE(m_LoadingThread);
+
+	CPlayer2D* Player = (CPlayer2D*)(m_Scene->GetPlayerObject());
+
+	if (Player)
+	{
+		Player->SetVoidPressure(nullptr);
+		Player->SetVoidPressureOrb(nullptr);
+	}
 }
 
 void COnionScene::SetStageObject(CStage* Stage)
@@ -147,6 +157,13 @@ void COnionScene::CreateSkillAnimationSequence()
 	m_Scene->GetResource()->LoadSequence2D("SylphideLancerHitPurple.sqc");
 
 	m_Scene->GetResource()->LoadSequence2D("SylphideLancerMuzzleLeft.sqc");
+
+	m_Scene->GetResource()->LoadSequence2D("VoidPressureStartLeft.sqc");
+	m_Scene->GetResource()->LoadSequence2D("VoidPressureReadyLeft.sqc");
+	m_Scene->GetResource()->LoadSequence2D("VoidPressureDestroy.sqc");
+	m_Scene->GetResource()->LoadSequence2D("VoidPressureOrb.sqc");
+	m_Scene->GetResource()->LoadSequence2D("VoidPressureOrbDestroy.sqc");
+	m_Scene->GetResource()->LoadSequence2D("VoidPressureHit.sqc");
 }
 
 void COnionScene::CreateMonsterAnimationSequence()
@@ -171,6 +188,7 @@ void COnionScene::CreateMapAnimationSequence()
 void COnionScene::CreateEffectPrototype()
 {
 	CSylphideLancerHitEffect* SylphideLancerHitEffect = m_Scene->CreatePrototype<CSylphideLancerHitEffect>("SylphideLancerHitEffect");
+	CVoidPressureHitEffect* VoidPressureHitEffect = m_Scene->CreatePrototype<CVoidPressureHitEffect>("VoidPressureHitEffect");
 }
 
 void COnionScene::LoadSound()
@@ -180,6 +198,11 @@ void COnionScene::LoadSound()
 
 	m_Scene->GetResource()->LoadSound("Effect", false, "SylphideLancerUse", "SylphideLancerUse.mp3");
 	m_Scene->GetResource()->LoadSound("Effect", false, "SylphideLancerHit", "SylphideLancerHit.mp3");
+
+	m_Scene->GetResource()->LoadSound("Effect", false, "VoidPressureUse", "VoidPressureUse.mp3");
+	m_Scene->GetResource()->LoadSound("Effect", false, "VoidPressureLoop", "VoidPressureLoop.mp3");
+	m_Scene->GetResource()->LoadSound("Effect", false, "VoidPressureEnd", "VoidPressureEnd.mp3");
+	m_Scene->GetResource()->LoadSound("Effect", false, "VoidPressureHit", "VoidPressureHit.mp3");
 }
 
 void COnionScene::CreateWayToZakumScene()

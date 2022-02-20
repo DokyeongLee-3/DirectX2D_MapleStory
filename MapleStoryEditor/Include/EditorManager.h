@@ -4,9 +4,10 @@
 
 enum class EditMode
 {
-	Map,
+	Scene,
 	Sprite,
-	Scene
+	TileMap,
+	End
 };
 
 class CEditorManager
@@ -26,8 +27,15 @@ private:
 	// 마우스로 이전프레임에 드래그하던 Collider
 	class CColliderComponent* m_PrevCollision;
 
+	bool				m_MousePush;
+
 
 public:
+	bool GetLButtonPush()	const
+	{
+		return m_MousePush;
+	}
+
 	class CEditorMenu* GetEditorMenu()	const
 	{
 		return m_EditorMenu;

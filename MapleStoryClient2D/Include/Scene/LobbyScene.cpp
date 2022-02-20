@@ -23,6 +23,14 @@ CLobbyScene::~CLobbyScene()
 	m_Scene->GetResource()->SoundStop("FairyAcademyBGM");
 
 	SAFE_DELETE(m_LoadingThread);
+
+	CPlayer2D* Player = (CPlayer2D*)(m_Scene->GetPlayerObject());
+
+	if (Player)
+	{
+		Player->SetVoidPressure(nullptr);
+		Player->SetVoidPressureOrb(nullptr);
+	}
 }
 
 void CLobbyScene::SetStageObject(CStage* Stage)
@@ -34,6 +42,7 @@ void CLobbyScene::SetStageObject(CStage* Stage)
 bool CLobbyScene::Init()
 {
 	CreateAnimationSequence();
+	LoadSound();
 
 	CPlayer2D* Player = m_Scene->CreateGameObject<CPlayer2D>("Player");
 
@@ -76,7 +85,6 @@ bool CLobbyScene::Init()
 	m_SkillQuickSlot->SetZOrder(1);
 	CClientManager::GetInst()->SetSkillQuickSlot(m_SkillQuickSlot);
 
-	m_Scene->GetResource()->LoadSound("BGM", true, "FairyAcademyBGM", "TheFairyAcademy.mp3");
 	m_Scene->GetResource()->SoundPlay("FairyAcademyBGM");
 
 	// 요정학원 로비 Scene 만들어놓은 scn파일까지의 경로
@@ -144,6 +152,7 @@ void CLobbyScene::CreatePlayerAnimationSequence()
 	m_Scene->GetResource()->LoadSequence2D("PlayerHealLeft.sqc");
 	m_Scene->GetResource()->LoadSequence2D("PlayerRope.sqc");
 	m_Scene->GetResource()->LoadSequence2D("PlayerJumpLeft.sqc");
+
 }
 
 void CLobbyScene::CreateSkillAnimationSequence()
@@ -156,6 +165,12 @@ void CLobbyScene::CreateSkillAnimationSequence()
 	m_Scene->GetResource()->LoadSequence2D("SylphideLancerBodyEffectLeft.sqc");
 	m_Scene->GetResource()->LoadSequence2D("SylphideLancerArrowLeft.sqc");
 	m_Scene->GetResource()->LoadSequence2D("SylphideLancerArrowPurple.sqc");
+
+	m_Scene->GetResource()->LoadSequence2D("VoidPressureStartLeft.sqc");
+	m_Scene->GetResource()->LoadSequence2D("VoidPressureReadyLeft.sqc");
+	m_Scene->GetResource()->LoadSequence2D("VoidPressureDestroy.sqc");
+	m_Scene->GetResource()->LoadSequence2D("VoidPressureOrb.sqc");
+	m_Scene->GetResource()->LoadSequence2D("VoidPressureOrbDestroy.sqc");
 }
 
 void CLobbyScene::CreateMapAnimationSequence()
@@ -168,6 +183,17 @@ void CLobbyScene::CreateMapAnimationSequence()
 	m_Scene->GetResource()->LoadSequence2D("Library2ndSmallButterfly.sqc");
 	m_Scene->GetResource()->LoadSequence2D("LampBigHelix.sqc");
 	m_Scene->GetResource()->LoadSequence2D("LampSmallHelix.sqc");
+}
+
+void CLobbyScene::LoadSound()
+{
+	m_Scene->GetResource()->LoadSound("BGM", true, "FairyAcademyBGM", "TheFairyAcademy.mp3");
+
+	m_Scene->GetResource()->LoadSound("Effect", false, "SylphideLancerUse", "SylphideLancerUse.mp3");
+
+	m_Scene->GetResource()->LoadSound("Effect", false, "VoidPressureUse", "VoidPressureUse.mp3");
+	m_Scene->GetResource()->LoadSound("Effect", false, "VoidPressureLoop", "VoidPressureLoop.mp3");
+	m_Scene->GetResource()->LoadSound("Effect", false, "VoidPressureEnd", "VoidPressureEnd.mp3");
 }
 
 void CLobbyScene::CreateOnionScene()

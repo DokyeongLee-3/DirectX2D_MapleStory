@@ -157,6 +157,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Animation\PlayerOrb.cpp" />
+    <ClCompile Include="Animation\PlayerSkillBodyEffect.cpp" />
+    <ClCompile Include="Animation\SylphideLancerMirrorAnimation.cpp" />
+    <ClCompile Include="Animation\VoidPressureAttackSphere.cpp" />
+    <ClCompile Include="Animation\VoidPressureOrbAnimation.cpp" />
     <ClCompile Include="ClientManager.cpp" />
     <ClCompile Include="Component\DragCollider.cpp" />
     <ClCompile Include="main.cpp" />
@@ -178,7 +183,6 @@
     <ClCompile Include="Object\PixelTest.cpp" />
     <ClCompile Include="Object\Player2D.cpp" />
     <ClCompile Include="Object\PlayerAnimation2D.cpp" />
-    <ClCompile Include="Object\PlayerSkillBodyEffect.cpp" />
     <ClCompile Include="Object\Portal.cpp" />
     <ClCompile Include="Object\RainParticle.cpp" />
     <ClCompile Include="Object\SmokeParticle.cpp" />
@@ -189,8 +193,10 @@
     <ClCompile Include="Object\SylphideLancerArrow.cpp" />
     <ClCompile Include="Object\SylphideLancerArrowAnimation2D.cpp" />
     <ClCompile Include="Object\SylphideLancerHitEffect.cpp" />
-    <ClCompile Include="Object\SylphideLancerMirrorAnimation.cpp" />
     <ClCompile Include="Object\TileMap.cpp" />
+    <ClCompile Include="Object\VoidPressure.cpp" />
+    <ClCompile Include="Object\VoidPressureHitEffect.cpp" />
+    <ClCompile Include="Object\VoidPressureOrb.cpp" />
     <ClCompile Include="Scene\LoadingScene.cpp" />
     <ClCompile Include="Scene\LoadingThread.cpp" />
     <ClCompile Include="Scene\LobbyScene.cpp" />
@@ -216,6 +222,11 @@
     <ClCompile Include="Widget\StartWidget.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Animation\PlayerOrb.h" />
+    <ClInclude Include="Animation\PlayerSkillBodyEffect.h" />
+    <ClInclude Include="Animation\SylphideLancerMirrorAnimation.h" />
+    <ClInclude Include="Animation\VoidPressureAttackSphere.h" />
+    <ClInclude Include="Animation\VoidPressureOrbAnimation.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="ClientManager.h" />
     <ClInclude Include="Component\DragCollider.h" />
@@ -237,7 +248,6 @@
     <ClInclude Include="Object\PixelTest.h" />
     <ClInclude Include="Object\Player2D.h" />
     <ClInclude Include="Object\PlayerAnimation2D.h" />
-    <ClInclude Include="Object\PlayerSkillBodyEffect.h" />
     <ClInclude Include="Object\Portal.h" />
     <ClInclude Include="Object\RainParticle.h" />
     <ClInclude Include="Object\SmokeParticle.h" />
@@ -248,8 +258,10 @@
     <ClInclude Include="Object\SylphideLancerArrow.h" />
     <ClInclude Include="Object\SylphideLancerArrowAnimation2D.h" />
     <ClInclude Include="Object\SylphideLancerHitEffect.h" />
-    <ClInclude Include="Object\SylphideLancerMirrorAnimation.h" />
     <ClInclude Include="Object\TileMap.h" />
+    <ClInclude Include="Object\VoidPressure.h" />
+    <ClInclude Include="Object\VoidPressureHitEffect.h" />
+    <ClInclude Include="Object\VoidPressureOrb.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Scene\LoadingScene.h" />
     <ClInclude Include="Scene\LoadingThread.h" />

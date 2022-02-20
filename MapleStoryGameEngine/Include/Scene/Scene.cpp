@@ -10,24 +10,28 @@ CScene::CScene()
 	m_Collision = new CSceneCollision;
 	m_CameraManager = new CCameraManager;
 	m_Viewport = new CViewport;
+	m_NavManager = new CNavigationManager;
 
 	m_Mode->m_Scene = this;
 	m_Resource->m_Scene = this;
 	m_Collision->m_Scene = this;
 	m_CameraManager->m_Scene = this;
 	m_Viewport->m_Scene = this;
+	m_NavManager->m_Scene = this;
 
 	m_Start = false;
 
 	m_Collision->Init();
 	m_CameraManager->Init();
 	m_Viewport->Init();
+	m_NavManager->Init();
 
 	m_Change = true;
 }
 
 CScene::~CScene()
 {
+	SAFE_DELETE(m_NavManager);
 	SAFE_DELETE(m_Viewport);
 	SAFE_DELETE(m_CameraManager);
 	SAFE_DELETE(m_Collision);
@@ -61,14 +65,13 @@ void CScene::Start()
 			m_CameraManager->SetCurrentCamera(Camera);
 		}
 	}
+
+	m_NavManager->Start();
 }
 
 void CScene::Update(float DeltaTime)
 {
 	m_Mode->Update(DeltaTime);
-
-	// 내가 수정
-	m_CameraManager->Update(DeltaTime);
 
 	auto	iter = m_ObjList.begin();
 	auto	iterEnd = m_ObjList.end();
@@ -92,15 +95,16 @@ void CScene::Update(float DeltaTime)
 		++iter;
 	}
 
+	m_CameraManager->Update(DeltaTime);
+
 	m_Viewport->Update(DeltaTime);
+
+	m_NavManager->Update(DeltaTime);
 }
 
 void CScene::PostUpdate(float DeltaTime)
 {
 	m_Mode->PostUpdate(DeltaTime);
-
-	// 내가 수정
-	m_CameraManager->PostUpdate(DeltaTime);
 
 	auto	iter = m_ObjList.begin();
 	auto	iterEnd = m_ObjList.end();
@@ -123,6 +127,8 @@ void CScene::PostUpdate(float DeltaTime)
 		(*iter)->PostUpdate(DeltaTime);
 		++iter;
 	}
+
+	m_CameraManager->PostUpdate(DeltaTime);
 
 	m_Viewport->PostUpdate(DeltaTime);
 

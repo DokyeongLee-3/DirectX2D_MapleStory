@@ -36,6 +36,11 @@ protected:
     bool    m_EditMode;
 
 public:
+    void EnableEditMode(bool Mode)
+    {
+        m_EditMode = Mode;
+    }
+
     CMaterial* GetBackMaterial()    const
     {
         return m_BackMaterial;

@@ -8,6 +8,7 @@
 #include "../ClientManager.h"
 #include "Resource/Shader/StructuredBuffer.h"
 #include "../Object/FlowingVolcano.h"
+#include "../Object/Player2D.h"
 
 CWayToZakumScene::CWayToZakumScene()
 {
@@ -16,7 +17,13 @@ CWayToZakumScene::CWayToZakumScene()
 
 CWayToZakumScene::~CWayToZakumScene()
 {
+	CPlayer2D* Player = (CPlayer2D*)(m_Scene->GetPlayerObject());
 
+	if (Player)
+	{
+		Player->SetVoidPressure(nullptr);
+		Player->SetVoidPressureOrb(nullptr);
+	}
 }
 
 void CWayToZakumScene::SetStageObject(CStage* Stage)

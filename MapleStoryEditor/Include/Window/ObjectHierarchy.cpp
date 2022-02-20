@@ -9,6 +9,7 @@
 #include "IMGUIListBox.h"
 #include "IMGUIComboBox.h"
 #include "IMGUIImage.h"
+#include "IMGUIRadioButton.h"
 #include "IMGUIManager.h"
 #include "Engine.h"
 #include "PathManager.h"
@@ -26,6 +27,7 @@
 #include "TileMapWindow.h"
 
 #include <sstream>
+#include "imgui_internal.h"
 
 CObjectHierarchy::CObjectHierarchy()
 {
@@ -217,7 +219,28 @@ void CObjectHierarchy::SelectComponent(int Index, const char* Item)
 
 	if (TileMapWindow)
 	{
-		TileMapWindow->SetTileMap((CTileMapComponent*)m_SelectComponent.Get());
+		if (m_SelectComponent->CheckType<CTileMapComponent>())
+		{
+
+			if (CEditorManager::GetInst()->GetEditMode() != EditMode::TileMap)
+			{
+				CSpriteWindow* SpriteWindow = (CSpriteWindow*)CIMGUIManager::GetInst()->FindIMGUIWindow("SpriteWindow");
+
+				CIMGUIRadioButton* Radio = SpriteWindow->GetRadioButton();
+				Radio->SetActive((int)EditMode::TileMap, true);
+				Radio->CallRadioButtonCallback((int)EditMode::TileMap);
+
+				/*MessageBox(0, TEXT("Please Check Map Edit Mode first"), TEXT("WARNING"), MB_OK);
+				CEngine::GetInst()->Exit();*/
+			}
+
+			TileMapWindow->SetTileMap((CTileMapComponent*)m_SelectComponent.Get());
+
+			//CEditorManager::GetInst()->SetEditMode(EditMode::TileMap);
+		}
+
+		else
+			TileMapWindow->SetTileMap(nullptr);
 	}
 
 	/*	int Idx = m_LayerCombo->GetSelectIndex();

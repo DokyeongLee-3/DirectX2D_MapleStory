@@ -76,11 +76,26 @@ bool CSpriteWindow::Init()
 
     NewNode = Tree->AddChildNode("Configuration", "EditMode");
 
-    CIMGUIRadioButton* Radio = Tree->AddNodeWidget<CIMGUIRadioButton>("EditMode", 100.f, 100.f);
-    Radio->AddText<CSpriteWindow>("Scene Edit Mode", this, &CSpriteWindow::ObjectArrangeButton);
-    Radio->AddText<CSpriteWindow>("Sprite Edit Mode", this, &CSpriteWindow::SpriteEditButton);
-    Radio->AddText<CSpriteWindow>("Map Edit Mode", this, &CSpriteWindow::MapEditButton);
+    m_RadioButton = Tree->AddNodeWidget<CIMGUIRadioButton>("EditMode", 100.f, 100.f);
+    m_RadioButton->AddText<CSpriteWindow>("Scene Edit Mode", this, &CSpriteWindow::ObjectArrangeButton);
+    m_RadioButton->AddText<CSpriteWindow>("Sprite Edit Mode", this, &CSpriteWindow::SpriteEditButton);
+    m_RadioButton->AddText<CSpriteWindow>("Map Edit Mode", this, &CSpriteWindow::MapEditButton);
 
+    for (int i = 0; i < (int)EditMode::End; ++i)
+    {
+        if (i == 0)
+        {
+            m_RadioButton->AddActive(true);
+            continue;
+        }
+
+        m_RadioButton->AddActive(false);
+    }
+
+    // 일단 맨처음은 Scene Edit Mode로 설정해놨으니 처음 초기화에선 Radio Button중 Scene Edit Mode 선택했을때 콜백을 호출해준다
+    m_RadioButton->CallRadioButtonCallback((int)EditMode::Scene);
+
+    
     CIMGUILabel* Label = AddWidget<CIMGUILabel>("", 600.f, 50.f);
     Label->SetColorFloat(0.0f, 0.0f, 0.0f, 0.f);
 
@@ -215,20 +230,6 @@ bool CSpriteWindow::Init()
 
     Label = AddWidget<CIMGUILabel>("", 100.f, 30.f);
     Label->SetColorFloat(0.0f, 0.0f, 0.0f, 0.f);
-
-    Line = AddWidget<CIMGUISameLine>("Line");
-
-    Line->SetOffsetX(500.f);
-
-    Button = AddWidget<CIMGUIButton>("Play", 30.f, 20.f);
-
-    Button->SetClickCallback<CSpriteWindow>(this, &CSpriteWindow::PlayAnimation);
-
-    Line = AddWidget<CIMGUISameLine>("Line");
-
-    Button = AddWidget<CIMGUIButton>("Stop", 30.f, 20.f);
-
-    Button->SetClickCallback<CSpriteWindow>(this, &CSpriteWindow::StopAnimation);
 
 
 
@@ -393,6 +394,17 @@ void CSpriteWindow::LoadTextureButton()
 
 void CSpriteWindow::SpriteEditButton()
 {
+    for (int i = 0; i < (int)EditMode::End; ++i)
+    {
+        if (i == (int)EditMode::Sprite)
+        {
+            m_RadioButton->SetActive(i, true);
+            continue;
+        }
+
+        m_RadioButton->SetActive(i, false);
+    }
+
     CEditorManager::GetInst()->SetEditMode(EditMode::Sprite);
 
     if (!m_SpriteObject)
@@ -403,11 +415,34 @@ void CSpriteWindow::SpriteEditButton()
 
 void CSpriteWindow::MapEditButton()
 {
-    CEditorManager::GetInst()->SetEditMode(EditMode::Map);
+    for (int i = 0; i < (int)EditMode::End; ++i)
+    {
+        if (i == (int)EditMode::TileMap)
+        {
+            m_RadioButton->SetActive(i, true);
+            continue;
+        }
+
+        m_RadioButton->SetActive(i, false);
+    }
+
+    CEditorManager::GetInst()->SetEditMode(EditMode::TileMap);
 }
+
 
 void CSpriteWindow::ObjectArrangeButton()
 {
+    for (int i = 0; i < (int)EditMode::End; ++i)
+    {
+        if (i == (int)EditMode::Scene)
+        {
+            m_RadioButton->SetActive(i, true);
+            continue;
+        }
+
+        m_RadioButton->SetActive(i, false);
+    }
+
     CEditorManager::GetInst()->SetEditMode(EditMode::Scene);
 }
 
@@ -853,22 +888,6 @@ void CSpriteWindow::MyShowStyleEditor(ImGuiStyle* ref)
         ref_saved_style = style;
     ImGui::ShowFontSelector("Fonts##Selector");
 
-}
-
-void CSpriteWindow::PlayAnimation()
-{
-    if (!m_SpriteObject)
-        m_SpriteObject = CSceneManager::GetInst()->GetScene()->CreateGameObject<CSpriteEditObject>("SpriteEditObject");
-
-    m_AnimInstance->Play();
-}
-
-void CSpriteWindow::StopAnimation()
-{
-    if (!m_SpriteObject)
-        m_SpriteObject = CSceneManager::GetInst()->GetScene()->CreateGameObject<CSpriteEditObject>("SpriteEditObject");
-
-    m_AnimInstance->Stop();
 }
 
 void CSpriteWindow::DeleteSequenceButton()

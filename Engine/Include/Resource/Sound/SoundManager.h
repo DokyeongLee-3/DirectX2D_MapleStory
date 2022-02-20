@@ -32,5 +32,8 @@ public:
 	class CSound* FindSound(const std::string& Name);
 	FMOD::ChannelGroup* FindChannelGroup(const std::string& Name);
 	void ReleaseSound(const std::string& Name);
+
+public:
+	bool IsPlaying(const std::string& Name);
 };
 

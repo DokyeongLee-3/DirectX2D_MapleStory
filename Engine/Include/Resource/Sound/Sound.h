@@ -30,6 +30,14 @@ public:
         return m_Loop;
     }
 
+    bool IsCurrentPlaying() const
+    {
+        bool CurrentPlaying = false;
+        m_Channel->isPlaying(&CurrentPlaying);
+
+        return CurrentPlaying;
+    }
+
 public:
     bool LoadSound(FMOD::System* System, FMOD::ChannelGroup* Group,
         bool Loop, const std::string& Name, const char* FileName, const std::string& PathName = SOUND_PATH);

@@ -19,12 +19,14 @@ bool CPlayerSkillBodyEffect::Init()
 	if (!CAnimationSequence2DInstance::Init())
 		return false;
 
-	AddAnimation("Blank", "Blank", false, 1.f);
-	AddAnimation("SylphideLancerBodyEffectLeft", "SylphideLancerBodyEffectLeft", false, 0.7f);
+	//AddAnimation("Blank", "Blank", false, 1.f);
+	AddAnimation("SylphideLancerBodyEffectLeft", "SylphideLancerBodyEffectLeft", false, 0.4f);
+	AddAnimation("LightTransformingLeft", "LightTransformingLeft", false, 0.4f);
 
+	SetCurrentAnimation(nullptr);
 
 	SetEndFunction<CPlayerSkillBodyEffect>("SylphideLancerBodyEffectLeft", this, &CPlayerSkillBodyEffect::EndSkillEffect);
-
+	SetEndFunction<CPlayerSkillBodyEffect>("LightTransformingLeft", this, &CPlayerSkillBodyEffect::EndSkillEffect);
 
 	return true;
 }
@@ -36,5 +38,5 @@ CPlayerSkillBodyEffect* CPlayerSkillBodyEffect::Clone()
 
 void CPlayerSkillBodyEffect::EndSkillEffect()
 {
-	ChangeAnimation("Blank");
+	SetCurrentAnimation(nullptr);
 }

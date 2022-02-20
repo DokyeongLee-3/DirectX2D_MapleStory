@@ -45,8 +45,6 @@ void CSylphideLancerHitEffect::Start()
 
 void CSylphideLancerHitEffect::Update(float DeltaTime)
 {
-	CAnimationSequence2DData* Data = m_Sprite->GetCurrentAnimation();
-
 	CGameObject::Update(DeltaTime);
 }
 

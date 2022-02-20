@@ -30,8 +30,6 @@ public:
         return m_Sprite;
     }
 
-
-
 public:
     void EffectEnd();
 

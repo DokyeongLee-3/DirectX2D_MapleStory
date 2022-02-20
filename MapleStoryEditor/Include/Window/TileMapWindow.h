@@ -21,6 +21,7 @@ private:
 
 private:
 	class CIMGUIComboBox* m_TypeCombo;
+	class CIMGUIComboBox* m_TileEditCombo;
 	class CIMGUITextInput* m_FrameStartX;
 	class CIMGUITextInput* m_FrameStartY;
 	class CIMGUITextInput* m_FrameEndX;
@@ -50,5 +51,6 @@ private:
 
 private:
 	void CreateTileEditControl();
+
 };
 

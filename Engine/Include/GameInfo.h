@@ -452,3 +452,16 @@ struct MovingTileInfo
 	float Opacity;
 	Vector3 Empty;
 };
+
+struct NavWorkData
+{
+	std::function<void(const std::vector<Vector3>&)>	Callback;
+	Vector3		Start;
+	Vector3		End;
+};
+
+struct NavResultData
+{
+	std::function<void(const std::vector<Vector3>&)>	Callback;
+	std::vector<Vector3>	vecPath;
+};

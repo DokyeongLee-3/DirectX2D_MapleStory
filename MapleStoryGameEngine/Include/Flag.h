@@ -220,3 +220,10 @@ enum class Tile_Type
 	Wall,
 	End
 };
+
+enum class Nav_Node_Type
+{
+	None,
+	Open,
+	Close
+};

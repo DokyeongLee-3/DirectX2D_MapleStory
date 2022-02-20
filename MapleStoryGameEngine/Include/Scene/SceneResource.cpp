@@ -465,6 +465,11 @@ FMOD::ChannelGroup* CSceneResource::FindChannelGroup(const std::string& Name)
 	return CResourceManager::GetInst()->FindChannelGroup(Name);
 }
 
+bool CSceneResource::IsPlaying(const std::string& Name)
+{
+	return CResourceManager::GetInst()->IsPlaying(Name);
+}
+
 bool CSceneResource::CreateParticle(const std::string& Name)
 {
 	if (FindParticle(Name))

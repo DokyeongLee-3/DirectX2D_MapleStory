@@ -20,9 +20,11 @@ bool CSylphideLancerMirrorAnimation::Init()
 	if (!CAnimationSequence2DInstance::Init())
 		return false;
 
-	AddAnimation("Blank", "Blank", false, 1.f);
+	//AddAnimation("Blank", "Blank", false, 1.f);
 
-	AddAnimation("SylphideLancerMuzzle", "SylphideLancerMuzzle", false, 1.f);
+	AddAnimation("SylphideLancerMuzzle", "SylphideLancerMuzzle", false, 0.7f);
+
+	SetCurrentAnimation(nullptr);
 
 	SetEndFunction<CSylphideLancerMirrorAnimation>("SylphideLancerMuzzle", this, &CSylphideLancerMirrorAnimation::EndSkillEffect);
 
@@ -37,5 +39,5 @@ CSylphideLancerMirrorAnimation* CSylphideLancerMirrorAnimation::Clone()
 
 void CSylphideLancerMirrorAnimation::EndSkillEffect()
 {
-	ChangeAnimation("Blank");
+	SetCurrentAnimation(nullptr);
 }

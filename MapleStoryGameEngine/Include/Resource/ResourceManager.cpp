@@ -302,6 +302,11 @@ void CResourceManager::ReleaseSound(const std::string& Name)
 	m_SoundManager->ReleaseSound(Name);
 }
 
+bool CResourceManager::IsPlaying(const std::string& Name)
+{
+	return m_SoundManager->IsPlaying(Name);
+}
+
 bool CResourceManager::CreateFontFile(const std::string& Name, const TCHAR* FileName,
 	const std::string& PathName)
 {

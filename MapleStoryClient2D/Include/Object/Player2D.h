@@ -49,31 +49,26 @@ private:
     // 캐릭터가 실피드랜서같은 스킬을 쓰면
     // 이 Component 위치에 거울모양 이펙트가 생기고 
     // 이 거울에서 화살이 발사되는 이펙트 생성
-    CSharedPtr<CSceneComponent>     m_SylphideLancerMuzzle;
+    CSharedPtr<CSpriteComponent>    m_PlayerOrb;
     CSharedPtr<CSpriteComponent>    m_SylphideLancerMirror;
     CSharedPtr<CSpriteComponent>    m_SkillBodyEffect;
 
-    // 보이드 프레셔 사용시 움직일수 있는 공격구체
-    CSharedPtr<CSpriteComponent>    m_VoidPressureAttackSphere;
-    // 보이드 프레셔 사용시 플레이어 바로 앞에 생기는 작은 구체
-    CSharedPtr<CSpriteComponent>    m_VoidPressureSphere;
+    CSharedPtr<CColliderBox2D>      m_Body;
+    CSharedPtr<CCameraComponent>    m_Camera;
 
-    CSharedPtr<CColliderBox2D>       m_Body;
-    CSharedPtr<CCameraComponent>     m_Camera;
+    CSharedPtr<CWidgetComponent>    m_SimpleHUDWidget;
 
-    CSharedPtr<CWidgetComponent>     m_SimpleHUDWidget;
+    class CVoidPressure*            m_VoidPressure;
+    class CVoidPressureOrb*         m_VoidPressureOrb;
 
     float       m_Opacity;
     float       m_ScaleFactor;
+    bool        m_IsFlip;
+    bool        m_OnVoidPressure;
 
     PlayerInfo m_PlayerInfo;
 
 public:
-    CSceneComponent* GetSkillMuzzle()    const
-    {
-        return m_SylphideLancerMuzzle;
-    }
-
     CSpriteComponent* GetRootSpriteComponent()    const
     {
         return m_BodySprite;
@@ -89,6 +84,8 @@ public:
         return m_SimpleHUDWidget;
     }
 
+    class CVoidPressureOrb* GetVoidPressureOrb()    const;
+
 public:
     virtual bool Init();
     virtual void Update(float DeltaTime);
@@ -101,17 +98,27 @@ public:
 private:
     void MoveUp(float DeltaTime);
     void MoveDown(float DeltaTime);
-    void RotationZInv(float DeltaTime);
-    void RotationZ(float DeltaTime);
+    void MoveLeft(float DeltaTime);
+    void MoveRight(float DeltaTime);
     void SylphideLancer(float DeltaTime);
     void VoidPressure(float DeltaTime);
+    void LightTransforming(float DeltaTime);
+
 
     void Skill2(float DeltaTime);
 
 public:
-    void FlipAll(float DeltaTime);
+    void SetVoidPressure(class CVoidPressure* VoidPressure);
+    void SetVoidPressureOrb(class CVoidPressureOrb* VoidPressureOrb);
+
+public:
+    virtual void FlipAll(float DeltaTime);
     void GotoNextMap(float DeltaTime);
     void ProduceSecondSylphideLander(float DeltaTime);
     void EffectEnd(float DeltaTime);
+    void ReturnIdle(float DeltaTime);
+
+public:
+    void VoidPressureCancle(float DeltaTime);
 };
 

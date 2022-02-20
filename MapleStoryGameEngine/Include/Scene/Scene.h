@@ -5,6 +5,7 @@
 #include "SceneCollision.h"
 #include "CameraManager.h"
 #include "Viewport.h"
+#include "NavigationManager.h"
 #include "../GameObject/GameObject.h"
 
 class CScene
@@ -21,6 +22,8 @@ private:
 	CSceneCollision* m_Collision;
 	CCameraManager* m_CameraManager;
 	CViewport* m_Viewport;
+	CNavigationManager* m_NavManager;
+
 	std::list<CSharedPtr<CGameObject>>		m_ObjList;
 	// 이펙트들을 저장해놓은 map 
 	std::unordered_map<std::string, CSharedPtr<CGameObject>> m_mapPrototype;
@@ -63,6 +66,11 @@ public:
 	CViewport* GetViewport()	const
 	{
 		return m_Viewport;
+	}
+
+	CNavigationManager* GetNavigationManager()	const
+	{
+		return m_NavManager;
 	}
 
 	CGameObject* GetPlayerObject()    const

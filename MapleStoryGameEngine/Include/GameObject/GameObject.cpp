@@ -61,6 +61,7 @@ void CGameObject::Destroy()
 	}
 }
 
+
 CComponent* CGameObject::FindComponent(const std::string& Name)
 {
 	{
@@ -182,6 +183,9 @@ void CGameObject::AddCollision()
 
 void CGameObject::PrevRender()
 {
+	if (!m_Enable)
+		return;
+
 	size_t Size = m_vecObjectComponent.size();
 
 	for (size_t i = 0; i < Size; ++i)

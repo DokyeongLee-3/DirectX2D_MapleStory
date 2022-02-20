@@ -22,3 +22,9 @@ enum class CreateObject_Type
 	StaticMapObj,
 	Stage
 };
+
+enum class TileEdit_Mode
+{
+	Type,
+	Frame
+};

@@ -27,9 +27,9 @@ bool CSpriteEditObject::Init()
 	m_Sprite->SetTransparency(true);
 	//m_Sprite->SetPivot(0.5f, 0.5f, 0.f);
 
-	m_Sprite->CreateAnimationInstance<CAnimationSequence2DInstance>();	
+	//m_Sprite->CreateAnimationInstance<CAnimationSequence2DInstance>();	
 
-	m_Sprite->GetAnimationInstance()->Stop();
+	//m_Sprite->GetAnimationInstance()->Stop();
 
 	return true;
 }

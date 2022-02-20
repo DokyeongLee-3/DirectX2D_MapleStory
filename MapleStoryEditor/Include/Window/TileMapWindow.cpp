@@ -11,6 +11,9 @@
 #include "Scene/Scene.h"
 #include "Scene/SceneResource.h"
 #include "Resource/Texture/Texture.h"
+#include "../EditorManager.h"
+#include "Input.h"
+#include "Component/Tile.h"
 
 CTileMapWindow::CTileMapWindow()
 {
@@ -96,7 +99,7 @@ bool CTileMapWindow::Init()
 
 	Line = AddWidget<CIMGUISameLine>("Line");
 
-	Label = AddWidget<CIMGUILabel>("", 100.f, 30.f);
+	Label = AddWidget<CIMGUILabel>("", 40.f, 30.f);
 	Label->SetColorFloat(0.0f, 0.0f, 0.0f, 0.f);
 
 	Line = AddWidget<CIMGUISameLine>("Line");
@@ -116,6 +119,53 @@ bool CTileMapWindow::Init()
 void CTileMapWindow::Update(float DeltaTime)
 {
 	CIMGUIWindow::Update(DeltaTime);
+
+	if (CEditorManager::GetInst()->GetEditMode() == EditMode::TileMap && m_TileMap)
+	{
+		m_TileMap->EnableEditMode(true);
+
+		if (CEditorManager::GetInst()->GetLButtonPush())
+		{
+			// 마우스 위치를 얻어와서 어떤 타일인지를 구한다.
+			Vector2 MouseWorldPos = CInput::GetInst()->GetMouseWorld2DPos();
+
+			CTile* Tile = m_TileMap->GetTile(Vector3(MouseWorldPos.x, MouseWorldPos.y, 0.f));
+
+			if (Tile)
+			{
+				int	TileEditMode = m_TileEditCombo->GetSelectIndex();
+
+				switch ((TileEdit_Mode)TileEditMode)
+				{
+				case TileEdit_Mode::Type:
+				{
+					int	TileType = m_TypeCombo->GetSelectIndex();
+
+					if (TileType == -1)
+						return;
+
+					Tile_Type	Type = (Tile_Type)TileType;
+
+					Tile->SetTileType(Type);
+				}
+				break;
+				case TileEdit_Mode::Frame:
+				{
+					float	StartX, StartY, EndX, EndY;
+
+					StartX = m_FrameStartX->GetValueFloat();
+					StartY = m_FrameStartY->GetValueFloat();
+					EndX = m_FrameEndX->GetValueFloat();
+					EndY = m_FrameEndY->GetValueFloat();
+
+					Tile->SetFrameStart(StartX, StartY);
+					Tile->SetFrameEnd(EndX, EndY);
+				}
+				break;
+				}
+			}
+		}
+	}
 }
 
 void CTileMapWindow::CountXCallback()
@@ -183,6 +233,9 @@ void CTileMapWindow::TileMapCreateButton()
 
 void CTileMapWindow::DefaultFrameButton()
 {
+	if (!m_TileMap)
+		return;
+
 	float	StartX, StartY, EndX, EndY;
 
 	StartX = m_FrameStartX->GetValueFloat();
@@ -200,18 +253,33 @@ void CTileMapWindow::CreateTileEditControl()
 	Label->SetColor(80, 80, 80);
 	Label->SetAlign(0.5f, 0.f);
 
+	m_TileEditCombo = AddWidget<CIMGUIComboBox>("TileEdit", 130.f, 30.f);
+
+	m_TileEditCombo->SetHideName(true);
+	m_TileEditCombo->AddItem("Type");
+	m_TileEditCombo->AddItem("Frame");
+
+	CIMGUISameLine* Line = AddWidget<CIMGUISameLine>("Line");
+
+	Label = AddWidget<CIMGUILabel>("", 100.f, 30.f);
+
+	Label->SetColor(0, 0, 0);
+	Label->SetAlign(0.5f, 0.f);
+
+	Line = AddWidget<CIMGUISameLine>("Line");
+
 	m_TypeCombo = AddWidget<CIMGUIComboBox>("TileType", 130.f, 30.f);
 
 	m_TypeCombo->SetHideName(true);
-	m_TypeCombo->AddItem("일반");
-	m_TypeCombo->AddItem("벽");
+	m_TypeCombo->AddItem("Normal");
+	m_TypeCombo->AddItem("Wall");
 
-	Label = AddWidget<CIMGUILabel>("FrameStartX", 130.f, 30.f);
+	Label = AddWidget<CIMGUILabel>("FrameStart", 130.f, 30.f);
 
 	Label->SetColor(128, 128, 128);
 	Label->SetAlign(0.5f, 0.f);
 
-	CIMGUISameLine* Line = AddWidget<CIMGUISameLine>("Line");
+	Line = AddWidget<CIMGUISameLine>("Line");
 
 	m_FrameStartX = AddWidget<CIMGUITextInput>("FrameStartX", 100.f, 30.f);
 	m_FrameStartX->SetHideName(true);
@@ -231,7 +299,7 @@ void CTileMapWindow::CreateTileEditControl()
 	m_FrameStartY->SetTextType(ImGuiText_Type::Float);
 
 
-	Label = AddWidget<CIMGUILabel>("FrameEndX", 130.f, 30.f);
+	Label = AddWidget<CIMGUILabel>("FrameEnd", 130.f, 30.f);
 
 	Label->SetColor(128, 128, 128);
 	Label->SetAlign(0.5f, 0.f);
@@ -254,11 +322,6 @@ void CTileMapWindow::CreateTileEditControl()
 	m_FrameEndY = AddWidget<CIMGUITextInput>("FrameEndY", 100.f, 30.f);
 	m_FrameEndY->SetHideName(true);
 	m_FrameEndY->SetTextType(ImGuiText_Type::Float);
-
-	Line = AddWidget<CIMGUISameLine>("Line");
-
-	Label = AddWidget<CIMGUILabel>("", 100.f, 30.f);
-	Label->SetColorFloat(0.0f, 0.0f, 0.0f, 0.f);
 
 	Line = AddWidget<CIMGUISameLine>("Line");
 

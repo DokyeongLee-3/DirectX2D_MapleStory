@@ -53,14 +53,6 @@ bool CClientManager::Init(HINSTANCE hInst)
 	CSceneManager::GetInst()->SetCreateComponentFunction<CClientManager>(this, &CClientManager::CreateComponent);
 	CSceneManager::GetInst()->SetCreateAnimInstanceFunction<CClientManager>(this, &CClientManager::CreateAnimInstance);
 
-
-	CInput::GetInst()->CreateKey("MoveUp", VK_UP);
-	CInput::GetInst()->CreateKey("MoveDown", VK_DOWN);
-	CInput::GetInst()->CreateKey("RotationZInv", VK_LEFT);
-	CInput::GetInst()->CreateKey("RotationZ", VK_RIGHT);
-	CInput::GetInst()->CreateKey("Skill1", 'Q');
-	CInput::GetInst()->CreateKey("Skill2", '1');
-	CInput::GetInst()->CreateKey("Flip", 'F');
 	CInput::GetInst()->CreateKey("Inventory", 'I');
 	CInput::GetInst()->CreateKey("Configuration", 'C');	
 	CInput::GetInst()->CreateKey("BossMatching", 'B');

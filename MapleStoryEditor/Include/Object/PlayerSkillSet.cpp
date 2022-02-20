@@ -51,6 +51,8 @@ bool CPlayerSkillSet::Init()
 
 	CAnimationSequence2DInstance* Anim = m_Sprite->GetAnimationInstance();
 
+	Anim->AddAnimation(TEXT("PlayerOrb.sqc"), ANIMATION_PATH, "PlayerOrb", true, 0.8f);
+
 	Anim->AddAnimation(TEXT("SylphideLancerArrowLeft.sqc"), ANIMATION_PATH, "SylphideLancerArrowLeft", true, 0.3f);
 	Anim->AddAnimation(TEXT("SylphideLancerArrowPurple.sqc"), ANIMATION_PATH, "SylphideLancerArrowPurple", true, 0.3f);
 	Anim->AddAnimation(TEXT("SylphideLancerHit.sqc"), ANIMATION_PATH, "SylphideLancerHit", true, 0.7f);
@@ -63,6 +65,8 @@ bool CPlayerSkillSet::Init()
 	Anim->AddAnimation(TEXT("VoidPressureStartLeft.sqc"), ANIMATION_PATH, "VoidPressureStartLeft", true, 1.f);
 	Anim->AddAnimation(TEXT("VoidPressureOrb.sqc"), ANIMATION_PATH, "VoidPressureOrb", true, 8.f);
 	Anim->AddAnimation(TEXT("VoidPressureDestroy.sqc"), ANIMATION_PATH, "VoidPressureDestroy", true, 0.7f);
+	Anim->AddAnimation(TEXT("VoidPressureOrbDestroy.sqc"), ANIMATION_PATH, "VoidPressureOrbDestroy", true, 0.4f);
+	Anim->AddAnimation(TEXT("VoidPressureHit.sqc"), ANIMATION_PATH, "VoidPressureHit", true, 0.5f);
 
 	Anim->AddAnimation(TEXT("VoidPressureDestroy.sqc"), ANIMATION_PATH, "VoidPressureDestroy", true, 0.7f);
 

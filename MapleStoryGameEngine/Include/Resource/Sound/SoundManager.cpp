@@ -193,3 +193,13 @@ void CSoundManager::ReleaseSound(const std::string& Name)
 			m_mapSound.erase(iter);
 	}
 }
+
+bool CSoundManager::IsPlaying(const std::string& Name)
+{
+	CSound* Sound = FindSound(Name);
+
+	if (!Sound)
+		return false;
+
+	return Sound->IsCurrentPlaying();
+}
