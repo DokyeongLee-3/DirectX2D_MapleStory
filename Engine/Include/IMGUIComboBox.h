@@ -6,6 +6,7 @@ class CIMGUIComboBox :
 	public CIMGUIWidget
 {
 	friend class CIMGUIWindow;
+	friend class CIMGUITree;
 
 protected:
 	CIMGUIComboBox();
@@ -41,6 +42,11 @@ public:
 	int GetItemCount()	const
 	{
 		return (int)m_vecItem.size();
+	}
+
+	void SetSelectIndex(int Index)
+	{
+		m_SelectIndex = Index;
 	}
 
 public:

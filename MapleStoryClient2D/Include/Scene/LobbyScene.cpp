@@ -171,6 +171,8 @@ void CLobbyScene::CreateSkillAnimationSequence()
 	m_Scene->GetResource()->LoadSequence2D("VoidPressureDestroy.sqc");
 	m_Scene->GetResource()->LoadSequence2D("VoidPressureOrb.sqc");
 	m_Scene->GetResource()->LoadSequence2D("VoidPressureOrbDestroy.sqc");
+
+	m_Scene->GetResource()->LoadSequence2D("LightTransformingLeft.sqc");
 }
 
 void CLobbyScene::CreateMapAnimationSequence()
@@ -194,6 +196,8 @@ void CLobbyScene::LoadSound()
 	m_Scene->GetResource()->LoadSound("Effect", false, "VoidPressureUse", "VoidPressureUse.mp3");
 	m_Scene->GetResource()->LoadSound("Effect", false, "VoidPressureLoop", "VoidPressureLoop.mp3");
 	m_Scene->GetResource()->LoadSound("Effect", false, "VoidPressureEnd", "VoidPressureEnd.mp3");
+
+	m_Scene->GetResource()->LoadSound("Effect", false, "LightTransforming", "LightTransformingUse.mp3");
 }
 
 void CLobbyScene::CreateOnionScene()

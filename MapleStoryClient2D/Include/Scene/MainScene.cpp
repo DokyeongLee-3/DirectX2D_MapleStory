@@ -47,7 +47,7 @@ bool CMainScene::Init()
 
 	CMonster* Monster = m_Scene->CreateGameObject<CMonster>("Monster");
 
-	CTileMap* TileMap = m_Scene->CreateGameObject<CTileMap>("TileMap");
+	//CTileMap* TileMap = m_Scene->CreateGameObject<CTileMap>("TileMap");
 
 	//m_MainWidget = m_Scene->GetViewport()->CreateWidgetWindow<CMainWidget>("MainWidget");
 
@@ -88,12 +88,15 @@ bool CMainScene::Init()
 	//RainParticle->SetParticle("Rain2");
 	//RainParticle->GetRootComponent()->SetRelativePos(100.f, 520.f, 0.f);
 
-	CBubbleParticle* BubbleParticle = m_Scene->CreateGameObject<CBubbleParticle>("BubbleParticle");
+	//CBubbleParticle* BubbleParticle = m_Scene->CreateGameObject<CBubbleParticle>("BubbleParticle");
 
-	BubbleParticle = m_Scene->CreateGameObject<CBubbleParticle>("BubbleParticle");
+	//BubbleParticle = m_Scene->CreateGameObject<CBubbleParticle>("BubbleParticle");
 
-	BubbleParticle->SetRelativePos(-100.f, 0.f, 0.f);
+	//BubbleParticle->SetRelativePos(-100.f, 0.f, 0.f);
 
+	CTileMap* TileMap = m_Scene->LoadGameObject<CTileMap>();
+
+	TileMap->Load("TileMapObj.gobj", SCENE_PATH);
 
 	CInput::GetInst()->CreateKey("TurnOffUIWindow", VK_ESCAPE);
 
@@ -129,7 +132,7 @@ void CMainScene::CreateMaterial()
 	m_Scene->GetResource()->CreateMaterial<CMaterial>("TileMap");
 	Material = m_Scene->GetResource()->FindMaterial("TileMap");
 
-	Material->AddTexture(0, (int)Buffer_Shader_Type::Pixel, "Tile", TEXT("Floors.png"));
+	Material->AddTexture(0, (int)Buffer_Shader_Type::Pixel, "Tile", TEXT("AllTile.png"));
 
 	Material->SetShader("TileMapShader");
 	Material->SetRenderState("AlphaBlend");

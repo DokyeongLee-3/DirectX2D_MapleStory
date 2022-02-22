@@ -20,6 +20,7 @@ enum class CreateObject_Type
 	SingleHelixBlinkTree,
 	CharacterSelectBackLight,
 	StaticMapObj,
+	TileMapObj,
 	Stage
 };
 

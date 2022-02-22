@@ -28,6 +28,15 @@ private:
 	class CIMGUITextInput* m_FrameEndY;
 	class CIMGUIButton* m_DefaultFrameButton;
 
+	class CIMGUIImage* m_TileImage;
+	class CIMGUIImage* m_TileSprite;
+	class CIMGUIButton* m_TileMaterialSelectButton;
+
+
+private:
+	class CIMGUIButton* m_TileMapSaveButton;
+	class CIMGUIButton* m_TileMapLoadButton;
+
 public:
 	void SetTileMap(CTileMapComponent* TileMap)
 	{
@@ -51,6 +60,11 @@ private:
 
 private:
 	void CreateTileEditControl();
+	void SelectTileMaterial();
 
+
+private:
+	void TileMapSaveButton();
+	void TileMapLoadButton();
 };
 

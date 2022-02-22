@@ -447,6 +447,13 @@ CGameObject* CEditorManager::CreateObject(CScene* Scene, size_t Type)
 		return Obj;
 	}
 
+	else if (Type == typeid(CTileObject).hash_code())
+	{
+		CTileObject* Obj = Scene->LoadGameObject<CTileObject>();
+
+		return Obj;
+	}
+
 	else if (Type == typeid(CStage).hash_code())
 	{
 		CStage* Obj = Scene->LoadGameObject<CStage>();
@@ -515,6 +522,8 @@ CComponent* CEditorManager::CreateComponent(CGameObject* Obj, size_t Type)
 		CDragCollider* Component = Obj->LoadComponent<CDragCollider>();
 
 		CSceneManager::GetInst()->GetScene()->GetCollision()->AddCollider(Component);
+
+		Component->SetColliderColor(Vector4(0.f, 0.f, 1.f, 1.f));
 
 		return Component;
 	}

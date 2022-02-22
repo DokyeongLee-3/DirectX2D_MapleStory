@@ -7,7 +7,7 @@
 #include "Animation/AnimationSequence2DInstance.h"
 #include "Scene/Scene.h"
 #include "Scene/SceneMode.h"
-#include "../Animation/SylphideLancerHitEffect.h"
+#include "../Object/SylphideLancerHitEffect.h"
 #include <time.h>
 
 CSylphideLancer::CSylphideLancer() :

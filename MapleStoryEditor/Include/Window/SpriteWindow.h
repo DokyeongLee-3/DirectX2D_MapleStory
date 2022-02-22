@@ -29,8 +29,6 @@ private:
 	CSharedPtr<class CSpriteEditObject> m_SpriteObject;
 	class CAnimationSequence2DInstance* m_AnimInstance;
 
-	class CIMGUICheckBox* m_LoopCheckBox;
-	class CIMGUICheckBox* m_ReverseCheckBox;
 	class CIMGUITextInput* m_AnimPlayTime;
 	class CIMGUITextInput* m_AnimPlayScale;
 
@@ -121,19 +119,11 @@ public:
 	void AdjustFrameDataEndX();
 	void AdjustFrameDataEndY();
 
-	// Animation Sequence List에 클릭된 시퀀스의 Loop = true 바꾼다
-	void ChangeLoop();
-	void ChangeNoLoop();
-	// Animation Sequence List에 클릭된 시퀀스의 Reverse = true 바꾼다
-	void ChangeReverse();
-	void ChangeNoReverse();
-
 	void ChangePlayTime();
 	void ChangePlayScale();
 
 public:
 	void StyleCallback();
 	void MyShowStyleEditor(ImGuiStyle* ref = (ImGuiStyle*)0);
-
 };
 

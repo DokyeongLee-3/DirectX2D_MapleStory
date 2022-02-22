@@ -56,7 +56,6 @@ bool CDefaultScene::Init()
     CInput::GetInst()->CreateKey("CameraLeft", VK_LEFT);
     CInput::GetInst()->SetKeyCallback<CDefaultScene>("CameraLeft", KeyState_Push, this, &CDefaultScene::CameraLeft);
 
-
     CInput::GetInst()->CreateKey("SelectObjectDown", 'S');
     CInput::GetInst()->SetKeyCallback<CDefaultScene>("SelectObjectDown", KeyState_Down, this, &CDefaultScene::SelectObjectDown);
 

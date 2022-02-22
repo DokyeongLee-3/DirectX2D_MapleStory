@@ -183,6 +183,7 @@
     <ClCompile Include="Object\PixelTest.cpp" />
     <ClCompile Include="Object\Player2D.cpp" />
     <ClCompile Include="Object\PlayerAnimation2D.cpp" />
+    <ClCompile Include="Object\PlayerSkillInfo.cpp" />
     <ClCompile Include="Object\Portal.cpp" />
     <ClCompile Include="Object\RainParticle.cpp" />
     <ClCompile Include="Object\SmokeParticle.cpp" />
@@ -194,6 +195,7 @@
     <ClCompile Include="Object\SylphideLancerArrowAnimation2D.cpp" />
     <ClCompile Include="Object\SylphideLancerHitEffect.cpp" />
     <ClCompile Include="Object\TileMap.cpp" />
+    <ClCompile Include="Object\TileObject.cpp" />
     <ClCompile Include="Object\VoidPressure.cpp" />
     <ClCompile Include="Object\VoidPressureHitEffect.cpp" />
     <ClCompile Include="Object\VoidPressureOrb.cpp" />
@@ -248,6 +250,7 @@
     <ClInclude Include="Object\PixelTest.h" />
     <ClInclude Include="Object\Player2D.h" />
     <ClInclude Include="Object\PlayerAnimation2D.h" />
+    <ClInclude Include="Object\PlayerSkillInfo.h" />
     <ClInclude Include="Object\Portal.h" />
     <ClInclude Include="Object\RainParticle.h" />
     <ClInclude Include="Object\SmokeParticle.h" />
@@ -259,6 +262,7 @@
     <ClInclude Include="Object\SylphideLancerArrowAnimation2D.h" />
     <ClInclude Include="Object\SylphideLancerHitEffect.h" />
     <ClInclude Include="Object\TileMap.h" />
+    <ClInclude Include="Object\TileObject.h" />
     <ClInclude Include="Object\VoidPressure.h" />
     <ClInclude Include="Object\VoidPressureHitEffect.h" />
     <ClInclude Include="Object\VoidPressureOrb.h" />

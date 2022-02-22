@@ -1,6 +1,7 @@
 #pragma once
 
 #include "IMGUIWindow.h"
+#include "IMGUITextInput.h"
 
 class CDetailWindow :
 	public CIMGUIWindow
@@ -67,6 +68,16 @@ public:
 		return m_ScalingY;
 	}
 
+public:
+	void SetScaleXInput(float ScaleX)
+	{
+		m_ScalingX->SetValueFloat(ScaleX);
+	}
+
+	void SetScaleYInput(float ScaleY)
+	{
+		m_ScalingY->SetValueFloat(ScaleY);
+	}
 
 private:
 	void PositionXCallback();
@@ -81,5 +92,8 @@ private:
 private:
 	void ScalingXCallback();
 	void ScalingYCallback();
+
+public:
+	void ClearDetailWindowInfo();
 };
 

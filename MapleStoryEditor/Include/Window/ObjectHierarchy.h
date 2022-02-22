@@ -22,21 +22,29 @@ private:
 	class CIMGUITextInput* m_ZOrder;
 	class CIMGUIButton* m_ZOrderChange;
 
+	class CIMGUIComboBox* m_ProfileCombo;
+	class CIMGUIButton* m_ProfileChangeButton;
+	class CIMGUIText* m_Profile;
+
 	CSharedPtr<CGameObject>		m_SelectObject;
 	CSharedPtr<CSceneComponent>	m_SelectComponent;
 
+	class CIMGUIText* m_ParentComponent;
+
 public:
-	class CIMGUIComboBox* GetLayerCombo()	const
+	void SetParentComponent(const char* Parent);
+
+	CIMGUIComboBox* GetLayerCombo()	const
 	{
 		return m_LayerCombo;
 	}
 
-	class CIMGUIListBox* GetObjectList()	const
+	CIMGUIListBox* GetObjectList()	const
 	{
 		return m_ObjectListWidget;
 	}
 
-	class CIMGUIListBox* GetComponentList()	const
+	CIMGUIListBox* GetComponentList()	const
 	{
 		return m_ComponentListWidget;
 	}
@@ -49,6 +57,11 @@ public:
 	CSceneComponent* GetSelectComponent()	const
 	{
 		return m_SelectComponent;
+	}
+
+	class CIMGUIText* GetProfileText()	const
+	{
+		return m_Profile;
 	}
 
 public:
@@ -65,5 +78,9 @@ private:
 	void LayerChangeCallback();
 	void DeleteObjectButtonCallback();
 	void ZOrderChangeCallback();
+	void ProfileChangeCallback();
+
+public:
+	void ClearHierarchyWindowInfo();
 };
 

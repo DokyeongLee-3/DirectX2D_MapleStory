@@ -14,6 +14,10 @@
 #include "../EditorManager.h"
 #include "Input.h"
 #include "Component/Tile.h"
+#include "IMGUIImage.h"
+#include "IMGUIManager.h"
+#include "DetailWindow.h"
+#include "PathManager.h"
 
 CTileMapWindow::CTileMapWindow()
 {
@@ -110,8 +114,33 @@ bool CTileMapWindow::Init()
 
 	m_TileMapCreateButton->SetClickCallback(this, &CTileMapWindow::TileMapCreateButton);
 
-
 	CreateTileEditControl();
+
+	m_TileImage = AddWidget<CIMGUIImage>("TileImage", 200.f, 200.f);
+
+	Line = AddWidget<CIMGUISameLine>("Line");
+
+	m_TileSprite = AddWidget<CIMGUIImage>("TileSprite", 200.f, 200.f);
+
+	Line = AddWidget<CIMGUISameLine>("Line");
+
+	Line->SetOffsetX(500.f);
+
+	m_TileMaterialSelectButton = AddWidget<CIMGUIButton>("Select Material", 150.f, 30.f);
+	m_TileMaterialSelectButton->SetClickCallback<CTileMapWindow>(this, &CTileMapWindow::SelectTileMaterial);
+
+
+
+
+
+	m_TileMapSaveButton = AddWidget<CIMGUIButton>("TileMapSaveButton", 150.f, 30.f);
+
+	m_TileMapSaveButton->SetClickCallback(this, &CTileMapWindow::TileMapSaveButton);
+
+	m_TileMapLoadButton = AddWidget<CIMGUIButton>("TileMapLoadButton", 150.f, 30.f);
+
+	m_TileMapLoadButton->SetClickCallback(this, &CTileMapWindow::TileMapLoadButton);
+
 
 	return true;
 }
@@ -203,7 +232,15 @@ void CTileMapWindow::TileMapCreateButton()
 	Size.x = m_SizeX->GetValueFloat();
 	Size.y = m_SizeY->GetValueFloat();
 
+	Vector2 Scale = Vector2(CountX * Size.x, CountY * Size.y);
+
 	m_TileMap->CreateTile((Tile_Shape)ShapeIndex, CountX, CountY, Size);
+	m_TileMap->SetWorldScale(Scale.x, Scale.y, 0.f);
+
+	CDetailWindow* DetailWindow = (CDetailWindow*)CIMGUIManager::GetInst()->FindIMGUIWindow("DetailWindow");
+
+	DetailWindow->SetScaleXInput(Scale.x);
+	DetailWindow->SetScaleXInput(Scale.y);
 
 	CMaterial* Material = m_TileMap->GetTileMaterial();
 	CTexture* Texture = nullptr;
@@ -211,7 +248,7 @@ void CTileMapWindow::TileMapCreateButton()
 	if ((Tile_Shape)ShapeIndex == Tile_Shape::Rect)
 	{
 		CSceneManager::GetInst()->GetScene()->GetResource()->LoadTexture("DefaultRectTile",
-			TEXT("Floors.png"));
+			TEXT("AllTile.png"));
 
 		Texture = CSceneManager::GetInst()->GetScene()->GetResource()->FindTexture("DefaultRectTile");
 	}
@@ -229,6 +266,10 @@ void CTileMapWindow::TileMapCreateButton()
 
 	else
 		Material->SetTexture(0, 0, (int)Buffer_Shader_Type::Pixel, "TileTexture", Texture);
+
+	m_TileImage->SetTexture(Texture);
+	m_TileSprite->SetTexture(Texture);
+
 }
 
 void CTileMapWindow::DefaultFrameButton()
@@ -244,6 +285,10 @@ void CTileMapWindow::DefaultFrameButton()
 	EndY = m_FrameEndY->GetValueFloat();
 
 	m_TileMap->SetTileDefaultFrame(StartX, StartY, EndX, EndY);
+
+	m_TileSprite->SetImageStart(StartX, StartY);
+	m_TileSprite->SetImageEnd(EndX, EndY);
+	m_TileSprite->SetSize(Vector2(EndX - StartX, EndY - StartY));
 }
 
 void CTileMapWindow::CreateTileEditControl()
@@ -274,7 +319,7 @@ void CTileMapWindow::CreateTileEditControl()
 	m_TypeCombo->AddItem("Normal");
 	m_TypeCombo->AddItem("Wall");
 
-	Label = AddWidget<CIMGUILabel>("FrameStart", 130.f, 30.f);
+	Label = AddWidget<CIMGUILabel>("FrameStartX", 130.f, 30.f);
 
 	Label->SetColor(128, 128, 128);
 	Label->SetAlign(0.5f, 0.f);
@@ -299,7 +344,7 @@ void CTileMapWindow::CreateTileEditControl()
 	m_FrameStartY->SetTextType(ImGuiText_Type::Float);
 
 
-	Label = AddWidget<CIMGUILabel>("FrameEnd", 130.f, 30.f);
+	Label = AddWidget<CIMGUILabel>("FrameEndX", 130.f, 30.f);
 
 	Label->SetColor(128, 128, 128);
 	Label->SetAlign(0.5f, 0.f);
@@ -330,4 +375,114 @@ void CTileMapWindow::CreateTileEditControl()
 	m_DefaultFrameButton = AddWidget<CIMGUIButton>("DefaultFrameButton", 150.f, 30.f);
 
 	m_DefaultFrameButton->SetClickCallback(this, &CTileMapWindow::DefaultFrameButton);
+}
+
+void CTileMapWindow::SelectTileMaterial()
+{
+	TCHAR   FilePath[MAX_PATH] = {};
+
+	OPENFILENAME    OpenFile = {};
+
+	OpenFile.lStructSize = sizeof(OPENFILENAME);
+	OpenFile.hwndOwner = CEngine::GetInst()->GetWindowHandle();
+	OpenFile.lpstrFilter = TEXT("葛电颇老\0*.*\0DDSFile\0*.dds\0TGAFile\0*.tga\0PNGFile\0*.png\0JPGFile\0*.jpg\0JPEGFile\0*.jpeg\0BMPFile\0*.bmp");
+	OpenFile.lpstrFile = FilePath;
+	OpenFile.nMaxFile = MAX_PATH;
+	OpenFile.lpstrInitialDir = CPathManager::GetInst()->FindPath(TEXTURE_PATH)->Path;
+
+	if (GetOpenFileName(&OpenFile) != 0)
+	{
+		TCHAR   FileName[MAX_PATH] = {};
+		TCHAR   FileExt[MAX_PATH] = {};
+
+		_wsplitpath_s(FilePath, 0, 0, 0, 0, FileName, MAX_PATH, FileExt, MAX_PATH);
+
+		char    ConvertFileName[MAX_PATH] = {};
+		char    ConvertFileExt[MAX_PATH] = {};
+
+		int Length = WideCharToMultiByte(CP_ACP, 0, FileName, -1, 0, 0, 0, 0);
+		WideCharToMultiByte(CP_ACP, 0, FileName, -1, ConvertFileName, Length, 0, 0);
+
+		Length = WideCharToMultiByte(CP_ACP, 0, FileExt, -1, 0, 0, 0, 0);
+		WideCharToMultiByte(CP_ACP, 0, FileExt, -1, ConvertFileExt, Length, 0, 0);
+
+
+		//m_TileSprite->SetTextureFullPath(0, 0, (int)Buffer_Shader_Type::Pixel, ConvertFileName, FilePath);
+		CMaterial* Material = m_TileMap->GetTileMaterial();
+		CTexture* Texture = nullptr;
+
+		CSceneManager::GetInst()->GetScene()->GetResource()->LoadTextureFullPath(ConvertFileName, FilePath);
+
+		Texture = CSceneManager::GetInst()->GetScene()->GetResource()->FindTexture(ConvertFileName);
+
+		if (Material->EmptyTexture())
+			Material->AddTexture(0, (int)Buffer_Shader_Type::Pixel, "TileTexture", Texture);
+
+		else
+			Material->SetTexture(0, 0, (int)Buffer_Shader_Type::Pixel, "TileTexture", Texture);
+
+		m_TileSprite->SetTexture(Texture);
+	}
+}
+
+void CTileMapWindow::TileMapSaveButton()
+{
+	if (!m_TileMap)
+		return;
+
+	TCHAR   FilePath[MAX_PATH] = {};
+
+	OPENFILENAME    OpenFile = {};
+
+	OpenFile.lStructSize = sizeof(OPENFILENAME);
+	OpenFile.hwndOwner = CEngine::GetInst()->GetWindowHandle();
+	OpenFile.lpstrFilter = TEXT("葛电颇老\0*.*\0GameObject File\0*.gobj");
+	OpenFile.lpstrFile = FilePath;
+	OpenFile.nMaxFile = MAX_PATH;
+	OpenFile.lpstrInitialDir = CPathManager::GetInst()->FindPath(SCENE_PATH)->Path;
+
+	if (GetSaveFileName(&OpenFile) != 0)
+	{
+		char    ConvertFullPath[MAX_PATH] = {};
+
+		int Length = WideCharToMultiByte(CP_ACP, 0, FilePath, -1, 0, 0, 0, 0);
+		WideCharToMultiByte(CP_ACP, 0, FilePath, -1, ConvertFullPath, Length, 0, 0);
+
+		CGameObject* TileMapObj = m_TileMap->GetGameObject();
+
+		TileMapObj->Save(ConvertFullPath);
+
+		//CSceneManager::GetInst()->GetScene()->SaveFullPath(ConvertFullPath);
+	}
+}
+
+void CTileMapWindow::TileMapLoadButton()
+{
+	if (!m_TileMap)
+		return;
+
+	TCHAR   FilePath[MAX_PATH] = {};
+
+	OPENFILENAME    OpenFile = {};
+
+	OpenFile.lStructSize = sizeof(OPENFILENAME);
+	OpenFile.hwndOwner = CEngine::GetInst()->GetWindowHandle();
+	OpenFile.lpstrFilter = TEXT("葛电颇老\0*.*\0GameObject File\0*.gobj");
+	OpenFile.lpstrFile = FilePath;
+	OpenFile.nMaxFile = MAX_PATH;
+	OpenFile.lpstrInitialDir = CPathManager::GetInst()->FindPath(SCENE_PATH)->Path;
+
+	if (GetOpenFileName(&OpenFile) != 0)
+	{
+		char    ConvertFullPath[MAX_PATH] = {};
+
+		int Length = WideCharToMultiByte(CP_ACP, 0, FilePath, -1, 0, 0, 0, 0);
+		WideCharToMultiByte(CP_ACP, 0, FilePath, -1, ConvertFullPath, Length, 0, 0);
+
+
+		CGameObject* TileMapObj = m_TileMap->GetGameObject();
+
+		TileMapObj->Load(ConvertFullPath);
+		//CSceneManager::GetInst()->GetScene()->LoadFullPath(ConvertFullPath);
+	}
 }

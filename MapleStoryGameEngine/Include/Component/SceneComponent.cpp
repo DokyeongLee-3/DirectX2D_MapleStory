@@ -4,6 +4,7 @@
 #include "../GameObject/GameObject.h"
 #include "../Resource/Shader/Standard2DConstantBuffer.h"
 #include "../Scene/SceneManager.h"
+#include "../Device.h"
 
 CSceneComponent::CSceneComponent()	:
 	m_ZOrder(0)
@@ -351,6 +352,36 @@ void CSceneComponent::CheckCollision()
 
 void CSceneComponent::PrevRender()
 {
+	CCameraComponent* Camera = m_Scene->GetCameraManager()->GetCurrentCamera();
+
+	// Culling으로 최적화하기
+	if (Camera)
+	{
+		Vector3 WorldPos = GetWorldPos();
+		Vector3 Pivot = GetPivot();
+		Vector3 WorldScale = GetWorldScale();
+		Resolution RS = CDevice::GetInst()->GetResolution();
+		Vector3 CamPos = Camera->GetWorldPos();
+
+
+		Vector2 LB = Vector2(WorldPos.x - WorldScale.x * Pivot.x, WorldPos.y - WorldScale.y * Pivot.y);
+		Vector2 RT = Vector2(WorldPos.x + WorldScale.x, WorldPos.y + WorldScale.y);
+
+		if (LB.x > CamPos.x + (float)RS.Width || LB.y > CamPos.y + (float)RS.Height)
+		{
+			std::string Name = GetGameObject()->GetName();
+			int a = 3;
+			return;
+		}
+
+		if (RT.x < CamPos.x || RT.y < CamPos.y)
+		{
+			std::string Name = GetGameObject()->GetName();
+			int a = 3;
+			return;
+		}
+	}
+
 	if (m_Render)
 	{
 		CRenderManager::GetInst()->AddRenderList(this);

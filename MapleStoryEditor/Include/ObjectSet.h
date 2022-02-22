@@ -16,5 +16,6 @@
 #include "Object/Library2ndLampLight.h"
 #include "Object/Library2ndButterfly.h"
 #include "Object/StaticMapObj.h"
+#include "Object/TileObject.h"
 #include "Object/Stage.h"
 #include "Object/CharacterSelectBackLight.h"

@@ -76,7 +76,7 @@ bool COnionScene::Init()
 	m_Scene->LoadFullPath(FullPath);
 
 
-	for (int i = 0; i < 5; ++i)
+	for (int i = 0; i < 10; ++i)
 	{
 		char MonsterName[128] = {};
 
@@ -84,7 +84,7 @@ bool COnionScene::Init()
 
 		COnionMonster* OnionMonster = m_Scene->CreateGameObject<COnionMonster>(MonsterName);
 		OnionMonster->SetAllSceneComponentsLayer("MovingObjFront");
-		OnionMonster->SetWorldPos(400.f + i * 250.f, 200.f, 0.f);
+		OnionMonster->SetWorldPos(300.f + i * 150.f, 300.f, 0.f);
 	}
 
 	LoadSound();
@@ -164,6 +164,8 @@ void COnionScene::CreateSkillAnimationSequence()
 	m_Scene->GetResource()->LoadSequence2D("VoidPressureOrb.sqc");
 	m_Scene->GetResource()->LoadSequence2D("VoidPressureOrbDestroy.sqc");
 	m_Scene->GetResource()->LoadSequence2D("VoidPressureHit.sqc");
+
+	m_Scene->GetResource()->LoadSequence2D("LightTransformingLeft.sqc");
 }
 
 void COnionScene::CreateMonsterAnimationSequence()
@@ -203,6 +205,8 @@ void COnionScene::LoadSound()
 	m_Scene->GetResource()->LoadSound("Effect", false, "VoidPressureLoop", "VoidPressureLoop.mp3");
 	m_Scene->GetResource()->LoadSound("Effect", false, "VoidPressureEnd", "VoidPressureEnd.mp3");
 	m_Scene->GetResource()->LoadSound("Effect", false, "VoidPressureHit", "VoidPressureHit.mp3");
+
+	m_Scene->GetResource()->LoadSound("Effect", false, "LightTransforming", "LightTransformingUse.mp3");
 }
 
 void COnionScene::CreateWayToZakumScene()

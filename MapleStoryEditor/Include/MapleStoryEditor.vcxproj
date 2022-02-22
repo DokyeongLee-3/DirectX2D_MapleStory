@@ -184,6 +184,7 @@
     <ClInclude Include="Object\SpriteEditObject.h" />
     <ClInclude Include="Object\Stage.h" />
     <ClInclude Include="Object\StaticMapObj.h" />
+    <ClInclude Include="Object\TileObject.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Scene\DefaultScene.h" />
     <ClInclude Include="Window\DetailWindow.h" />
@@ -217,6 +218,7 @@
     <ClCompile Include="Object\SpriteEditObject.cpp" />
     <ClCompile Include="Object\Stage.cpp" />
     <ClCompile Include="Object\StaticMapObj.cpp" />
+    <ClCompile Include="Object\TileObject.cpp" />
     <ClCompile Include="Scene\DefaultScene.cpp" />
     <ClCompile Include="Window\DetailWindow.cpp" />
     <ClCompile Include="Window\EditorMenu.cpp" />

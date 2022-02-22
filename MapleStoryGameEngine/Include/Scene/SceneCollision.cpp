@@ -88,7 +88,8 @@ void CSceneCollision::Collision(float DeltaTime)
 		(*iter)->CheckPrevColliderSection();
 	}
 
-	// 먼저 마우스와 충돌체들을 체크한다.
+	// 먼저 마우스와 충돌체들을 체크한다 
+	// -> 에디터에선 필요하지면 Client에선 마우스와 ColliderComponent(위젯이 아니라)와의 충돌은 아직 필요없어서 막아둠
 	CollisionMouse(DeltaTime);
 
 	// 충돌체끼리 체크한다.

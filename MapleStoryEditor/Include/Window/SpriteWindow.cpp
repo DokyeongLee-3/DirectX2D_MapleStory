@@ -36,8 +36,6 @@ CSpriteWindow::CSpriteWindow() :
     m_FrameEndPosX(nullptr),
     m_FrameStartPosY(nullptr),
     m_FrameEndPosY(nullptr),
-    m_LoopCheckBox(nullptr),
-    m_ReverseCheckBox(nullptr),
     m_AnimPlayScale(nullptr),
     m_AnimPlayTime(nullptr),
     m_LoadFileName(nullptr),
@@ -71,8 +69,9 @@ bool CSpriteWindow::Init()
     Node* NewNode = Tree->AddChildNode("", "Configuration");
 
     NewNode = Tree->AddChildNode("Configuration", "Style");
-
     NewNode->Callback = std::bind(&CSpriteWindow::StyleCallback, this);
+
+
 
     NewNode = Tree->AddChildNode("Configuration", "EditMode");
 
@@ -230,22 +229,6 @@ bool CSpriteWindow::Init()
 
     Label = AddWidget<CIMGUILabel>("", 100.f, 30.f);
     Label->SetColorFloat(0.0f, 0.0f, 0.0f, 0.f);
-
-
-
-    m_LoopCheckBox = AddWidget<CIMGUICheckBox>("LoopCheckBox");
-    m_LoopCheckBox->SetText<CIMGUICheckBox>("Loop", nullptr, nullptr);
-    m_LoopCheckBox->SetCheckCallback<CSpriteWindow>(this, &CSpriteWindow::ChangeLoop);
-    m_LoopCheckBox->SetUnCheckCallback<CSpriteWindow>(this, &CSpriteWindow::ChangeNoLoop);
-
-    Line = AddWidget<CIMGUISameLine>("Line");
-
-    m_ReverseCheckBox = AddWidget<CIMGUICheckBox>("ReverseCheckBox");
-    m_ReverseCheckBox->SetText<CIMGUICheckBox>("Reverse", nullptr, nullptr);
-    m_ReverseCheckBox->SetCheckCallback<CSpriteWindow>(this, &CSpriteWindow::ChangeReverse);
-    m_ReverseCheckBox->SetUnCheckCallback<CSpriteWindow>(this, &CSpriteWindow::ChangeNoReverse);
-
-    Line = AddWidget<CIMGUISameLine>("Line");
 
     Label = AddWidget<CIMGUILabel>("CenterXPos", 50.f, 20.f);
     Label->SetColorFloat(0.0f, 0.0f, 150.f, 0.f);
@@ -468,10 +451,8 @@ void CSpriteWindow::AddAnimationButton()
 
     float PlayTime = m_AnimPlayTime->GetValueFloat();
     float PlayScale = m_AnimPlayScale->GetValueFloat();
-    bool Loop = m_LoopCheckBox->IsCheck();
-    bool Reverse = m_ReverseCheckBox->IsCheck();
 
-    m_AnimInstance->AddAnimation(Text, Text, Loop, PlayTime, PlayScale, Reverse);
+    m_AnimInstance->AddAnimation(Text, Text, true, PlayTime, PlayScale, false);
 
 }
 
@@ -775,70 +756,6 @@ void CSpriteWindow::LoadAnimation()
     }*/
 }
 
-void CSpriteWindow::ChangeLoop()
-{
-    if (m_AnimationList->GetSelectIndex() == -1)
-        return;
-
-    std::string SelectSequence = m_AnimationList->GetSelectItem();
-
-    CAnimationSequence2DData* Data = m_AnimInstance->FindAnimation(SelectSequence);
-
-    if (!Data)
-        return;
-
-    if (m_LoopCheckBox->IsCheck())
-        Data->SetLoop(true);
-}
-
-void CSpriteWindow::ChangeNoLoop()
-{
-    if (m_AnimationList->GetSelectIndex() == -1)
-        return;
-
-    std::string SelectSequence = m_AnimationList->GetSelectItem();
-
-    CAnimationSequence2DData* Data = m_AnimInstance->FindAnimation(SelectSequence);
-
-    if (!Data)
-        return;
-
-    if (!m_LoopCheckBox->IsCheck())
-        Data->SetLoop(false);
-}
-
-void CSpriteWindow::ChangeReverse()
-{
-    if (m_AnimationList->GetSelectIndex() == -1)
-        return;
-
-    std::string SelectSequence = m_AnimationList->GetSelectItem();
-
-    CAnimationSequence2DData* Data = m_AnimInstance->FindAnimation(SelectSequence);
-
-    if (!Data)
-        return;
-
-    if (m_ReverseCheckBox->IsCheck())
-        Data->SetReverse(true);
-}
-
-void CSpriteWindow::ChangeNoReverse()
-{
-    if (m_AnimationList->GetSelectIndex() == -1)
-        return;
-
-    std::string SelectSequence = m_AnimationList->GetSelectItem();
-
-    CAnimationSequence2DData* Data = m_AnimInstance->FindAnimation(SelectSequence);
-
-    if (!Data)
-        return;
-
-    if (!m_ReverseCheckBox->IsCheck())
-        Data->SetReverse(false);
-}
-
 void CSpriteWindow::ChangePlayTime()
 {
     CObjectHierarchy* Hierarchy = CEditorManager::GetInst()->GetObjectHierarchy();
@@ -884,11 +801,14 @@ void CSpriteWindow::MyShowStyleEditor(ImGuiStyle* ref)
 
     ImGui::PushItemWidth(ImGui::GetWindowWidth() * 0.50f);
 
-    if (ImGui::ShowStyleSelector("Colors##Selector"))
-        ref_saved_style = style;
+
+    //if (ImGui::ShowStyleSelector("Colors##Selector"))
+    //    ref_saved_style = style;
+    ImGui::ShowStyleSelector("Colors##Selector");
     ImGui::ShowFontSelector("Fonts##Selector");
 
 }
+
 
 void CSpriteWindow::DeleteSequenceButton()
 {

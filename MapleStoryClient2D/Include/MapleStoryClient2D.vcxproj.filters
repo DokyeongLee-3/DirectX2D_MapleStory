@@ -273,6 +273,12 @@
     <ClCompile Include="Object\SylphideLancerHitEffect.cpp">
       <Filter>02. Object</Filter>
     </ClCompile>
+    <ClCompile Include="Object\PlayerSkillInfo.cpp">
+      <Filter>02. Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\TileObject.cpp">
+      <Filter>02. Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -465,6 +471,12 @@
       <Filter>02. Object</Filter>
     </ClInclude>
     <ClInclude Include="Object\SylphideLancerHitEffect.h">
+      <Filter>02. Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\PlayerSkillInfo.h">
+      <Filter>02. Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\TileObject.h">
       <Filter>02. Object</Filter>
     </ClInclude>
   </ItemGroup>

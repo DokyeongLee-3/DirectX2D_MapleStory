@@ -223,6 +223,9 @@
     <Filter Include="03. Scene\06. Navigation">
       <UniqueIdentifier>{e3432024-d63e-4edd-8c54-9cdbf3a312ac}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05. Component\02. ObjectComponent\02. NavAgent">
+      <UniqueIdentifier>{da013446-6df9-407f-945d-da73f2c59124}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -605,6 +608,9 @@
     </ClCompile>
     <ClCompile Include="Scene\Navigation.cpp">
       <Filter>03. Scene\06. Navigation</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\NavAgent.cpp">
+      <Filter>05. Component\02. ObjectComponent\02. NavAgent</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1036,6 +1042,9 @@
     </ClInclude>
     <ClInclude Include="Scene\Navigation.h">
       <Filter>03. Scene\06. Navigation</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\NavAgent.h">
+      <Filter>05. Component\02. ObjectComponent\02. NavAgent</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

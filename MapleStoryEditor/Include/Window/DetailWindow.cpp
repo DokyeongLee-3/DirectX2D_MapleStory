@@ -144,7 +144,7 @@ bool CDetailWindow::Init()
 
 	Line = AddWidget<CIMGUISameLine>("Line");
 
-	m_ScalingX = AddWidget<CIMGUITextInput>("ScaleX", 100.f, 30.f);
+	m_ScalingX = AddWidget<CIMGUITextInput>("ScaleX", 120.f, 30.f);
 	m_ScalingX->SetHideName(true);
 	m_ScalingX->SetTextType(ImGuiText_Type::Float);
 	m_ScalingX->SetCallback(this, &CDetailWindow::ScalingXCallback);
@@ -158,7 +158,7 @@ bool CDetailWindow::Init()
 
 	Line = AddWidget<CIMGUISameLine>("Line");
 
-	m_ScalingY = AddWidget<CIMGUITextInput>("ScaleY", 100.f, 30.f);
+	m_ScalingY = AddWidget<CIMGUITextInput>("ScaleY", 120.f, 30.f);
 	m_ScalingY->SetHideName(true);
 	m_ScalingY->SetTextType(ImGuiText_Type::Float);
 	m_ScalingY->SetCallback(this, &CDetailWindow::ScalingYCallback);
@@ -420,4 +420,18 @@ void CDetailWindow::ScalingYCallback()
 	Scale.y = m_ScalingY->GetValueFloat();
 
 	((CSceneComponent*)Comp)->SetWorldScale(Scale);
+}
+
+void CDetailWindow::ClearDetailWindowInfo()
+{
+	m_PosX->SetValueFloat(0.f);
+	m_PosY->SetValueFloat(0.f);
+	m_PosZ->SetValueFloat(0.f);
+
+	m_RotX->SetValueFloat(0.f);
+	m_RotY->SetValueFloat(0.f);
+	m_RotZ->SetValueFloat(0.f);
+
+	m_ScalingX->SetValueFloat(0.f);
+	m_ScalingY->SetValueFloat(0.f);
 }

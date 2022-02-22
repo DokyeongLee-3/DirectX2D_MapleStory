@@ -29,6 +29,11 @@ protected:
 
 
 public:
+	CSceneComponent* GetParent()	const
+	{
+		return m_Parent;
+	}
+
 	int GetZOrder()	const
 	{
 		return m_ZOrder;
@@ -63,6 +68,13 @@ public:
 	void SetLayerName(const std::string& Name)
 	{
 		m_LayerName = Name;
+
+		size_t Size = m_vecChild.size();
+
+		for (size_t i = 0; i < Size; ++i)
+		{
+			m_vecChild[i]->SetLayerName(Name);
+		}
 	}
 
 	void SetAllChildComponentScene(class CScene* Scene);

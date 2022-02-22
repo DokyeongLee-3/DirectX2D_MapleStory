@@ -6088,7 +6088,7 @@ void ImGui::ShowFontSelector(const char* label)
                     CIMGUIManager::GetInst()->SetCurrentFont("DefaultBold");
                 }
 
-                else if (FontName.find("Default") != std::string::npos)
+                else if (FontName.find("Regular") != std::string::npos)
                 {
                     CIMGUIManager::GetInst()->SetCurrentFont("Default");
                 }
@@ -6110,7 +6110,7 @@ void ImGui::ShowFontSelector(const char* label)
 // Useful for quick combo boxes where the choices are known locally.
 bool ImGui::ShowStyleSelector(const char* label)
 {
-    static int style_idx = -1;
+    static int style_idx = 0;
     if (ImGui::Combo(label, &style_idx, "Dark\0Light\0Classic\0"))
     {
         switch (style_idx)

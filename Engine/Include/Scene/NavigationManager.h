@@ -30,7 +30,7 @@ public:
 
 public:
 	template <typename T>
-	bool FindPath(T* Obj, void(T::* Func)(const std::vector<Vector3>&),
+	bool FindPath(T* Obj, void(T::* Func)(const std::list<Vector3>&),
 		const Vector3& Start, const Vector3& End)
 	{
 		if (m_vecNavigationThread.empty())

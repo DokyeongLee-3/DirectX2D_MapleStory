@@ -2,11 +2,14 @@
 #include "GameObject.h"
 #include "../Component/SpriteComponent.h"
 #include "../Scene/SceneManager.h"
+#include "../PathManager.h"
+#include "../Component/NavAgent.h"
 
 CGameObject::CGameObject()	:
 	m_Scene(nullptr),
 	m_Parent(nullptr),
-	m_LifeSpan(0.f)
+	m_LifeSpan(0.f),
+	m_Gravity(false)
 {
 	SetTypeID<CGameObject>();
 }
@@ -51,7 +54,10 @@ void CGameObject::Destroy()
 {
 	CRef::Destroy();
 
-	m_RootComponent->Destroy();
+	if (m_RootComponent)
+	{
+		m_RootComponent->Destroy();
+	}
 
 	size_t	Size = m_vecObjectComponent.size();
 
@@ -173,6 +179,11 @@ void CGameObject::PostUpdate(float DeltaTime)
 
 	if (m_RootComponent)
 		m_RootComponent->PostUpdate(DeltaTime);
+
+	if (m_Gravity)
+	{
+
+	}
 }
 
 void CGameObject::AddCollision()
@@ -303,5 +314,75 @@ void CGameObject::Load(FILE* File)
 		m_vecObjectComponent.push_back((CObjectComponent*)Component);
 
 		CSceneManager::GetInst()->GetScene()->GetSceneMode()->AddComponentList(Component->GetName().c_str());
+	}
+}
+
+void CGameObject::Save(const char* FullPath)
+{
+	FILE* File = nullptr;
+
+	fopen_s(&File, FullPath, "wb");
+
+	if (!File)
+		return;
+
+	Save(File);
+
+	fclose(File);
+}
+
+void CGameObject::Load(const char* FullPath)
+{
+	FILE* File = nullptr;
+
+	fopen_s(&File, FullPath, "rb");
+
+	if (!File)
+		return;
+
+	Load(File);
+
+	fclose(File);
+}
+
+void CGameObject::Save(const char* FileName, const std::string& PathName)
+{
+	char	FullPath[MAX_PATH] = {};
+
+	const PathInfo* Info = CPathManager::GetInst()->FindPath(PathName);
+
+	if (Info)
+		strcpy_s(FullPath, Info->PathMultibyte);
+
+	strcat_s(FullPath, FileName);
+
+	Save(FullPath);
+}
+
+void CGameObject::Load(const char* FileName, const std::string& PathName)
+{
+	char	FullPath[MAX_PATH] = {};
+
+	const PathInfo* Info = CPathManager::GetInst()->FindPath(PathName);
+
+	if (Info)
+		strcpy_s(FullPath, Info->PathMultibyte);
+
+	strcat_s(FullPath, FileName);
+
+	Load(FullPath);
+}
+
+void CGameObject::Move(const Vector3& EndPos)
+{
+	size_t	Size = m_vecObjectComponent.size();
+
+	for (size_t i = 0; i < Size; ++i)
+	{
+		if (m_vecObjectComponent[i]->CheckType<CNavAgent>())
+		{
+			((CNavAgent*)m_vecObjectComponent[i].Get())->Move(EndPos);
+			break;
+		}
 	}
 }

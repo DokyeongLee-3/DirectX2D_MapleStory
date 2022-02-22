@@ -16,6 +16,8 @@ CTileMapComponent::CTileMapComponent()
 	SetTypeID<CTileMapComponent>();
 	m_Render = true;
 
+	m_DeltaTime = 0.f;
+
 	m_CountX = 0;
 	m_CountY = 0;
 	m_RenderCount = 0;
@@ -298,7 +300,7 @@ void CTileMapComponent::CreateTile(Tile_Shape Shape, int CountX, int CountY, con
 
 	SetWorldInfo();
 
-	m_Scene->GetNavigationManager()->SetNavData(this);
+	//m_Scene->GetNavigationManager()->SetNavData(this);
 }
 
 void CTileMapComponent::SetTileDefaultFrame(const Vector2& Start, const Vector2& End)
@@ -764,6 +766,13 @@ void CTileMapComponent::PostUpdate(float DeltaTime)
 {
 	CSceneComponent::PostUpdate(DeltaTime);
 
+	m_DeltaTime = DeltaTime;
+}
+
+void CTileMapComponent::PrevRender()
+{
+	CSceneComponent::PrevRender();
+
 	if (!m_vecTile.empty())
 	{
 		CCameraComponent* Camera = m_Scene->GetCameraManager()->GetCurrentCamera();
@@ -810,7 +819,7 @@ void CTileMapComponent::PostUpdate(float DeltaTime)
 			{
 				int	Index = i * m_CountX + j;
 
-				m_vecTile[Index]->Update(DeltaTime);
+				m_vecTile[Index]->Update(m_DeltaTime);
 
 				if (m_vecTile[Index]->GetRender())
 				{
@@ -833,11 +842,6 @@ void CTileMapComponent::PostUpdate(float DeltaTime)
 
 		m_TileInfoBuffer->UpdateBuffer(&m_vecTileInfo[0], m_RenderCount);
 	}
-}
-
-void CTileMapComponent::PrevRender()
-{
-	CSceneComponent::PrevRender();
 }
 
 void CTileMapComponent::Render()
@@ -996,7 +1000,7 @@ void CTileMapComponent::Load(FILE* File)
 	SetWorldInfo();
 
 
-	m_Scene->GetNavigationManager()->SetNavData(this);
+	//m_Scene->GetNavigationManager()->SetNavData(this);
 
 
 	CSceneComponent::Load(File);

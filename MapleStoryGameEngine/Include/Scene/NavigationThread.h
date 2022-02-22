@@ -17,6 +17,7 @@ private:
 	CThreadQueue<NavWorkData>			m_WorkQueue;
 	// 실제로 길찾기를 해주는 객체
 	class CNavigation*					m_Navigation;
+	HANDLE				m_ExitEvent;
 
 public:
 	int GetWorkCount()
@@ -31,7 +32,7 @@ public:
 
 public:
 	template <typename T>
-	void AddWork(T* Obj, void(T::* Func)(const std::vector<Vector3>&),
+	void AddWork(T* Obj, void(T::* Func)(const std::list<Vector3>&),
 		const Vector3& Start, const Vector3& End)
 	{
 		NavWorkData	Data;

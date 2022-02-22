@@ -141,6 +141,9 @@
     <ClCompile Include="Window\TileMapWindow.cpp">
       <Filter>02. Editor</Filter>
     </ClCompile>
+    <ClCompile Include="Object\TileObject.cpp">
+      <Filter>03. Object\04. MapObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene\DefaultScene.h">
@@ -238,6 +241,9 @@
     </ClInclude>
     <ClInclude Include="Window\TileMapWindow.h">
       <Filter>02. Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\TileObject.h">
+      <Filter>03. Object\04. MapObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -80,6 +80,13 @@ void CCollisionSection::Collision(float DeltaTime)
 					Dest->CallCollisionCallback(Collision_State::Begin);
 				}
 
+				// 이전 프레임도 충돌하고 이번 프레임에도 충돌한다
+				else
+				{
+					Src->CallCollisionCallback(Collision_State::Stay);
+					Dest->CallCollisionCallback(Collision_State::Stay);
+				}
+
 				Src->AddCurrentFrameCollision(Dest);
 				Dest->AddCurrentFrameCollision(Src);
 			}

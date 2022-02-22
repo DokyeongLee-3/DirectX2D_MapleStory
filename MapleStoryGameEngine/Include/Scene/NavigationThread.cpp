@@ -8,10 +8,18 @@ CNavigationThread::CNavigationThread()
 	SetLoop(true);
 
 	m_Navigation = new CNavigation;
+
+	//m_ExitEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
 }
 
 CNavigationThread::~CNavigationThread()
 {
+	m_Loop = false;
+
+	WaitForSingleObject(m_ExitEvent, INFINITE);
+
+	CloseHandle(m_ExitEvent);
+
 	SAFE_DELETE(m_Navigation);
 }
 
@@ -38,4 +46,6 @@ void CNavigationThread::Run()
 			m_NavManager->AddNavResult(Result);
 		}
 	}
+
+	SetEvent(m_ExitEvent);
 }

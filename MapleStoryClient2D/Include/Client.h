@@ -1,6 +1,16 @@
 #pragma once
 
 #include "GameInfo.h"
+#include "Object/Stage.h"
+#include "Object/StaticMapObj.h"
+#include "Object/Portal.h"
+#include "Object/BlinkTree.h"
+#include "Object/LampLight.h"
+#include "Object/DoubleHelixBlinkTree.h"
+#include "Object/Butterfly.h"
+#include "Object/LobbyBigLamp.h"
+#include "Object/LobbySmallLamp.h"
+#include "Object/TileObject.h"
 
 struct PlayerInfo
 {
@@ -41,4 +51,11 @@ struct LoadingMessage
 {
 	bool	Complete;
 	float	Percent;
+};
+
+enum class PlayerDir
+{
+    None,
+    Left,
+    Right
 };

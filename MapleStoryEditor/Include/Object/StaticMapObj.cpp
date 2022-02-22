@@ -1,6 +1,5 @@
 
 #include "StaticMapObj.h"
-#include "Input.h"
 #include "../Component/DragCollider.h"
 
 

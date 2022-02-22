@@ -6,30 +6,8 @@
 #include "Component/CameraComponent.h"
 #include "Component/WidgetComponent.h"
 #include "../Client.h"
+#include "Component/NavAgent.h"
 
-struct SecondPhaseSkillInfo
-{
-    int LevelSylphideLancer;
-    int LevelVoidPressure;
-
-    SecondPhaseSkillInfo()
-    {
-        LevelSylphideLancer = 20;
-        LevelVoidPressure = 20;
-    }
-};
-
-struct ThirdPhaseSkillInfo
-{
-    int LevelNoxSpear;
-    int LevelDeathSide;
-
-    ThirdPhaseSkillInfo()
-    {
-        LevelNoxSpear = 10;
-        LevelDeathSide = 5;
-    }
-};
 
 class CPlayer2D :
     public CGameObject
@@ -60,13 +38,19 @@ private:
 
     class CVoidPressure*            m_VoidPressure;
     class CVoidPressureOrb*         m_VoidPressureOrb;
+    class CPlayerSkillInfo*               m_PlayerSkillInfo;
 
     float       m_Opacity;
     float       m_ScaleFactor;
     bool        m_IsFlip;
     bool        m_OnVoidPressure;
+    bool        m_OnLightTransforming;
 
+    PlayerDir   m_Dir;
     PlayerInfo m_PlayerInfo;
+
+
+    CSharedPtr<CNavAgent>     m_NavAgent;
 
 public:
     CSpriteComponent* GetRootSpriteComponent()    const
@@ -120,5 +104,11 @@ public:
 
 public:
     void VoidPressureCancle(float DeltaTime);
+    void CollisionBeginCallback(const CollisionResult& Result);
+    void CollisionStayCallback(const CollisionResult& Result);
+
+
+    void MovePointDown(float DeltaTime);
+    //void PathResult(const std::list<Vector3>& PathList);
 };
 

@@ -92,6 +92,7 @@ enum class SceneComponent_Type
 	Particle,
 	TileMap,
 	DragCollider,
+	SceneComponent,
 	Max
 };
 
@@ -126,6 +127,7 @@ enum class Collision_State
 	Begin,
 	// 충돌이 끝나고 두 충돌체가 서로 떨어질때
 	End,
+	Stay,
 	Max
 };
 

@@ -8,15 +8,7 @@
 #include "Scene/OnionScene.h"
 #include "Scene/WayToZakumScene.h"
 #include "Scene/StartScene.h"
-#include "Object/Stage.h"
-#include "Object/StaticMapObj.h"
-#include "Object/Portal.h"
-#include "Object/BlinkTree.h"
-#include "Object/LampLight.h"
-#include "Object/DoubleHelixBlinkTree.h"
-#include "Object/Butterfly.h"
-#include "Object/LobbyBigLamp.h"
-#include "Object/LobbySmallLamp.h"
+#include "Client.h"
 #include "Component/ColliderBox2D.h"
 #include "Component/ColliderCircle.h"
 #include "Component/ColliderPixel.h"
@@ -62,6 +54,14 @@ bool CClientManager::Init(HINSTANCE hInst)
 	CInput::GetInst()->SetKeyCallback<CClientManager>("Configuration", KeyState_Down, this, &CClientManager::OnOffConfiguration);
 	CInput::GetInst()->SetKeyCallback<CClientManager>("BossMatching", KeyState_Down, this, &CClientManager::OnOffBossMatching);
 	CInput::GetInst()->SetKeyCallback<CClientManager>("TurnOffUIWindow", Key_State::KeyState_Down, this, &CClientManager::TurnOffWindow);
+
+	//CInput::GetInst()->CreateKey("MovePoint", VK_RBUTTON);
+
+
+
+
+
+
 
 	CResourceManager::GetInst()->CreateSoundChannelGroup("UI");
 	CResourceManager::GetInst()->CreateSoundChannelGroup("BGM");
@@ -207,6 +207,13 @@ CGameObject* CClientManager::CreateObject(CScene* Scene, size_t Type)
 		return Obj;
 	}
 
+	else if (Type == typeid(CTileObject).hash_code())
+	{
+		CTileObject* Obj = Scene->LoadGameObject<CTileObject>();
+
+		return Obj;
+	}
+
 	else if (Type == typeid(CPortal).hash_code())
 	{
 		CPortal* Obj = Scene->LoadGameObject<CPortal>();
@@ -304,6 +311,13 @@ CComponent* CClientManager::CreateComponent(CGameObject* Obj, size_t Type)
 	else if (Type == typeid(CDragCollider).hash_code())
 	{
 		CDragCollider* Component = Obj->LoadComponent<CDragCollider>();
+
+		return Component;
+	}
+
+	else if (Type == typeid(CTileMapComponent).hash_code())
+	{
+		CTileMapComponent* Component = Obj->LoadComponent<CTileMapComponent>();
 
 		return Component;
 	}

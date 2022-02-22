@@ -25,16 +25,26 @@
 #include "DetailWindow.h"
 #include "EditorMenu.h"
 #include "TileMapWindow.h"
+#include "Component/ColliderBox2D.h"
+#include "Component/ColliderCircle.h"
+#include "Component/ColliderPixel.h"
 
 #include <sstream>
 #include "imgui_internal.h"
 
-CObjectHierarchy::CObjectHierarchy()
+CObjectHierarchy::CObjectHierarchy()	:
+	m_ProfileChangeButton(nullptr),
+	m_ProfileCombo(nullptr)
 {
 }
 
 CObjectHierarchy::~CObjectHierarchy()
 {
+}
+
+void CObjectHierarchy::SetParentComponent(const char* Parent)
+{
+	m_ParentComponent->SetText(Parent);
 }
 
 void CObjectHierarchy::AddObjectList(const char* Name)
@@ -66,6 +76,22 @@ bool CObjectHierarchy::Init()
 	m_ComponentListWidget->SetSelectCallback(this, &CObjectHierarchy::SelectComponent);
 
 
+	CIMGUIButton* DeleteObjectButton = AddWidget<CIMGUIButton>("Delete Object", 120.f, 30.f);
+
+	DeleteObjectButton->SetClickCallback(this, &CObjectHierarchy::DeleteObjectButtonCallback);
+
+	Line = AddWidget<CIMGUISameLine>("Line");
+	Line->SetOffsetX(320.f);
+
+	CIMGUILabel* ParentLabel = AddWidget<CIMGUILabel>("Parent Component : ", 120.f, 30.f);
+	ParentLabel->SetColorFloat(0.0f, 0.0f, 150.f, 0.f);
+
+	Line = AddWidget<CIMGUISameLine>("Line", 300.f);
+
+	m_ParentComponent = AddWidget<CIMGUIText>("Parent", 90.f, 30.f);
+
+
+
 	// Layer
 	m_LayerCombo = AddWidget<CIMGUIComboBox>("Select Layer", 130.f, 30.f);
 
@@ -86,18 +112,14 @@ bool CObjectHierarchy::Init()
 	m_LayerChangeButton->SetClickCallback<CObjectHierarchy>(this, &CObjectHierarchy::LayerChangeCallback);
 
 	Line = AddWidget<CIMGUISameLine>("Line", 300.f);
+	Line->SetOffsetX(320.f);
 
-	m_ObjectLayerLabel = AddWidget<CIMGUILabel>("Object Layer : ", 90.f, 30.f);
+	m_ObjectLayerLabel = AddWidget<CIMGUILabel>("Layer : ", 90.f, 30.f);
 	m_ObjectLayerLabel->SetColorFloat(0.0f, 0.0f, 150.f, 0.f);
 
 	Line = AddWidget<CIMGUISameLine>("Line");
 
 	m_ObjectLayer = AddWidget<CIMGUIText>("ObjectLayer", 100.f, 30.f);
-
-
-	CIMGUIButton* DeleteObjectButton = AddWidget<CIMGUIButton>("Delete Object", 120.f, 30.f);
-
-	DeleteObjectButton->SetClickCallback(this, &CObjectHierarchy::DeleteObjectButtonCallback);
 
 
 	m_ZOrder = AddWidget<CIMGUITextInput>("ZOrder", 80.f, 30.f);
@@ -110,6 +132,33 @@ bool CObjectHierarchy::Init()
 
 	m_ZOrderChange = AddWidget<CIMGUIButton>("ZOrder Change", 120.f, 30.f);
 	m_ZOrderChange->SetClickCallback(this, &CObjectHierarchy::ZOrderChangeCallback);
+
+
+
+
+	m_ProfileCombo = AddWidget<CIMGUIComboBox>("Select Profile", 130.f, 30.f);
+	m_ProfileCombo->SetHideName(true);
+	m_ProfileCombo->AddItem("Object");
+	m_ProfileCombo->AddItem("Player");
+	m_ProfileCombo->AddItem("Monster");
+	m_ProfileCombo->AddItem("MapCollider");
+	m_ProfileCombo->AddItem("DragCollider");
+
+	Line = AddWidget<CIMGUISameLine>("Line");
+
+	m_ProfileChangeButton = AddWidget<CIMGUIButton>("Change Profile", 100.f, 30.f);
+
+	m_ProfileChangeButton->SetClickCallback<CObjectHierarchy>(this, &CObjectHierarchy::ProfileChangeCallback);
+
+	Line = AddWidget<CIMGUISameLine>("Line", 300.f);
+	Line->SetOffsetX(320.f);
+
+	CIMGUILabel* ProfileLabel = AddWidget<CIMGUILabel>("Collision Profile : ", 120.f, 30.f);
+	ProfileLabel->SetColorFloat(0.0f, 0.0f, 150.f, 0.f);
+
+	Line = AddWidget<CIMGUISameLine>("Line", 300.f);
+
+	m_Profile = AddWidget<CIMGUIText>("Profile", 100.f, 30.f);
 
 	return true;
 }
@@ -152,13 +201,34 @@ void CObjectHierarchy::SelectObject(int Index, const char* Item)
 	if (!Object)
 		return;
 
+	if (m_SelectObject && m_SelectObject == Object)
+		return;
+
 	m_SelectObject = Object;
+
+	// Object와 Component를 선택해놓았을때 기존에 선택한 오브젝트가 아닌 다른 오브젝트 선택하는 순간, 선택되어있던 Component를 해제하고
+	// 이전에 Component를 선택해서 Window에 남아있던 Component의 transform정보, 부모Component, Layer, Collision Profile, ZOrder,
+	// (이전에 선택한 Component가 TileMapComponent였다면) TileMapWindow가 갖고 있는 TileMapComponent까지 싹다 초기화해준다
+	m_ComponentListWidget->SetSelectIndex(-1);
+	CTileMapWindow* TileMapWindow = (CTileMapWindow*)CIMGUIManager::GetInst()->FindIMGUIWindow("TileMapWindow");
+	TileMapWindow->SetTileMap(nullptr);
+	CDetailWindow* DetailWindow = (CDetailWindow*)CIMGUIManager::GetInst()->FindIMGUIWindow("DetailWindow");
+	DetailWindow->ClearDetailWindowInfo();
+	ClearHierarchyWindowInfo();
+
+	m_ComponentListWidget->Clear();
+
+
+	CSceneComponent* Root = Object->GetRootComponent();
+
+	if (!Root)
+		return;
 
 	std::vector<FindComponentName>	vecNames;
 
 	Object->GetAllSceneComponentsName(vecNames);
 
-	m_ComponentListWidget->Clear();
+	m_ObjectLayer->SetText(Object->GetRootComponent()->GetLayerName().c_str());
 
 	size_t	Size = vecNames.size();
 
@@ -169,9 +239,9 @@ void CObjectHierarchy::SelectObject(int Index, const char* Item)
 	
 	if (Size > 0)
 	{
-		if (Object->GetRootComponent()->GetTypeID() == typeid(CSpriteComponent).hash_code())
+		if (Root->GetTypeID() == typeid(CSpriteComponent).hash_code())
 		{
-			CSpriteComponent* Sprite = (CSpriteComponent*)(Object->GetRootComponent());
+			CSpriteComponent* Sprite = (CSpriteComponent*)(Root);
 
 			if (Sprite->GetAnimationInstance() && Sprite->GetCurrentAnimation() && Sprite->GetCurrentAnimation()->GetFrameCount() > 0)
 			{
@@ -199,6 +269,12 @@ void CObjectHierarchy::SelectComponent(int Index, const char* Item)
 	// 선택된 컴포넌트를 저장해둔다.
 	m_SelectComponent = (CSceneComponent*)m_SelectObject->FindComponent(Item);
 
+	CSceneComponent* Parent = m_SelectComponent->GetParent();
+
+	if (Parent)
+		m_ParentComponent->SetText(Parent->GetName().c_str());
+	else
+		m_ParentComponent->SetText("No Parent(Root)");
 
 	Vector3 WorldPos = m_SelectComponent->GetWorldPos();
 	Vector3 WorldRotation = m_SelectComponent->GetWorldRot();
@@ -236,11 +312,16 @@ void CObjectHierarchy::SelectComponent(int Index, const char* Item)
 
 			TileMapWindow->SetTileMap((CTileMapComponent*)m_SelectComponent.Get());
 
-			//CEditorManager::GetInst()->SetEditMode(EditMode::TileMap);
 		}
 
 		else
 			TileMapWindow->SetTileMap(nullptr);
+	}
+
+	if (m_SelectComponent->GetTypeID() == typeid(CColliderBox2D).hash_code() || m_SelectComponent->GetTypeID() == typeid(CColliderCircle).hash_code() ||
+		m_SelectComponent->GetTypeID() == typeid(CColliderPixel).hash_code())
+	{
+		m_Profile->SetText(((CColliderComponent*)m_SelectComponent.Get())->GetCollisionProfile()->Name.c_str());
 	}
 
 	/*	int Idx = m_LayerCombo->GetSelectIndex();
@@ -273,14 +354,7 @@ void CObjectHierarchy::SelectComponent(int Index, const char* Item)
 
 void CObjectHierarchy::LayerChangeCallback()
 {
-	int SelectObjIdx = CEditorManager::GetInst()->GetObjectHierarchy()->GetObjectList()->GetSelectIndex();
-
-	if (SelectObjIdx == -1)
-		return;
-
-	const std::string& ObjName = CEditorManager::GetInst()->GetObjectHierarchy()->GetObjectList()->GetSelectItem();
-
-	CGameObject* Obj = CSceneManager::GetInst()->GetScene()->FindObject(ObjName);
+	CGameObject* Obj = CSceneManager::GetInst()->GetScene()->FindObject(m_SelectObject->GetName());
 
 	if (!Obj)
 		return;
@@ -294,8 +368,8 @@ void CObjectHierarchy::LayerChangeCallback()
 
 		const std::string& LayerName = m_LayerCombo->GetSelectItem();
 
-		if (LayerName == ((CSceneComponent*)Comp)->GetLayerName())
-			return;
+		//if (LayerName == ((CSceneComponent*)Comp)->GetLayerName())
+		//	return;
 
 		((CSceneComponent*)Comp)->SetLayerName(LayerName);
 
@@ -349,9 +423,43 @@ void CObjectHierarchy::ZOrderChangeCallback()
 
 	if (Comp)
 	{
-		if (Comp->GetTypeID() == typeid(CSceneComponent).hash_code() || Comp->GetTypeID() == typeid(CSpriteComponent).hash_code())
+		if (Comp->GetTypeID() == typeid(CSceneComponent).hash_code() || Comp->GetTypeID() == typeid(CSpriteComponent).hash_code()
+			|| Comp->GetTypeID() == typeid(CTileMapComponent).hash_code())
 		{
 			((CSceneComponent*)Comp)->SetZOrder(m_ZOrder->GetValueInt());
 		}
 	}
+}
+
+void CObjectHierarchy::ProfileChangeCallback()
+{
+	m_SelectObject = CSceneManager::GetInst()->GetScene()->FindObject(m_SelectObject->GetName());
+
+	if (!m_SelectObject)
+		return;
+
+	std::string Component = m_ComponentListWidget->GetSelectItem();
+
+	CComponent* Comp = m_SelectObject->FindComponent(Component);
+
+	if (!Comp)
+		return;
+
+	if (Comp->GetTypeID() == typeid(CColliderBox2D).hash_code() || Comp->GetTypeID() == typeid(CColliderCircle).hash_code() ||
+		Comp->GetTypeID() == typeid(CColliderPixel).hash_code())
+	{
+		std::string Profile = m_ProfileCombo->GetSelectItem();
+		m_Profile->SetText(Profile.c_str());
+		((CColliderComponent*)Comp)->SetCollisionProfile(Profile);
+	}
+}
+
+void CObjectHierarchy::ClearHierarchyWindowInfo()
+{
+	m_ObjectLayer->SetText("");
+	m_LayerCombo->SetSelectIndex(-1);
+	m_ZOrder->SetValueInt(0);
+	m_Profile->SetText("");
+	m_SelectComponent = nullptr;
+	m_ParentComponent->SetText("");
 }
