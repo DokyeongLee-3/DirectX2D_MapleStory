@@ -456,7 +456,8 @@ struct MovingTileInfo
 struct NavWorkData
 {
 	std::function<void(const std::list<Vector3>&)>	Callback;
-	Vector3		Start;
+	CSharedPtr<class CSceneComponent>	OwnerComponent;
+	//Vector3		Start;
 	Vector3		End;
 };
 

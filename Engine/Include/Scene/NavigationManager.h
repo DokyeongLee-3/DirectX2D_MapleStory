@@ -29,9 +29,9 @@ public:
 	void Update(float DeltaTime);
 
 public:
-	template <typename T>
+	template <typename T, typename ComponentType>
 	bool FindPath(T* Obj, void(T::* Func)(const std::list<Vector3>&),
-		const Vector3& Start, const Vector3& End)
+		ComponentType* OwnerComponent, const Vector3& End)
 	{
 		if (m_vecNavigationThread.empty())
 			return false;
@@ -51,7 +51,7 @@ public:
 			}
 		}
 
-		m_vecNavigationThread[WorkIndex]->AddWork<T>(Obj, Func, Start, End);
+		m_vecNavigationThread[WorkIndex]->AddWork<T>(Obj, Func, OwnerComponent, End);
 
 		return true;
 	}

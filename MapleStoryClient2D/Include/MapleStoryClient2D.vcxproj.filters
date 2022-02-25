@@ -82,6 +82,9 @@
     <Filter Include="05. Animation\02. Monster">
       <UniqueIdentifier>{f89d0bb0-4297-4814-aa3a-a651883c8e5b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Object\07. MapObject\03. Library2nd">
+      <UniqueIdentifier>{e2904190-ea5a-4735-80f6-bd1f9632b914}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -258,12 +261,6 @@
     <ClCompile Include="Animation\VoidPressureAttackSphere.cpp">
       <Filter>05. Animation\01. Player</Filter>
     </ClCompile>
-    <ClCompile Include="Object\MonsterAnimation.cpp">
-      <Filter>05. Animation\02. Monster</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\OnionMonsterAnimation.cpp">
-      <Filter>05. Animation\02. Monster</Filter>
-    </ClCompile>
     <ClCompile Include="Animation\VoidPressureOrbAnimation.cpp">
       <Filter>05. Animation\01. Player</Filter>
     </ClCompile>
@@ -278,6 +275,18 @@
     </ClCompile>
     <ClCompile Include="Object\TileObject.cpp">
       <Filter>02. Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\VerticalLampLight.cpp">
+      <Filter>02. Object\07. MapObject\03. Library2nd</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\Library2ndScene.cpp">
+      <Filter>01. SceneMode</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\MonsterAnimation.cpp">
+      <Filter>05. Animation\02. Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\OnionMonsterAnimation.cpp">
+      <Filter>05. Animation\02. Monster</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -458,12 +467,6 @@
     <ClInclude Include="Animation\VoidPressureAttackSphere.h">
       <Filter>05. Animation\01. Player</Filter>
     </ClInclude>
-    <ClInclude Include="Object\MonsterAnimation.h">
-      <Filter>05. Animation\02. Monster</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\OnionMonsterAnimation.h">
-      <Filter>05. Animation\02. Monster</Filter>
-    </ClInclude>
     <ClInclude Include="Animation\VoidPressureOrbAnimation.h">
       <Filter>05. Animation\01. Player</Filter>
     </ClInclude>
@@ -478,6 +481,18 @@
     </ClInclude>
     <ClInclude Include="Object\TileObject.h">
       <Filter>02. Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\VerticalLampLight.h">
+      <Filter>02. Object\07. MapObject\03. Library2nd</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\Library2ndScene.h">
+      <Filter>01. SceneMode</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation\MonsterAnimation.h">
+      <Filter>05. Animation\02. Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation\OnionMonsterAnimation.h">
+      <Filter>05. Animation\02. Monster</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -5,6 +5,7 @@
 #include "../Resource/Shader/Standard2DConstantBuffer.h"
 #include "../Scene/SceneManager.h"
 #include "../Device.h"
+#include "MovingTileMapComponent.h"
 
 CSceneComponent::CSceneComponent()	:
 	m_ZOrder(0)
@@ -304,6 +305,9 @@ void CSceneComponent::Update(float DeltaTime)
 		ClearChild();
 	}
 
+	if (!m_Enable)
+		return;
+
 	m_Transform->Update(DeltaTime);
 
 	size_t	Size = m_vecChild.size();
@@ -329,6 +333,9 @@ void CSceneComponent::PostUpdate(float DeltaTime)
 	//	ClearChild();
 	//}
 
+	if (!m_Enable)
+		return;
+
 	m_Transform->PostUpdate(DeltaTime);
 
 	size_t	Size = m_vecChild.size();
@@ -352,10 +359,13 @@ void CSceneComponent::CheckCollision()
 
 void CSceneComponent::PrevRender()
 {
+	if (!m_Enable)
+		return;
+
 	CCameraComponent* Camera = m_Scene->GetCameraManager()->GetCurrentCamera();
 
 	// Culling으로 최적화하기
-	if (Camera)
+	if (Camera && GetTypeID() != typeid(CMovingTileMapComponent).hash_code())
 	{
 		Vector3 WorldPos = GetWorldPos();
 		Vector3 Pivot = GetPivot();
@@ -369,18 +379,15 @@ void CSceneComponent::PrevRender()
 
 		if (LB.x > CamPos.x + (float)RS.Width || LB.y > CamPos.y + (float)RS.Height)
 		{
-			std::string Name = GetGameObject()->GetName();
-			int a = 3;
 			return;
 		}
 
 		if (RT.x < CamPos.x || RT.y < CamPos.y)
 		{
-			std::string Name = GetGameObject()->GetName();
-			int a = 3;
 			return;
 		}
 	}
+
 
 	if (m_Render)
 	{

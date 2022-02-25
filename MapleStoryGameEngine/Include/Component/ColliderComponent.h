@@ -100,6 +100,7 @@ public:
     void DeletePrevCollision(CColliderComponent* Collider);
     bool EmptyPrevCollision();
     bool CheckPrevCollision(CColliderComponent* Collider);
+    bool CheckPrevCollisionGameObjectType(size_t TypeID);
     bool CheckCurrentFrameCollision(CColliderComponent* Collider);
     void AddCurrentFrameCollision(CColliderComponent* Collider);
     void CallCollisionCallback(Collision_State State);

@@ -139,6 +139,20 @@ bool CColliderComponent::CheckPrevCollision(CColliderComponent* Collider)
 	return false;
 }
 
+bool CColliderComponent::CheckPrevCollisionGameObjectType(size_t TypeID)
+{
+	auto	iter = m_PrevCollisionList.begin();
+	auto	iterEnd = m_PrevCollisionList.end();
+
+	for (; iter != iterEnd; ++iter)
+	{
+		if ((*iter)->GetGameObject()->GetTypeID() == TypeID)
+			return true;
+	}
+
+	return false;
+}
+
 bool CColliderComponent::CheckCurrentFrameCollision(CColliderComponent* Collider)
 {
 	auto	iter = m_CurrentCollisionList.begin();

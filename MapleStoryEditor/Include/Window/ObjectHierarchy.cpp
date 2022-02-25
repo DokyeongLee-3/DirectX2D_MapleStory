@@ -76,9 +76,16 @@ bool CObjectHierarchy::Init()
 	m_ComponentListWidget->SetSelectCallback(this, &CObjectHierarchy::SelectComponent);
 
 
-	CIMGUIButton* DeleteObjectButton = AddWidget<CIMGUIButton>("Delete Object", 120.f, 30.f);
+	m_ObjectDeleteButton = AddWidget<CIMGUIButton>("Delete Object", 120.f, 30.f);
 
-	DeleteObjectButton->SetClickCallback(this, &CObjectHierarchy::DeleteObjectButtonCallback);
+	m_ObjectDeleteButton->SetClickCallback(this, &CObjectHierarchy::DeleteObjectButtonCallback);
+
+	Line = AddWidget<CIMGUISameLine>("Line");
+	Line->SetOffsetX(140.f);
+
+	m_ComponentDeleteButton = AddWidget<CIMGUIButton>("Delete Component", 120.f, 30.f);
+
+	m_ComponentDeleteButton->SetClickCallback(this, &CObjectHierarchy::DeleteComponentButtonCallback);
 
 	Line = AddWidget<CIMGUISameLine>("Line");
 	Line->SetOffsetX(320.f);
@@ -114,7 +121,7 @@ bool CObjectHierarchy::Init()
 	Line = AddWidget<CIMGUISameLine>("Line", 300.f);
 	Line->SetOffsetX(320.f);
 
-	m_ObjectLayerLabel = AddWidget<CIMGUILabel>("Layer : ", 90.f, 30.f);
+	m_ObjectLayerLabel = AddWidget<CIMGUILabel>("Layer : ", 50.f, 30.f);
 	m_ObjectLayerLabel->SetColorFloat(0.0f, 0.0f, 150.f, 0.f);
 
 	Line = AddWidget<CIMGUISameLine>("Line");
@@ -153,7 +160,7 @@ bool CObjectHierarchy::Init()
 	Line = AddWidget<CIMGUISameLine>("Line", 300.f);
 	Line->SetOffsetX(320.f);
 
-	CIMGUILabel* ProfileLabel = AddWidget<CIMGUILabel>("Collision Profile : ", 120.f, 30.f);
+	CIMGUILabel* ProfileLabel = AddWidget<CIMGUILabel>("Collision Profile : ", 110.f, 30.f);
 	ProfileLabel->SetColorFloat(0.0f, 0.0f, 150.f, 0.f);
 
 	Line = AddWidget<CIMGUISameLine>("Line", 300.f);
@@ -228,7 +235,7 @@ void CObjectHierarchy::SelectObject(int Index, const char* Item)
 
 	Object->GetAllSceneComponentsName(vecNames);
 
-	m_ObjectLayer->SetText(Object->GetRootComponent()->GetLayerName().c_str());
+	//m_ObjectLayer->SetText(Object->GetRootComponent()->GetLayerName().c_str());
 
 	size_t	Size = vecNames.size();
 
@@ -237,7 +244,7 @@ void CObjectHierarchy::SelectObject(int Index, const char* Item)
 		m_ComponentListWidget->AddItem(vecNames[i].Name);
 	}
 	
-	if (Size > 0)
+	/*if (Size > 0)
 	{
 		if (Root->GetTypeID() == typeid(CSpriteComponent).hash_code())
 		{
@@ -258,7 +265,7 @@ void CObjectHierarchy::SelectObject(int Index, const char* Item)
 			CSceneComponent* Comp = (CSceneComponent*)(Object->GetRootComponent());
 			m_ZOrder->SetValueInt(Comp->GetZOrder());
 		}
-	}
+	}*/
 }
 
 void CObjectHierarchy::SelectComponent(int Index, const char* Item)
@@ -318,11 +325,33 @@ void CObjectHierarchy::SelectComponent(int Index, const char* Item)
 			TileMapWindow->SetTileMap(nullptr);
 	}
 
-	if (m_SelectComponent->GetTypeID() == typeid(CColliderBox2D).hash_code() || m_SelectComponent->GetTypeID() == typeid(CColliderCircle).hash_code() ||
+	if (m_SelectComponent->GetTypeID() == typeid(CColliderBox2D).hash_code() ||
+		m_SelectComponent->GetTypeID() == typeid(CColliderCircle).hash_code() ||
 		m_SelectComponent->GetTypeID() == typeid(CColliderPixel).hash_code())
 	{
 		m_Profile->SetText(((CColliderComponent*)m_SelectComponent.Get())->GetCollisionProfile()->Name.c_str());
 	}
+
+
+	// ComponentList에서 Component 선택하면 그 Component가 속한 Object의 RootComponent의 ZOrder, Layer를 보여준다
+	CSceneComponent* Root = m_SelectComponent->GetGameObject()->GetRootComponent();
+
+	if (Root->GetTypeID() == typeid(CSpriteComponent).hash_code())
+	{
+		CSpriteComponent* Sprite = (CSpriteComponent*)(Root);
+
+		if (Sprite->GetAnimationInstance() && Sprite->GetCurrentAnimation() && Sprite->GetCurrentAnimation()->GetFrameCount() > 0)
+		{
+			float PlayTime = Sprite->GetCurrentAnimation()->GetPlayTime();
+			CEditorManager::GetInst()->GetSpriteWindow()->SetPlayTime(PlayTime);
+		}
+	}
+
+	m_ObjectLayer->SetText(m_SelectComponent->GetLayerName().c_str());
+	m_ZOrder->SetValueInt(m_SelectComponent->GetZOrder());
+
+
+
 
 	/*	int Idx = m_LayerCombo->GetSelectIndex();
 
@@ -360,6 +389,9 @@ void CObjectHierarchy::LayerChangeCallback()
 		return;
 
 	CComponent* Comp = Obj->GetRootComponent();
+
+	if (!Comp)
+		return;
 
 	if (Comp->GetComponentType() == Component_Type::SceneComponent)
 	{
@@ -406,6 +438,34 @@ void CObjectHierarchy::DeleteObjectButtonCallback()
 	m_ComponentListWidget->SetSelectIndex(-1);
 }
 
+void CObjectHierarchy::DeleteComponentButtonCallback()
+{
+	if (!m_SelectObject)
+		return;
+
+	if (!m_SelectComponent)
+		return;
+
+	if (m_SelectComponent == m_SelectObject->GetRootComponent())
+	{
+		m_SelectObject->ClearSceneComponents();
+		m_ComponentListWidget->Clear();
+
+	}
+
+	else
+	{
+		m_SelectComponent->ClearChild();
+		CSceneComponent* Component = (CSceneComponent*)m_SelectObject->FindComponent(m_SelectComponent->GetName());
+		m_SelectObject->DeleteSceneComponent(Component);
+
+		int SelectIndex = m_ComponentListWidget->GetSelectIndex();
+		m_ComponentListWidget->DeleteItem(SelectIndex);
+	}
+
+	m_ComponentListWidget->SetSelectIndex(-1);
+}
+
 void CObjectHierarchy::ZOrderChangeCallback()
 {
 	if (m_ObjectListWidget->GetSelectIndex() == -1)
@@ -424,7 +484,8 @@ void CObjectHierarchy::ZOrderChangeCallback()
 	if (Comp)
 	{
 		if (Comp->GetTypeID() == typeid(CSceneComponent).hash_code() || Comp->GetTypeID() == typeid(CSpriteComponent).hash_code()
-			|| Comp->GetTypeID() == typeid(CTileMapComponent).hash_code())
+			|| Comp->GetTypeID() == typeid(CTileMapComponent).hash_code() || Comp->GetTypeID() == typeid(CColliderBox2D).hash_code()
+			|| Comp->GetTypeID() == typeid(CColliderCircle).hash_code() || Comp->GetTypeID() == typeid(CColliderPixel).hash_code())
 		{
 			((CSceneComponent*)Comp)->SetZOrder(m_ZOrder->GetValueInt());
 		}
@@ -457,7 +518,7 @@ void CObjectHierarchy::ProfileChangeCallback()
 void CObjectHierarchy::ClearHierarchyWindowInfo()
 {
 	m_ObjectLayer->SetText("");
-	m_LayerCombo->SetSelectIndex(-1);
+	//m_LayerCombo->SetSelectIndex(-1);
 	m_ZOrder->SetValueInt(0);
 	m_Profile->SetText("");
 	m_SelectComponent = nullptr;

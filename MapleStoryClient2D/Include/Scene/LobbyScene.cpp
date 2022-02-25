@@ -2,6 +2,7 @@
 #include "LobbyScene.h"
 #include "OnionScene.h"
 #include "WayToZakumScene.h"
+#include "Library2ndScene.h"
 #include "Scene/Scene.h"
 #include "Scene/SceneResource.h"
 #include "Scene/SceneManager.h"
@@ -228,6 +229,22 @@ void CLobbyScene::CreateWayToZakumScene()
 
 	m_LoadingThread = CThread::CreateThread<CLoadingThread>("WayToZakumSceneLoadingThread");
 	m_LoadingThread->SetLoadingScene(ThreadLoadingScene::WayToZakum);
+
+	m_LoadingThread->Start();
+}
+
+void CLobbyScene::CreateLibrary2ndScene()
+{
+	CSceneManager::GetInst()->CreateNextScene(false);
+	CLibrary2ndScene* LibraryScene = CSceneManager::GetInst()->CreateSceneModeEmpty<CLibrary2ndScene>(false);
+
+	LibraryScene->SetPlayerObject(m_PlayerObject);
+
+	// 다음 Scene에서의 위치를 Scene의 왼쪽에 위치하도록 잡아주기
+	m_PlayerObject->SetWorldPos(180.f, 200.f, 0.f);
+
+	m_LoadingThread = CThread::CreateThread<CLoadingThread>("Library2ndSceneLoadingThread");
+	m_LoadingThread->SetLoadingScene(ThreadLoadingScene::Library2nd);
 
 	m_LoadingThread->Start();
 }

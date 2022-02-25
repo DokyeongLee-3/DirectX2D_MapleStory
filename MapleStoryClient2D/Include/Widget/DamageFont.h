@@ -40,7 +40,7 @@ public:
 
 			CImage* CriticalEffect = CreateWidget<CImage>("CriticalEffect");
 			CriticalEffect->SetTexture("CriticalEffect", TEXT("UI/DamageFont/NoCri1.effect.png"));
-			CriticalEffect->SetPos(-12.f, 20.f + Size * 35.f);
+			CriticalEffect->SetPos(-10.f, 20.f + Size * 35.f);
 			CriticalEffect->SetSize(62.f, 57.f);
 			m_ListCriticalEffect.push_back(CriticalEffect);
 

@@ -7,6 +7,7 @@
 #include "Scene/LobbyScene.h"
 #include "Scene/OnionScene.h"
 #include "Scene/WayToZakumScene.h"
+#include "Scene/Library2ndScene.h"
 #include "Scene/StartScene.h"
 #include "Client.h"
 #include "Component/ColliderBox2D.h"
@@ -15,6 +16,7 @@
 #include "Component/DragCollider.h"
 #include "Component/StaticMeshComponent.h"
 #include "Animation/AnimationSequence2DInstance.h"
+#include "Animation/OnionMonsterAnimation.h"
 #include "Input.h"
 #include "Widget/MouseNormal.h"
 #include "Widget/MouseAttack.h"
@@ -121,12 +123,12 @@ CGameObject* CClientManager::CreateObject(CScene* Scene, size_t Type)
 	//	return Obj;
 	//}
 
-	//else if (Type == typeid(CMonsterOnion).hash_code())
-	//{
-	//	CMonsterOnion* Obj = Scene->LoadGameObject<CMonsterOnion>();
+	else if (Type == typeid(COnionMonster).hash_code())
+	{
+		COnionMonster* Obj = Scene->LoadGameObject<COnionMonster>();
 
-	//	return Obj;
-	//}
+		return Obj;
+	}
 
 	else if (Type == typeid(CLobbyBigLamp).hash_code())
 	{
@@ -221,6 +223,13 @@ CGameObject* CClientManager::CreateObject(CScene* Scene, size_t Type)
 		return Obj;
 	}
 
+	else if (Type == typeid(CVerticalLampLight).hash_code())
+	{
+		CVerticalLampLight* Obj = Scene->LoadGameObject<CVerticalLampLight>();
+
+		return Obj;
+	}
+
 	else if (Type == typeid(CStage).hash_code())
 	{
 		CStage* Obj = Scene->LoadGameObject<CStage>();
@@ -250,6 +259,11 @@ CGameObject* CClientManager::CreateObject(CScene* Scene, size_t Type)
 				else if (NextSceneMode->GetTypeID() == typeid(CWayToZakumScene).hash_code())
 				{
 					((CWayToZakumScene*)(NextSceneMode))->SetStageObject(Obj);
+				}
+
+				else if (NextSceneMode->GetTypeID() == typeid(CLibrary2ndScene).hash_code())
+				{
+					((CLibrary2ndScene*)(NextSceneMode))->SetStageObject(Obj);
 				}
 			}
 		}
@@ -333,6 +347,10 @@ void CClientManager::CreateAnimInstance(CSpriteComponent* Sprite, size_t Type)
 		Sprite->LoadAnimationInstance<CAnimationSequence2DInstance>();
 	}
 
+	else if (Type == typeid(COnionMonsterAnimation).hash_code())
+	{
+		Sprite->LoadAnimationInstance<COnionMonsterAnimation>();
+	}
 }
 
 void CClientManager::TurnOffWindow(float DeltaTime)

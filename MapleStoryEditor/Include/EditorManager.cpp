@@ -23,6 +23,7 @@
 #include "Component/ColliderCircle.h"
 #include "Component/ColliderPixel.h"
 #include "Animation/AnimationSequence2DInstance.h"
+#include "Animation/OnionMonsterAnimation.h"
 #include "IMGUIImage.h"
 #include "IMGUIListBox.h"
 #include "ObjectSet.h"
@@ -355,9 +356,9 @@ CGameObject* CEditorManager::CreateObject(CScene* Scene, size_t Type)
 		return Obj;
 	}
 
-	else if (Type == typeid(CMonsterOnion).hash_code())
+	else if (Type == typeid(COnionMonster).hash_code())
 	{
-		CMonsterOnion* Obj = Scene->LoadGameObject<CMonsterOnion>();
+		COnionMonster* Obj = Scene->LoadGameObject<COnionMonster>();
 
 		return Obj;
 	}
@@ -464,6 +465,13 @@ CGameObject* CEditorManager::CreateObject(CScene* Scene, size_t Type)
 		return Obj;
 	}
 
+	else if (Type == typeid(CVerticalLampLight).hash_code())
+	{
+		CVerticalLampLight* Obj = Scene->LoadGameObject<CVerticalLampLight>();
+
+		return Obj;
+	}
+
 	return nullptr;
 }
 
@@ -545,6 +553,11 @@ void CEditorManager::CreateAnimInstance(CSpriteComponent* Sprite, size_t Type)
 	if (Type == typeid(CAnimationSequence2DInstance).hash_code())
 	{
 		Sprite->LoadAnimationInstance<CAnimationSequence2DInstance>();
+	}
+
+	else if (Type == typeid(COnionMonsterAnimation).hash_code())
+	{
+		Sprite->LoadAnimationInstance<COnionMonsterAnimation>();
 	}
 }
 

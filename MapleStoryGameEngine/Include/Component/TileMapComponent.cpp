@@ -219,6 +219,29 @@ void CTileMapComponent::SetBackTexture(int Index, int Register, int ShaderType, 
 
 void CTileMapComponent::CreateTile(Tile_Shape Shape, int CountX, int CountY, const Vector3& Size)
 {
+	// 기존에 타일정보 있으면 다 없애주기
+	if (m_CBuffer)
+	{
+		SAFE_DELETE(m_CBuffer);
+
+		m_CBuffer = new CTileMapConstantBuffer;
+
+		m_CBuffer->Init();
+	}
+
+	if (!m_vecTile.empty())
+	{
+		size_t	Size = m_vecTile.size();
+
+		for (size_t i = 0; i < Size; ++i)
+		{
+			SAFE_DELETE(m_vecTile[i]);
+		}
+
+		m_vecTile.clear();
+	}
+
+
 	m_TileShape = Shape;
 	m_CountX = CountX;
 	m_CountY = CountY;

@@ -76,16 +76,16 @@ bool COnionScene::Init()
 	m_Scene->LoadFullPath(FullPath);
 
 
-	for (int i = 0; i < 10; ++i)
-	{
-		char MonsterName[128] = {};
+	//for (int i = 0; i < 10; ++i)
+	//{
+	//	char MonsterName[128] = {};
 
-		sprintf_s(MonsterName, "OnionMonster%d", i);
+	//	sprintf_s(MonsterName, "OnionMonster%d", i);
 
-		COnionMonster* OnionMonster = m_Scene->CreateGameObject<COnionMonster>(MonsterName);
-		OnionMonster->SetAllSceneComponentsLayer("MovingObjFront");
-		OnionMonster->SetWorldPos(300.f + i * 150.f, 300.f, 0.f);
-	}
+	//	COnionMonster* OnionMonster = m_Scene->CreateGameObject<COnionMonster>(MonsterName);
+	//	OnionMonster->SetAllSceneComponentsLayer("MovingObjFront");
+	//	OnionMonster->SetWorldPos(300.f + i * 150.f, 300.f, 0.f);
+	//}
 
 	LoadSound();
 

@@ -276,6 +276,9 @@ void CDetailWindow::PositionZCallback()
 
 void CDetailWindow::RotationXCallback()
 {
+	// 2D에선 일단 막아두자
+	return;
+
 	CObjectHierarchy* Hierarchy = (CObjectHierarchy*)CIMGUIManager::GetInst()->FindIMGUIWindow("ObjectHierarchy");
 
 	if (!Hierarchy)
@@ -302,6 +305,9 @@ void CDetailWindow::RotationXCallback()
 
 void CDetailWindow::RotationYCallback()
 {
+	// 2D에선 일단 막아두자
+	return;
+
 	CObjectHierarchy* Hierarchy = (CObjectHierarchy*)CIMGUIManager::GetInst()->FindIMGUIWindow("ObjectHierarchy");
 
 	if (!Hierarchy)
@@ -333,23 +339,33 @@ void CDetailWindow::RotationZCallback()
 	if (!Hierarchy)
 		return;
 
-	CGameObject* Obj = nullptr;
+	//CGameObject* Obj = nullptr;
 
-	CIMGUIListBox* ObjList = Hierarchy->GetObjectList();
+	//CIMGUIListBox* ObjList = Hierarchy->GetObjectList();
 
-	if (ObjList->GetSelectIndex() == -1)
+	//if (ObjList->GetSelectIndex() == -1)
+	//	return;
+
+	//Obj = CSceneManager::GetInst()->GetScene()->FindObject(ObjList->GetSelectItem());
+
+	//if (!Obj)
+	//	return;
+
+	CGameObject* SelectObject = Hierarchy->GetSelectObject();
+
+	if (!SelectObject)
 		return;
 
-	Obj = CSceneManager::GetInst()->GetScene()->FindObject(ObjList->GetSelectItem());
+	CSceneComponent* SelectComponent = Hierarchy->GetSelectComponent();
 
-	if (!Obj)
+	if (!SelectComponent)
 		return;
 
-	Vector3	Rot = Obj->GetRootComponent()->GetWorldRot();
+	Vector3	Rot = SelectComponent->GetWorldRot();
 
 	Rot.z = m_RotZ->GetValueFloat();
 
-	Obj->SetWorldRotation(Rot);
+	SelectComponent->SetWorldRotation(Rot);
 }
 
 void CDetailWindow::ScalingXCallback()

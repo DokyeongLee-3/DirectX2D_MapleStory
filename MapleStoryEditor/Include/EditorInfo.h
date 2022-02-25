@@ -7,7 +7,7 @@ enum class CreateObject_Type
 	GameObject,
 	Player,
 	MonsterRadish,
-	MonsterOnion,
+	OnionMonster,
 	LowerClassBook,
 	PlayerSkillSet,
 	Portal,
@@ -21,7 +21,8 @@ enum class CreateObject_Type
 	CharacterSelectBackLight,
 	StaticMapObj,
 	TileMapObj,
-	Stage
+	Stage,
+	VerticalLampLight
 };
 
 enum class TileEdit_Mode

@@ -2,7 +2,7 @@
 
 #include "Object/Player2D.h"
 #include "Object/MonsterRadish.h"
-#include "Object/MonsterOnion.h"
+#include "Object/OnionMonster.h"
 #include "Object/Portal.h"
 #include "Object/PlayerSkillSet.h"
 #include "Object/LampLight.h"
@@ -19,3 +19,4 @@
 #include "Object/TileObject.h"
 #include "Object/Stage.h"
 #include "Object/CharacterSelectBackLight.h"
+#include "Object/VerticalLampLight.h"

@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Animation\OnionMonsterAnimation.h" />
     <ClInclude Include="Component\DragCollider.h" />
     <ClInclude Include="EditorInfo.h" />
     <ClInclude Include="EditorManager.h" />
@@ -174,8 +175,8 @@
     <ClInclude Include="Object\LobbyBigLamp.h" />
     <ClInclude Include="Object\LobbySmallLamp.h" />
     <ClInclude Include="Object\LowerClassBook.h" />
-    <ClInclude Include="Object\MonsterOnion.h" />
     <ClInclude Include="Object\MonsterRadish.h" />
+    <ClInclude Include="Object\OnionMonster.h" />
     <ClInclude Include="Object\Pivot.h" />
     <ClInclude Include="Object\Player2D.h" />
     <ClInclude Include="Object\PlayerSkillSet.h" />
@@ -185,6 +186,7 @@
     <ClInclude Include="Object\Stage.h" />
     <ClInclude Include="Object\StaticMapObj.h" />
     <ClInclude Include="Object\TileObject.h" />
+    <ClInclude Include="Object\VerticalLampLight.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Scene\DefaultScene.h" />
     <ClInclude Include="Window\DetailWindow.h" />
@@ -194,6 +196,7 @@
     <ClInclude Include="Window\TileMapWindow.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Animation\OnionMonsterAnimation.cpp" />
     <ClCompile Include="Component\DragCollider.cpp" />
     <ClCompile Include="EditorManager.cpp" />
     <ClCompile Include="main.cpp" />
@@ -208,8 +211,8 @@
     <ClCompile Include="Object\LobbyBigLamp.cpp" />
     <ClCompile Include="Object\LobbySmallLamp.cpp" />
     <ClCompile Include="Object\LowerClassBook.cpp" />
-    <ClCompile Include="Object\MonsterOnion.cpp" />
     <ClCompile Include="Object\MonsterRadish.cpp" />
+    <ClCompile Include="Object\OnionMonster.cpp" />
     <ClCompile Include="Object\Pivot.cpp" />
     <ClCompile Include="Object\Player2D.cpp" />
     <ClCompile Include="Object\PlayerSkillSet.cpp" />
@@ -219,6 +222,7 @@
     <ClCompile Include="Object\Stage.cpp" />
     <ClCompile Include="Object\StaticMapObj.cpp" />
     <ClCompile Include="Object\TileObject.cpp" />
+    <ClCompile Include="Object\VerticalLampLight.cpp" />
     <ClCompile Include="Scene\DefaultScene.cpp" />
     <ClCompile Include="Window\DetailWindow.cpp" />
     <ClCompile Include="Window\EditorMenu.cpp" />

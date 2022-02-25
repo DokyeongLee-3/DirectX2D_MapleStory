@@ -2,7 +2,7 @@
 #include "OnionMonster.h"
 #include "Scene/Scene.h"
 #include "Resource/Material/Material.h"
-#include "OnionMonsterAnimation.h"
+#include "../Animation/OnionMonsterAnimation.h"
 #include "Engine.h"
 #include "../Widget/DamageFont.h"
 
@@ -22,6 +22,30 @@ COnionMonster::COnionMonster(const COnionMonster& obj) :
 
 COnionMonster::~COnionMonster()
 {
+}
+
+void COnionMonster::Start()
+{
+	CGameObject::Start();
+
+	//m_Body->AddCollisionCallback<COnionMonster>(Collision_State::Begin, this, &COnionMonster::CollisionCallback);
+
+	m_DamageWidgetComponent = CreateComponent<CWidgetComponent>("DamageFont");
+	m_DamageWidgetComponent->UseAlphaBlend(true);
+	m_Sprite->AddChild(m_DamageWidgetComponent);
+
+	CDamageFont* DamageFont = m_DamageWidgetComponent->CreateWidgetWindow<CDamageFont>("DamageFontWidget");
+
+	Vector3 WorldPos = m_Sprite->GetWorldPos();
+	m_DamageWidgetComponent->UseAlphaBlend(true);
+
+	m_DamageWidgetComponent->SetWorldPos(WorldPos.x - 20.f, WorldPos.y, 0.f);
+	m_DamageWidgetComponent->Enable(false);
+
+	COnionMonsterAnimation* Instance = (COnionMonsterAnimation*)m_Sprite->GetAnimationInstance();
+
+	Instance->SetEndFunction<COnionMonster>("OnionHitLeft", this, &COnionMonster::ReturnIdle);
+	Instance->SetEndFunction<COnionMonster>("OnionDieLeft", this, &COnionMonster::Die);
 }
 
 bool COnionMonster::Init()
@@ -88,7 +112,7 @@ COnionMonster* COnionMonster::Clone()
 
 void COnionMonster::CollisionCallback(const CollisionResult& result)
 {
-	
+
 }
 
 void COnionMonster::SetDamage(float Damage, bool Critical)
@@ -115,6 +139,7 @@ void COnionMonster::SetDamage(float Damage, bool Critical)
 		m_IsChanging = true;
 	}
 
+	m_DamageWidgetComponent->Enable(true);
 	PushDamageFont(Damage, Critical);
 }
 
@@ -132,4 +157,20 @@ void COnionMonster::ReturnIdle()
 {
 	m_IsChanging = false;
 	m_Sprite->ChangeAnimation("OnionIdleLeft");
+}
+
+void COnionMonster::Save(FILE* File)
+{
+	CGameObject::Save(File);
+}
+
+void COnionMonster::Load(FILE* File)
+{
+	CGameObject::Load(File);
+
+	m_Sprite = (CSpriteComponent*)FindComponent("OnionMonsterSprite");
+
+	m_Sprite->SetTransparency(true);
+
+	m_Body = (CColliderCircle*)FindComponent("Body");
 }

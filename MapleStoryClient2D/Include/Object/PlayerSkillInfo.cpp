@@ -5,7 +5,7 @@ CPlayerSkillInfo::CPlayerSkillInfo()
 {
     SkillInfo* SylphideLancer = new SkillInfo;
     SylphideLancer->Level = 20;
-    SylphideLancer->CoolTime = 1.8f;
+    SylphideLancer->CoolTime = 1.2f;
     SylphideLancer->Factor = 1.f;
 
     m_mapSkillInfo.insert(std::make_pair("SylphideLancer", SylphideLancer));

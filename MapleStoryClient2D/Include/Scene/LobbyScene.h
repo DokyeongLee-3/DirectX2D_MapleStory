@@ -57,6 +57,7 @@ private:
 public:
     void CreateOnionScene();
     void CreateWayToZakumScene();
+    void CreateLibrary2ndScene();
 
 public:
     template <typename T>

@@ -49,6 +49,12 @@
     <Filter Include="03. Object\04. MapObject\02. OnionMap">
       <UniqueIdentifier>{c688ad9c-6a4e-4609-86f8-bcba9c25d7c4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Object\04. MapObject\03. Library2ndFloor">
+      <UniqueIdentifier>{9d6d93ae-3469-46fb-858f-401dea29b233}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. Animation">
+      <UniqueIdentifier>{b18f2c56-9784-4045-a401-175e7ee694aa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scene\DefaultScene.cpp">
@@ -92,9 +98,6 @@
     </ClCompile>
     <ClCompile Include="Object\Portal.cpp">
       <Filter>03. Object\04. MapObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\MonsterOnion.cpp">
-      <Filter>03. Object\03. Monster</Filter>
     </ClCompile>
     <ClCompile Include="Object\BlinkTree.cpp">
       <Filter>03. Object\04. MapObject</Filter>
@@ -144,6 +147,15 @@
     <ClCompile Include="Object\TileObject.cpp">
       <Filter>03. Object\04. MapObject</Filter>
     </ClCompile>
+    <ClCompile Include="Object\VerticalLampLight.cpp">
+      <Filter>03. Object\04. MapObject\03. Library2ndFloor</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\OnionMonster.cpp">
+      <Filter>03. Object\03. Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\OnionMonsterAnimation.cpp">
+      <Filter>06. Animation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene\DefaultScene.h">
@@ -190,9 +202,6 @@
     </ClInclude>
     <ClInclude Include="Object\Portal.h">
       <Filter>03. Object\04. MapObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\MonsterOnion.h">
-      <Filter>03. Object\03. Monster</Filter>
     </ClInclude>
     <ClInclude Include="Object\BlinkTree.h">
       <Filter>03. Object\04. MapObject</Filter>
@@ -244,6 +253,15 @@
     </ClInclude>
     <ClInclude Include="Object\TileObject.h">
       <Filter>03. Object\04. MapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\VerticalLampLight.h">
+      <Filter>03. Object\04. MapObject\03. Library2ndFloor</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\OnionMonster.h">
+      <Filter>03. Object\03. Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation\OnionMonsterAnimation.h">
+      <Filter>06. Animation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -95,6 +95,23 @@ CComponent* CGameObject::FindComponent(const std::string& Name)
 	return nullptr;
 }
 
+void CGameObject::DeleteSceneComponent(CSceneComponent* Component)
+{
+	auto	iter = m_SceneComponentList.begin();
+	auto	iterEnd = m_SceneComponentList.end();
+
+	for (; iter != iterEnd; ++iter)
+	{
+		if ((*iter) == Component)
+		{
+			(*iter)->Destroy();
+			iter = m_SceneComponentList.erase(iter);
+			iterEnd = m_SceneComponentList.end();
+			break;
+		}
+	}
+}
+
 void CGameObject::GetAllSceneComponentsName(std::vector<FindComponentName>& vecNames)
 {
 	if (!m_RootComponent)

@@ -71,10 +71,6 @@ bool CMonsterRadish::Init()
 void CMonsterRadish::Update(float DeltaTime)
 {
 	CGameObject::Update(DeltaTime);
-
-	Vector3 Pos = m_Sprite->GetWorldPos();
-
-	int a = 3;
 }
 
 void CMonsterRadish::PostUpdate(float DeltaTime)

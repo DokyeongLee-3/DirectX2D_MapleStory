@@ -8,6 +8,7 @@
 #include "../Scene/LobbyScene.h"
 #include "../Scene/OnionScene.h"
 #include "../Scene/WayToZakumScene.h"
+#include "../Scene/Library2ndScene.h"
 #include "Input.h"
 #include "PlayerAnimation2D.h"
 #include "../Animation/SylphideLancerMirrorAnimation.h"
@@ -206,6 +207,11 @@ void CPlayer2D::PostUpdate(float DeltaTime)
 		else if (SceneMode->GetTypeID() == typeid(CWayToZakumScene).hash_code())
 		{
 			Stage = ((CWayToZakumScene*)SceneMode)->GetStageObject();
+		}
+
+		else if (SceneMode->GetTypeID() == typeid(CLibrary2ndScene).hash_code())
+		{
+			Stage = ((CLibrary2ndScene*)SceneMode)->GetStageObject();
 		}
 
 		if(Stage)
@@ -638,6 +644,9 @@ void CPlayer2D::FlipAll(float DeltaTime)
 
 void CPlayer2D::GotoNextMap(float DeltaTime)
 {
+	if (!m_Body->CheckPrevCollisionGameObjectType(typeid(CPortal).hash_code()))
+		return;
+
 	if (m_Scene->GetSceneMode()->GetTypeID() == typeid(CLobbyScene).hash_code())
 	{
 		CGameObject* Portal = m_Scene->FindObject("RightPortal");
@@ -659,6 +668,26 @@ void CPlayer2D::GotoNextMap(float DeltaTime)
 					CLobbyScene* Scene = (CLobbyScene*)(GetScene()->GetSceneMode());
 					CRenderManager::GetInst()->SetStartFadeIn(true);
 					CSceneManager::GetInst()->SetFadeInEndCallback<CLobbyScene>(Scene, &CLobbyScene::CreateOnionScene);
+				}
+			}
+		}
+
+		Portal = m_Scene->FindObject("MiddlePortal");
+
+		if(Portal)
+		{
+			CComponent* Body = ((CPortal*)Portal)->FindComponent("Body");
+
+			if (Body)
+			{
+				bool Collision = ((CColliderBox2D*)Body)->CheckPrevCollision(m_Body);
+
+				// LobbyScene의 오른쪽 Entrance 포탈에 충돌했고, 위쪽 방향키를 누르고 있을때 여기로 들어온다
+				if (Collision)
+				{
+					CLobbyScene* Scene = (CLobbyScene*)(GetScene()->GetSceneMode());
+					CRenderManager::GetInst()->SetStartFadeIn(true);
+					CSceneManager::GetInst()->SetFadeInEndCallback<CLobbyScene>(Scene, &CLobbyScene::CreateLibrary2ndScene);
 				}
 			}
 		}

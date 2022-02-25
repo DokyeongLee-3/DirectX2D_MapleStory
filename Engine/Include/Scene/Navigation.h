@@ -29,6 +29,7 @@ struct NavNode
 	float		Cost;
 	float		Dist;
 	float		Total;
+	std::list<Node_Dir>	SearchDirList;
 
 	NavNode() :
 		Parent(nullptr),
@@ -37,9 +38,9 @@ struct NavNode
 		IndexX(-1),
 		IndexY(-1),
 		Index(-1),
-		Cost(0.f),
-		Dist(0.f),
-		Total(0.f)
+		Cost(FLT_MAX),
+		Dist(FLT_MAX),
+		Total(FLT_MAX)
 	{
 	}
 };
@@ -95,7 +96,9 @@ private:
 	NavNode* GetRhombusNodeLeft(NavNode* Node, NavNode* EndNode, const Vector3& End);
 	NavNode* GetRhombusNodeLeftTop(NavNode* Node, NavNode* EndNode, const Vector3& End);
 
+	void AddDir(Node_Dir Dir, NavNode* Node);
+
 private:
-	static int SortNode(const void* Src, const void* Dest);
+	static bool SortNode(NavNode* Src, NavNode* Dest);
 };
 

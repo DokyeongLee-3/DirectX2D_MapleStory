@@ -157,6 +157,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Animation\MonsterAnimation.cpp" />
+    <ClCompile Include="Animation\OnionMonsterAnimation.cpp" />
     <ClCompile Include="Animation\PlayerOrb.cpp" />
     <ClCompile Include="Animation\PlayerSkillBodyEffect.cpp" />
     <ClCompile Include="Animation\SylphideLancerMirrorAnimation.cpp" />
@@ -177,9 +179,7 @@
     <ClCompile Include="Object\LobbyBigLamp.cpp" />
     <ClCompile Include="Object\LobbySmallLamp.cpp" />
     <ClCompile Include="Object\Monster.cpp" />
-    <ClCompile Include="Object\MonsterAnimation.cpp" />
     <ClCompile Include="Object\OnionMonster.cpp" />
-    <ClCompile Include="Object\OnionMonsterAnimation.cpp" />
     <ClCompile Include="Object\PixelTest.cpp" />
     <ClCompile Include="Object\Player2D.cpp" />
     <ClCompile Include="Object\PlayerAnimation2D.cpp" />
@@ -196,9 +196,11 @@
     <ClCompile Include="Object\SylphideLancerHitEffect.cpp" />
     <ClCompile Include="Object\TileMap.cpp" />
     <ClCompile Include="Object\TileObject.cpp" />
+    <ClCompile Include="Object\VerticalLampLight.cpp" />
     <ClCompile Include="Object\VoidPressure.cpp" />
     <ClCompile Include="Object\VoidPressureHitEffect.cpp" />
     <ClCompile Include="Object\VoidPressureOrb.cpp" />
+    <ClCompile Include="Scene\Library2ndScene.cpp" />
     <ClCompile Include="Scene\LoadingScene.cpp" />
     <ClCompile Include="Scene\LoadingThread.cpp" />
     <ClCompile Include="Scene\LobbyScene.cpp" />
@@ -224,6 +226,8 @@
     <ClCompile Include="Widget\StartWidget.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Animation\MonsterAnimation.h" />
+    <ClInclude Include="Animation\OnionMonsterAnimation.h" />
     <ClInclude Include="Animation\PlayerOrb.h" />
     <ClInclude Include="Animation\PlayerSkillBodyEffect.h" />
     <ClInclude Include="Animation\SylphideLancerMirrorAnimation.h" />
@@ -244,9 +248,7 @@
     <ClInclude Include="Object\LobbyBigLamp.h" />
     <ClInclude Include="Object\LobbySmallLamp.h" />
     <ClInclude Include="Object\Monster.h" />
-    <ClInclude Include="Object\MonsterAnimation.h" />
     <ClInclude Include="Object\OnionMonster.h" />
-    <ClInclude Include="Object\OnionMonsterAnimation.h" />
     <ClInclude Include="Object\PixelTest.h" />
     <ClInclude Include="Object\Player2D.h" />
     <ClInclude Include="Object\PlayerAnimation2D.h" />
@@ -263,10 +265,12 @@
     <ClInclude Include="Object\SylphideLancerHitEffect.h" />
     <ClInclude Include="Object\TileMap.h" />
     <ClInclude Include="Object\TileObject.h" />
+    <ClInclude Include="Object\VerticalLampLight.h" />
     <ClInclude Include="Object\VoidPressure.h" />
     <ClInclude Include="Object\VoidPressureHitEffect.h" />
     <ClInclude Include="Object\VoidPressureOrb.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Scene\Library2ndScene.h" />
     <ClInclude Include="Scene\LoadingScene.h" />
     <ClInclude Include="Scene\LoadingThread.h" />
     <ClInclude Include="Scene\LobbyScene.h" />

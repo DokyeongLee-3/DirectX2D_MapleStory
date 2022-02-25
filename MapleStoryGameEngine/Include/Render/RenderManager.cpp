@@ -237,6 +237,7 @@ void CRenderManager::Render()
 				int Count = (*iter)->RenderCount;
 				auto RenderListEnd = (*iter)->RenderList.begin() + Count;
 				sort((*iter)->RenderList.begin(), RenderListEnd, RenderLayer::SortSceneComponent);
+
 				(*iter)->RenderList[i]->Render();
 			}
 		}

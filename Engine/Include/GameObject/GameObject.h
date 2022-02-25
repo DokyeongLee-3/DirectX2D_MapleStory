@@ -74,6 +74,7 @@ public:
 	}
 
 	class CComponent* FindComponent(const std::string& Name);
+	void DeleteSceneComponent(CSceneComponent* Component);
 	void GetAllSceneComponentsName(std::vector<FindComponentName>& vecNames);
 	void SetAllSceneComponentsLayer(const std::string& Name);
 	void ClearSceneComponents();

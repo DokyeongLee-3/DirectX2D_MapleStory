@@ -66,6 +66,7 @@ bool CEditorMenu::Init()
 	m_ObjectCombo->AddItem("StaticMapObj");
 	m_ObjectCombo->AddItem("TileObj");
 	m_ObjectCombo->AddItem("Stage");
+	m_ObjectCombo->AddItem("VerticalLampLight");
 
 	CIMGUISameLine* Line = AddWidget<CIMGUISameLine>("Line");
 
@@ -149,8 +150,8 @@ void CEditorMenu::ObjectCreateButton()
 	case CreateObject_Type::MonsterRadish:
 		CSceneManager::GetInst()->GetScene()->CreateGameObject<CMonsterRadish>(m_ObjectNameInput->GetTextMultibyte());
 		break;
-	case CreateObject_Type::MonsterOnion:
-		CSceneManager::GetInst()->GetScene()->CreateGameObject<CMonsterOnion>(m_ObjectNameInput->GetTextMultibyte());
+	case CreateObject_Type::OnionMonster:
+		CSceneManager::GetInst()->GetScene()->CreateGameObject<COnionMonster>(m_ObjectNameInput->GetTextMultibyte());
 		break;
 	case CreateObject_Type::LowerClassBook:
 		CSceneManager::GetInst()->GetScene()->CreateGameObject<CLowerClassBook>(m_ObjectNameInput->GetTextMultibyte());
@@ -200,6 +201,9 @@ void CEditorMenu::ObjectCreateButton()
 			((CDefaultScene*)CSceneManager::GetInst()->GetScene()->GetSceneMode())->SetStageObject(Stage);
 		}
 	}
+	case CreateObject_Type::VerticalLampLight:
+		CSceneManager::GetInst()->GetScene()->CreateGameObject<CVerticalLampLight>(m_ObjectNameInput->GetTextMultibyte());
+		break;
 		break;
 	}
 

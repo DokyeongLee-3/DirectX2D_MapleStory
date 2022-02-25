@@ -205,6 +205,7 @@ enum class ThreadLoadingScene
 	Lobby,
 	Onion,
 	WayToZakum,
+	Library2nd,
 	Main
 };
 

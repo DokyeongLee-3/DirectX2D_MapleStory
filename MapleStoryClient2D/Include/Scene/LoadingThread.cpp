@@ -4,6 +4,7 @@
 #include "LobbyScene.h"
 #include "OnionScene.h"
 #include "WayToZakumScene.h"
+#include "Library2ndScene.h"
 #include "Scene/SceneManager.h"
 
 CLoadingThread::CLoadingThread()
@@ -64,6 +65,17 @@ void CLoadingThread::Run()
 		ZakumScene->SetLoadingFunction<CLoadingThread>(this, &CLoadingThread::AddMessage);
 
 		ZakumScene->Init();
+
+		AddMessage(true, 1.f);
+	}
+
+	else if (m_LoadingScene == ThreadLoadingScene::Library2nd)
+	{
+		CLibrary2ndScene* LibraryScene = (CLibrary2ndScene*)(CSceneManager::GetInst()->GetNextScene()->GetSceneMode());
+
+		LibraryScene->SetLoadingFunction<CLoadingThread>(this, &CLoadingThread::AddMessage);
+
+		LibraryScene->Init();
 
 		AddMessage(true, 1.f);
 	}

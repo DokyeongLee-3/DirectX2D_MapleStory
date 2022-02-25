@@ -19,6 +19,7 @@ private:
 	class CIMGUILabel* m_ObjectLayerLabel;
 	class CIMGUIText* m_ObjectLayer;
 	class CIMGUIButton* m_ObjectDeleteButton;
+	class CIMGUIButton* m_ComponentDeleteButton;
 	class CIMGUITextInput* m_ZOrder;
 	class CIMGUIButton* m_ZOrderChange;
 
@@ -77,6 +78,7 @@ private:
 	void SelectComponent(int Index, const char* Item);
 	void LayerChangeCallback();
 	void DeleteObjectButtonCallback();
+	void DeleteComponentButtonCallback();
 	void ZOrderChangeCallback();
 	void ProfileChangeCallback();
 

@@ -2,6 +2,7 @@
 
 #include "../Thread.h"
 #include "../ThreadQueue.h"
+#include "../Component/SceneComponent.h"
 
 class CNavigationThread :
 	public CThread
@@ -31,13 +32,14 @@ public:
 	virtual void Run();
 
 public:
-	template <typename T>
+	template <typename T, typename ComponentType>
 	void AddWork(T* Obj, void(T::* Func)(const std::list<Vector3>&),
-		const Vector3& Start, const Vector3& End)
+		ComponentType* OwnerComponent, const Vector3& End)
 	{
 		NavWorkData	Data;
 		Data.Callback = std::bind(Func, Obj, std::placeholders::_1);
-		Data.Start = Start;
+		//Data.Start = Start;
+		Data.OwnerComponent = (CSceneComponent*)OwnerComponent;
 		Data.End = End;
 
 		m_WorkQueue.push(Data);

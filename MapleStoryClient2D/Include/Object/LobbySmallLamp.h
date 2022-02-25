@@ -15,10 +15,11 @@ protected:
     virtual ~CLobbySmallLamp();
 
 private:
-    CSharedPtr<CSpriteComponent>    m_Sprite;
+    CSharedPtr<CSpriteComponent>     m_RootComponent;
     CSharedPtr<CSpriteComponent>    m_HelixSprite;
     CSharedPtr<CSpriteComponent>    m_ButterflySprite;
-    CSharedPtr<CSpriteComponent>    m_VerticalLightSprite;
+    CSharedPtr<CSpriteComponent>    m_VerticalLightLeftSprite;
+    CSharedPtr<CSpriteComponent>    m_VerticalLightRightSprite;
 
 public:
     virtual void Start();
