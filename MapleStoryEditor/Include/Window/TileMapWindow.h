@@ -33,9 +33,9 @@ private:
 	class CIMGUIButton* m_TileMaterialSelectButton;
 
 
-private:
-	class CIMGUIButton* m_TileMapSaveButton;
-	class CIMGUIButton* m_TileMapLoadButton;
+//private:
+//	class CIMGUIButton* m_TileMapSaveButton;
+//	class CIMGUIButton* m_TileMapLoadButton;
 
 public:
 	void SetTileMap(CTileMapComponent* TileMap)

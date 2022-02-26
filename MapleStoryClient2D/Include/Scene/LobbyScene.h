@@ -50,9 +50,10 @@ private:
     void CreateAnimationSequence();
     void CreatePlayerAnimationSequence();
     void CreateSkillAnimationSequence();
-    void CreateMonsterAnimationSequence();
+    //void CreateMonsterAnimationSequence();
     void CreateMapAnimationSequence();
     void LoadSound();
+    void AddTileCollisionCallback();
 
 public:
     void CreateOnionScene();

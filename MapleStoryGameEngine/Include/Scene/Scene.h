@@ -5,7 +5,6 @@
 #include "SceneCollision.h"
 #include "CameraManager.h"
 #include "Viewport.h"
-#include "NavigationManager.h"
 #include "../GameObject/GameObject.h"
 
 class CScene
@@ -22,7 +21,6 @@ private:
 	CSceneCollision* m_Collision;
 	CCameraManager* m_CameraManager;
 	CViewport* m_Viewport;
-	CNavigationManager* m_NavManager;
 
 	std::list<CSharedPtr<CGameObject>>		m_ObjList;
 	// 이펙트들을 저장해놓은 map 
@@ -68,11 +66,6 @@ public:
 		return m_Viewport;
 	}
 
-	CNavigationManager* GetNavigationManager()	const
-	{
-		return m_NavManager;
-	}
-
 	CGameObject* GetPlayerObject()    const
 	{
 		return m_Mode->GetPlayerObject();
@@ -93,14 +86,15 @@ public:
 	}
 
 	// 인자로 받은 Name을 포함하고, 인자로 넘겨준 Pos와 Distance이내의 거리에 있는 GameObject를 찾아서 리턴
-	CGameObject* FindIncludingNameObject(const std::string& Name, const Vector3& Pos, float Distance)
+	CGameObject* FindIncludingNameObject(const std::string& Name, const Vector3& Pos, const Vector2& Distance)
 	{
 		auto	iter = m_ObjList.begin();
 		auto	iterEnd = m_ObjList.end();
 
 		for (; iter != iterEnd; ++iter)
 		{
-			if ((*iter)->GetName().find(Name) != std::string::npos && (*iter)->GetWorldPos().Distance(Pos) < Distance)
+			if ((*iter)->GetName().find(Name) != std::string::npos && abs((*iter)->GetWorldPos().x - Pos.x) < Distance.x &&
+				abs((*iter)->GetWorldPos().y - Pos.y) < Distance.y)
 			{
 				CSceneComponent* Body = (*iter)->FindComponentIncludingName("Body");
 

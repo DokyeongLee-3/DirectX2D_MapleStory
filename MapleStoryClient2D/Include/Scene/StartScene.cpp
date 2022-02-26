@@ -3,15 +3,11 @@
 #include "Scene/Scene.h"
 #include "Scene/Viewport.h"
 #include "../Object/Player2D.h"
-#include "../Object/Monster.h"
-#include "../Object/PixelTest.h"
 #include "Scene/SceneResource.h"
 #include "Scene/SceneManager.h"
-#include "LoadingScene.h"
 #include "Resource/Sound/SoundManager.h"
 #include "LoadingThread.h"
 #include "Render/RenderManager.h"
-#include "MainScene.h"
 #include "LobbyScene.h"
 
 CStartScene::CStartScene()	:

@@ -1,7 +1,6 @@
 
 #include "StartWidget.h"
 #include "Engine.h"
-#include "../Scene/LoadingScene.h"
 #include "Scene/SceneManager.h"
 #include "Resource/Sound/SoundManager.h"
 #include "../Scene/StartScene.h"

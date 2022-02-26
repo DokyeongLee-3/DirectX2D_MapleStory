@@ -39,11 +39,62 @@ protected:
 	std::vector<CSharedPtr<CGameObject>>   m_vecChildObject;
 	float		m_LifeSpan;
 	bool		m_Gravity;
+	float		m_GravityFactor;
+	float		m_GravityAccTime;
+	Vector3     m_TileCollisionPos;
+	bool		m_TileCollisionEnable;
+	Vector3		m_CurrentFrameMove;
+	Vector3		m_PrevFrameWorldPos;
 	
 public:
+	Vector3	GetCurrentFrameMove()	const
+	{
+		return m_CurrentFrameMove;
+	}
+
+	void SetTileCollisionEnable(bool Enable)
+	{
+		m_TileCollisionEnable = Enable;
+	}
+
+	bool GetTileCollisionEnable()  const
+	{
+		return m_TileCollisionEnable;
+	}
+
+	void SetTileCollisionPos(const Vector3& Pos)
+	{
+		m_TileCollisionPos = Pos;
+	}
+
+	Vector3 GetTileCollisionPos()	const
+	{
+		return m_TileCollisionPos;
+	}
+
 	void SetGravity(bool Gravity)
 	{
 		m_Gravity = Gravity;
+	}
+
+	void SetGravityFactor(float GravityFactor)
+	{
+		m_GravityFactor = GravityFactor;
+	}
+
+	void SetGravityAccTime(float Time)
+	{
+		m_GravityAccTime = 0.f;
+	}
+
+	float GetGravityAccTime()	const
+	{
+		return m_GravityAccTime;
+	}
+
+	float GetGravityFactor()	const
+	{
+		return m_GravityFactor;
 	}
 
 	bool IsGravity()	const
@@ -135,7 +186,7 @@ public:
 
 public:
 	// NavAgent가 있을 경우에 동작한다.
-	void Move(const Vector3& EndPos);
+	//void Move(const Vector3& EndPos);
 
 public:
 	template <typename T>

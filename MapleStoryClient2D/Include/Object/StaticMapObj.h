@@ -16,6 +16,9 @@ protected:
 
 private:
     CSharedPtr<CSpriteComponent>    m_Sprite;
+  
+    int                             m_CollisionID; // 플레이어가 여러 StaticMapObj와 충돌할때 충돌 처리시 구별을 위한 ID
+
 
 public:
     class CSpriteComponent* GetSpriteComponent()    const
@@ -23,6 +26,15 @@ public:
         return m_Sprite;
     }
 
+    void SetCollisionID(int ID)
+    {
+        m_CollisionID = ID;
+    }
+
+    int GetCollisionID()    const
+    {
+        return m_CollisionID;
+    }
 
 public:
     virtual void Start();
@@ -32,5 +44,10 @@ public:
     virtual CStaticMapObj* Clone();
     virtual void Save(FILE* File);
     virtual void Load(FILE* File);
+
+public:
+    void CollisionBeginCallback(const CollisionResult& Result);
+    void CollisionEndCallback(const CollisionResult& Result);
+
 };
 

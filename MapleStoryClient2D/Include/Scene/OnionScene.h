@@ -51,6 +51,7 @@ private:
     void CreateMapAnimationSequence();
     void CreateEffectPrototype();
     void LoadSound();
+    void AddTileCollisionCallback();
 
 public:
     void CreateWayToZakumScene();

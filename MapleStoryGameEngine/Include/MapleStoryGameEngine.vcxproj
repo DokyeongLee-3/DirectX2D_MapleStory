@@ -181,7 +181,6 @@
     <ClInclude Include="Component\Component.h" />
     <ClInclude Include="Component\MovingTile.h" />
     <ClInclude Include="Component\MovingTileMapComponent.h" />
-    <ClInclude Include="Component\NavAgent.h" />
     <ClInclude Include="Component\ObjectComponent.h" />
     <ClInclude Include="Component\PaperBurnComponent.h" />
     <ClInclude Include="Component\ParticleComponent.h" />
@@ -287,9 +286,6 @@
     <ClInclude Include="Resource\Texture\TextureManager.h" />
     <ClInclude Include="Scene\CameraManager.h" />
     <ClInclude Include="Scene\CollisionSection.h" />
-    <ClInclude Include="Scene\Navigation.h" />
-    <ClInclude Include="Scene\NavigationManager.h" />
-    <ClInclude Include="Scene\NavigationThread.h" />
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="Scene\SceneCollision.h" />
     <ClInclude Include="Scene\SceneManager.h" />
@@ -327,7 +323,6 @@
     <ClCompile Include="Component\Component.cpp" />
     <ClCompile Include="Component\MovingTile.cpp" />
     <ClCompile Include="Component\MovingTileMapComponent.cpp" />
-    <ClCompile Include="Component\NavAgent.cpp" />
     <ClCompile Include="Component\ObjectComponent.cpp" />
     <ClCompile Include="Component\PaperBurnComponent.cpp" />
     <ClCompile Include="Component\ParticleComponent.cpp" />
@@ -420,9 +415,6 @@
     <ClCompile Include="Resource\Texture\TextureManager.cpp" />
     <ClCompile Include="Scene\CameraManager.cpp" />
     <ClCompile Include="Scene\CollisionSection.cpp" />
-    <ClCompile Include="Scene\Navigation.cpp" />
-    <ClCompile Include="Scene\NavigationManager.cpp" />
-    <ClCompile Include="Scene\NavigationThread.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Scene\SceneCollision.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />

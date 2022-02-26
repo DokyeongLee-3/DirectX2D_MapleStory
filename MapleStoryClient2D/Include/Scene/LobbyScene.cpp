@@ -100,6 +100,8 @@ bool CLobbyScene::Init()
 
 	m_Scene->LoadFullPath(FullPath);
 
+	AddTileCollisionCallback();
+
 	return true;
 }
 
@@ -192,6 +194,8 @@ void CLobbyScene::LoadSound()
 {
 	m_Scene->GetResource()->LoadSound("BGM", true, "FairyAcademyBGM", "TheFairyAcademy.mp3");
 
+	m_Scene->GetResource()->LoadSound("Effect", false, "Jump", "Jump.mp3");
+
 	m_Scene->GetResource()->LoadSound("Effect", false, "SylphideLancerUse", "SylphideLancerUse.mp3");
 
 	m_Scene->GetResource()->LoadSound("Effect", false, "VoidPressureUse", "VoidPressureUse.mp3");
@@ -199,6 +203,62 @@ void CLobbyScene::LoadSound()
 	m_Scene->GetResource()->LoadSound("Effect", false, "VoidPressureEnd", "VoidPressureEnd.mp3");
 
 	m_Scene->GetResource()->LoadSound("Effect", false, "LightTransforming", "LightTransformingUse.mp3");
+}
+
+void CLobbyScene::AddTileCollisionCallback()
+{
+	CTileObject* FloorTile = (CTileObject*)m_Scene->FindObject("LobbyTileObj");
+
+	if (FloorTile)
+	{
+		CColliderBox2D* Collider = (CColliderBox2D*)FloorTile->FindComponent("LobbyTileCollider");
+		Collider->AddCollisionCallback<CTileObject>(Collision_State::Begin, FloorTile, &CTileObject::CollisionBeginCallback);
+		//Collider->AddCollisionCallback<CTileObject>(Collision_State::Stay, FloorTile, &CTileObject::CollisionStayCallback);
+		Collider->AddCollisionCallback<CTileObject>(Collision_State::End, FloorTile, &CTileObject::CollisionEndCallback);
+	}
+
+	for (int i = 1; i <= 10; ++i)
+	{
+		char Leaf[128] = {};
+		sprintf_s(Leaf, "Leaf%d", i);
+		CStaticMapObj* LeafObj = (CStaticMapObj*)m_Scene->FindObject(Leaf);
+
+		if (LeafObj)
+		{
+			CColliderBox2D* LeafCollider = (CColliderBox2D*)LeafObj->FindComponent("LeafCollider");
+
+			if(LeafCollider)
+			{
+				LeafCollider->AddCollisionCallback<CStaticMapObj>(Collision_State::Begin, LeafObj, &CStaticMapObj::CollisionBeginCallback);
+				//LeafCollider->AddCollisionCallback<CStaticMapObj>(Collision_State::Stay, LeafObj, &CStaticMapObj::CollisionStayCallback);
+				LeafCollider->AddCollisionCallback<CStaticMapObj>(Collision_State::End, LeafObj, &CStaticMapObj::CollisionEndCallback);
+
+				LeafObj->SetCollisionID(i);
+			}
+		}
+	}
+
+	CStaticMapObj* Step = (CStaticMapObj*)m_Scene->FindObject("RightEntrance");
+
+	if (Step)
+	{
+		for (int i = 0; i <= 1; ++i)
+		{
+			char StepName[128] = {};
+			sprintf_s(StepName, "Step%d", i);
+			CColliderBox2D* StepCollider = (CColliderBox2D*)Step->FindComponent(StepName);
+
+			if (StepCollider)
+			{
+				StepCollider->AddCollisionCallback<CStaticMapObj>(Collision_State::Begin, Step, &CStaticMapObj::CollisionBeginCallback);
+				StepCollider->AddCollisionCallback<CStaticMapObj>(Collision_State::End, Step, &CStaticMapObj::CollisionEndCallback);
+
+				Step->SetCollisionID(i + 11);
+			}
+
+		}
+	}
+
 }
 
 void CLobbyScene::CreateOnionScene()

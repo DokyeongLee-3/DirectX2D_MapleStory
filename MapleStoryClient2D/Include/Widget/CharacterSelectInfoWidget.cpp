@@ -1,7 +1,6 @@
 
 #include "CharacterSelectInfoWidget.h"
 #include "Engine.h"
-#include "../Scene/LoadingScene.h"
 #include "Scene/SceneManager.h"
 #include "../Object/Player2D.h"
 #include "../Client.h"

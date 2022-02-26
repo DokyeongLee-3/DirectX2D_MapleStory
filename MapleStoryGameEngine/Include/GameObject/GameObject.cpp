@@ -3,13 +3,15 @@
 #include "../Component/SpriteComponent.h"
 #include "../Scene/SceneManager.h"
 #include "../PathManager.h"
-#include "../Component/NavAgent.h"
 
 CGameObject::CGameObject()	:
 	m_Scene(nullptr),
 	m_Parent(nullptr),
 	m_LifeSpan(0.f),
-	m_Gravity(false)
+	m_Gravity(false),
+	m_GravityFactor(9.8f),
+	m_GravityAccTime(0.f),
+	m_TileCollisionEnable(false)
 {
 	SetTypeID<CGameObject>();
 }
@@ -162,6 +164,8 @@ bool CGameObject::Init()
 
 void CGameObject::Update(float DeltaTime)
 {
+	m_PrevFrameWorldPos = GetWorldPos();
+
 	// 처음 m_LiftSpan의 초기값이 0.f라는건 정해진 LiftSpan이 무한이라는 의미
 	if (m_LifeSpan > 0.f)
 	{
@@ -199,8 +203,12 @@ void CGameObject::PostUpdate(float DeltaTime)
 
 	if (m_Gravity)
 	{
-
+		m_GravityAccTime += DeltaTime;
+		AddWorldPos(0.f, -m_GravityAccTime * m_GravityFactor, 0.f);
 	}
+
+	Vector3 CurrentFrameWorldPos = GetWorldPos();
+	m_CurrentFrameMove = CurrentFrameWorldPos - m_PrevFrameWorldPos;	
 }
 
 void CGameObject::AddCollision()
@@ -390,16 +398,16 @@ void CGameObject::Load(const char* FileName, const std::string& PathName)
 	Load(FullPath);
 }
 
-void CGameObject::Move(const Vector3& EndPos)
-{
-	size_t	Size = m_vecObjectComponent.size();
-
-	for (size_t i = 0; i < Size; ++i)
-	{
-		if (m_vecObjectComponent[i]->CheckType<CNavAgent>())
-		{
-			((CNavAgent*)m_vecObjectComponent[i].Get())->Move(EndPos);
-			break;
-		}
-	}
-}
+//void CGameObject::Move(const Vector3& EndPos)
+//{
+//	size_t	Size = m_vecObjectComponent.size();
+//
+//	for (size_t i = 0; i < Size; ++i)
+//	{
+//		if (m_vecObjectComponent[i]->CheckType<CNavAgent>())
+//		{
+//			((CNavAgent*)m_vecObjectComponent[i].Get())->Move(EndPos);
+//			break;
+//		}
+//	}
+//}

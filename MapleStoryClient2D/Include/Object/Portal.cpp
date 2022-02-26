@@ -26,7 +26,7 @@ void CPortal::Start()
 {
 	CGameObject::Start();
 
-
+	m_Gravity = false;
 }
 
 bool CPortal::Init()

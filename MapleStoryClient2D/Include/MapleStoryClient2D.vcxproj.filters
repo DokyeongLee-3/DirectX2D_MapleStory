@@ -22,9 +22,6 @@
     <Filter Include="02. Object\01. Player">
       <UniqueIdentifier>{d12d3136-29ab-4a70-b7fb-250eaf30a6fb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. Object\02. Arrow">
-      <UniqueIdentifier>{5e8705bc-f3c7-4bde-9f10-6fa6f27ef3df}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. UI">
       <UniqueIdentifier>{1061491c-3584-4fdd-8ad7-25e4a4757c49}</UniqueIdentifier>
     </Filter>
@@ -43,102 +40,72 @@
     <Filter Include="05. Animation">
       <UniqueIdentifier>{8408c5df-c393-46be-99ff-24ad14fd0feb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. Object\03. Monster">
-      <UniqueIdentifier>{523790ee-a74e-42b1-b50d-ff932ec1e7e1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. Object\03. Monster\01. Object">
-      <UniqueIdentifier>{a76f0114-44ad-4189-a5e2-11b4b377615d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. Object\03. Monster\02. Animation">
-      <UniqueIdentifier>{b6ca54af-6da5-442a-83e5-b9ff3c74e405}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. Object\04. Bullet">
-      <UniqueIdentifier>{a948177d-8b66-4cec-a0c8-c31a7e4c129d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. Object\05. Test">
-      <UniqueIdentifier>{cb20ad5b-72fa-4fe3-b368-37aa047dec27}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. Object\06. Stage">
-      <UniqueIdentifier>{4e0197bf-f8eb-468a-b329-c4b59abe38bc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. Object\07. MapObject">
-      <UniqueIdentifier>{d47bbbee-e3d4-40d7-a108-8ca61c2604b0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. Object\07. MapObject\01. Lobby">
-      <UniqueIdentifier>{0d994efc-f2a6-4301-8396-317fd1f7bf7a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. Object\07. MapObject\02. Zakum">
-      <UniqueIdentifier>{5ce0a072-d003-4d25-9b3f-9f51608998a3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. Object\08. Particle">
-      <UniqueIdentifier>{5cdbcfc1-d09e-496e-a27c-6a565ca05f73}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. Object\09. TileMap">
-      <UniqueIdentifier>{3b5610dd-474e-458e-bffa-058735a53aaf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="05. Animation\01. Player">
       <UniqueIdentifier>{e497a089-2884-4e0f-9bb4-d9459ef49ed0}</UniqueIdentifier>
     </Filter>
     <Filter Include="05. Animation\02. Monster">
       <UniqueIdentifier>{f89d0bb0-4297-4814-aa3a-a651883c8e5b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. Object\07. MapObject\03. Library2nd">
+    <Filter Include="02. Object\02. Monster">
+      <UniqueIdentifier>{523790ee-a74e-42b1-b50d-ff932ec1e7e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\02. Monster\01. Object">
+      <UniqueIdentifier>{a76f0114-44ad-4189-a5e2-11b4b377615d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\02. Monster\02. Animation">
+      <UniqueIdentifier>{b6ca54af-6da5-442a-83e5-b9ff3c74e405}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\03. Bullet">
+      <UniqueIdentifier>{a948177d-8b66-4cec-a0c8-c31a7e4c129d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\04. Stage">
+      <UniqueIdentifier>{4e0197bf-f8eb-468a-b329-c4b59abe38bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\05. MapObject">
+      <UniqueIdentifier>{d47bbbee-e3d4-40d7-a108-8ca61c2604b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\05. MapObject\01. Lobby">
+      <UniqueIdentifier>{0d994efc-f2a6-4301-8396-317fd1f7bf7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\05. MapObject\02. Zakum">
+      <UniqueIdentifier>{5ce0a072-d003-4d25-9b3f-9f51608998a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\05. MapObject\03. Library2nd">
       <UniqueIdentifier>{e2904190-ea5a-4735-80f6-bd1f9632b914}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\06. TileMap">
+      <UniqueIdentifier>{3b5610dd-474e-458e-bffa-058735a53aaf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Scene\MainScene.cpp">
-      <Filter>01. SceneMode</Filter>
-    </ClCompile>
     <ClCompile Include="Object\Player2D.cpp">
       <Filter>02. Object\01. Player</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\BulletTornaido.cpp">
-      <Filter>02. Object\02. Arrow</Filter>
     </ClCompile>
     <ClCompile Include="ClientManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Object\SylphideLancerArrow.cpp">
-      <Filter>02. Object\02. Arrow</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\SylphideLancerArrowAnimation2D.cpp">
-      <Filter>02. Object\02. Arrow</Filter>
-    </ClCompile>
     <ClCompile Include="Object\BulletCamera.cpp">
-      <Filter>02. Object\04. Bullet</Filter>
+      <Filter>02. Object\03. Bullet</Filter>
     </ClCompile>
     <ClCompile Include="Object\Bullet.cpp">
-      <Filter>02. Object\04. Bullet</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\PixelTest.cpp">
-      <Filter>02. Object\05. Test</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\MainWidget.cpp">
-      <Filter>03. UI</Filter>
+      <Filter>02. Object\03. Bullet</Filter>
     </ClCompile>
     <ClCompile Include="Object\Stage.cpp">
-      <Filter>02. Object\06. Stage</Filter>
+      <Filter>02. Object\04. Stage</Filter>
     </ClCompile>
     <ClCompile Include="Object\StaticMapObj.cpp">
-      <Filter>02. Object\07. MapObject</Filter>
+      <Filter>02. Object\05. MapObject</Filter>
     </ClCompile>
     <ClCompile Include="Component\DragCollider.cpp">
       <Filter>04. Component</Filter>
     </ClCompile>
-    <ClCompile Include="Widget\SimpleHUD.cpp">
-      <Filter>03. UI</Filter>
-    </ClCompile>
     <ClCompile Include="Object\Portal.cpp">
-      <Filter>02. Object\07. MapObject</Filter>
+      <Filter>02. Object\05. MapObject</Filter>
     </ClCompile>
     <ClCompile Include="Widget\MouseNormal.cpp">
-      <Filter>03. UI\01. Mouse</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\MouseAttack.cpp">
       <Filter>03. UI\01. Mouse</Filter>
     </ClCompile>
     <ClCompile Include="Widget\MouseCatch.cpp">
@@ -151,12 +118,6 @@
       <Filter>03. UI\02. InGame</Filter>
     </ClCompile>
     <ClCompile Include="Scene\StartScene.cpp">
-      <Filter>01. SceneMode</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\LoadingWidget.cpp">
-      <Filter>03. UI</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene\LoadingScene.cpp">
       <Filter>01. SceneMode</Filter>
     </ClCompile>
     <ClCompile Include="Scene\LoadingThread.cpp">
@@ -174,20 +135,17 @@
     <ClCompile Include="Widget\CharacterSelectInfoWidget.cpp">
       <Filter>03. UI\03. CharacterSelect</Filter>
     </ClCompile>
-    <ClCompile Include="Object\BubbleParticle.cpp">
-      <Filter>02. Object\08. Particle</Filter>
-    </ClCompile>
     <ClCompile Include="Object\BlinkTree.cpp">
-      <Filter>02. Object\07. MapObject</Filter>
+      <Filter>02. Object\05. MapObject</Filter>
     </ClCompile>
     <ClCompile Include="Object\Butterfly.cpp">
-      <Filter>02. Object\07. MapObject</Filter>
+      <Filter>02. Object\05. MapObject</Filter>
     </ClCompile>
     <ClCompile Include="Object\DoubleHelixBlinkTree.cpp">
-      <Filter>02. Object\07. MapObject</Filter>
+      <Filter>02. Object\05. MapObject</Filter>
     </ClCompile>
     <ClCompile Include="Object\LampLight.cpp">
-      <Filter>02. Object\07. MapObject</Filter>
+      <Filter>02. Object\05. MapObject</Filter>
     </ClCompile>
     <ClCompile Include="Widget\SkillQuickSlotWindow.cpp">
       <Filter>03. UI\02. InGame</Filter>
@@ -199,37 +157,22 @@
       <Filter>01. SceneMode</Filter>
     </ClCompile>
     <ClCompile Include="Object\LobbyBigLamp.cpp">
-      <Filter>02. Object\07. MapObject\01. Lobby</Filter>
+      <Filter>02. Object\05. MapObject\01. Lobby</Filter>
     </ClCompile>
     <ClCompile Include="Object\LobbySmallLamp.cpp">
-      <Filter>02. Object\07. MapObject\01. Lobby</Filter>
+      <Filter>02. Object\05. MapObject\01. Lobby</Filter>
     </ClCompile>
     <ClCompile Include="Scene\OnionScene.cpp">
       <Filter>01. SceneMode</Filter>
     </ClCompile>
-    <ClCompile Include="Object\SmokeParticle.cpp">
-      <Filter>02. Object\08. Particle</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\SparkParticle.cpp">
-      <Filter>02. Object\08. Particle</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\RainParticle.cpp">
-      <Filter>02. Object\08. Particle</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\Monster.cpp">
-      <Filter>02. Object\03. Monster\01. Object</Filter>
-    </ClCompile>
     <ClCompile Include="Object\OnionMonster.cpp">
-      <Filter>02. Object\03. Monster\01. Object</Filter>
+      <Filter>02. Object\02. Monster\01. Object</Filter>
     </ClCompile>
     <ClCompile Include="Object\SylphideLancer.cpp">
-      <Filter>02. Object\04. Bullet</Filter>
+      <Filter>02. Object\03. Bullet</Filter>
     </ClCompile>
     <ClCompile Include="Widget\DamageFont.cpp">
       <Filter>03. UI</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\TileMap.cpp">
-      <Filter>02. Object\09. TileMap</Filter>
     </ClCompile>
     <ClCompile Include="Widget\BossMatching.cpp">
       <Filter>03. UI\02. InGame</Filter>
@@ -238,13 +181,13 @@
       <Filter>01. SceneMode</Filter>
     </ClCompile>
     <ClCompile Include="Object\FlowingVolcano.cpp">
-      <Filter>02. Object\07. MapObject\02. Zakum</Filter>
+      <Filter>02. Object\05. MapObject\02. Zakum</Filter>
     </ClCompile>
     <ClCompile Include="Object\VoidPressure.cpp">
-      <Filter>02. Object\04. Bullet</Filter>
+      <Filter>02. Object\03. Bullet</Filter>
     </ClCompile>
     <ClCompile Include="Object\VoidPressureOrb.cpp">
-      <Filter>02. Object\04. Bullet</Filter>
+      <Filter>02. Object\03. Bullet</Filter>
     </ClCompile>
     <ClCompile Include="Object\PlayerAnimation2D.cpp">
       <Filter>05. Animation\01. Player</Filter>
@@ -273,75 +216,48 @@
     <ClCompile Include="Object\PlayerSkillInfo.cpp">
       <Filter>02. Object</Filter>
     </ClCompile>
-    <ClCompile Include="Object\TileObject.cpp">
-      <Filter>02. Object</Filter>
-    </ClCompile>
     <ClCompile Include="Object\VerticalLampLight.cpp">
-      <Filter>02. Object\07. MapObject\03. Library2nd</Filter>
+      <Filter>02. Object\05. MapObject\03. Library2nd</Filter>
     </ClCompile>
     <ClCompile Include="Scene\Library2ndScene.cpp">
       <Filter>01. SceneMode</Filter>
     </ClCompile>
-    <ClCompile Include="Animation\MonsterAnimation.cpp">
-      <Filter>05. Animation\02. Monster</Filter>
-    </ClCompile>
     <ClCompile Include="Animation\OnionMonsterAnimation.cpp">
       <Filter>05. Animation\02. Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\TileObject.cpp">
+      <Filter>02. Object\06. TileMap</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Scene\MainScene.h">
-      <Filter>01. SceneMode</Filter>
-    </ClInclude>
     <ClInclude Include="Object\Player2D.h">
       <Filter>02. Object\01. Player</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\BulletTornaido.h">
-      <Filter>02. Object\02. Arrow</Filter>
     </ClInclude>
     <ClInclude Include="ClientManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Object\SylphideLancerArrow.h">
-      <Filter>02. Object\02. Arrow</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\SylphideLancerArrowAnimation2D.h">
-      <Filter>02. Object\02. Arrow</Filter>
-    </ClInclude>
     <ClInclude Include="Object\BulletCamera.h">
-      <Filter>02. Object\04. Bullet</Filter>
+      <Filter>02. Object\03. Bullet</Filter>
     </ClInclude>
     <ClInclude Include="Object\Bullet.h">
-      <Filter>02. Object\04. Bullet</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\PixelTest.h">
-      <Filter>02. Object\05. Test</Filter>
-    </ClInclude>
-    <ClInclude Include="Widget\MainWidget.h">
-      <Filter>03. UI</Filter>
+      <Filter>02. Object\03. Bullet</Filter>
     </ClInclude>
     <ClInclude Include="Object\Stage.h">
-      <Filter>02. Object\06. Stage</Filter>
+      <Filter>02. Object\04. Stage</Filter>
     </ClInclude>
     <ClInclude Include="Object\StaticMapObj.h">
-      <Filter>02. Object\07. MapObject</Filter>
+      <Filter>02. Object\05. MapObject</Filter>
     </ClInclude>
     <ClInclude Include="Component\DragCollider.h">
       <Filter>04. Component</Filter>
     </ClInclude>
-    <ClInclude Include="Widget\SimpleHUD.h">
-      <Filter>03. UI</Filter>
-    </ClInclude>
     <ClInclude Include="Object\Portal.h">
-      <Filter>02. Object\07. MapObject</Filter>
+      <Filter>02. Object\05. MapObject</Filter>
     </ClInclude>
     <ClInclude Include="Widget\MouseNormal.h">
-      <Filter>03. UI\01. Mouse</Filter>
-    </ClInclude>
-    <ClInclude Include="Widget\MouseAttack.h">
       <Filter>03. UI\01. Mouse</Filter>
     </ClInclude>
     <ClInclude Include="Widget\MouseCatch.h">
@@ -354,12 +270,6 @@
       <Filter>03. UI\02. InGame</Filter>
     </ClInclude>
     <ClInclude Include="Scene\StartScene.h">
-      <Filter>01. SceneMode</Filter>
-    </ClInclude>
-    <ClInclude Include="Widget\LoadingWidget.h">
-      <Filter>03. UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene\LoadingScene.h">
       <Filter>01. SceneMode</Filter>
     </ClInclude>
     <ClInclude Include="Scene\LoadingThread.h">
@@ -380,20 +290,17 @@
     <ClInclude Include="Widget\CharacterSelectInfoWidget.h">
       <Filter>03. UI\03. CharacterSelect</Filter>
     </ClInclude>
-    <ClInclude Include="Object\BubbleParticle.h">
-      <Filter>02. Object\08. Particle</Filter>
-    </ClInclude>
     <ClInclude Include="Object\BlinkTree.h">
-      <Filter>02. Object\07. MapObject</Filter>
+      <Filter>02. Object\05. MapObject</Filter>
     </ClInclude>
     <ClInclude Include="Object\Butterfly.h">
-      <Filter>02. Object\07. MapObject</Filter>
+      <Filter>02. Object\05. MapObject</Filter>
     </ClInclude>
     <ClInclude Include="Object\DoubleHelixBlinkTree.h">
-      <Filter>02. Object\07. MapObject</Filter>
+      <Filter>02. Object\05. MapObject</Filter>
     </ClInclude>
     <ClInclude Include="Object\LampLight.h">
-      <Filter>02. Object\07. MapObject</Filter>
+      <Filter>02. Object\05. MapObject</Filter>
     </ClInclude>
     <ClInclude Include="Widget\SkillQuickSlotWindow.h">
       <Filter>03. UI\02. InGame</Filter>
@@ -405,37 +312,22 @@
       <Filter>01. SceneMode</Filter>
     </ClInclude>
     <ClInclude Include="Object\LobbyBigLamp.h">
-      <Filter>02. Object\07. MapObject\01. Lobby</Filter>
+      <Filter>02. Object\05. MapObject\01. Lobby</Filter>
     </ClInclude>
     <ClInclude Include="Object\LobbySmallLamp.h">
-      <Filter>02. Object\07. MapObject\01. Lobby</Filter>
+      <Filter>02. Object\05. MapObject\01. Lobby</Filter>
     </ClInclude>
     <ClInclude Include="Scene\OnionScene.h">
       <Filter>01. SceneMode</Filter>
     </ClInclude>
-    <ClInclude Include="Object\SmokeParticle.h">
-      <Filter>02. Object\08. Particle</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\SparkParticle.h">
-      <Filter>02. Object\08. Particle</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\RainParticle.h">
-      <Filter>02. Object\08. Particle</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\Monster.h">
-      <Filter>02. Object\03. Monster\01. Object</Filter>
-    </ClInclude>
     <ClInclude Include="Object\OnionMonster.h">
-      <Filter>02. Object\03. Monster\01. Object</Filter>
+      <Filter>02. Object\02. Monster\01. Object</Filter>
     </ClInclude>
     <ClInclude Include="Object\SylphideLancer.h">
-      <Filter>02. Object\04. Bullet</Filter>
+      <Filter>02. Object\03. Bullet</Filter>
     </ClInclude>
     <ClInclude Include="Widget\DamageFont.h">
       <Filter>03. UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\TileMap.h">
-      <Filter>02. Object\09. TileMap</Filter>
     </ClInclude>
     <ClInclude Include="Widget\BossMatching.h">
       <Filter>03. UI\02. InGame</Filter>
@@ -444,13 +336,13 @@
       <Filter>01. SceneMode</Filter>
     </ClInclude>
     <ClInclude Include="Object\FlowingVolcano.h">
-      <Filter>02. Object\07. MapObject\02. Zakum</Filter>
+      <Filter>02. Object\05. MapObject\02. Zakum</Filter>
     </ClInclude>
     <ClInclude Include="Object\VoidPressure.h">
-      <Filter>02. Object\04. Bullet</Filter>
+      <Filter>02. Object\03. Bullet</Filter>
     </ClInclude>
     <ClInclude Include="Object\VoidPressureOrb.h">
-      <Filter>02. Object\04. Bullet</Filter>
+      <Filter>02. Object\03. Bullet</Filter>
     </ClInclude>
     <ClInclude Include="Object\PlayerAnimation2D.h">
       <Filter>05. Animation\01. Player</Filter>
@@ -479,20 +371,17 @@
     <ClInclude Include="Object\PlayerSkillInfo.h">
       <Filter>02. Object</Filter>
     </ClInclude>
-    <ClInclude Include="Object\TileObject.h">
-      <Filter>02. Object</Filter>
-    </ClInclude>
     <ClInclude Include="Object\VerticalLampLight.h">
-      <Filter>02. Object\07. MapObject\03. Library2nd</Filter>
+      <Filter>02. Object\05. MapObject\03. Library2nd</Filter>
     </ClInclude>
     <ClInclude Include="Scene\Library2ndScene.h">
       <Filter>01. SceneMode</Filter>
     </ClInclude>
-    <ClInclude Include="Animation\MonsterAnimation.h">
-      <Filter>05. Animation\02. Monster</Filter>
-    </ClInclude>
     <ClInclude Include="Animation\OnionMonsterAnimation.h">
       <Filter>05. Animation\02. Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\TileObject.h">
+      <Filter>02. Object\06. TileMap</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

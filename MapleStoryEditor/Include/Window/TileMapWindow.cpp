@@ -133,13 +133,13 @@ bool CTileMapWindow::Init()
 
 
 
-	m_TileMapSaveButton = AddWidget<CIMGUIButton>("TileMapSaveButton", 150.f, 30.f);
+	//m_TileMapSaveButton = AddWidget<CIMGUIButton>("TileMapSaveButton", 150.f, 30.f);
 
-	m_TileMapSaveButton->SetClickCallback(this, &CTileMapWindow::TileMapSaveButton);
+	//m_TileMapSaveButton->SetClickCallback(this, &CTileMapWindow::TileMapSaveButton);
 
-	m_TileMapLoadButton = AddWidget<CIMGUIButton>("TileMapLoadButton", 150.f, 30.f);
+	//m_TileMapLoadButton = AddWidget<CIMGUIButton>("TileMapLoadButton", 150.f, 30.f);
 
-	m_TileMapLoadButton->SetClickCallback(this, &CTileMapWindow::TileMapLoadButton);
+	//m_TileMapLoadButton->SetClickCallback(this, &CTileMapWindow::TileMapLoadButton);
 
 
 	return true;

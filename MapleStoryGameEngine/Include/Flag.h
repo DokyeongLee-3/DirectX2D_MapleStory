@@ -127,7 +127,6 @@ enum class Collision_State
 	Begin,
 	// 충돌이 끝나고 두 충돌체가 서로 떨어질때
 	End,
-	Stay,
 	Max
 };
 
@@ -205,8 +204,7 @@ enum class ThreadLoadingScene
 	Lobby,
 	Onion,
 	WayToZakum,
-	Library2nd,
-	Main
+	Library2nd
 };
 
 

@@ -47,10 +47,12 @@ public:
     }
 
 public:
-    void CollisionCallback(const CollisionResult& result);
-
-public:
     void Die();
     void ReturnIdle();
+
+public:
+    void CollisionBeginCallback(const CollisionResult& Result);
+    //void CollisionStayCallback(const CollisionResult& Result);
+    void CollisionEndCallback(const CollisionResult& Result);
 };
 

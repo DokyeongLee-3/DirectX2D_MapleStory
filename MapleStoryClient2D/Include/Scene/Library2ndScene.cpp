@@ -134,6 +134,8 @@ void CLibrary2ndScene::LoadSound()
 {
 	m_Scene->GetResource()->LoadSound("BGM", true, "FairyAcademyBGM", "TheFairyAcademy.mp3");
 
+	m_Scene->GetResource()->LoadSound("Effect", false, "Jump", "Jump.mp3");
+
 	m_Scene->GetResource()->LoadSound("Effect", false, "SylphideLancerUse", "SylphideLancerUse.mp3");
 	m_Scene->GetResource()->LoadSound("Effect", false, "SylphideLancerHit", "SylphideLancerHit.mp3");
 

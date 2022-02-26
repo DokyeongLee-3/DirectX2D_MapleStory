@@ -2,6 +2,7 @@
 #include "CollisionSection.h"
 #include "../Component/ColliderComponent.h"
 #include "../Input.h"
+#include "../GameObject/GameObject.h"
 
 CCollisionSection::CCollisionSection()
 {
@@ -81,11 +82,11 @@ void CCollisionSection::Collision(float DeltaTime)
 				}
 
 				// 이전 프레임도 충돌하고 이번 프레임에도 충돌한다
-				else
-				{
-					Src->CallCollisionCallback(Collision_State::Stay);
-					Dest->CallCollisionCallback(Collision_State::Stay);
-				}
+				//else
+				//{
+				//	Src->CallCollisionCallback(Collision_State::Stay);
+				//	Dest->CallCollisionCallback(Collision_State::Stay);
+				//}
 
 				Src->AddCurrentFrameCollision(Dest);
 				Dest->AddCurrentFrameCollision(Src);

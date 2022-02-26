@@ -1,6 +1,5 @@
 
 #include "LoadingThread.h"
-#include "MainScene.h"
 #include "LobbyScene.h"
 #include "OnionScene.h"
 #include "WayToZakumScene.h"
@@ -80,17 +79,17 @@ void CLoadingThread::Run()
 		AddMessage(true, 1.f);
 	}
 
-	else if (m_LoadingScene == ThreadLoadingScene::Main)
-	{
-		CSceneManager::GetInst()->CreateNextScene(false);
-		CMainScene* MainScene = CSceneManager::GetInst()->CreateSceneModeEmpty<CMainScene>(false);
+	//else if (m_LoadingScene == ThreadLoadingScene::Main)
+	//{
+	//	CSceneManager::GetInst()->CreateNextScene(false);
+	//	CMainScene* MainScene = CSceneManager::GetInst()->CreateSceneModeEmpty<CMainScene>(false);
 
-		//MainScene->SetPlayerObject(CSceneManager::GetInst()->GetScene()->GetSceneMode()->GetPlayerObject());
+	//	//MainScene->SetPlayerObject(CSceneManager::GetInst()->GetScene()->GetSceneMode()->GetPlayerObject());
 
-		MainScene->SetLoadingFunction<CLoadingThread>(this, &CLoadingThread::AddMessage);
+	//	MainScene->SetLoadingFunction<CLoadingThread>(this, &CLoadingThread::AddMessage);
 
-		MainScene->Init();
+	//	MainScene->Init();
 
-		AddMessage(true, 1.f);
-	}
+	//	AddMessage(true, 1.f);
+	//}
 }

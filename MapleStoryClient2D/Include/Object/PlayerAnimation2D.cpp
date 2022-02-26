@@ -1,7 +1,6 @@
 
 #include "PlayerAnimation2D.h"
 #include "Player2D.h"
-#include "SylphideLancerArrow.h"
 #include "Scene/Scene.h"
 
 CPlayerAnimation2D::CPlayerAnimation2D()
@@ -32,7 +31,7 @@ bool CPlayerAnimation2D::Init()
 	AddAnimation(TEXT("PlayerRope.sqc"), ANIMATION_PATH, "Rope", false);
 	AddAnimation(TEXT("PlayerJumpLeft.sqc"), ANIMATION_PATH, "JumpLeft", false);
 
-	CAnimationSequence2DData* Data = FindAnimation("HealLeft");
+	//CAnimationSequence2DData* Data = FindAnimation("HealLeft");
 	//Data->SetEndFunction<CPlayerAnimation2D>(this, &CPlayerAnimation2D::ReturnToIdle);
 
 

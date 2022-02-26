@@ -198,6 +198,8 @@ void COnionScene::LoadSound()
 	m_Scene->GetResource()->LoadSound("BGM", true, "OnionSceneBGM", "TheFairyForest.mp3");
 	m_Scene->GetResource()->SoundPlay("OnionSceneBGM");
 
+	m_Scene->GetResource()->LoadSound("Effect", false, "Jump", "Jump.mp3");
+
 	m_Scene->GetResource()->LoadSound("Effect", false, "SylphideLancerUse", "SylphideLancerUse.mp3");
 	m_Scene->GetResource()->LoadSound("Effect", false, "SylphideLancerHit", "SylphideLancerHit.mp3");
 
@@ -207,6 +209,37 @@ void COnionScene::LoadSound()
 	m_Scene->GetResource()->LoadSound("Effect", false, "VoidPressureHit", "VoidPressureHit.mp3");
 
 	m_Scene->GetResource()->LoadSound("Effect", false, "LightTransforming", "LightTransformingUse.mp3");
+}
+
+void COnionScene::AddTileCollisionCallback()
+{
+	CTileObject* FloorTile = (CTileObject*)m_Scene->FindObject("OnionFloorTileObj");
+
+	if (FloorTile)
+	{
+		CColliderBox2D* Collider = (CColliderBox2D*)FloorTile->FindComponent("OnionFloorTileComponent");
+		Collider->AddCollisionCallback<CTileObject>(Collision_State::Begin, FloorTile, &CTileObject::CollisionBeginCallback);
+		//Collider->AddCollisionCallback<CTileObject>(Collision_State::Stay, FloorTile, &CTileObject::CollisionStayCallback);
+		Collider->AddCollisionCallback<CTileObject>(Collision_State::End, FloorTile, &CTileObject::CollisionEndCallback);
+	}
+
+	for (int i = 0; i <= 5; ++i)
+	{
+		char TileObjName[128] = {};
+		sprintf_s(TileObjName, "TileObj%d", i);
+		CTileObject* TileObj = (CTileObject*)m_Scene->FindObject(TileObjName);
+
+		if (TileObj)
+		{
+			CColliderBox2D* TileCollider = (CColliderBox2D*)TileObj->FindComponent("TileMapCollider");
+
+			if (TileCollider)
+			{
+				TileCollider->AddCollisionCallback<CTileObject>(Collision_State::Begin, TileObj, &CTileObject::CollisionBeginCallback);
+				TileCollider->AddCollisionCallback<CTileObject>(Collision_State::End, TileObj, &CTileObject::CollisionEndCallback);
+			}
+		}
+	}
 }
 
 void COnionScene::CreateWayToZakumScene()

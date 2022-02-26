@@ -38,21 +38,79 @@ private:
 
     class CVoidPressure*            m_VoidPressure;
     class CVoidPressureOrb*         m_VoidPressureOrb;
-    class CPlayerSkillInfo*               m_PlayerSkillInfo;
+    class CPlayerSkillInfo*         m_PlayerSkillInfo;
 
     float       m_Opacity;
     float       m_ScaleFactor;
     bool        m_IsFlip;
     bool        m_OnVoidPressure;
     bool        m_OnLightTransforming;
+    bool        m_OnJump;
+    float       m_JumpForce;
+    // 플레이어와 충돌하고 있는 충돌체(ex. StaticMapObj, TileObj)들의 ID
+    std::list<int>                  m_ListCollisionID;
+
 
     PlayerDir   m_Dir;
     PlayerInfo m_PlayerInfo;
 
-
-    CSharedPtr<CNavAgent>     m_NavAgent;
-
 public:
+    void AddCollisionID(int ID)
+    {
+        m_ListCollisionID.push_back(ID);
+    }
+
+    bool CheckCollisionID(int ID)
+    {
+        auto iter = m_ListCollisionID.begin();
+        auto iterEnd = m_ListCollisionID.end();
+
+        for (; iter != iterEnd; ++iter)
+        {
+            if ((*iter) == ID)
+                return true;
+        }
+
+        return false;
+    }
+
+    void EraseCollisionID(int ID)
+    {
+        auto iter = m_ListCollisionID.begin();
+        auto iterEnd = m_ListCollisionID.end();
+
+        for (; iter != iterEnd; ++iter)
+        {
+            if ((*iter) == ID)
+            {
+                m_ListCollisionID.erase(iter);
+                return;
+            }
+
+        }
+    }
+
+    float GetJumpForce()    const
+    {
+        return m_JumpForce;
+    }
+
+    void SetOnJump(bool Jump)
+    {
+        m_OnJump = Jump;
+    }
+
+
+    bool GetOnJump()    const
+    {
+        return m_OnJump;
+    }
+
+    void SetDir(PlayerDir Dir)
+    {
+        m_Dir = Dir;
+    }
+
     CSpriteComponent* GetRootSpriteComponent()    const
     {
         return m_BodySprite;
@@ -84,12 +142,12 @@ private:
     void MoveDown(float DeltaTime);
     void MoveLeft(float DeltaTime);
     void MoveRight(float DeltaTime);
+    void Jump(float DeltaTime);
     void SylphideLancer(float DeltaTime);
     void VoidPressure(float DeltaTime);
     void LightTransforming(float DeltaTime);
 
 
-    void Skill2(float DeltaTime);
 
 public:
     void SetVoidPressure(class CVoidPressure* VoidPressure);
@@ -105,8 +163,8 @@ public:
 public:
     void VoidPressureCancle(float DeltaTime);
     void CollisionBeginCallback(const CollisionResult& Result);
-    void CollisionStayCallback(const CollisionResult& Result);
-
+    //void CollisionStayCallback(const CollisionResult& Result);
+    void CollisionEndCallback(const CollisionResult& Result);
 
     void MovePointDown(float DeltaTime);
     //void PathResult(const std::list<Vector3>& PathList);

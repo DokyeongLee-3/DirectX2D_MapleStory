@@ -241,7 +241,6 @@ struct CollisionResult
 {
 	class CColliderComponent* Src;
 	class CColliderComponent* Dest;
-	Vector3	HitPoint;
 
 	CollisionResult() :
 		Src(nullptr),

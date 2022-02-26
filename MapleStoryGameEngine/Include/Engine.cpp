@@ -23,9 +23,9 @@ CEngine::CEngine()	:
 	m_Play(true),
 	m_Space(Engine_Space::Space2D),
 	m_MouseState(Mouse_State::Normal),
-	m_ShowCursorCount(0),
-	m_GlobalCBuffer(nullptr),
-	m_GlobalAccTime(0.f)
+	m_ShowCursorCount(0)
+	//m_GlobalCBuffer(nullptr),
+	//m_GlobalAccTime(0.f)
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	//_CrtSetBreakAlloc(280);
@@ -38,10 +38,10 @@ CEngine::~CEngine()
 {
 	CSceneManager::DestroyInst();
 
-	m_RandomBuffer->ResetShader(90, (int)Buffer_Shader_Type::Compute);
+	//m_RandomBuffer->ResetShader(90, (int)Buffer_Shader_Type::Compute);
 
-	SAFE_DELETE(m_GlobalCBuffer);
-	SAFE_DELETE(m_RandomBuffer);
+	//SAFE_DELETE(m_GlobalCBuffer);
+	//SAFE_DELETE(m_RandomBuffer);
 
 	CInput::DestroyInst();
 
@@ -120,46 +120,46 @@ bool CEngine::Init(HINSTANCE hInst, HWND hWnd,
 	if (!CRenderManager::GetInst()->Init())
 		return false;
 
-	m_GlobalCBuffer = new CGlobalConstantBuffer;
+	//m_GlobalCBuffer = new CGlobalConstantBuffer;
 
-	if (!m_GlobalCBuffer->Init())
-		return false;
+	//if (!m_GlobalCBuffer->Init())
+	//	return false;
 
-	m_GlobalCBuffer->SetResolution(m_RS);
+	//m_GlobalCBuffer->SetResolution(m_RS);
 
 	// 장면 관리자 초기화
 	if (!CSceneManager::GetInst()->Init())
 		return false;
 
-	srand((unsigned int)time(0));
-	rand();
+	//srand((unsigned int)time(0));
+	//rand();
 
-	// 난수 전용 구조화버퍼 생성
-	m_RandomBuffer = new CStructuredBuffer;
+	//// 난수 전용 구조화버퍼 생성
+	//m_RandomBuffer = new CStructuredBuffer;
 
-	m_RandomBuffer->Init("RandomBuffer", sizeof(float), 10000, 10, true);
+	//m_RandomBuffer->Init("RandomBuffer", sizeof(float), 10000, 10, true);
 
-	float	RandNumber[10000] = {};
+	//float	RandNumber[10000] = {};
 
-	for (int i = 0; i < 10000; ++i)
-	{
-		RandNumber[i] = rand() % 10001 / 10000.f;
-	}
+	//for (int i = 0; i < 10000; ++i)
+	//{
+	//	RandNumber[i] = rand() % 10001 / 10000.f;
+	//}
 
-	m_RandomBuffer->UpdateBuffer(RandNumber, 10000);
+	//m_RandomBuffer->UpdateBuffer(RandNumber, 10000);
 
 
-	m_RandomBuffer->SetShader(90, (int)Buffer_Shader_Type::Compute);
+	//m_RandomBuffer->SetShader(90, (int)Buffer_Shader_Type::Compute);
 
 
 	// NoiseTexture
-	CResourceManager::GetInst()->LoadTexture("GlobalNoiseTexture", TEXT("noise_01.png"));
+	/*CResourceManager::GetInst()->LoadTexture("GlobalNoiseTexture", TEXT("noise_01.png"));
 
 	m_GlobalNoiseTexture = CResourceManager::GetInst()->FindTexture("GlobalNoiseTexture");
 
 	m_GlobalNoiseTexture->SetShader(100, (int)Buffer_Shader_Type::All, 0);
 
-	m_GlobalCBuffer->SetNoiseResolution((float)m_GlobalNoiseTexture->GetWidth(), (float)m_GlobalNoiseTexture->GetHeight());
+	m_GlobalCBuffer->SetNoiseResolution((float)m_GlobalNoiseTexture->GetWidth(), (float)m_GlobalNoiseTexture->GetHeight());*/
 
 	return true;
 }
@@ -213,13 +213,6 @@ void CEngine::Logic()
 
 	if (!m_Play)
 		DeltaTime = 0.f;
-
-	m_GlobalAccTime += DeltaTime;
-
-	m_GlobalCBuffer->SetDeltaTime(DeltaTime);
-	m_GlobalCBuffer->SetAccTime(m_GlobalAccTime);
-
-	m_GlobalCBuffer->UpdateCBuffer();
 
 	CInput::GetInst()->Update(DeltaTime);
 	CResourceManager::GetInst()->Update();

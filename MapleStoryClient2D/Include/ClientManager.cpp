@@ -3,7 +3,6 @@
 #include "Engine.h"
 #include "resource.h"
 #include "Scene/SceneManager.h"
-#include "Scene/MainScene.h"
 #include "Scene/LobbyScene.h"
 #include "Scene/OnionScene.h"
 #include "Scene/WayToZakumScene.h"
@@ -15,11 +14,11 @@
 #include "Component/ColliderPixel.h"
 #include "Component/DragCollider.h"
 #include "Component/StaticMeshComponent.h"
+#include "Component/TileMapComponent.h"
 #include "Animation/AnimationSequence2DInstance.h"
 #include "Animation/OnionMonsterAnimation.h"
 #include "Input.h"
 #include "Widget/MouseNormal.h"
-#include "Widget/MouseAttack.h"
 #include "Widget/MouseClick.h"
 
 DEFINITION_SINGLE(CClientManager)
@@ -74,7 +73,6 @@ bool CClientManager::Init(HINSTANCE hInst)
 	// 마우스 위젯 설정
 	CMouseNormal* MouseNormal = CEngine::GetInst()->CreateMouse<CMouseNormal>(Mouse_State::Normal, "MouseNormal");
 	CMouseClick* MouseClick = CEngine::GetInst()->CreateMouse<CMouseClick>(Mouse_State::Click, "MouseClick");
-	CMouseAttack* MouseAttack = CEngine::GetInst()->CreateMouse<CMouseAttack>(Mouse_State::State1, "MouseAttack");
 
 
 
@@ -93,11 +91,11 @@ int CClientManager::Run()
 
 void CClientManager::CreateSceneMode(CScene* Scene, size_t Type)
 {
-	if (Type == typeid(CMainScene).hash_code())
-	{
-		if (!(Scene->GetSceneMode()))
-			Scene->LoadSceneMode<CMainScene>();
-	}
+	//if (Type == typeid(CMainScene).hash_code())
+	//{
+	//	if (!(Scene->GetSceneMode()))
+	//		Scene->LoadSceneMode<CMainScene>();
+	//}
 }
 
 CGameObject* CClientManager::CreateObject(CScene* Scene, size_t Type)
@@ -241,12 +239,7 @@ CGameObject* CClientManager::CreateObject(CScene* Scene, size_t Type)
 			CSceneMode* NextSceneMode = NextScene->GetSceneMode();
 			if (NextSceneMode)
 			{
-				if (NextSceneMode->GetTypeID() == typeid(CMainScene).hash_code())
-				{
-					((CMainScene*)(NextSceneMode))->SetStageObject(Obj);
-				}
-
-				else if (NextSceneMode->GetTypeID() == typeid(CLobbyScene).hash_code())
+				if (NextSceneMode->GetTypeID() == typeid(CLobbyScene).hash_code())
 				{
 					((CLobbyScene*)(NextSceneMode))->SetStageObject(Obj);
 				}

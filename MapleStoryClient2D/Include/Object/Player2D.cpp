@@ -2,7 +2,6 @@
 #include "Player2D.h"
 #include "Stage.h"
 #include "Device.h"
-#include "BulletTornaido.h"
 #include "Portal.h"
 #include "Scene/Scene.h"
 #include "../Scene/LobbyScene.h"
@@ -16,15 +15,12 @@
 #include "../Animation/VoidPressureAttackSphere.h"
 #include "../Animation/PlayerOrb.h"
 #include "BulletCamera.h"
-#include "Bullet.h"
 #include "SylphideLancer.h"
-#include "../Widget/SimpleHUD.h"
 #include "Scene/SceneManager.h"
 #include "Render/RenderManager.h"
 #include "VoidPressure.h"
 #include "VoidPressureOrb.h"
 #include "PlayerSkillInfo.h"
-#include "Scene/NavigationManager.h"
 
 CPlayer2D::CPlayer2D() :
 	m_BodySprite(nullptr),
@@ -36,10 +32,13 @@ CPlayer2D::CPlayer2D() :
 	m_Opacity(1.f),
 	m_IsFlip(false),
 	m_Dir(PlayerDir::None),
-	m_OnLightTransforming(false)
+	m_OnLightTransforming(false),
+	m_OnJump(false),
+	m_JumpForce(360.f)
 {
 	SetTypeID<CPlayer2D>();
 	m_PlayerSkillInfo = new CPlayerSkillInfo;
+	m_Gravity = true;
 }
 
 CPlayer2D::CPlayer2D(const CPlayer2D& obj) :
@@ -76,7 +75,7 @@ bool CPlayer2D::Init()
 
 	m_Body = CreateComponent<CColliderBox2D>("PlayerBody");
 	m_Body->SetExtent(25.f, 35.f);
-	m_Body->SetOffset(0.f, 10.f, 0.f);
+	m_Body->SetOffset(0.f, 13.f, 0.f);
 
 	m_Camera = CreateComponent<CCameraComponent>("Camera");
 
@@ -125,13 +124,9 @@ bool CPlayer2D::Init()
 	m_PlayerOrb->SetPivot(0.5f, 0.5f, 0.f);
 
 	m_Body->AddCollisionCallback<CPlayer2D>(Collision_State::Begin, this, &CPlayer2D::CollisionBeginCallback);
-	m_Body->AddCollisionCallback<CPlayer2D>(Collision_State::Stay, this, &CPlayer2D::CollisionBeginCallback);
-	m_Gravity = true;
-
-
-
-	m_NavAgent = CreateComponent<CNavAgent>("NavAgent");
-
+	//m_Body->AddCollisionCallback<CPlayer2D>(Collision_State::Stay, this, &CPlayer2D::CollisionStayCallback);
+	m_Body->AddCollisionCallback<CPlayer2D>(Collision_State::End, this, &CPlayer2D::CollisionEndCallback);
+	SetGravityFactor(2.5f);
 
 	CInput::GetInst()->CreateKey("MoveUp", VK_UP);
 	CInput::GetInst()->CreateKey("MoveDown", VK_DOWN);
@@ -140,6 +135,7 @@ bool CPlayer2D::Init()
 	CInput::GetInst()->CreateKey("SylphideLancer", 'Q');
 	CInput::GetInst()->CreateKey("VoidPressure", 'W');
 	CInput::GetInst()->CreateKey("LightTransforming", VK_SPACE);
+	CInput::GetInst()->CreateKey("Jump", 'Z');
 	//CInput::GetInst()->CreateKey("Flip", 'F');
 
 	CInput::GetInst()->SetKeyCallback<CPlayer2D>("MoveUp", KeyState_Push, this, &CPlayer2D::MoveUp);
@@ -153,6 +149,7 @@ bool CPlayer2D::Init()
 	CInput::GetInst()->SetKeyCallback<CPlayer2D>("VoidPressure", KeyState_Push, this, &CPlayer2D::VoidPressure);
 	CInput::GetInst()->SetKeyCallback<CPlayer2D>("VoidPressure", KeyState_Up, this, &CPlayer2D::VoidPressureCancle);
 	CInput::GetInst()->SetKeyCallback<CPlayer2D>("LightTransforming", KeyState_Down, this, &CPlayer2D::LightTransforming);
+	CInput::GetInst()->SetKeyCallback<CPlayer2D>("Jump", KeyState_Down, this, &CPlayer2D::Jump);
 	//CInput::GetInst()->SetKeyCallback<CPlayer2D>("Flip", KeyState_Down, this, &CPlayer2D::FlipAll);
 
 	//CInput::GetInst()->SetKeyCallback("DirUp", KeyState_Down, this, &CPlayer2D::GotoNextMap);
@@ -180,6 +177,11 @@ void CPlayer2D::Update(float DeltaTime)
 			m_OnLightTransforming = false;
 			m_BodySprite->SetOpacity(1.f);
 		}
+	}
+
+	if (m_OnJump)
+	{
+		AddWorldPos(0.f, DeltaTime * m_JumpForce, 0.f);
 	}
 }
 
@@ -271,14 +273,15 @@ void CPlayer2D::SetScene(CScene* Scene)
 
 void CPlayer2D::MoveUp(float DeltaTime)
 {
-	m_BodySprite->AddRelativePos(m_BodySprite->GetWorldAxis(AXIS_Y) * 300.f * DeltaTime);
-
+	//m_BodySprite->AddRelativePos(m_BodySprite->GetWorldAxis(AXIS_Y) * 300.f * DeltaTime);
+	m_Dir = PlayerDir::Up;
 	GotoNextMap(DeltaTime);
 }
 
 void CPlayer2D::MoveDown(float DeltaTime)
 {
-	m_BodySprite->AddRelativePos(m_BodySprite->GetWorldAxis(AXIS_Y) * -300.f * DeltaTime);
+	m_Dir = PlayerDir::Down;
+	//m_BodySprite->AddRelativePos(m_BodySprite->GetWorldAxis(AXIS_Y) * -300.f * DeltaTime);
 }
 
 void CPlayer2D::MoveLeft(float DeltaTime)
@@ -287,7 +290,7 @@ void CPlayer2D::MoveLeft(float DeltaTime)
 	{
 		if (m_VoidPressure->IsEnable() && !m_VoidPressure->GetOnDestroy())
 		{
-			m_VoidPressure->AddWorldPos(-200.f * DeltaTime, 0.f, 0.f);
+			m_VoidPressure->AddWorldPos(-300.f * DeltaTime, 0.f, 0.f);
 			return;
 		}
 	}
@@ -298,8 +301,11 @@ void CPlayer2D::MoveLeft(float DeltaTime)
 		if (m_BodySprite->IsFlip())
 			FlipAll(DeltaTime);
 
-		m_BodySprite->AddRelativePos(m_BodySprite->GetWorldAxis(AXIS_X) * -300.f * DeltaTime);
-		m_BodySprite->ChangeAnimation("WalkLeft");
+		m_BodySprite->AddRelativePos(m_BodySprite->GetWorldAxis(AXIS_X) * -180.f * DeltaTime);
+
+		if (!m_OnJump)
+			m_BodySprite->ChangeAnimation("WalkLeft");
+
 		m_Dir = PlayerDir::Left;
 	}
 }
@@ -310,7 +316,7 @@ void CPlayer2D::MoveRight(float DeltaTime)
 	{
 		if (m_VoidPressure->IsEnable() && !m_VoidPressure->GetOnDestroy())
 		{
-			m_VoidPressure->AddWorldPos(200.f * DeltaTime, 0.f, 0.f);
+			m_VoidPressure->AddWorldPos(300.f * DeltaTime, 0.f, 0.f);
 			return;
 		}
 	}
@@ -321,14 +327,48 @@ void CPlayer2D::MoveRight(float DeltaTime)
  		if (!m_BodySprite->IsFlip())
 			FlipAll(DeltaTime);
 
-		m_BodySprite->AddRelativePos(m_BodySprite->GetWorldAxis(AXIS_X) * 300.f * DeltaTime);
-		m_BodySprite->ChangeAnimation("WalkLeft");
+		m_BodySprite->AddRelativePos(m_BodySprite->GetWorldAxis(AXIS_X) * 180.f * DeltaTime);
+
+		if (!m_OnJump)
+			m_BodySprite->ChangeAnimation("WalkLeft");
+
 		m_Dir = PlayerDir::Right;
 	}
 }
 
+void CPlayer2D::Jump(float DeltaTime)
+{
+	if (m_VoidPressure && m_VoidPressure->IsEnable())
+		return;
+
+	if (m_OnJump || m_Gravity)
+		return;
+
+
+	if (m_Dir != PlayerDir::Down)
+	{
+		m_OnJump = true;
+		AddWorldPos(0.f, 7.f, 0.f);
+		m_BodySprite->GetAnimationInstance()->ChangeAnimation("JumpLeft");
+	}
+	
+	else if (!m_ListCollisionID.empty())
+	{
+		m_ListCollisionID.clear();
+		m_Gravity = true;
+		m_TileCollisionEnable = false;
+		m_Dir = PlayerDir::None;
+		m_BodySprite->GetAnimationInstance()->ChangeAnimation("JumpLeft");
+	}
+
+	m_Scene->GetResource()->SoundPlay("Jump");
+}
+
 void CPlayer2D::SylphideLancer(float DeltaTime)
 {
+	if (m_OnJump)
+		return;
+
 	SkillInfo* SkillInfo = m_PlayerSkillInfo->FindSkillInfo("SylphideLancer");
 
 	if (SkillInfo->Active == true && SkillInfo->AccTime < SkillInfo->CoolTime)
@@ -339,7 +379,8 @@ void CPlayer2D::SylphideLancer(float DeltaTime)
 
 	m_BodySprite->ChangeAnimation("HealLeft");
 
-	CGameObject* NearMonster = m_Scene->FindIncludingNameObject("Monster", GetWorldPos(), 400.f);
+	CGameObject* NearMonster = m_Scene->FindIncludingNameObject("Onion", GetWorldPos(), Vector2(400.f, 70.f));
+
 
 	m_Scene->GetResource()->SoundPlay("SylphideLancerUse");
 
@@ -386,6 +427,9 @@ void CPlayer2D::SylphideLancer(float DeltaTime)
 
 void CPlayer2D::VoidPressure(float DeltaTime)
 {
+	if (m_OnJump)
+		return;
+
 	SkillInfo* SkillInfo = m_PlayerSkillInfo->FindSkillInfo("VoidPressure");
 
 	if (SkillInfo->Active == true && SkillInfo->AccTime < SkillInfo->CoolTime)
@@ -484,6 +528,9 @@ void CPlayer2D::VoidPressure(float DeltaTime)
 
 void CPlayer2D::LightTransforming(float DeltaTime)
 {
+	if (m_OnJump)
+		return;
+
 	if (m_Dir == PlayerDir::None)
 		return;
 
@@ -492,21 +539,19 @@ void CPlayer2D::LightTransforming(float DeltaTime)
 	if (SkillInfo->Active == true && SkillInfo->AccTime < SkillInfo->CoolTime)
 		return;
 
-
-
 	m_OnLightTransforming = true;
 	m_BodySprite->SetOpacity(0.5f);
-	m_Body->Enable(false);
+	//m_Body->Enable(false);
 
 	m_Scene->GetResource()->SoundPlay("LightTransforming");
 
 	m_SkillBodyEffect->ChangeAnimation("LightTransformingLeft");
 
 	if (m_Dir == PlayerDir::Right)
-		m_BodySprite->AddWorldPos(100.f, 0.f, 0.f);
+		m_BodySprite->AddWorldPos(200.f, 0.f, 0.f);
 
 	else if(m_Dir == PlayerDir::Left)
-		m_BodySprite->AddWorldPos(-100.f, 0.f, 0.f);
+		m_BodySprite->AddWorldPos(-200.f, 0.f, 0.f);
 
 	SkillInfo->Active = true;
 }
@@ -533,33 +578,33 @@ void CPlayer2D::VoidPressureCancle(float DeltaTime)
 
 void CPlayer2D::CollisionBeginCallback(const CollisionResult& Result)
 {
+	CGameObject* Dest = Result.Dest->GetGameObject();
+
+	if (Dest->GetTypeID() == typeid(CTileObject).hash_code())
+	{
+		m_BodySprite->ChangeAnimation("IdleLeft");
+		m_Dir = PlayerDir::None;
+		m_OnJump = false;
+	}
 }
 
-void CPlayer2D::CollisionStayCallback(const CollisionResult& Result)
+//void CPlayer2D::CollisionStayCallback(const CollisionResult& Result)
+//{
+//
+//}
+
+void CPlayer2D::CollisionEndCallback(const CollisionResult& Result)
 {
 }
 
-void CPlayer2D::MovePointDown(float DeltaTime)
-{
-	Vector2 MousePos = CInput::GetInst()->GetMouseWorld2DPos();
+//void CPlayer2D::MovePointDown(float DeltaTime)
+//{
+//	Vector2 MousePos = CInput::GetInst()->GetMouseWorld2DPos();
+//
+//	Move(Vector3(MousePos.x, MousePos.y, 0.f));
+//
+//}
 
-	Move(Vector3(MousePos.x, MousePos.y, 0.f));
-
-}
-
-
-
-
-void CPlayer2D::Skill2(float DeltaTime)
-{
-	CBulletCamera* Bullet = m_Scene->CreateGameObject<CBulletCamera>("Bullet");
-
-	//Bullet->SetWorldPos(GetWorldPos() + GetWorldAxis(AXIS_Y) * 75.f);
-	//Bullet->SetWorldPos(m_SylphideLancerMuzzle->GetWorldPos());
-	Bullet->SetWorldRotation(GetWorldRot());
-	Bullet->SetCollisionProfile("PlayerAttack");
-	
-}
 
 void CPlayer2D::SetVoidPressure(CVoidPressure* VoidPressure)
 {
@@ -647,6 +692,7 @@ void CPlayer2D::GotoNextMap(float DeltaTime)
 	if (!m_Body->CheckPrevCollisionGameObjectType(typeid(CPortal).hash_code()))
 		return;
 
+
 	if (m_Scene->GetSceneMode()->GetTypeID() == typeid(CLobbyScene).hash_code())
 	{
 		CGameObject* Portal = m_Scene->FindObject("RightPortal");
@@ -665,6 +711,8 @@ void CPlayer2D::GotoNextMap(float DeltaTime)
 				// ==> 양파 재배지 맵을 멀티쓰레드 활용해서 로딩후 SceneChange하기
 				if (Collision)
 				{
+					m_ListCollisionID.clear();
+
 					CLobbyScene* Scene = (CLobbyScene*)(GetScene()->GetSceneMode());
 					CRenderManager::GetInst()->SetStartFadeIn(true);
 					CSceneManager::GetInst()->SetFadeInEndCallback<CLobbyScene>(Scene, &CLobbyScene::CreateOnionScene);
@@ -685,6 +733,8 @@ void CPlayer2D::GotoNextMap(float DeltaTime)
 				// LobbyScene의 오른쪽 Entrance 포탈에 충돌했고, 위쪽 방향키를 누르고 있을때 여기로 들어온다
 				if (Collision)
 				{
+					m_ListCollisionID.clear();
+
 					CLobbyScene* Scene = (CLobbyScene*)(GetScene()->GetSceneMode());
 					CRenderManager::GetInst()->SetStartFadeIn(true);
 					CSceneManager::GetInst()->SetFadeInEndCallback<CLobbyScene>(Scene, &CLobbyScene::CreateLibrary2ndScene);
@@ -704,7 +754,7 @@ void CPlayer2D::ProduceSecondSylphideLander(float DeltaTime)
 
 	Vector3 WorldPos = GetWorldPos();
 
-	CGameObject* NearMonster = m_Scene->FindIncludingNameObject("Monster", WorldPos, 400.f);
+	CGameObject* NearMonster = m_Scene->FindIncludingNameObject("Onion", WorldPos, Vector2(400.f, 70.f));
 	Vector3 MirrorPos = m_SylphideLancerMirror->GetWorldPos();
 
 	for (int i = 0; i < 2; ++i)

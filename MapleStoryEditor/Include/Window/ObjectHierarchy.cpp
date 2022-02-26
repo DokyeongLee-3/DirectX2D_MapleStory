@@ -28,6 +28,7 @@
 #include "Component/ColliderBox2D.h"
 #include "Component/ColliderCircle.h"
 #include "Component/ColliderPixel.h"
+#include "../Component/DragCollider.h"
 
 #include <sstream>
 #include "imgui_internal.h"
@@ -485,7 +486,8 @@ void CObjectHierarchy::ZOrderChangeCallback()
 	{
 		if (Comp->GetTypeID() == typeid(CSceneComponent).hash_code() || Comp->GetTypeID() == typeid(CSpriteComponent).hash_code()
 			|| Comp->GetTypeID() == typeid(CTileMapComponent).hash_code() || Comp->GetTypeID() == typeid(CColliderBox2D).hash_code()
-			|| Comp->GetTypeID() == typeid(CColliderCircle).hash_code() || Comp->GetTypeID() == typeid(CColliderPixel).hash_code())
+			|| Comp->GetTypeID() == typeid(CColliderCircle).hash_code() || Comp->GetTypeID() == typeid(CColliderPixel).hash_code()
+			|| Comp->GetTypeID() == typeid(CDragCollider).hash_code())
 		{
 			((CSceneComponent*)Comp)->SetZOrder(m_ZOrder->GetValueInt());
 		}

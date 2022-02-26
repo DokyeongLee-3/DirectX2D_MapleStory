@@ -11,6 +11,8 @@ COnionMonster::COnionMonster() :
 	m_IsChanging(false)
 {
 	SetTypeID<COnionMonster>();
+	m_Gravity = true;
+	m_TileCollisionEnable = true;
 }
 
 COnionMonster::COnionMonster(const COnionMonster& obj) :
@@ -46,6 +48,11 @@ void COnionMonster::Start()
 
 	Instance->SetEndFunction<COnionMonster>("OnionHitLeft", this, &COnionMonster::ReturnIdle);
 	Instance->SetEndFunction<COnionMonster>("OnionDieLeft", this, &COnionMonster::Die);
+
+	m_Body->AddCollisionCallback<COnionMonster>(Collision_State::Begin, this, &COnionMonster::CollisionBeginCallback);
+	//m_Body->AddCollisionCallback<COnionMonster>(Collision_State::Stay, this, &COnionMonster::CollisionStayCallback);
+	m_Body->AddCollisionCallback<COnionMonster>(Collision_State::End, this, &COnionMonster::CollisionEndCallback);
+	SetGravityFactor(2.f);
 }
 
 bool COnionMonster::Init()
@@ -54,10 +61,6 @@ bool COnionMonster::Init()
 	m_Body = CreateComponent<CColliderCircle>("Body");
 	m_Body->SetRadius(30.f);
 	//m_PaperBurn = CreateComponent<CPaperBurnComponent>("PaperBurn");
-
-
-	m_Body->AddCollisionCallback<COnionMonster>(Collision_State::Begin, this, &COnionMonster::CollisionCallback);
-
 
 	SetRootComponent(m_Sprite);
 
@@ -110,11 +113,6 @@ COnionMonster* COnionMonster::Clone()
 	return new COnionMonster(*this);
 }
 
-void COnionMonster::CollisionCallback(const CollisionResult& result)
-{
-
-}
-
 void COnionMonster::SetDamage(float Damage, bool Critical)
 {
 	m_HP -= Damage;
@@ -157,6 +155,19 @@ void COnionMonster::ReturnIdle()
 {
 	m_IsChanging = false;
 	m_Sprite->ChangeAnimation("OnionIdleLeft");
+}
+
+void COnionMonster::CollisionBeginCallback(const CollisionResult& Result)
+{
+	int a = 3;
+}
+
+//void COnionMonster::CollisionStayCallback(const CollisionResult& Result)
+//{
+//}
+
+void COnionMonster::CollisionEndCallback(const CollisionResult& Result)
+{
 }
 
 void COnionMonster::Save(FILE* File)

@@ -59,6 +59,11 @@ public:
         m_Offset = Vector3(x, y, z);
     }
 
+    Vector3 GetOffset() const
+    {
+        return m_Offset;
+    }
+
     Vector3 GetMin()    const
     {
         return m_Min;

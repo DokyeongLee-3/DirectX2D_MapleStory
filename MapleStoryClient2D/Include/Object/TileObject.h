@@ -26,5 +26,10 @@ public:
     virtual void Save(FILE* File);
     virtual void Load(FILE* File);
 
+public:
+    void CollisionBeginCallback(const CollisionResult& Result);
+    //void CollisionStayCallback(const CollisionResult& Result);
+    void CollisionEndCallback(const CollisionResult& Result);
+
 };
 
