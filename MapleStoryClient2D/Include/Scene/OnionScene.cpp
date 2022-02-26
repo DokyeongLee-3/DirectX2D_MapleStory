@@ -88,6 +88,7 @@ bool COnionScene::Init()
 	//}
 
 	LoadSound();
+	AddTileCollisionCallback();
 
 	return true;
 }
@@ -217,7 +218,7 @@ void COnionScene::AddTileCollisionCallback()
 
 	if (FloorTile)
 	{
-		CColliderBox2D* Collider = (CColliderBox2D*)FloorTile->FindComponent("OnionFloorTileComponent");
+		CColliderBox2D* Collider = (CColliderBox2D*)FloorTile->FindComponent("OnionFloorTileCollider");
 		Collider->AddCollisionCallback<CTileObject>(Collision_State::Begin, FloorTile, &CTileObject::CollisionBeginCallback);
 		//Collider->AddCollisionCallback<CTileObject>(Collision_State::Stay, FloorTile, &CTileObject::CollisionStayCallback);
 		Collider->AddCollisionCallback<CTileObject>(Collision_State::End, FloorTile, &CTileObject::CollisionEndCallback);

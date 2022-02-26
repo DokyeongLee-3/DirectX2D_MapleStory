@@ -39,9 +39,9 @@ private:
     class CVoidPressure*            m_VoidPressure;
     class CVoidPressureOrb*         m_VoidPressureOrb;
     class CPlayerSkillInfo*         m_PlayerSkillInfo;
+    class CStage*                   m_CurrentStage;
 
     float       m_Opacity;
-    float       m_ScaleFactor;
     bool        m_IsFlip;
     bool        m_OnVoidPressure;
     bool        m_OnLightTransforming;
@@ -166,7 +166,10 @@ public:
     //void CollisionStayCallback(const CollisionResult& Result);
     void CollisionEndCallback(const CollisionResult& Result);
 
-    void MovePointDown(float DeltaTime);
+public:
+    void CameraTrack();
+
+   // void MovePointDown(float DeltaTime);
     //void PathResult(const std::list<Vector3>& PathList);
 };
 

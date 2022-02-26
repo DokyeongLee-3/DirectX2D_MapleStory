@@ -11,7 +11,7 @@ COnionMonster::COnionMonster() :
 	m_IsChanging(false)
 {
 	SetTypeID<COnionMonster>();
-	m_Gravity = true;
+	m_Gravity = false;
 	m_TileCollisionEnable = true;
 }
 

@@ -28,13 +28,12 @@ CPlayer2D::CPlayer2D() :
 	m_SkillBodyEffect(nullptr),
 	m_VoidPressure(nullptr),
 	m_VoidPressureOrb(nullptr),
-	m_ScaleFactor(1.f),
 	m_Opacity(1.f),
 	m_IsFlip(false),
 	m_Dir(PlayerDir::None),
 	m_OnLightTransforming(false),
 	m_OnJump(false),
-	m_JumpForce(360.f)
+	m_JumpForce(370.f)
 {
 	SetTypeID<CPlayer2D>();
 	m_PlayerSkillInfo = new CPlayerSkillInfo;
@@ -187,73 +186,9 @@ void CPlayer2D::Update(float DeltaTime)
 
 void CPlayer2D::PostUpdate(float DeltaTime)
 {
-	CComponent* Component = GetRootComponent()->FindComponent("Camera");
-
-	if (Component)
-	{
-		CSceneMode* SceneMode = m_Scene->GetSceneMode();
-
-		CStage* Stage = nullptr;
-
-		if (SceneMode->GetTypeID() == typeid(CLobbyScene).hash_code())
-		{
-			// Stage는 Pivot이 (0.f, 0.f)
-			Stage = ((CLobbyScene*)SceneMode)->GetStageObject();
-		}
-
-		else if (SceneMode->GetTypeID() == typeid(COnionScene).hash_code())
-		{
-			Stage = ((COnionScene*)SceneMode)->GetStageObject();
-		}
-
-		else if (SceneMode->GetTypeID() == typeid(CWayToZakumScene).hash_code())
-		{
-			Stage = ((CWayToZakumScene*)SceneMode)->GetStageObject();
-		}
-
-		else if (SceneMode->GetTypeID() == typeid(CLibrary2ndScene).hash_code())
-		{
-			Stage = ((CLibrary2ndScene*)SceneMode)->GetStageObject();
-		}
-
-		if(Stage)
-		{
-			Vector3 WorldSize = Stage->GetWorldScale();
-			Resolution RS = CDevice::GetInst()->GetResolution();
-
-			Vector2 Ratio = ((CCameraComponent*)Component)->GetRatio();
-			Vector3 PlayerWorldPos = GetWorldPos();
-
-			if (PlayerWorldPos.x + RS.Width * (1 - Ratio.x) >= WorldSize.x)
-			{
- 				Vector3 CamWorldPos = ((CCameraComponent*)Component)->GetWorldPos();
-				float Pos = WorldSize.x - RS.Width * Ratio.x;
-				Pos -= RS.Width * Ratio.x;
-				((CCameraComponent*)Component)->SetWorldPos(Pos, CamWorldPos.y, CamWorldPos.z);
-			}
-
-			if (PlayerWorldPos.x - RS.Width * Ratio.x <= 0.f)
-			{
-				Vector3 CamWorldPos = ((CCameraComponent*)Component)->GetWorldPos();
-				((CCameraComponent*)Component)->SetWorldPos(0.f, CamWorldPos.y, CamWorldPos.z);
-			}
-
-			if (PlayerWorldPos.y + RS.Height * (1 - Ratio.y) >= WorldSize.y)
-			{
-				Vector3 CamWorldPos = ((CCameraComponent*)Component)->GetWorldPos();
-				float Pos = WorldSize.y - RS.Height * Ratio.y;
-				Pos += -1.f * RS.Height * Ratio.y;
-				((CCameraComponent*)Component)->SetWorldPos(CamWorldPos.x, Pos, CamWorldPos.z);
-			}
-
-			if (PlayerWorldPos.y - RS.Height * Ratio.y <= 0.f)
-			{
-				Vector3 CamWorldPos = ((CCameraComponent*)Component)->GetWorldPos();
-				((CCameraComponent*)Component)->SetWorldPos(CamWorldPos.x, 0.f, CamWorldPos.z);
-			}
-		}
-
-	}
+	// 카메라가 화면 밖으로 나가는거도 보정을 한 뒤에 최종적으로 만들어지는 transform으로 뷰행렬을 만들어야하므로 
+	// 무조건 CGameObject::PostUpdate보다 먼저 해줘야한다
+	CameraTrack();
 
 	CGameObject::PostUpdate(DeltaTime);
 }
@@ -296,12 +231,12 @@ void CPlayer2D::MoveLeft(float DeltaTime)
 	}
 
 	// 보이드 프레셔 구체가 아직 생성된적 없거나 완전히 소멸되고나서 움직일 수 있게한다
-	if (!m_VoidPressure || !m_VoidPressure->IsEnable())
+	else if (!m_VoidPressure || !m_VoidPressure->IsEnable())
 	{
 		if (m_BodySprite->IsFlip())
 			FlipAll(DeltaTime);
 
-		m_BodySprite->AddRelativePos(m_BodySprite->GetWorldAxis(AXIS_X) * -180.f * DeltaTime);
+		m_BodySprite->AddWorldPos(m_BodySprite->GetWorldAxis(AXIS_X) * -180.f * DeltaTime);
 
 		if (!m_OnJump)
 			m_BodySprite->ChangeAnimation("WalkLeft");
@@ -322,12 +257,12 @@ void CPlayer2D::MoveRight(float DeltaTime)
 	}
 
 	// 보이드 프레셔 구체가 아직 생성된적 없거나 완전히 소멸되고나서 움직일 수 있게한다
-	if (!m_VoidPressure || !m_VoidPressure->IsEnable())
+	else if (!m_VoidPressure || !m_VoidPressure->IsEnable())
 	{
  		if (!m_BodySprite->IsFlip())
 			FlipAll(DeltaTime);
 
-		m_BodySprite->AddRelativePos(m_BodySprite->GetWorldAxis(AXIS_X) * 180.f * DeltaTime);
+		m_BodySprite->AddWorldPos(m_BodySprite->GetWorldAxis(AXIS_X) * 180.f * DeltaTime);
 
 		if (!m_OnJump)
 			m_BodySprite->ChangeAnimation("WalkLeft");
@@ -348,7 +283,7 @@ void CPlayer2D::Jump(float DeltaTime)
 	if (m_Dir != PlayerDir::Down)
 	{
 		m_OnJump = true;
-		AddWorldPos(0.f, 7.f, 0.f);
+		//AddWorldPos(0.f, 5.f, 0.f);
 		m_BodySprite->GetAnimationInstance()->ChangeAnimation("JumpLeft");
 	}
 	
@@ -534,6 +469,9 @@ void CPlayer2D::LightTransforming(float DeltaTime)
 	if (m_Dir == PlayerDir::None)
 		return;
 
+	if (!m_CurrentStage)
+		return;
+
 	SkillInfo* SkillInfo = m_PlayerSkillInfo->FindSkillInfo("LightTransforming");
 
 	if (SkillInfo->Active == true && SkillInfo->AccTime < SkillInfo->CoolTime)
@@ -550,10 +488,72 @@ void CPlayer2D::LightTransforming(float DeltaTime)
 	if (m_Dir == PlayerDir::Right)
 		m_BodySprite->AddWorldPos(200.f, 0.f, 0.f);
 
-	else if(m_Dir == PlayerDir::Left)
+	else if (m_Dir == PlayerDir::Left)
 		m_BodySprite->AddWorldPos(-200.f, 0.f, 0.f);
 
 	SkillInfo->Active = true;
+
+	bool AdjustX = false;
+	bool AdjustY = false;
+	Resolution RS = CDevice::GetInst()->GetResolution();
+	Vector2 Ratio = m_Camera->GetRatio();
+
+	if (m_CurrentStage)
+	{
+		Vector3 WorldSize = m_CurrentStage->GetWorldScale();
+
+		Vector3 PlayerWorldPos = GetWorldPos();
+		float CenterPos = (WorldSize.x + (WorldSize.x - RS.Width)) / 2.f;
+
+		if (PlayerWorldPos.x + RS.Width * (1 - Ratio.x) >= WorldSize.x)
+		{
+			Vector3 CamWorldPos = m_Camera->GetWorldPos();
+			float Pos = WorldSize.x - RS.Width * Ratio.x;
+			Pos -= RS.Width * Ratio.x;
+			m_Camera->SetWorldPos(Pos, CamWorldPos.y, CamWorldPos.z);
+			AdjustX = true;
+		}
+
+		if (PlayerWorldPos.x - RS.Width * Ratio.x <= 0.f)
+		{
+			Vector3 CamWorldPos = m_Camera->GetWorldPos();
+			m_Camera->SetWorldPos(0.f, CamWorldPos.y, CamWorldPos.z);
+			AdjustX = true;
+		}
+
+		if (PlayerWorldPos.y + RS.Height * (1 - Ratio.y) >= WorldSize.y)
+		{
+			Vector3 CamWorldPos = m_Camera->GetWorldPos();
+			float Pos = WorldSize.y - RS.Height * Ratio.y;
+			Pos -= 1.f * RS.Height * Ratio.y;
+			m_Camera->SetWorldPos(CamWorldPos.x, Pos, CamWorldPos.z);
+			AdjustY = true;
+		}
+
+		if (PlayerWorldPos.y - RS.Height * Ratio.y <= 0.f)
+		{
+			Vector3 CamWorldPos = m_Camera->GetWorldPos();
+			m_Camera->SetWorldPos(CamWorldPos.x, 0.f, CamWorldPos.z);
+			AdjustY = true;
+		}
+	}
+
+	if (!AdjustX)
+	{
+		Vector3 RelativePos = m_Camera->GetRelativePos();
+
+		if (RelativePos.x < -1.f * RS.Width * Ratio.x - 1.f || RelativePos.x > -1.f * RS.Width * Ratio.x + 1.f)
+			m_Camera->SetRelativePos(-1.f * RS.Width * Ratio.x, RelativePos.y, RelativePos.z);
+	}
+
+	if (!AdjustY)
+	{
+		Vector3 RelativePos = m_Camera->GetRelativePos();
+
+		if (RelativePos.y < -1.f * RS.Height * Ratio.y - 1.f || RelativePos.y > -1.f * RS.Height * Ratio.y + 1.f)
+			m_Camera->SetRelativePos(RelativePos.x, -1.f * RS.Height * Ratio.y, RelativePos.z);
+	}
+
 }
 
 void CPlayer2D::VoidPressureCancle(float DeltaTime)
@@ -595,6 +595,76 @@ void CPlayer2D::CollisionBeginCallback(const CollisionResult& Result)
 
 void CPlayer2D::CollisionEndCallback(const CollisionResult& Result)
 {
+}
+
+void CPlayer2D::CameraTrack()
+{
+	//CComponent* Component = GetRootComponent()->FindComponent("Camera");
+
+	if (m_Camera)
+	{
+		CSceneMode* SceneMode = m_Scene->GetSceneMode();
+
+		if (SceneMode->GetTypeID() == typeid(CLobbyScene).hash_code())
+		{
+			// Stage는 Pivot이 (0.f, 0.f)
+			m_CurrentStage = ((CLobbyScene*)SceneMode)->GetStageObject();
+		}
+
+		else if (SceneMode->GetTypeID() == typeid(COnionScene).hash_code())
+		{
+			m_CurrentStage = ((COnionScene*)SceneMode)->GetStageObject();
+		}
+
+		else if (SceneMode->GetTypeID() == typeid(CWayToZakumScene).hash_code())
+		{
+			m_CurrentStage = ((CWayToZakumScene*)SceneMode)->GetStageObject();
+		}
+
+		else if (SceneMode->GetTypeID() == typeid(CLibrary2ndScene).hash_code())
+		{
+			m_CurrentStage = ((CLibrary2ndScene*)SceneMode)->GetStageObject();
+		}
+
+		if (m_CurrentStage)
+		{
+			Vector3 WorldSize = m_CurrentStage->GetWorldScale();
+			Resolution RS = CDevice::GetInst()->GetResolution();
+
+			Vector2 Ratio = m_Camera->GetRatio();
+			Vector3 PlayerWorldPos = GetWorldPos();
+			float CenterPos = (WorldSize.x + (WorldSize.x - RS.Width)) / 2.f;
+
+			if (PlayerWorldPos.x + RS.Width * (1 - Ratio.x) >= WorldSize.x)
+			{
+				Vector3 CamWorldPos = m_Camera->GetWorldPos();
+				float Pos = WorldSize.x - RS.Width * Ratio.x;
+				Pos -= RS.Width * Ratio.x;
+				m_Camera->SetWorldPos(Pos, CamWorldPos.y, CamWorldPos.z);
+			}
+
+			if (PlayerWorldPos.x - RS.Width * Ratio.x <= 0.f)
+			{
+				Vector3 CamWorldPos = m_Camera->GetWorldPos();
+				m_Camera->SetWorldPos(0.f, CamWorldPos.y, CamWorldPos.z);
+			}
+
+			if (PlayerWorldPos.y + RS.Height * (1 - Ratio.y) >= WorldSize.y)
+			{
+				Vector3 CamWorldPos = m_Camera->GetWorldPos();
+				float Pos = WorldSize.y - RS.Height * Ratio.y;
+				Pos -= 1.f * RS.Height * Ratio.y;
+				m_Camera->SetWorldPos(CamWorldPos.x, Pos, CamWorldPos.z);
+			}
+
+			if (PlayerWorldPos.y - RS.Height * Ratio.y <= 0.f)
+			{
+				Vector3 CamWorldPos = m_Camera->GetWorldPos();
+				m_Camera->SetWorldPos(CamWorldPos.x, 0.f, CamWorldPos.z);
+			}
+		}
+
+	}
 }
 
 //void CPlayer2D::MovePointDown(float DeltaTime)

@@ -164,8 +164,6 @@ bool CGameObject::Init()
 
 void CGameObject::Update(float DeltaTime)
 {
-	m_PrevFrameWorldPos = GetWorldPos();
-
 	// 처음 m_LiftSpan의 초기값이 0.f라는건 정해진 LiftSpan이 무한이라는 의미
 	if (m_LifeSpan > 0.f)
 	{
@@ -178,6 +176,12 @@ void CGameObject::Update(float DeltaTime)
 		}
 	}
 
+	if (m_Gravity)
+	{
+		m_GravityAccTime += DeltaTime;
+		AddWorldPos(0.f, -m_GravityAccTime * m_GravityFactor, 0.f);
+	}
+
 	size_t Size = m_vecObjectComponent.size();
 
 	for (size_t i = 0; i < Size; ++i)
@@ -187,10 +191,15 @@ void CGameObject::Update(float DeltaTime)
 
 	if (m_RootComponent)
 		m_RootComponent->Update(DeltaTime);
+
+	//m_PrevFrameWorldPos = GetWorldPos();
 }
 
 void CGameObject::PostUpdate(float DeltaTime)
 {
+	//Vector3 CurrentFrameWorldPos = GetWorldPos();
+	//m_CurrentFrameMove = CurrentFrameWorldPos - m_PrevFrameWorldPos;
+
 	size_t Size = m_vecObjectComponent.size();
 
 	for (size_t i = 0; i < Size; ++i)
@@ -200,15 +209,6 @@ void CGameObject::PostUpdate(float DeltaTime)
 
 	if (m_RootComponent)
 		m_RootComponent->PostUpdate(DeltaTime);
-
-	if (m_Gravity)
-	{
-		m_GravityAccTime += DeltaTime;
-		AddWorldPos(0.f, -m_GravityAccTime * m_GravityFactor, 0.f);
-	}
-
-	Vector3 CurrentFrameWorldPos = GetWorldPos();
-	m_CurrentFrameMove = CurrentFrameWorldPos - m_PrevFrameWorldPos;	
 }
 
 void CGameObject::AddCollision()
