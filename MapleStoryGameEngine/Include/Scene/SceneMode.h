@@ -23,6 +23,8 @@ public:
         return m_PlayerObject;
     }
 
+    class CScene* GetScene()  const;
+
 public:
     virtual void Start();
     virtual bool Init();

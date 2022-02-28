@@ -10,7 +10,9 @@ CProgressBar::CProgressBar() :
 	m_Percent(1.f),
 	m_Dir(ProgressBar_Dir::RightToLeft),
 	m_ProgressCBuffer(nullptr),
-	m_StartMouseOn(false)
+	m_StartMouseOn(false),
+	m_OnIncreasing(false),
+	m_OnDecreasing(false)
 {
 }
 
@@ -143,6 +145,44 @@ void CProgressBar::Update(float DeltaTime)
 	else if (!m_MouseHovered && m_StartMouseOn)
 	{
 		m_StartMouseOn = false;
+	}
+
+	if (m_OnDecreasing)
+	{
+		float Goal = m_Percent;
+		float Current = m_ProgressCBuffer->GetPercent();
+
+		if (Goal < 0.f)
+			Goal = 0.f;
+
+		if (Current - (DeltaTime / 5.f) <= 0.f)
+			Goal = 0.f;
+
+		m_ProgressCBuffer->SetPercent(Current - (DeltaTime / 5.f));
+
+		if (Current - (DeltaTime / 5.f) <= Goal)
+			m_OnDecreasing = false;
+
+		m_ProgressCBuffer->UpdateCBuffer();
+	}
+
+	else if (m_OnIncreasing)
+	{
+		float Goal = m_Percent;
+		float Current = m_ProgressCBuffer->GetPercent();
+
+		if (Goal > 0.f)
+			Goal = 1.f;
+
+		if (Current + (DeltaTime / 5.f) >= 1.f)
+			Goal = 1.f;
+
+		m_ProgressCBuffer->SetPercent(Current + (DeltaTime / 5.f));
+
+		if (Current + (DeltaTime / 5.f) <= Goal)
+			m_OnIncreasing = false;
+
+		m_ProgressCBuffer->UpdateCBuffer();
 	}
 }
 

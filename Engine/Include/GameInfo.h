@@ -394,29 +394,6 @@ struct PaperBurnCBuffer
 	Vector3	Empty;
 };
 
-
-struct MonsterInfo
-{
-	Vector3	WorldPos;
-	int		Alive;
-};
-
-struct MonsterInfoShared
-{
-	unsigned int	SpawnEnable;
-	unsigned int	CurrentSpawnCount;
-	unsigned int	SpawnCountMax;
-	float			Empty;
-};
-
-struct MonsterCBuffer
-{
-	unsigned int	MonsterSpawnEnable;
-	unsigned int	MonsterCurrentSpawnCount;
-	unsigned int	MonsterSpawnCountMax;
-	float			MonsterEmpty;
-};
-
 struct TileMapCBuffer
 {
 	Vector2 ImageSize;
@@ -452,16 +429,16 @@ struct MovingTileInfo
 	Vector3 Empty;
 };
 
-struct NavWorkData
-{
-	std::function<void(const std::list<Vector3>&)>	Callback;
-	CSharedPtr<class CSceneComponent>	OwnerComponent;
-	//Vector3		Start;
-	Vector3		End;
-};
-
-struct NavResultData
-{
-	std::function<void(const std::list<Vector3>&)>	Callback;
-	std::list<Vector3>	vecPath;
-};
+//struct NavWorkData
+//{
+//	std::function<void(const std::list<Vector3>&)>	Callback;
+//	CSharedPtr<class CSceneComponent>	OwnerComponent;
+//	//Vector3		Start;
+//	Vector3		End;
+//};
+//
+//struct NavResultData
+//{
+//	std::function<void(const std::list<Vector3>&)>	Callback;
+//	std::list<Vector3>	vecPath;
+//};

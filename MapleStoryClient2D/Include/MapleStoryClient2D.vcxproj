@@ -205,6 +205,7 @@
     <ClCompile Include="Widget\MouseCatch.cpp" />
     <ClCompile Include="Widget\MouseClick.cpp" />
     <ClCompile Include="Widget\MouseNormal.cpp" />
+    <ClCompile Include="Widget\PlayerDamageFont.cpp" />
     <ClCompile Include="Widget\SkillQuickSlotWindow.cpp" />
     <ClCompile Include="Widget\StartWidget.cpp" />
   </ItemGroup>
@@ -258,6 +259,7 @@
     <ClInclude Include="Widget\MouseCatch.h" />
     <ClInclude Include="Widget\MouseClick.h" />
     <ClInclude Include="Widget\MouseNormal.h" />
+    <ClInclude Include="Widget\PlayerDamageFont.h" />
     <ClInclude Include="Widget\SkillQuickSlotWindow.h" />
     <ClInclude Include="Widget\StartWidget.h" />
   </ItemGroup>

@@ -274,7 +274,7 @@ void CTransform::InheritParentRotationWorldPos(bool Current)
 
 			else
 			{
-				// 원래 코드
+				// 원래 코드(여기)
 				//m_WorldPos = m_RelativePos + m_Parent->GetWorldPos();
 
 				// 수정한 코드

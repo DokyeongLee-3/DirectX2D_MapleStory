@@ -42,6 +42,11 @@ CColliderComponent::~CColliderComponent()
 		(*iter)->CallCollisionCallback(Collision_State::End);
 		CallCollisionCallback(Collision_State::End);
 		(*iter)->DeletePrevCollision(this);
+
+
+		// 나는 이제 제거되니 나랑 충돌됐던 대상에게 m_Result에 나를 설정해놓지 말라고한다
+		(*iter)->m_Result.Dest = nullptr;
+		
 	}
 }
 
@@ -85,8 +90,29 @@ void CColliderComponent::CheckPrevColliderSection()
 		// 서로 겹치는 충돌영역이 없으므로 붙어있다가 떨어지는 것이다.
 		if (!Check)
 		{
+			CColliderComponent* SrcResultDestComp = m_Result.Dest;
+			CColliderComponent* DestResultDestComp = (*iter)->GetCollisionResult().Dest;
+
+			// 이전 iteration에서 A와 B가 충돌해서 각각의 m_Result에 서로를 설정해놓고 다음 iteration에서 A와 C와 충돌 검사를 해보니
+			// 이제 막 떨어진 경우라서 여기 else if로 들어왔을때 A의 m_Result.Dest는 B가 설정되어있을건데 여기서 그냥
+			// CollisionEnd의 콜백을 호출하면 A의 m_Result.Dest에는 여전히 B가 들어가있어서 CollisionEnd인자로도 Result.Dest를 B로 넘겨줄것이므로
+			// 그건 잘못된 것이므로 CollisionEnd 호출시에 이제 막 떨어지는 대상을 인자로 넣어주고 CollisionEnd 콜백이 끝나면 원상복귀 시켜준다
+			if (m_Result.Dest != (*iter))
+			{
+				m_Result.Dest = *iter;
+			}
+
+			if ((*iter)->GetCollisionResult().Dest != this)
+			{
+				(*iter)->SetDestCollisionResult(this);
+			}
+
 			CallCollisionCallback(Collision_State::End);
 			(*iter)->CallCollisionCallback(Collision_State::End);
+
+			// 원상복구
+			m_Result.Dest = SrcResultDestComp;
+			(*iter)->SetDestCollisionResult(DestResultDestComp);
 
 			// 서로 이전 충돌목록에서 제거해준다.
 			(*iter)->DeletePrevCollision(this);

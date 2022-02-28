@@ -13,6 +13,7 @@
 #include "../ClientManager.h"
 #include "LoadingThread.h"
 
+
 CLobbyScene::CLobbyScene()	:
 	m_LoadingThread(nullptr)
 {
@@ -40,18 +41,31 @@ void CLobbyScene::SetStageObject(CStage* Stage)
 }
 
 
+void CLobbyScene::Start()
+{
+	CSceneMode::Start();
+
+	if (m_PlayerObject)
+	{
+		((CPlayer2D*)m_PlayerObject.Get())->GetDamageWidgetComponent()->GetWidgetWindow()->GetViewport()->SetScene(m_Scene);
+	}
+}
+
 bool CLobbyScene::Init()
 {
 	CreateAnimationSequence();
 	LoadSound();
 
-	CPlayer2D* Player = m_Scene->CreateGameObject<CPlayer2D>("Player");
+	if (!m_PlayerObject)
+	{
+		CPlayer2D* Player = m_Scene->CreateGameObject<CPlayer2D>("Player");
 
-	SetPlayerObject(Player);
+		SetPlayerObject(Player);
 
-	Player->SetWorldPos(400.f, 200.f, 0.f);
+		Player->SetWorldPos(400.f, 200.f, 0.f);
 
-	Player->SetAllSceneComponentsLayer("MovingObjFront");
+		Player->SetAllSceneComponentsLayer("MovingObjFront");
+	}
 
 	m_ConfigurationWindow = m_Scene->GetViewport()->CreateWidgetWindow<CConfigurationWindow>("ConfigurationWindow");
 	m_ConfigurationWindow->SetZOrder(2);
@@ -268,8 +282,9 @@ void CLobbyScene::CreateOnionScene()
 
 	OnionScene->SetPlayerObject(m_PlayerObject);
 
+
 	// 다음 Scene에서의 위치를 Scene의 왼쪽에 위치하도록 잡아주기
-	m_PlayerObject->SetWorldPos(180.f, 200.f, 0.f);
+	m_PlayerObject->SetWorldPos(170.f, 250.f, 0.f);
 
 	m_LoadingThread = CThread::CreateThread<CLoadingThread>("OnionSceneLoadingThread");
 	m_LoadingThread->SetLoadingScene(ThreadLoadingScene::Onion);
@@ -283,6 +298,7 @@ void CLobbyScene::CreateWayToZakumScene()
 	CWayToZakumScene* WayToZakumScene = CSceneManager::GetInst()->CreateSceneModeEmpty<CWayToZakumScene>(false);
 
 	WayToZakumScene->SetPlayerObject(m_PlayerObject);
+
 
 	// 다음 Scene에서의 위치를 Scene의 왼쪽에 위치하도록 잡아주기
 	m_PlayerObject->SetWorldPos(180.f, 200.f, 0.f);
@@ -301,7 +317,7 @@ void CLobbyScene::CreateLibrary2ndScene()
 	LibraryScene->SetPlayerObject(m_PlayerObject);
 
 	// 다음 Scene에서의 위치를 Scene의 왼쪽에 위치하도록 잡아주기
-	m_PlayerObject->SetWorldPos(180.f, 200.f, 0.f);
+	m_PlayerObject->SetWorldPos(510.f, 200.f, 0.f);
 
 	m_LoadingThread = CThread::CreateThread<CLoadingThread>("Library2ndSceneLoadingThread");
 	m_LoadingThread->SetLoadingScene(ThreadLoadingScene::Library2nd);

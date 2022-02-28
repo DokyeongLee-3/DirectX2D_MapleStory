@@ -1,5 +1,6 @@
 
 #include "Library2ndScene.h"
+#include "LobbyScene.h"
 #include "Scene/Scene.h"
 #include "Scene/SceneResource.h"
 #include "Scene/SceneManager.h"
@@ -9,6 +10,8 @@
 #include "Resource/Shader/StructuredBuffer.h"
 #include "../Object/FlowingVolcano.h"
 #include "../Object/Player2D.h"
+#include "LoadingThread.h"
+#include "Render/RenderManager.h"
 
 CLibrary2ndScene::CLibrary2ndScene()
 {
@@ -17,6 +20,10 @@ CLibrary2ndScene::CLibrary2ndScene()
 
 CLibrary2ndScene::~CLibrary2ndScene()
 {
+	m_Scene->GetResource()->SoundStop("FairyAcademyBGM");
+
+	SAFE_DELETE(m_LoadingThread);
+
 	CPlayer2D* Player = (CPlayer2D*)(m_Scene->GetPlayerObject());
 
 	if (Player)
@@ -29,6 +36,16 @@ CLibrary2ndScene::~CLibrary2ndScene()
 void CLibrary2ndScene::SetStageObject(CStage* Stage)
 {
 	m_StageObject = Stage;
+}
+
+void CLibrary2ndScene::Start()
+{
+	CSceneMode::Start();
+
+	if (m_PlayerObject)
+	{
+		((CPlayer2D*)m_PlayerObject.Get())->GetDamageWidgetComponent()->GetWidgetWindow()->GetViewport()->SetScene(m_Scene);
+	}
 }
 
 bool CLibrary2ndScene::Init()
@@ -69,6 +86,13 @@ bool CLibrary2ndScene::Init()
 
 	m_Scene->GetResource()->SoundPlay("FairyAcademyBGM");
 
+	if (m_PlayerObject)
+	{
+		m_PlayerObject->SetGravity(true);
+		m_PlayerObject->SetTileCollisionEnable(false);
+	}
+
+	AddTileCollisionCallback();
 
 	return true;
 }
@@ -76,6 +100,33 @@ bool CLibrary2ndScene::Init()
 void CLibrary2ndScene::Update(float DeltaTime)
 {
 	CSceneMode::Update(DeltaTime);
+
+	if (m_LoadingThread)
+	{
+		CThreadQueue<LoadingMessage>* Queue = m_LoadingThread->GetLoadingQueue();
+
+		if (!m_LoadingThread)
+		{
+			CSceneManager::GetInst()->ChangeNextScene();
+			CRenderManager::GetInst()->SetStartFadeOut(true);
+			return;
+		}
+
+		else if (!Queue->empty())
+		{
+			LoadingMessage	Msg = Queue->front();
+
+			Queue->pop();
+
+			//m_LoadingWidget->SetLoadingPercent(Msg.Percent);
+
+			if (Msg.Complete)
+			{
+				CSceneManager::GetInst()->ChangeNextScene();
+				CRenderManager::GetInst()->SetStartFadeOut(true);
+			}
+		}
+	}
 }
 
 void CLibrary2ndScene::CreateMaterial()
@@ -145,4 +196,33 @@ void CLibrary2ndScene::LoadSound()
 	m_Scene->GetResource()->LoadSound("Effect", false, "VoidPressureHit", "VoidPressureHit.mp3");
 
 	m_Scene->GetResource()->LoadSound("Effect", false, "LightTransforming", "LightTransformingUse.mp3");
+}
+
+void CLibrary2ndScene::AddTileCollisionCallback()
+{
+	CTileObject* FloorTile = (CTileObject*)m_Scene->FindObject("FloorTile");
+
+	if (FloorTile)
+	{
+		CColliderBox2D* Collider = (CColliderBox2D*)FloorTile->FindComponent("FloorTileCollider");
+		Collider->AddCollisionCallback<CTileObject>(Collision_State::Begin, FloorTile, &CTileObject::CollisionBeginCallback);
+		Collider->AddCollisionCallback<CTileObject>(Collision_State::End, FloorTile, &CTileObject::CollisionEndCallback);
+	}
+}
+
+void CLibrary2ndScene::CreateLobbyScene()
+{
+	CSceneManager::GetInst()->CreateNextScene(false);
+	CLobbyScene* LobbyScene = CSceneManager::GetInst()->CreateSceneModeEmpty<CLobbyScene>(false);
+
+	LobbyScene->SetPlayerObject(m_PlayerObject);
+
+	// 다음 Scene에서의 위치를 Scene의 왼쪽에 위치하도록 잡아주기
+	m_PlayerObject->SetWorldPos(981.f, 640.f, 0.f);
+
+	//SAFE_DELETE(m_LoadingThread);
+	m_LoadingThread = CThread::CreateThread<CLoadingThread>("LobbySceneLoadingThread");
+	m_LoadingThread->SetLoadingScene(ThreadLoadingScene::Lobby);
+
+	m_LoadingThread->Start();
 }

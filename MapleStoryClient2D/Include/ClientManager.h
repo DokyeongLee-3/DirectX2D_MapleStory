@@ -8,6 +8,22 @@
 #include "Widget/CharacterStatusWindow.h"
 #include "Widget/BossMatching.h"
 
+struct MonsterInfo
+{
+	int Level;
+	int HPMax;
+	int HP;
+	int Attack;
+
+	MonsterInfo() :
+		Level(0),
+		HPMax(100),
+		HP(100),
+		Attack(10)
+	{
+	}
+};
+
 class CClientManager
 {
 public:
@@ -100,6 +116,8 @@ public:
 
 public:
 	//bool IsCritical(int Factor);
+
+	void NextMonsterState(Monster_State& State);
 
 	DECLARE_SINGLE(CClientManager)
 };

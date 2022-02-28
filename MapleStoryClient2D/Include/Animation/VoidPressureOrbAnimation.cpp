@@ -45,5 +45,7 @@ void CVoidPressureOrbAnimation::EndSkillEffect()
 
 	//SetCurrentAnimation(nullptr);
 
+	GetCurrentAnimation()->InitializeCurrentAnimation();
+
 	GetOwner()->GetGameObject()->Enable(false);
 }

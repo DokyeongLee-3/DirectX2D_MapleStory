@@ -32,6 +32,16 @@ private:
     class CLoadingThread*               m_LoadingThread;
 
 public:
+    CCharacterStatusWindow* GetCharacterStatusWindow()   const
+    {
+        return m_CharacterStatusWindow;
+    }
+
+    CCharacterEXP* GetCharacterEXPWindow()   const
+    {
+        return m_CharacterEXPWindow;
+    }
+
     class CStage* GetStageObject()    const
     {
         return m_StageObject;
@@ -42,6 +52,7 @@ public:
     class CLoadingThread* GetLoadingThread()    const;
 
 public:
+    virtual void Start();
 	virtual bool Init();
     virtual void Update(float DeltaTime);
 

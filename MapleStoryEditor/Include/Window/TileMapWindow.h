@@ -63,8 +63,8 @@ private:
 	void SelectTileMaterial();
 
 
-private:
-	void TileMapSaveButton();
-	void TileMapLoadButton();
+//private:
+//	void TileMapSaveButton();
+//	void TileMapLoadButton();
 };
 

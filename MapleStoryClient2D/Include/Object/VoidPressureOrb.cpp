@@ -31,7 +31,7 @@ bool CVoidPressureOrb::Init()
 	
 
 	m_Sprite->CreateAnimationInstance<CVoidPressureOrbAnimation>();
-
+	
 
 	SetRootComponent(m_Sprite);
 

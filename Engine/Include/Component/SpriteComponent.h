@@ -33,6 +33,11 @@ public:
         return m_Material;
     }
 
+    float GetOpacity()  const
+    {
+        return m_Material->GetOpacity();
+    }
+
     class CAnimationSequence2DInstance* GetAnimationInstance()  const;
     class CAnimationSequence2DData* GetCurrentAnimation()    const;
 
@@ -51,6 +56,7 @@ public:
     void SetTransparency(bool Enable);
     void SetOpacity(float Opacity);
     void AddOpacity(float Opacity);
+
 
 public:
     void AddTexture(int Register, int ShaderType, const std::string& Name, class CTexture* Texture);

@@ -187,6 +187,7 @@ public:
 public:
 	// NavAgent가 있을 경우에 동작한다.
 	//void Move(const Vector3& EndPos);
+	bool EdgeTileCheck(class CTileMapComponent* TileComponent, const Vector3& WorldPos, const Vector3& ColliderScale);
 
 public:
 	template <typename T>

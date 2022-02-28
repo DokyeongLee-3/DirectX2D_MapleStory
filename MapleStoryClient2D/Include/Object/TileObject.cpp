@@ -2,6 +2,7 @@
 #include "TileObject.h"
 #include "../Component/DragCollider.h"
 #include "Player2D.h"
+#include "Component/TileMapComponent.h"
 
 CTileObject::CTileObject()
 {
@@ -25,6 +26,11 @@ void CTileObject::Start()
 	/*m_Floor->AddCollisionCallback(Collision_State::Begin, this, &CTileObject::CollisionBeginCallback);
 	m_Floor->AddCollisionCallback(Collision_State::Stay, this, &CTileObject::CollisionStayCallback);
 	m_Floor->AddCollisionCallback(Collision_State::End, this, &CTileObject::CollisionEndCallback);*/
+
+	CTileMapComponent* TileComponent = FindComponentFromType<CTileMapComponent>();
+
+	if (TileComponent)
+		TileComponent->EnableClientMode(true);
 }
 
 bool CTileObject::Init()
@@ -60,6 +66,9 @@ void CTileObject::Load(FILE* File)
 
 void CTileObject::CollisionBeginCallback(const CollisionResult& Result)
 {
+	if (!Result.Dest)
+		return;
+
 	CGameObject* DestObj = Result.Dest->GetGameObject();
 
 	bool TileCollisionEnable = DestObj->GetTileCollisionEnable();
@@ -91,8 +100,16 @@ void CTileObject::CollisionBeginCallback(const CollisionResult& Result)
 
 			if (DestObj->GetTypeID() == typeid(CPlayer2D).hash_code())
 			{
-				((CPlayer2D*)DestObj)->SetOnJump(false);
-				((CPlayer2D*)DestObj)->GetRootSpriteComponent()->ChangeAnimation("IdleLeft");
+				CPlayer2D* PlayerObj = ((CPlayer2D*)DestObj);
+
+				PlayerObj->SetOnJump(false);
+				PlayerObj->GetRootSpriteComponent()->ChangeAnimation("IdleLeft");
+
+				if (PlayerObj->GetOnKnockBack())
+				{
+					PlayerObj->SetOnKnockBack(false);
+					PlayerObj->SetOnKnockBackAccTime(0.f);
+				}
 			}
 		}
 
@@ -111,10 +128,20 @@ void CTileObject::CollisionBeginCallback(const CollisionResult& Result)
 
 void CTileObject::CollisionEndCallback(const CollisionResult& Result)
 {
+	if (!Result.Dest)
+		return;
+
 	CGameObject* DestObj = Result.Dest->GetGameObject();
 
-	DestObj->SetGravity(true);
-	DestObj->SetTileCollisionEnable(false);
+	if (DestObj) 
+	{
+		if (DestObj->GetTypeID() == typeid(CPlayer2D).hash_code())
+		{
+			DestObj->SetGravity(true);
+			DestObj->SetTileCollisionEnable(false);
+			DestObj->SetGravityAccTime(0.f);
+		}
+	}
 }
 
 

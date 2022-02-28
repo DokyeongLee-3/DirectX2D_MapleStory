@@ -2,6 +2,7 @@
 
 #include "SceneComponent.h"
 #include "../Resource/Shader/ColliderConstantBuffer.h"
+#include "../GameObject/GameObject.h"
 
 class CColliderComponent :
     public CSceneComponent
@@ -84,6 +85,26 @@ public:
         return m_Profile;
     }
 
+    void SetSrcCollisionResult(CColliderComponent* Src)
+    {
+        m_Result.Src = Src;
+    }
+
+    void SetDestCollisionResult(CColliderComponent* Dest)
+    {
+        m_Result.Dest = Dest;
+    }
+
+    bool IsPrevCollisionListEmpty() const
+    {
+        return m_PrevCollisionList.empty();
+    }
+
+    CColliderComponent* GetBeginPrevCollisionList() const
+    {
+        return *(m_PrevCollisionList.begin());
+    }
+
     void AddSectionIndex(int Index)
     {
         m_vecSectionIndex.push_back(Index);
@@ -126,6 +147,28 @@ public:
     virtual void Load(FILE* File);
     virtual bool Collision(CColliderComponent* Dest) = 0;
     virtual bool CollisionMouse(const Vector2& MousePos) = 0;
+
+public:
+    // 현재 이 충돌체와 충돌한 충돌체를 소유한 오브젝트가 템플릿으로 넘겨준 타입의 컴포넌트를 갖고 있는지
+    template <typename T>
+    T* CheckCurrentFrameCollisionByType()
+    {
+        auto iter = m_PrevCollisionList.begin();
+        auto iterEnd = m_PrevCollisionList.end();
+
+        for (; iter != iterEnd; ++iter)
+        {
+            CGameObject* Object = (*iter)->GetGameObject();
+
+            T* Component = Object->FindComponentFromType<T>();
+
+            if (Component)
+                return Component;
+
+        }
+
+        return nullptr;
+    }
 
 public:
     template <typename T>

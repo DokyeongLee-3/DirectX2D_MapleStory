@@ -40,5 +40,56 @@ public:
 	virtual CCharacterStatusWindow* Clone();
 
 public:
+	void SetHPPercent(float Percent)
+	{
+		if (Percent < m_HPBar->GetPercent())
+			m_HPBar->SetOnDecreasing(true);
+
+		else
+			m_HPBar->SetOnIncreasing(true);
+
+		m_HPBar->SetSlowPercent(Percent);
+	}
+
+	float GetHPPercent()	const
+	{
+		return m_HPBar->GetPercent();
+	}
+
+	void SetMPPercent(float Percent)
+	{
+		if (Percent < m_MPBar->GetPercent())
+			m_MPBar->SetOnDecreasing(true);
+
+		else
+			m_MPBar->SetOnIncreasing(true);
+
+		m_MPBar->SetSlowPercent(Percent);
+	}
+
+	float GetMPPercent()	const
+	{
+		return m_MPBar->GetPercent();
+	}
+
+	int GetCurrentHP()	const
+	{
+		return m_CurrentHPNumber->GetNumber();
+	}
+
+	int GetCurrentMP()	const
+	{
+		return m_CurrentMPNumber->GetNumber();
+	}
+
+	void SetCurrentHP(int HP)
+	{
+		m_CurrentHPNumber->SetNumber(HP);
+	}
+
+	void SetCurrentMP(int MP)
+	{
+		m_CurrentMPNumber->SetNumber(MP);
+	}
 };
 

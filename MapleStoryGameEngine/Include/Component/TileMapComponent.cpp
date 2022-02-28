@@ -30,9 +30,10 @@ CTileMapComponent::CTileMapComponent()
 		m_TileColor[i] = Vector4(1.f, 1.f, 1.f, 1.f);
 	}
 
-	m_TileColor[(int)Tile_Type::Wall] = Vector4(1.f, 0.f, 0.f, 1.f);
+	m_TileColor[(int)Tile_Type::Edge] = Vector4(1.f, 0.f, 0.f, 1.f);
 
 	m_EditMode = false;
+	m_ClientMode = false;
 }
 
 CTileMapComponent::CTileMapComponent(const CTileMapComponent& com) :
@@ -846,11 +847,16 @@ void CTileMapComponent::PrevRender()
 
 				if (m_vecTile[Index]->GetRender())
 				{
-					if (m_EditMode)
+#ifdef _DEBUG
+					if (m_EditMode || m_ClientMode)
 					{
 						m_vecTileInfo[m_RenderCount].TileColor = m_TileColor[(int)m_vecTile[Index]->GetTileType()];
 					}
+#else 
 
+					m_vecTileInfo[m_RenderCount].TileColor = m_TileColor[(int)Tile_Type::Normal];
+
+#endif // _DEBUG
 					// CTileComponent만든 클라이언트 코드에서 Start/End 설정해놓았음
 					m_vecTileInfo[m_RenderCount].TileStart = m_vecTile[Index]->GetFrameStart();
 					m_vecTileInfo[m_RenderCount].TileEnd = m_vecTile[Index]->GetFrameEnd();

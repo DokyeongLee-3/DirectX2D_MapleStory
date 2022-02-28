@@ -218,7 +218,7 @@ enum class Tile_Shape
 enum class Tile_Type
 {
 	Normal,
-	Wall,
+	Edge,
 	End
 };
 
@@ -227,4 +227,12 @@ enum class Nav_Node_Type
 	None,
 	Open,
 	Close
+};
+
+enum class Monster_State
+{
+	Idle,
+	Move,
+	Track,
+	End
 };

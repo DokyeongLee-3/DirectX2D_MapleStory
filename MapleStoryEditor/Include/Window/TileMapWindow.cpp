@@ -45,8 +45,8 @@ bool CTileMapWindow::Init()
 	m_ShapeCombo = AddWidget<CIMGUIComboBox>("TileShape", 130.f, 30.f);
 
 	m_ShapeCombo->SetHideName(true);
-	m_ShapeCombo->AddItem("사각형");
-	m_ShapeCombo->AddItem("마름모");
+	m_ShapeCombo->AddItem("Rect");
+	m_ShapeCombo->AddItem("Rhombus");
 
 
 	Label = AddWidget<CIMGUILabel>("CountX", 100.f, 30.f);
@@ -317,7 +317,7 @@ void CTileMapWindow::CreateTileEditControl()
 
 	m_TypeCombo->SetHideName(true);
 	m_TypeCombo->AddItem("Normal");
-	m_TypeCombo->AddItem("Wall");
+	m_TypeCombo->AddItem("Edge");
 
 	Label = AddWidget<CIMGUILabel>("FrameStartX", 130.f, 30.f);
 
@@ -425,64 +425,64 @@ void CTileMapWindow::SelectTileMaterial()
 	}
 }
 
-void CTileMapWindow::TileMapSaveButton()
-{
-	if (!m_TileMap)
-		return;
+//void CTileMapWindow::TileMapSaveButton()
+//{
+//	if (!m_TileMap)
+//		return;
+//
+//	TCHAR   FilePath[MAX_PATH] = {};
+//
+//	OPENFILENAME    OpenFile = {};
+//
+//	OpenFile.lStructSize = sizeof(OPENFILENAME);
+//	OpenFile.hwndOwner = CEngine::GetInst()->GetWindowHandle();
+//	OpenFile.lpstrFilter = TEXT("모든파일\0*.*\0GameObject File\0*.gobj");
+//	OpenFile.lpstrFile = FilePath;
+//	OpenFile.nMaxFile = MAX_PATH;
+//	OpenFile.lpstrInitialDir = CPathManager::GetInst()->FindPath(SCENE_PATH)->Path;
+//
+//	if (GetSaveFileName(&OpenFile) != 0)
+//	{
+//		char    ConvertFullPath[MAX_PATH] = {};
+//
+//		int Length = WideCharToMultiByte(CP_ACP, 0, FilePath, -1, 0, 0, 0, 0);
+//		WideCharToMultiByte(CP_ACP, 0, FilePath, -1, ConvertFullPath, Length, 0, 0);
+//
+//		CGameObject* TileMapObj = m_TileMap->GetGameObject();
+//
+//		TileMapObj->Save(ConvertFullPath);
+//
+//		//CSceneManager::GetInst()->GetScene()->SaveFullPath(ConvertFullPath);
+//	}
+//}
 
-	TCHAR   FilePath[MAX_PATH] = {};
-
-	OPENFILENAME    OpenFile = {};
-
-	OpenFile.lStructSize = sizeof(OPENFILENAME);
-	OpenFile.hwndOwner = CEngine::GetInst()->GetWindowHandle();
-	OpenFile.lpstrFilter = TEXT("모든파일\0*.*\0GameObject File\0*.gobj");
-	OpenFile.lpstrFile = FilePath;
-	OpenFile.nMaxFile = MAX_PATH;
-	OpenFile.lpstrInitialDir = CPathManager::GetInst()->FindPath(SCENE_PATH)->Path;
-
-	if (GetSaveFileName(&OpenFile) != 0)
-	{
-		char    ConvertFullPath[MAX_PATH] = {};
-
-		int Length = WideCharToMultiByte(CP_ACP, 0, FilePath, -1, 0, 0, 0, 0);
-		WideCharToMultiByte(CP_ACP, 0, FilePath, -1, ConvertFullPath, Length, 0, 0);
-
-		CGameObject* TileMapObj = m_TileMap->GetGameObject();
-
-		TileMapObj->Save(ConvertFullPath);
-
-		//CSceneManager::GetInst()->GetScene()->SaveFullPath(ConvertFullPath);
-	}
-}
-
-void CTileMapWindow::TileMapLoadButton()
-{
-	if (!m_TileMap)
-		return;
-
-	TCHAR   FilePath[MAX_PATH] = {};
-
-	OPENFILENAME    OpenFile = {};
-
-	OpenFile.lStructSize = sizeof(OPENFILENAME);
-	OpenFile.hwndOwner = CEngine::GetInst()->GetWindowHandle();
-	OpenFile.lpstrFilter = TEXT("모든파일\0*.*\0GameObject File\0*.gobj");
-	OpenFile.lpstrFile = FilePath;
-	OpenFile.nMaxFile = MAX_PATH;
-	OpenFile.lpstrInitialDir = CPathManager::GetInst()->FindPath(SCENE_PATH)->Path;
-
-	if (GetOpenFileName(&OpenFile) != 0)
-	{
-		char    ConvertFullPath[MAX_PATH] = {};
-
-		int Length = WideCharToMultiByte(CP_ACP, 0, FilePath, -1, 0, 0, 0, 0);
-		WideCharToMultiByte(CP_ACP, 0, FilePath, -1, ConvertFullPath, Length, 0, 0);
-
-
-		CGameObject* TileMapObj = m_TileMap->GetGameObject();
-
-		TileMapObj->Load(ConvertFullPath);
-		//CSceneManager::GetInst()->GetScene()->LoadFullPath(ConvertFullPath);
-	}
-}
+//void CTileMapWindow::TileMapLoadButton()
+//{
+//	if (!m_TileMap)
+//		return;
+//
+//	TCHAR   FilePath[MAX_PATH] = {};
+//
+//	OPENFILENAME    OpenFile = {};
+//
+//	OpenFile.lStructSize = sizeof(OPENFILENAME);
+//	OpenFile.hwndOwner = CEngine::GetInst()->GetWindowHandle();
+//	OpenFile.lpstrFilter = TEXT("모든파일\0*.*\0GameObject File\0*.gobj");
+//	OpenFile.lpstrFile = FilePath;
+//	OpenFile.nMaxFile = MAX_PATH;
+//	OpenFile.lpstrInitialDir = CPathManager::GetInst()->FindPath(SCENE_PATH)->Path;
+//
+//	if (GetOpenFileName(&OpenFile) != 0)
+//	{
+//		char    ConvertFullPath[MAX_PATH] = {};
+//
+//		int Length = WideCharToMultiByte(CP_ACP, 0, FilePath, -1, 0, 0, 0, 0);
+//		WideCharToMultiByte(CP_ACP, 0, FilePath, -1, ConvertFullPath, Length, 0, 0);
+//
+//
+//		CGameObject* TileMapObj = m_TileMap->GetGameObject();
+//
+//		TileMapObj->Load(ConvertFullPath);
+//		//CSceneManager::GetInst()->GetScene()->LoadFullPath(ConvertFullPath);
+//	}
+//}

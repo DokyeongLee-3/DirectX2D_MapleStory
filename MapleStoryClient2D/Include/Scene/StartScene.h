@@ -3,7 +3,7 @@
 #include "Scene/SceneMode.h"
 #include "../Widget/StartWidget.h"
 #include "../Widget/CharacterSelectInfoWidget.h"
-#include "../Client.h"
+#include "../Object/Player2D.h"
 
 class CStartScene :
     public CSceneMode

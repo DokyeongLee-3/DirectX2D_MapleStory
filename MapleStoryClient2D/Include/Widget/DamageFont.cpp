@@ -70,6 +70,11 @@ bool CDamageFont::Init()
 
 void CDamageFont::Update(float DeltaTime)
 {
+   /* if (m_ListDamage.empty() && m_ListCriticalEffect.empty())
+        m_Enable = false;
+    else
+        m_Enable = true;*/
+
     auto iter = m_ListDamage.begin();
     auto iterEnd = m_ListDamage.end();
 
@@ -77,7 +82,7 @@ void CDamageFont::Update(float DeltaTime)
     for (; iter != iterEnd; ++iter)
     {
         Vector2 Pos = (*iter)->GetWidgetPos();
-        (*iter)->SetPos(Pos.x, Pos.y + 20.f * DeltaTime);
+        (*iter)->SetPos(Pos.x, Pos.y + 17.f * DeltaTime);
         float Opacity = (*iter)->GetOpacity();
         (*iter)->SetOpacity(Opacity - DeltaTime / 1.5f);
     }
@@ -88,7 +93,7 @@ void CDamageFont::Update(float DeltaTime)
     for (; Criticaliter != CriticaliterEnd; ++Criticaliter)
     {
         Vector2 Pos = (*Criticaliter)->GetWidgetPos();
-        (*Criticaliter)->SetPos(Pos.x, Pos.y + 20.f * DeltaTime);
+        (*Criticaliter)->SetPos(Pos.x, Pos.y + 17.f * DeltaTime);
         float Opacity = (*Criticaliter)->GetOpacity();
         (*Criticaliter)->SetOpacity(Opacity - DeltaTime / 1.5f);
     }
@@ -139,6 +144,7 @@ void CDamageFont::PostUpdate(float DeltaTime)
             }
         }
     }
+
 }
 
 void CDamageFont::Render()

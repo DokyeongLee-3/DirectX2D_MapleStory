@@ -87,6 +87,27 @@ const AnimationFrameData& CAnimationSequence2DData::GetFrameData(int Index) cons
 	return m_Sequence->GetFrameData(Index);
 }
 
+void CAnimationSequence2DData::SetCurrentAnimationFrame(int Frame)
+{
+	m_Frame = Frame;
+}
+
+void CAnimationSequence2DData::SetCurrentAnimationPlayTime(float Time)
+{
+	m_Time = Time;
+}
+
+void CAnimationSequence2DData::InitializeCurrentAnimation()
+{
+	if (m_Reverse)
+		m_Frame = m_Sequence->GetFrameCount() - 1;
+
+	else
+		m_Frame = 0;
+
+	m_Time = 0.f;
+}
+
 void CAnimationSequence2DData::SetCurrentAnimationFirstFrame()
 {
 	if (m_Reverse)

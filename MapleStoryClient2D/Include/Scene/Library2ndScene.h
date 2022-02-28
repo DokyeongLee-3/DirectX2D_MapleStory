@@ -23,8 +23,9 @@ private:
     CSharedPtr<CSkillQuickSlotWindow>   m_SkillQuickSlot;
     CSharedPtr<CCharacterStatusWindow>  m_CharacterStatusWindow;
     CSharedPtr<CCharacterEXP>           m_CharacterEXPWindow;
-    std::function<void(bool, float)>    m_LoadingFunction;
 
+    std::function<void(bool, float)>    m_LoadingFunction;
+    class CLoadingThread* m_LoadingThread;
 
 public:
     class CStage* GetStageObject()    const
@@ -35,6 +36,7 @@ public:
     void SetStageObject(class CStage* Stage);
 
 public:
+    virtual void Start();
     virtual bool Init();
     virtual void Update(float DeltaTime);
 
@@ -45,6 +47,10 @@ private:
     void CreateSkillAnimationSequence();
     void CreateMapAnimationSequence();
     void LoadSound();
+    void AddTileCollisionCallback();
+
+public:
+    void CreateLobbyScene();
 
 public:
     template <typename T>

@@ -81,7 +81,9 @@ void CStaticMapObj::CollisionBeginCallback(const CollisionResult& Result)
 		// 점프 힘이 중력보다 아직 쎄서 위로 올라가고 있을 경우
 		if (((CPlayer2D*)DestObj)->GetOnJump())
 		{
-			if (DestObj->GetGravityAccTime() * DestObj->GetGravityFactor() < ((CPlayer2D*)DestObj)->GetJumpForce() * CEngine::GetInst()->GetDeltaTime())
+			float DeltaTime = CEngine::GetInst()->GetDeltaTime();
+
+			if (DestObj->GetGravityAccTime() * DestObj->GetGravityFactor()  < ((CPlayer2D*)DestObj)->GetJumpForce())
 				return;
 		}
 

@@ -96,7 +96,12 @@ void CWidget::PostUpdate(float DeltaTime)
 	m_RenderPos = m_Pos;
 
 	if (m_Owner)
+	{
+		if (m_Name.find("Damage") != std::string::npos)
+			int a = 3;
+
 		m_RenderPos += m_Owner->GetWindowPos();
+	}
 }
 
 void CWidget::Render()

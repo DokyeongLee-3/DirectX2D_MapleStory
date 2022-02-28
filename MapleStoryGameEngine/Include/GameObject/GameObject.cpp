@@ -3,13 +3,14 @@
 #include "../Component/SpriteComponent.h"
 #include "../Scene/SceneManager.h"
 #include "../PathManager.h"
+#include "../Component/TileMapComponent.h"
 
 CGameObject::CGameObject()	:
 	m_Scene(nullptr),
 	m_Parent(nullptr),
 	m_LifeSpan(0.f),
 	m_Gravity(false),
-	m_GravityFactor(9.8f),
+	m_GravityFactor(3700.f),
 	m_GravityAccTime(0.f),
 	m_TileCollisionEnable(false)
 {
@@ -179,7 +180,7 @@ void CGameObject::Update(float DeltaTime)
 	if (m_Gravity)
 	{
 		m_GravityAccTime += DeltaTime;
-		AddWorldPos(0.f, -m_GravityAccTime * m_GravityFactor, 0.f);
+		AddWorldPos(0.f, -m_GravityAccTime * m_GravityFactor * DeltaTime, 0.f);
 	}
 
 	size_t Size = m_vecObjectComponent.size();
@@ -396,6 +397,16 @@ void CGameObject::Load(const char* FileName, const std::string& PathName)
 	strcat_s(FullPath, FileName);
 
 	Load(FullPath);
+}
+
+bool CGameObject::EdgeTileCheck(CTileMapComponent* TileComponent, const Vector3& WorldPos, const Vector3& ColliderScale)
+{
+	CTile* Tile = TileComponent->GetTile(Vector3(WorldPos.x, WorldPos.y - ColliderScale.y, WorldPos.x));
+
+	if (Tile && Tile->GetTileType() == Tile_Type::Edge)
+		return true;
+
+	return false;
 }
 
 //void CGameObject::Move(const Vector3& EndPos)

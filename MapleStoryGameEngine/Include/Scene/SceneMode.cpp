@@ -18,6 +18,11 @@ void CSceneMode::SetPlayerObject(CGameObject* Obj)
 	m_PlayerObject = Obj;
 }
 
+CScene* CSceneMode::GetScene() const
+{
+	return m_Scene;
+}
+
 void CSceneMode::Start()
 {
 	if (m_PlayerObject)

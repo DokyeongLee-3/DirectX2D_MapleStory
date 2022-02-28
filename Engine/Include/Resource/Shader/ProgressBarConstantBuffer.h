@@ -28,5 +28,10 @@ public:
 	{
 		m_BufferData.Dir = (int)Dir;
 	}
+
+	float GetPercent()	const
+	{
+		return m_BufferData.Percent;
+	}
 };
 

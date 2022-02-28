@@ -22,8 +22,30 @@ protected:
 	ProgressBar_Dir	m_Dir;
 	CProgressBarConstantBuffer* m_ProgressCBuffer;
 	bool			m_StartMouseOn;
+	bool			m_OnDecreasing;
+	bool			m_OnIncreasing;
 
 public:
+	bool GetOnDecreasing()	const
+	{
+		return m_OnDecreasing;
+	}
+
+	bool GetOnIncreasing()	const
+	{
+		return m_OnIncreasing;
+	}
+
+	void SetOnDecreasing(bool Decrease)
+	{
+		m_OnDecreasing = Decrease;
+	}
+
+	void SetOnIncreasing(bool Increase)
+	{
+		m_OnIncreasing = Increase;
+	}
+
 	float GetPercent()	const
 	{
 		return m_Percent;
@@ -41,6 +63,19 @@ public:
 			m_Percent = 0.f;
 
 		m_ProgressCBuffer->SetPercent(m_Percent);
+	}
+
+	void SetSlowPercent(float Percent)
+	{
+		m_Percent = Percent;
+
+		if (m_Percent > 1.f)
+			m_Percent = 1.f;
+
+		else if (m_Percent < 0.f)
+			m_Percent = 0.f;
+
+		//m_ProgressCBuffer->SetPercent(m_Percent);
 	}
 
 	void SetDir(ProgressBar_Dir Dir)

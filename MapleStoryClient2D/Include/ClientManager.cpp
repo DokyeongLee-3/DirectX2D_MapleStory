@@ -488,6 +488,21 @@ void CClientManager::OnOffBossMatching(float DeltaTime)
 	}
 }
 
+void CClientManager::NextMonsterState(Monster_State& State)
+{
+	switch (State)
+	{
+	case Monster_State::Idle:
+		State = Monster_State::Move;
+		break;
+	case Monster_State::Move:
+		State = Monster_State::Idle;
+		break;
+	default:
+		State = Monster_State::Idle;
+	}
+}
+
 //bool CClientManager::IsCritical(int Factor)
 //{
 //	int RamdomNumber = rand();

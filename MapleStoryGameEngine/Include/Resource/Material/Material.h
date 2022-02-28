@@ -74,6 +74,12 @@ protected:
     class CMaterialConstantBuffer* m_CBuffer;
     std::list<RenderCallback*>    m_RenderCallback;
 
+public:
+    float GetOpacity()  const
+    {
+        return m_Opacity;
+    }
+
 private:
     void SetConstantBuffer(class CMaterialConstantBuffer* Buffer)
     {

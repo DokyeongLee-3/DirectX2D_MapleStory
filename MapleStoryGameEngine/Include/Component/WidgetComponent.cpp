@@ -146,6 +146,9 @@ void CWidgetComponent::PostUpdate(float DeltaTime)
 			ScreenPos.y = ProjPos.y * (RS.Height / -2.f) + (RS.Height / 2.f);
 		}*/
 
+		if (m_Name == "DamageFont")
+			int a = 3;
+
 		m_WidgetWindow->SetPos(ScreenPos);
 
 		m_WidgetWindow->PostUpdate(DeltaTime);

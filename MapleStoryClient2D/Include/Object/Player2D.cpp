@@ -21,6 +21,9 @@
 #include "VoidPressure.h"
 #include "VoidPressureOrb.h"
 #include "PlayerSkillInfo.h"
+#include "../Widget/PlayerDamageFont.h"
+#include "Engine.h"
+#include "../Client.h"
 
 CPlayer2D::CPlayer2D() :
 	m_BodySprite(nullptr),
@@ -33,11 +36,19 @@ CPlayer2D::CPlayer2D() :
 	m_Dir(PlayerDir::None),
 	m_OnLightTransforming(false),
 	m_OnJump(false),
-	m_JumpForce(370.f)
+	m_OnKnockBack(false),
+	m_OnKnockBackLeft(false),
+	m_OnKnockBackTime(2.f),
+	m_OnKnockBackAccTime(0.f),
+	m_HitOpacity(0.7f),
+	m_OnHitTime(1.f),
+	m_OnHitAccTime(0.f)
 {
 	SetTypeID<CPlayer2D>();
 	m_PlayerSkillInfo = new CPlayerSkillInfo;
 	m_Gravity = true;
+
+	m_JumpForce = 370.f;
 }
 
 CPlayer2D::CPlayer2D(const CPlayer2D& obj) :
@@ -50,7 +61,6 @@ CPlayer2D::CPlayer2D(const CPlayer2D& obj) :
 
 	m_Body = (CColliderBox2D*)FindComponent("Body");
 	m_Camera = (CCameraComponent*)FindComponent("Camera");
-	m_SimpleHUDWidget = (CWidgetComponent*)FindComponent("SimpleHUD");
 
 	m_Opacity = obj.m_Opacity;
 }
@@ -78,11 +88,17 @@ bool CPlayer2D::Init()
 
 	m_Camera = CreateComponent<CCameraComponent>("Camera");
 
-	/*m_SimpleHUDWidget = CreateComponent<CWidgetComponent>("SimpleHUD");
+	m_DamageWidgetComponent = CreateComponent<CWidgetComponent>("PlayerDamageFont");
+	m_DamageWidgetComponent->UseAlphaBlend(true);
+	//m_DamageWidgetComponent->Enable(false);
 
-	m_SimpleHUDWidget->CreateWidgetWindow<CSimpleHUD>("SimpleHUDWidget");*/
+	Vector3 WorldPos = m_BodySprite->GetWorldPos();
 
-	SetRootComponent(m_BodySprite);
+	CPlayerDamageFont* DamageFont = m_DamageWidgetComponent->CreateWidgetWindow<CPlayerDamageFont>("DamageFontWidget");
+
+	DamageFont->SetPos(WorldPos.x - 30.f, WorldPos.y);
+
+
 
 	m_Body->SetCollisionProfile("Player");
 
@@ -91,12 +107,11 @@ bool CPlayer2D::Init()
 	m_BodySprite->AddChild(m_PlayerOrb);
 	m_BodySprite->AddChild(m_SylphideLancerMirror);
 	m_BodySprite->AddChild(m_SkillBodyEffect);
+	m_BodySprite->AddChild(m_DamageWidgetComponent);
 	
 	m_BodySprite->AddChild(m_Body);
 	m_BodySprite->AddChild(m_Camera);
-	//m_BodySprite->AddChild(m_SimpleHUDWidget);
 
-	//m_SimpleHUDWidget->SetRelativePos(-50.f, 50.f, 0.f);
 
 	m_BodySprite->SetTransparency(true);
 	m_SylphideLancerMirror->SetTransparency(true);
@@ -125,7 +140,7 @@ bool CPlayer2D::Init()
 	m_Body->AddCollisionCallback<CPlayer2D>(Collision_State::Begin, this, &CPlayer2D::CollisionBeginCallback);
 	//m_Body->AddCollisionCallback<CPlayer2D>(Collision_State::Stay, this, &CPlayer2D::CollisionStayCallback);
 	m_Body->AddCollisionCallback<CPlayer2D>(Collision_State::End, this, &CPlayer2D::CollisionEndCallback);
-	SetGravityFactor(2.5f);
+	SetGravityFactor(1000.f);
 
 	CInput::GetInst()->CreateKey("MoveUp", VK_UP);
 	CInput::GetInst()->CreateKey("MoveDown", VK_DOWN);
@@ -182,6 +197,39 @@ void CPlayer2D::Update(float DeltaTime)
 	{
 		AddWorldPos(0.f, DeltaTime * m_JumpForce, 0.f);
 	}
+
+	if (m_OnHit)
+	{
+		m_OnHitAccTime += DeltaTime;
+
+		int Percent = int(m_OnHitAccTime * 10) % 11;
+
+		switch (Percent)
+		{
+		case 1:
+		case 3: 
+		case 5:
+		case 7:
+		case 9:
+			m_BodySprite->SetOpacity(m_HitOpacity);
+			break;
+		case 2:
+		case 4:
+		case 6:
+		case 8:
+			m_BodySprite->SetOpacity(1.f);
+			break;
+		}
+
+		if (m_OnHitAccTime >= m_OnHitTime)
+		{
+			m_OnHit = false;
+			m_OnHitAccTime = 0.f;
+			m_BodySprite->SetOpacity(1.f);
+		}
+	}
+	
+	KnockBack(DeltaTime);
 }
 
 void CPlayer2D::PostUpdate(float DeltaTime)
@@ -201,9 +249,6 @@ CPlayer2D* CPlayer2D::Clone()
 void CPlayer2D::SetScene(CScene* Scene)
 {
 	m_Scene = Scene;
-
-	if(m_SimpleHUDWidget)
-		m_SimpleHUDWidget->GetWidgetWindow()->GetViewport()->SetScene(Scene);
 }
 
 void CPlayer2D::MoveUp(float DeltaTime)
@@ -221,6 +266,9 @@ void CPlayer2D::MoveDown(float DeltaTime)
 
 void CPlayer2D::MoveLeft(float DeltaTime)
 {
+	if (m_OnKnockBack)
+		return;
+
 	if (m_VoidPressure)
 	{
 		if (m_VoidPressure->IsEnable() && !m_VoidPressure->GetOnDestroy())
@@ -231,7 +279,7 @@ void CPlayer2D::MoveLeft(float DeltaTime)
 	}
 
 	// 보이드 프레셔 구체가 아직 생성된적 없거나 완전히 소멸되고나서 움직일 수 있게한다
-	else if (!m_VoidPressure || !m_VoidPressure->IsEnable())
+	if (!m_VoidPressure || !m_VoidPressure->IsEnable())
 	{
 		if (m_BodySprite->IsFlip())
 			FlipAll(DeltaTime);
@@ -247,6 +295,9 @@ void CPlayer2D::MoveLeft(float DeltaTime)
 
 void CPlayer2D::MoveRight(float DeltaTime)
 {
+	if (m_OnKnockBack)
+		return;
+
 	if (m_VoidPressure)
 	{
 		if (m_VoidPressure->IsEnable() && !m_VoidPressure->GetOnDestroy())
@@ -257,7 +308,7 @@ void CPlayer2D::MoveRight(float DeltaTime)
 	}
 
 	// 보이드 프레셔 구체가 아직 생성된적 없거나 완전히 소멸되고나서 움직일 수 있게한다
-	else if (!m_VoidPressure || !m_VoidPressure->IsEnable())
+	if (!m_VoidPressure || !m_VoidPressure->IsEnable())
 	{
  		if (!m_BodySprite->IsFlip())
 			FlipAll(DeltaTime);
@@ -586,15 +637,32 @@ void CPlayer2D::CollisionBeginCallback(const CollisionResult& Result)
 		m_Dir = PlayerDir::None;
 		m_OnJump = false;
 	}
+
+	if (Dest->GetTypeID() == typeid(COnionMonster).hash_code())
+	{
+		if (m_OnHit)
+			return;
+
+		Vector3 DestPos = Dest->GetWorldPos();
+		Vector3 MyPos = GetWorldPos();
+
+		// 나보다 왼쪽에서 몬스터가 충돌 -> 오른쪽으로 튕겨나가야한다
+		if (DestPos.x < MyPos.x)
+			m_OnKnockBackLeft = false;
+		else
+			m_OnKnockBackLeft = true;
+
+		m_OnKnockBack = true;
+
+		m_GravityAccTime = 0.f;
+		m_OnHit = true;
+	}
 }
 
-//void CPlayer2D::CollisionStayCallback(const CollisionResult& Result)
-//{
-//
-//}
 
 void CPlayer2D::CollisionEndCallback(const CollisionResult& Result)
 {
+	int a = 3;
 }
 
 void CPlayer2D::CameraTrack()
@@ -666,6 +734,78 @@ void CPlayer2D::CameraTrack()
 
 	}
 }
+
+void CPlayer2D::KnockBack(float DeltaTime)
+{
+	if (m_OnKnockBack)
+	{
+		// 왼쪽으로 튕겨나감
+		if (m_OnKnockBackLeft)
+		{
+			Vector3 KnockBackDir = Vector3(-200.f * DeltaTime, 100.f * DeltaTime, 0.f);
+
+			AddWorldPos(KnockBackDir);
+		}
+
+		else
+		{
+			Vector3 KnockBackDir = Vector3(200.f * DeltaTime, 100.f * DeltaTime, 0.f);
+
+			AddWorldPos(KnockBackDir);
+		}
+
+
+		m_TileCollisionEnable = false;
+
+		m_OnKnockBackAccTime += DeltaTime;
+
+		if (m_OnKnockBackAccTime >= m_OnKnockBackTime)
+		{
+			m_OnKnockBack = false;
+			m_OnKnockBackAccTime = 0.f;
+		}
+	}
+}
+
+void CPlayer2D::SetDamage(float Damage, bool Critical)
+{
+	if (m_OnHit)
+		return;
+
+	m_PlayerInfo.HP -= (int)Damage;
+	CClientManager::GetInst()->GetCharacterStatusWindow()->SetCurrentHP(m_PlayerInfo.HP);
+
+	float HPPercent = (float)m_PlayerInfo.HP / m_PlayerInfo.HPMax;
+
+	CClientManager::GetInst()->GetCharacterStatusWindow()->SetHPPercent(HPPercent);
+
+	//if (!m_IsChanging)
+	//{
+	//	if (m_MonsterInfo.HP <= 0.f)
+	//	{
+	//		// 죽는 애니메이션
+	//	}
+
+	//	else
+	//	{
+	//		m_Sprite->ChangeAnimation("OnionHitLeft");
+	//	}
+
+	//	m_IsChanging = true;
+	//}
+
+	//m_DamageWidgetComponent->Enable(true);
+	PushDamageFont(Damage);
+}
+
+void CPlayer2D::PushDamageFont(float Damage)
+{
+	if (!m_DamageWidgetComponent->GetWidgetWindow()->GetViewport()->GetScene())
+		m_DamageWidgetComponent->GetWidgetWindow()->GetViewport()->SetScene(m_Scene);
+
+	((CPlayerDamageFont*)m_DamageWidgetComponent->GetWidgetWindow())->PushDamageNumber((int)Damage);
+}
+
 
 //void CPlayer2D::MovePointDown(float DeltaTime)
 //{
@@ -808,6 +948,62 @@ void CPlayer2D::GotoNextMap(float DeltaTime)
 					CLobbyScene* Scene = (CLobbyScene*)(GetScene()->GetSceneMode());
 					CRenderManager::GetInst()->SetStartFadeIn(true);
 					CSceneManager::GetInst()->SetFadeInEndCallback<CLobbyScene>(Scene, &CLobbyScene::CreateLibrary2ndScene);
+				}
+			}
+		}
+	}
+
+	if (m_Scene->GetSceneMode()->GetTypeID() == typeid(COnionScene).hash_code())
+	{
+		CGameObject* Portal = m_Scene->FindObject("Portal1");
+
+		if (Portal)
+		{
+			CComponent* Body = ((CPortal*)Portal)->FindComponent("Body");
+
+			if (Body)
+			{
+				// GotoNextMap함수는 CInput::Update에서 호출하는거라 아직 이번 프레임의 충돌 조사가 아직 안됐을 때니까
+				// 이전 프레임 기준으로 검사한다
+				bool Collision = ((CColliderBox2D*)Body)->CheckPrevCollision(m_Body);
+
+				// LobbyScene의 오른쪽 Entrance 포탈에 충돌했고, 위쪽 방향키를 누르고 있을때 여기로 들어온다
+				// ==> 양파 재배지 맵을 멀티쓰레드 활용해서 로딩후 SceneChange하기
+				if (Collision)
+				{
+					m_ListCollisionID.clear();
+
+					COnionScene* Scene = (COnionScene*)(GetScene()->GetSceneMode());
+					CRenderManager::GetInst()->SetStartFadeIn(true);
+					CSceneManager::GetInst()->SetFadeInEndCallback<COnionScene>(Scene, &COnionScene::CreateLobbyScene);
+				}
+			}
+		}
+	}
+
+	if (m_Scene->GetSceneMode()->GetTypeID() == typeid(CLibrary2ndScene).hash_code())
+	{
+		CGameObject* Portal = m_Scene->FindObject("Portal");
+
+		if (Portal)
+		{
+			CComponent* Body = ((CPortal*)Portal)->FindComponent("Body");
+
+			if (Body)
+			{
+				// GotoNextMap함수는 CInput::Update에서 호출하는거라 아직 이번 프레임의 충돌 조사가 아직 안됐을 때니까
+				// 이전 프레임 기준으로 검사한다
+				bool Collision = ((CColliderBox2D*)Body)->CheckPrevCollision(m_Body);
+
+				// LobbyScene의 오른쪽 Entrance 포탈에 충돌했고, 위쪽 방향키를 누르고 있을때 여기로 들어온다
+				// ==> 양파 재배지 맵을 멀티쓰레드 활용해서 로딩후 SceneChange하기
+				if (Collision)
+				{
+					m_ListCollisionID.clear();
+
+					CLibrary2ndScene* Scene = (CLibrary2ndScene*)(GetScene()->GetSceneMode());
+					CRenderManager::GetInst()->SetStartFadeIn(true);
+					CSceneManager::GetInst()->SetFadeInEndCallback<CLibrary2ndScene>(Scene, &CLibrary2ndScene::CreateLobbyScene);
 				}
 			}
 		}

@@ -31,6 +31,16 @@ void CWayToZakumScene::SetStageObject(CStage* Stage)
 	m_StageObject = Stage;
 }
 
+void CWayToZakumScene::Start()
+{
+	CSceneMode::Start();
+
+	//if (m_PlayerObject)
+	//{
+	//	((CPlayer2D*)m_PlayerObject.Get())->GetDamageWidgetComponent()->GetWidgetWindow()->GetViewport()->SetScene(m_Scene);
+	//}
+}
+
 bool CWayToZakumScene::Init()
 {
 	CCharacterStatusWindow* StatusWindow = CClientManager::GetInst()->GetCharacterStatusWindow();

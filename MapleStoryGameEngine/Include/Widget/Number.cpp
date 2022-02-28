@@ -300,6 +300,7 @@ void CNumber::Render()
 		//m_RenderPos.x += (m_Size.x);
 		m_RenderPos.x += Offset.x;
 
+
 		CWidget::Render();
 	}
 }

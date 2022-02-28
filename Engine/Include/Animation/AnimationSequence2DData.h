@@ -122,6 +122,9 @@ public:
 
 	const AnimationFrameData& GetFrameData(int Index)	const;
 
+	void SetCurrentAnimationFrame(int Frame);
+	void SetCurrentAnimationPlayTime(float Time);
+	void InitializeCurrentAnimation();
 	void SetCurrentAnimationFirstFrame();
 
 public:

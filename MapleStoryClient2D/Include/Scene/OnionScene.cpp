@@ -1,6 +1,7 @@
 
 #include "OnionScene.h"
 #include "WayToZakumScene.h"
+#include "LobbyScene.h"
 #include "Scene/Scene.h"
 #include "Scene/SceneResource.h"
 #include "Scene/SceneManager.h"
@@ -42,6 +43,16 @@ void COnionScene::SetStageObject(CStage* Stage)
 CLoadingThread* COnionScene::GetLoadingThread() const
 {
 	return m_LoadingThread;
+}
+
+void COnionScene::Start()
+{
+	CSceneMode::Start();
+
+	if (m_PlayerObject)
+	{
+		((CPlayer2D*)m_PlayerObject.Get())->GetDamageWidgetComponent()->GetWidgetWindow()->GetViewport()->SetScene(m_Scene);
+	}
 }
 
 bool COnionScene::Init()
@@ -89,6 +100,12 @@ bool COnionScene::Init()
 
 	LoadSound();
 	AddTileCollisionCallback();
+
+	if (m_PlayerObject)
+	{
+		m_PlayerObject->SetGravity(true);
+		m_PlayerObject->SetTileCollisionEnable(false);
+	}
 
 	return true;
 }
@@ -255,6 +272,23 @@ void COnionScene::CreateWayToZakumScene()
 
 	m_LoadingThread = CThread::CreateThread<CLoadingThread>("WayToZakumSceneLoadingThread");
 	m_LoadingThread->SetLoadingScene(ThreadLoadingScene::WayToZakum);
+
+	m_LoadingThread->Start();
+}
+
+void COnionScene::CreateLobbyScene()
+{
+	CSceneManager::GetInst()->CreateNextScene(false);
+	CLobbyScene* LobbyScene = CSceneManager::GetInst()->CreateSceneModeEmpty<CLobbyScene>(false);
+
+	LobbyScene->SetPlayerObject(m_PlayerObject);
+
+	// 다음 Scene에서의 위치를 Scene의 왼쪽에 위치하도록 잡아주기
+	m_PlayerObject->SetWorldPos(1750.f, 300.f, 0.f);
+
+	//SAFE_DELETE(m_LoadingThread);
+	m_LoadingThread = CThread::CreateThread<CLoadingThread>("LobbySceneLoadingThread");
+	m_LoadingThread->SetLoadingScene(ThreadLoadingScene::Lobby);
 
 	m_LoadingThread->Start();
 }

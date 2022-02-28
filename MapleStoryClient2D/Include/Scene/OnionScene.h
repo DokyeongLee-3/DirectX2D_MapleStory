@@ -39,6 +39,7 @@ public:
     class CLoadingThread* GetLoadingThread()    const;
 
 public:
+    virtual void Start();
     virtual bool Init();
     virtual void Update(float DeltaTime);
 
@@ -55,6 +56,7 @@ private:
 
 public:
     void CreateWayToZakumScene();
+    void CreateLobbyScene();
 
 public:
     template <typename T>
