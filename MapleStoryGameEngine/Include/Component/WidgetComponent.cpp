@@ -85,6 +85,9 @@ void CWidgetComponent::PostUpdate(float DeltaTime)
 {
 	CSceneComponent::PostUpdate(DeltaTime);
 
+	if (CRenderManager::GetInst()->GetStartFadeIn())
+		return;
+
 	if (m_WidgetWindow)
 	{
 		// 월드공간에서의 위치 정보로 WidgetComponent의 위치 정보가 갱신되어 있을 것이다.
@@ -146,8 +149,6 @@ void CWidgetComponent::PostUpdate(float DeltaTime)
 			ScreenPos.y = ProjPos.y * (RS.Height / -2.f) + (RS.Height / 2.f);
 		}*/
 
-		if (m_Name == "DamageFont")
-			int a = 3;
 
 		m_WidgetWindow->SetPos(ScreenPos);
 
@@ -157,11 +158,17 @@ void CWidgetComponent::PostUpdate(float DeltaTime)
 
 void CWidgetComponent::PrevRender()
 {
+	if (CRenderManager::GetInst()->GetStartFadeIn())
+		return;
+
 	CSceneComponent::PrevRender();
 }
 
 void CWidgetComponent::Render()
 {
+	if (CRenderManager::GetInst()->GetStartFadeIn())
+		return;
+
 	CSceneComponent::Render();
 
 	if(m_SetAlphaBlendState)

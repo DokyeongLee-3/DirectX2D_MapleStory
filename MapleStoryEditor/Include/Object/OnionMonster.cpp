@@ -11,7 +11,7 @@ COnionMonster::COnionMonster()
 }
 
 COnionMonster::COnionMonster(const COnionMonster& obj) :
-	CGameObject(obj)
+	CMonster(obj)
 {
 	m_Sprite = (CSpriteComponent*)FindComponent("OnionMonsterSprite");
 	m_Body = (CColliderCircle*)FindComponent("Body");
@@ -38,7 +38,6 @@ bool COnionMonster::Init()
 	//m_PaperBurn->SetFinishCallback<COnionMonster>(this, &COnionMonster::Die);
 
 	m_Sprite->CreateAnimationInstance<COnionMonsterAnimation>();
-	COnionMonsterAnimation* Instance = (COnionMonsterAnimation*)m_Sprite->GetAnimationInstance();
 
 
 	m_Sprite->SetRelativeScale(100.f, 100.f, 1.f);
@@ -51,12 +50,12 @@ bool COnionMonster::Init()
 
 void COnionMonster::Update(float DeltaTime)
 {
-	CGameObject::Update(DeltaTime);
+	CMonster::Update(DeltaTime);
 }
 
 void COnionMonster::PostUpdate(float DeltaTime)
 {
-	CGameObject::PostUpdate(DeltaTime);
+	CMonster::PostUpdate(DeltaTime);
 }
 
 COnionMonster* COnionMonster::Clone()
@@ -66,12 +65,12 @@ COnionMonster* COnionMonster::Clone()
 
 void COnionMonster::Save(FILE* File)
 {
-	CGameObject::Save(File);
+	CMonster::Save(File);
 }
 
 void COnionMonster::Load(FILE* File)
 {
-	CGameObject::Load(File);
+	CMonster::Load(File);
 
 	m_Sprite = (CSpriteComponent*)FindComponent("OnionMonsterSprite");
 

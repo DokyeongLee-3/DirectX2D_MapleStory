@@ -190,6 +190,11 @@ public:
         return m_BodySprite;
     }
 
+    CColliderBox2D* GetPlayerBody() const
+    {
+        return m_Body;
+    }
+
     const PlayerInfo& GetInfo() const
     {
         return m_PlayerInfo;

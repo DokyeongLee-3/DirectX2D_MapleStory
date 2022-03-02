@@ -11,7 +11,7 @@ CMonsterRadish::CMonsterRadish()	:
 }
 
 CMonsterRadish::CMonsterRadish(const CMonsterRadish& obj)	:
-	CGameObject(obj)
+	CMonster(obj)
 {
 	m_Sprite = (CSpriteComponent*)FindComponent("MonsterRadishSprite");
 	m_Body = (CColliderBox2D*)FindComponent("Body");
@@ -23,7 +23,7 @@ CMonsterRadish::~CMonsterRadish()
 
 void CMonsterRadish::Start()
 {
-	CGameObject::Start();
+	CMonster::Start();
 }
 
 bool CMonsterRadish::Init()
@@ -38,44 +38,26 @@ bool CMonsterRadish::Init()
 
 	m_Sprite->SetTransparency(true);
 
-	m_Sprite->CreateAnimationInstance<CAnimationSequence2DInstance>();
-
 	m_Sprite->SetWorldScale(100.f, 100.f, 1.f);
 	m_Sprite->SetRelativePos(500.f, 300.f, 0.f);
 	m_Sprite->SetPivot(0.5f, 0.5f, 0.f);
 
 
 
-
-	CAnimationSequence2DInstance* Anim = m_Sprite->GetAnimationInstance();
-	
-	Anim->AddAnimation(TEXT("RadishWalkLeft.sqc"), ANIMATION_PATH, "RadishWalkLeft", true, 1.f);
-	Anim->AddAnimation(TEXT("RadishIdleLeft.sqc"), ANIMATION_PATH, "RadishIdleLeft", true, 1.f);
-	Anim->AddAnimation(TEXT("RadishHitLeft.sqc"), ANIMATION_PATH, "RadishHitLeft", true, 1.f);
-	Anim->AddAnimation(TEXT("RadishDieLeft.sqc"), ANIMATION_PATH, "RadishDieLeft", true, 3.f);
-
-
-	CInput::GetInst()->CreateKey("Flip", 'F');
-	CInput::GetInst()->SetKeyCallback<CMonsterRadish>("Flip", KeyState_Down, this, &CMonsterRadish::FlipAll);
-	CInput::GetInst()->CreateKey("NextAnimation", 'N');
-	CInput::GetInst()->SetKeyCallback<CMonsterRadish>("NextAnimation", KeyState_Down, this, &CMonsterRadish::NextAnimation);
-
-	CInput::GetInst()->CreateKey("Rotate", VK_RIGHT);
-	CInput::GetInst()->SetKeyCallback<CMonsterRadish>("Rotate", KeyState_Push, this, &CMonsterRadish::RotationZ);
-	CInput::GetInst()->CreateKey("RotateInv", VK_LEFT);
-	CInput::GetInst()->SetKeyCallback<CMonsterRadish>("RotateInv", KeyState_Push, this, &CMonsterRadish::RotationZInv);
+	//m_Sprite->CreateAnimationInstance<CLowerClassBookAnimation>();
+	//COnionMonsterAnimation* Instance = (COnionMonsterAnimation*)m_Sprite->GetAnimationInstance();
 
 	return true;
 }
 
 void CMonsterRadish::Update(float DeltaTime)
 {
-	CGameObject::Update(DeltaTime);
+	CMonster::Update(DeltaTime);
 }
 
 void CMonsterRadish::PostUpdate(float DeltaTime)
 {
-	CGameObject::PostUpdate(DeltaTime);
+	CMonster::PostUpdate(DeltaTime);
 }
 
 CMonsterRadish* CMonsterRadish::Clone()
@@ -85,12 +67,12 @@ CMonsterRadish* CMonsterRadish::Clone()
 
 void CMonsterRadish::Save(FILE* File)
 {
-	CGameObject::Save(File);
+	CMonster::Save(File);
 }
 
 void CMonsterRadish::Load(FILE* File)
 {
-	CGameObject::Load(File);
+	CMonster::Load(File);
 
 	m_Sprite = (CSpriteComponent*)FindComponent("MonsterRadishSprite");
 }

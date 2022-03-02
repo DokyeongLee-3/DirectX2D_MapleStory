@@ -225,6 +225,8 @@ void CSceneComponent::ClearChild()
 	
 	for (int i = 0; i < ChildCount; ++i)
 	{
+		// 이 SceneComponent를 갖고 있는 m_Object의 m_SceneComponentList에도 여기서 지운걸 찾아서 지워줘야한다
+		m_Object->DeleteSceneComponent(m_vecChild[i]);
 		DeleteChild(m_vecChild[i]);
 		ChildCount = (int)m_vecChild.size();
 	}
@@ -286,8 +288,12 @@ void CSceneComponent::Start()
 	{
 		if (!m_vecChild[i]->IsActive())
 		{
+			// 이 SceneComponent를 갖고 있는 m_Object의 m_SceneComponentList에도 여기서 지운걸 찾아서 지워줘야한다
+			m_Object->DeleteSceneComponent(m_vecChild[i]);
+
 			DeleteChild(m_vecChild[i]);
 			Size = m_vecChild.size();
+
 			continue;
 		}
 	}
@@ -316,6 +322,8 @@ void CSceneComponent::Update(float DeltaTime)
 	{
 		if (!m_vecChild[i]->IsActive())
 		{
+			// 이 SceneComponent를 갖고 있는 m_Object의 m_SceneComponentList에도 여기서 지운걸 찾아서 지워줘야한다
+			m_Object->DeleteSceneComponent(m_vecChild[i]);
 			DeleteChild(m_vecChild[i]);
 			Size = m_vecChild.size();
 			continue;
@@ -480,6 +488,10 @@ void CSceneComponent::Load(FILE* File)
 		Component->Load(File);
 
 		AddChild((CSceneComponent*)Component);
+
+
+		// 추가
+		//m_Object->AddSceneComponent((CSceneComponent*)Component);
 
 		CScene* NextScene = CSceneManager::GetInst()->GetNextScene();
 

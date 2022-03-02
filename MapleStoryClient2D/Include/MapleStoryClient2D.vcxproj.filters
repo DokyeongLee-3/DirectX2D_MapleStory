@@ -231,6 +231,18 @@
     <ClCompile Include="Widget\PlayerDamageFont.cpp">
       <Filter>03. UI</Filter>
     </ClCompile>
+    <ClCompile Include="Object\LopeTileObject.cpp">
+      <Filter>02. Object\06. TileMap</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\LowerClassBook.cpp">
+      <Filter>02. Object\02. Monster\01. Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\LowerClassBookAnimation.cpp">
+      <Filter>05. Animation\02. Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\Monster.cpp">
+      <Filter>02. Object\02. Monster\01. Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -388,6 +400,18 @@
     </ClInclude>
     <ClInclude Include="Widget\PlayerDamageFont.h">
       <Filter>03. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\LopeTileObject.h">
+      <Filter>02. Object\06. TileMap</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\LowerClassBook.h">
+      <Filter>02. Object\02. Monster\01. Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation\LowerClassBookAnimation.h">
+      <Filter>05. Animation\02. Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Monster.h">
+      <Filter>02. Object\02. Monster\01. Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

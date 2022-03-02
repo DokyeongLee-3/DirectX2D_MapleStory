@@ -27,7 +27,11 @@ private:
     std::function<void(bool, float)>    m_LoadingFunction;
     class CLoadingThread* m_LoadingThread;
 
+    std::list<class CLowerClassBook*>   m_LowerClassBookList;
+
 public:
+    void PushLowerClassBook(class CLowerClassBook* Book);
+
     class CStage* GetStageObject()    const
     {
         return m_StageObject;
@@ -45,12 +49,17 @@ private:
     void CreateAnimationSequence();
     void CreatePlayerAnimationSequence();
     void CreateSkillAnimationSequence();
+    void CreateMonsterAnimationSequence();
     void CreateMapAnimationSequence();
+    void CreateEffectPrototype();
     void LoadSound();
     void AddTileCollisionCallback();
 
 public:
     void CreateLobbyScene();
+
+public:
+    class CLowerClassBook* FindLowerClassBook(bool Right, const Vector3& MyPos, float DistXConstraint, float DistYConstraint);
 
 public:
     template <typename T>

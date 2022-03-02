@@ -22,8 +22,6 @@ CLobbyScene::CLobbyScene()	:
 
 CLobbyScene::~CLobbyScene()
 {
-	m_Scene->GetResource()->SoundStop("FairyAcademyBGM");
-
 	SAFE_DELETE(m_LoadingThread);
 
 	CPlayer2D* Player = (CPlayer2D*)(m_Scene->GetPlayerObject());
@@ -47,7 +45,11 @@ void CLobbyScene::Start()
 
 	if (m_PlayerObject)
 	{
-		((CPlayer2D*)m_PlayerObject.Get())->GetDamageWidgetComponent()->GetWidgetWindow()->GetViewport()->SetScene(m_Scene);
+		CWidgetWindow* Window = ((CPlayer2D*)m_PlayerObject.Get())->GetDamageWidgetComponent()->GetWidgetWindow();
+		
+		Window->SetViewport(m_Scene->GetViewport());
+
+		Window->GetViewport()->SetScene(m_Scene);
 	}
 }
 
@@ -131,6 +133,7 @@ void CLobbyScene::Update(float DeltaTime)
 		{
 			CSceneManager::GetInst()->ChangeNextScene();
 			CRenderManager::GetInst()->SetStartFadeOut(true);
+			((CPlayer2D*)m_Scene->GetPlayerObject())->GetPlayerBody()->Enable(true);
 			return;
 		}
 
@@ -146,6 +149,7 @@ void CLobbyScene::Update(float DeltaTime)
 			{
 				CSceneManager::GetInst()->ChangeNextScene();
 				CRenderManager::GetInst()->SetStartFadeOut(true);
+				((CPlayer2D*)m_Scene->GetPlayerObject())->GetPlayerBody()->Enable(true);
 			}
 		}
 	}
@@ -277,6 +281,8 @@ void CLobbyScene::AddTileCollisionCallback()
 
 void CLobbyScene::CreateOnionScene()
 {
+	m_Scene->GetResource()->SoundStop("FairyAcademyBGM");
+
 	CSceneManager::GetInst()->CreateNextScene(false);
 	COnionScene* OnionScene = CSceneManager::GetInst()->CreateSceneModeEmpty<COnionScene>(false);
 
@@ -294,6 +300,8 @@ void CLobbyScene::CreateOnionScene()
 
 void CLobbyScene::CreateWayToZakumScene()
 {
+	m_Scene->GetResource()->SoundStop("FairyAcademyBGM");
+
 	CSceneManager::GetInst()->CreateNextScene(false);
 	CWayToZakumScene* WayToZakumScene = CSceneManager::GetInst()->CreateSceneModeEmpty<CWayToZakumScene>(false);
 
@@ -311,6 +319,8 @@ void CLobbyScene::CreateWayToZakumScene()
 
 void CLobbyScene::CreateLibrary2ndScene()
 {
+	m_Scene->GetResource()->SoundStop("FairyAcademyBGM");
+
 	CSceneManager::GetInst()->CreateNextScene(false);
 	CLibrary2ndScene* LibraryScene = CSceneManager::GetInst()->CreateSceneModeEmpty<CLibrary2ndScene>(false);
 

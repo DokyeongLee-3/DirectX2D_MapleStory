@@ -28,7 +28,11 @@ private:
     std::function<void(bool, float)>    m_LoadingFunction;
     class CLoadingThread* m_LoadingThread;
 
+    std::list<class COnionMonster*>   m_OnionMonsterList;
+
 public:
+    void PushOnionMonster(class COnionMonster* Monster);
+
     class CStage* GetStageObject()    const
     {
         return m_StageObject;
@@ -53,6 +57,9 @@ private:
     void CreateEffectPrototype();
     void LoadSound();
     void AddTileCollisionCallback();
+
+public:
+    class COnionMonster* FindOnionMonster(bool Right, const Vector3& MyPos, float DistXConstraint, float DistYConstraint);
 
 public:
     void CreateWayToZakumScene();

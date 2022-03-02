@@ -11,8 +11,10 @@
 #include "Object/LobbyBigLamp.h"
 #include "Object/LobbySmallLamp.h"
 #include "Object/TileObject.h"
+#include "Object/LopeTileObject.h"
 #include "Object/VerticalLampLight.h"
 #include "Object/OnionMonster.h"
+#include "Object/LowerClassBook.h"
 
 //struct MonsterInfo
 //{

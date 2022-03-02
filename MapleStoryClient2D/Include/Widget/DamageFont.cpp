@@ -1,5 +1,6 @@
 
 #include "DamageFont.h"
+#include "Render/RenderManager.h"
 
 CDamageFont::CDamageFont()
 {
@@ -149,6 +150,9 @@ void CDamageFont::PostUpdate(float DeltaTime)
 
 void CDamageFont::Render()
 {
+  /*  if (CRenderManager::GetInst()->GetStartFadeIn())
+        return;*/
+
     CWidgetWindow::Render();
 }
 

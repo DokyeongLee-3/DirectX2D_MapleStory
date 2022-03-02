@@ -119,6 +119,11 @@ bool CDefaultScene::LoadAnimationSequence2D()
     m_Scene->GetResource()->LoadSequence2D("LampBigHelix.sqc");
     m_Scene->GetResource()->LoadSequence2D("LampSmallHelix.sqc");
 
+    m_Scene->GetResource()->LoadSequence2D("LowerClassBookIdleLeft.sqc");
+    m_Scene->GetResource()->LoadSequence2D("LowerClassBookHitLeft.sqc");
+    m_Scene->GetResource()->LoadSequence2D("LowerClassBookDieLeft.sqc");
+    m_Scene->GetResource()->LoadSequence2D("LowerClassBookAttackLeft.sqc");
+    m_Scene->GetResource()->LoadSequence2D("LowerClassBookAttackOrb.sqc");
     return true;
 }
 

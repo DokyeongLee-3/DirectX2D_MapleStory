@@ -117,8 +117,6 @@ public:
 		return m_RootComponent;
 	}
 
-
-
 	void AddSceneComponent(CSceneComponent* Component)
 	{
 		m_SceneComponentList.push_back(Component);
@@ -129,6 +127,7 @@ public:
 	void GetAllSceneComponentsName(std::vector<FindComponentName>& vecNames);
 	void SetAllSceneComponentsLayer(const std::string& Name);
 	void ClearSceneComponents();
+	
 
 	CSceneComponent* FindComponentIncludingName(const std::string& Name)
 	{

@@ -46,6 +46,7 @@ CGameObject::CGameObject(const CGameObject& obj)
 
 CGameObject::~CGameObject()
 {
+	m_SceneComponentList.clear();
 }
 
 void CGameObject::SetScene(CScene* Scene)

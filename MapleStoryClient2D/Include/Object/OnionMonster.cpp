@@ -2,32 +2,31 @@
 #include "OnionMonster.h"
 #include "../Animation/OnionMonsterAnimation.h"
 #include "Scene/Scene.h"
+#include "../Scene/OnionScene.h"
 #include "Resource/Material/Material.h"
 #include "Engine.h"
 #include "../Widget/DamageFont.h"
 #include "Player2D.h"
 #include "TileObject.h"
 #include "Component/TileMapComponent.h"
+#include "Render/RenderManager.h"
 
-COnionMonster::COnionMonster() :
-	m_IsChanging(false)
+COnionMonster::COnionMonster()
 {
 	SetTypeID<COnionMonster>();
-	m_Gravity = false;
+
 	m_TileCollisionEnable = true;
 	m_MonsterInfo.HP = 5000;
 	m_MonsterInfo.HPMax = 5000;
 	m_MonsterInfo.Level = 50;
 	m_MonsterInfo.Attack = 10;
 
-	m_MonsterState = Monster_State::Idle;
-
 	m_FiniteStateTimeTable[(int)Monster_State::Idle] = (float)(rand() % 5) + 1.f;
 	m_FiniteStateTimeTable[(int)Monster_State::Move] = (float)(rand() % 4) + 1.f;
 }
 
 COnionMonster::COnionMonster(const COnionMonster& obj) :
-	CGameObject(obj)
+	CMonster(obj)
 {
 	m_Sprite = (CSpriteComponent*)FindComponent("OnionMonsterSprite");
 	m_Body = (CColliderCircle*)FindComponent("Body");
@@ -39,17 +38,14 @@ COnionMonster::~COnionMonster()
 
 void COnionMonster::Start()
 {
-	CGameObject::Start();
-
-	std::string Name = m_Name;
+	CMonster::Start();
 
 	m_DamageWidgetComponent = CreateComponent<CWidgetComponent>("DamageFont");
 	m_DamageWidgetComponent->UseAlphaBlend(true);
 
 	CDamageFont* DamageFont = m_DamageWidgetComponent->CreateWidgetWindow<CDamageFont>("DamageFontWidget");
 
-	Vector3 WorldPos = m_Sprite->GetWorldPos();
-	// 무조건 Child 추가하고 Transform 건들여야된다!
+	// 무조건 Child 추가하고 난 뒤에 Transform 건들여야된다!
 	m_Sprite->AddChild(m_DamageWidgetComponent);
 
 	m_DamageWidgetComponent->SetRelativePos(-20.f, 0.f, 0.f);
@@ -66,12 +62,17 @@ void COnionMonster::Start()
 	Instance->SetEndFunction<COnionMonster>("OnionDieLeft", this, &COnionMonster::Die);
 
 	m_Body->AddCollisionCallback<COnionMonster>(Collision_State::Begin, this, &COnionMonster::CollisionBeginCallback);
-	//m_Body->AddCollisionCallback<COnionMonster>(Collision_State::Stay, this, &COnionMonster::CollisionStayCallback);
 	m_Body->AddCollisionCallback<COnionMonster>(Collision_State::End, this, &COnionMonster::CollisionEndCallback);
+
+	int LeftStart = rand() % 2 - 1;
+	if (LeftStart < 0)
+		m_Sprite->Flip();
 }
 
 bool COnionMonster::Init()
 {
+	CMonster::Init();
+
 	m_Sprite = CreateComponent<CSpriteComponent>("OnionMonsterSprite");
 	m_Body = CreateComponent<CColliderCircle>("Body");
 	m_Body->SetRadius(30.f);
@@ -105,7 +106,7 @@ bool COnionMonster::Init()
 
 void COnionMonster::Update(float DeltaTime)
 {
-	CGameObject::Update(DeltaTime);
+	CMonster::Update(DeltaTime);
 
 	FiniteState(DeltaTime);
 
@@ -121,7 +122,7 @@ void COnionMonster::Update(float DeltaTime)
 
 void COnionMonster::PostUpdate(float DeltaTime)
 {
-	CGameObject::PostUpdate(DeltaTime);
+	CMonster::PostUpdate(DeltaTime);
 }
 
 COnionMonster* COnionMonster::Clone()
@@ -158,12 +159,8 @@ void COnionMonster::SetDamage(float Damage, bool Critical)
 
 void COnionMonster::PushDamageFont(float Damage, bool Critical)
 {
-	((CDamageFont*)m_DamageWidgetComponent->GetWidgetWindow())->PushDamageNumber((int)Damage, Critical);
-}
-
-void COnionMonster::Die()
-{
-	Destroy();
+	//((CDamageFont*)m_DamageWidgetComponent->GetWidgetWindow())->PushDamageNumber((int)Damage, Critical);
+	CMonster::PushDamageFont(Damage, Critical);
 }
 
 void COnionMonster::ReturnIdle()
@@ -233,6 +230,9 @@ void COnionMonster::CollisionBeginCallback(const CollisionResult& Result)
 
 	if (Object->GetTypeID() == typeid(CPlayer2D).hash_code())
 	{
+		if (CRenderManager::GetInst()->GetStartFadeIn())
+			return;
+
 		((CPlayer2D*)Object)->SetDamage((float)m_MonsterInfo.Attack, false);
 	}
 }
@@ -243,16 +243,18 @@ void COnionMonster::CollisionEndCallback(const CollisionResult& Result)
 
 void COnionMonster::Save(FILE* File)
 {
-	CGameObject::Save(File);
+	CMonster::Save(File);
 }
 
 void COnionMonster::Load(FILE* File)
 {
-	CGameObject::Load(File);
+	CMonster::Load(File);
 
 	m_Sprite = (CSpriteComponent*)FindComponent("OnionMonsterSprite");
 
 	m_Sprite->SetTransparency(true);
 
 	m_Body = (CColliderCircle*)FindComponent("Body");
+
+	((COnionScene*)(m_Scene->GetSceneMode()))->PushOnionMonster(this);
 }

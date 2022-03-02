@@ -13,7 +13,7 @@ protected:
     virtual ~CDragCollider();
 
 protected:
-
+    virtual void Update(float DeltaTime);
 
 
 public:

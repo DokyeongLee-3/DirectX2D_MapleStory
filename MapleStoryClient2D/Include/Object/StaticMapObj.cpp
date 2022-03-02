@@ -20,6 +20,8 @@ CStaticMapObj::CStaticMapObj(const CStaticMapObj& obj) :
 
 CStaticMapObj::~CStaticMapObj()
 {
+	if (m_Name.find("SmallLamp") != std::string::npos)
+		int a = 3;
 }
 
 void CStaticMapObj::Start()
@@ -128,9 +130,12 @@ void CStaticMapObj::CollisionBeginCallback(const CollisionResult& Result)
 
 void CStaticMapObj::CollisionEndCallback(const CollisionResult& Result)
 {
+	if (!Result.Dest)
+		return;
+
 	CGameObject* DestObj = Result.Dest->GetGameObject();
 
-	if (DestObj->GetTypeID() == typeid(CPlayer2D).hash_code())
+	if (DestObj && DestObj->GetTypeID() == typeid(CPlayer2D).hash_code())
 	{
 		if (((CPlayer2D*)DestObj)->CheckCollisionID(m_CollisionID))
 		{

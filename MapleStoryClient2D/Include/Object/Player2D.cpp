@@ -58,6 +58,7 @@ CPlayer2D::CPlayer2D(const CPlayer2D& obj) :
 	m_SylphideLancerMirror = (CSpriteComponent*)FindComponent("PlayerSylphideLancerMirror");
 	m_SkillBodyEffect = (CSpriteComponent*)FindComponent("PlayerSkillBodyEffect");
 	m_PlayerOrb = (CSpriteComponent*)FindComponent("PlayerOrb");
+	m_DamageWidgetComponent = (CWidgetComponent*)FindComponent("PlayerDamageFont");
 
 	m_Body = (CColliderBox2D*)FindComponent("Body");
 	m_Camera = (CCameraComponent*)FindComponent("Camera");
@@ -81,23 +82,13 @@ bool CPlayer2D::Init()
 	m_SylphideLancerMirror = CreateComponent<CSpriteComponent>("PlayerSylphideLancerMirror");
 	m_SkillBodyEffect = CreateComponent<CSpriteComponent>("PlayerSkillBodyEffect");
 	m_PlayerOrb = CreateComponent<CSpriteComponent>("PlayerOrb");
+	m_DamageWidgetComponent = CreateComponent<CWidgetComponent>("PlayerDamageFont");
 
 	m_Body = CreateComponent<CColliderBox2D>("PlayerBody");
 	m_Body->SetExtent(25.f, 35.f);
 	m_Body->SetOffset(0.f, 13.f, 0.f);
 
 	m_Camera = CreateComponent<CCameraComponent>("Camera");
-
-	m_DamageWidgetComponent = CreateComponent<CWidgetComponent>("PlayerDamageFont");
-	m_DamageWidgetComponent->UseAlphaBlend(true);
-	//m_DamageWidgetComponent->Enable(false);
-
-	Vector3 WorldPos = m_BodySprite->GetWorldPos();
-
-	CPlayerDamageFont* DamageFont = m_DamageWidgetComponent->CreateWidgetWindow<CPlayerDamageFont>("DamageFontWidget");
-
-	DamageFont->SetPos(WorldPos.x - 30.f, WorldPos.y);
-
 
 
 	m_Body->SetCollisionProfile("Player");
@@ -138,9 +129,15 @@ bool CPlayer2D::Init()
 	m_PlayerOrb->SetPivot(0.5f, 0.5f, 0.f);
 
 	m_Body->AddCollisionCallback<CPlayer2D>(Collision_State::Begin, this, &CPlayer2D::CollisionBeginCallback);
-	//m_Body->AddCollisionCallback<CPlayer2D>(Collision_State::Stay, this, &CPlayer2D::CollisionStayCallback);
 	m_Body->AddCollisionCallback<CPlayer2D>(Collision_State::End, this, &CPlayer2D::CollisionEndCallback);
 	SetGravityFactor(1000.f);
+
+
+	m_DamageWidgetComponent->UseAlphaBlend(true);
+	//m_DamageWidgetComponent->SetRelativePos(-20.f, 0.f, 0.f);
+
+	CPlayerDamageFont* DamageFont = m_DamageWidgetComponent->CreateWidgetWindow<CPlayerDamageFont>("DamageFontWidget");
+
 
 	CInput::GetInst()->CreateKey("MoveUp", VK_UP);
 	CInput::GetInst()->CreateKey("MoveDown", VK_DOWN);
@@ -281,7 +278,13 @@ void CPlayer2D::MoveLeft(float DeltaTime)
 	// 보이드 프레셔 구체가 아직 생성된적 없거나 완전히 소멸되고나서 움직일 수 있게한다
 	if (!m_VoidPressure || !m_VoidPressure->IsEnable())
 	{
-		if (m_BodySprite->IsFlip())
+		bool IsFlip = m_BodySprite->IsFlip();
+
+		// 실피드랜서 동작중이라면 왼쪽으로 방향전환 불가능하게 하기
+		if (m_SylphideLancerMirror->GetCurrentAnimation())
+			return;
+
+		if (IsFlip)
 			FlipAll(DeltaTime);
 
 		m_BodySprite->AddWorldPos(m_BodySprite->GetWorldAxis(AXIS_X) * -180.f * DeltaTime);
@@ -310,6 +313,12 @@ void CPlayer2D::MoveRight(float DeltaTime)
 	// 보이드 프레셔 구체가 아직 생성된적 없거나 완전히 소멸되고나서 움직일 수 있게한다
 	if (!m_VoidPressure || !m_VoidPressure->IsEnable())
 	{
+		bool IsFlip = m_BodySprite->IsFlip();
+
+		// 실피드랜서 동작중이라면 오른쪽으로 방향전환 불가능하게 하기
+		if (m_SylphideLancerMirror->GetCurrentAnimation())
+			return;
+
  		if (!m_BodySprite->IsFlip())
 			FlipAll(DeltaTime);
 
@@ -365,8 +374,22 @@ void CPlayer2D::SylphideLancer(float DeltaTime)
 
 	m_BodySprite->ChangeAnimation("HealLeft");
 
-	CGameObject* NearMonster = m_Scene->FindIncludingNameObject("Onion", GetWorldPos(), Vector2(400.f, 70.f));
 
+	CGameObject* NearMonster = nullptr;
+
+	CSceneMode* Mode = m_Scene->GetSceneMode();
+
+	// 근처의 스킬 타겟이 될 몬스터 탐색
+	if (Mode)
+	{
+		// true면 오른쪽을 바라보고 있으니까 오른쪽에서 타겟 몬스터를 찾아야한다
+		bool Flip = m_BodySprite->IsFlip();
+
+		if (m_Scene->GetSceneMode()->GetTypeID() == typeid(COnionScene).hash_code())
+			NearMonster = ((COnionScene*)Mode)->FindOnionMonster(Flip, GetWorldPos(), 400.f, 120.f);
+		else if (m_Scene->GetSceneMode()->GetTypeID() == typeid(CLibrary2ndScene).hash_code())
+			NearMonster = ((CLibrary2ndScene*)Mode)->FindLowerClassBook(Flip, GetWorldPos(), 400.f, 120.f);
+	}
 
 	m_Scene->GetResource()->SoundPlay("SylphideLancerUse");
 
@@ -629,6 +652,9 @@ void CPlayer2D::VoidPressureCancle(float DeltaTime)
 
 void CPlayer2D::CollisionBeginCallback(const CollisionResult& Result)
 {
+	if (CRenderManager::GetInst()->GetStartFadeIn())
+		return;
+
 	CGameObject* Dest = Result.Dest->GetGameObject();
 
 	if (Dest->GetTypeID() == typeid(CTileObject).hash_code())
@@ -638,7 +664,12 @@ void CPlayer2D::CollisionBeginCallback(const CollisionResult& Result)
 		m_OnJump = false;
 	}
 
-	if (Dest->GetTypeID() == typeid(COnionMonster).hash_code())
+	if (Dest->GetTypeID() == typeid(CLopeTileObject).hash_code())
+	{
+		int a = 3;
+	}
+
+	if (Dest->GetTypeID() == typeid(COnionMonster).hash_code() || Dest->GetTypeID() == typeid(CLowerClassBook).hash_code())
 	{
 		if (m_OnHit)
 			return;
@@ -653,16 +684,16 @@ void CPlayer2D::CollisionBeginCallback(const CollisionResult& Result)
 			m_OnKnockBackLeft = true;
 
 		m_OnKnockBack = true;
+		m_OnHit = true;
 
 		m_GravityAccTime = 0.f;
-		m_OnHit = true;
 	}
 }
 
 
 void CPlayer2D::CollisionEndCallback(const CollisionResult& Result)
 {
-	int a = 3;
+
 }
 
 void CPlayer2D::CameraTrack()
@@ -739,6 +770,9 @@ void CPlayer2D::KnockBack(float DeltaTime)
 {
 	if (m_OnKnockBack)
 	{
+		if (m_OnJump)
+			m_OnJump = false;
+
 		// 왼쪽으로 튕겨나감
 		if (m_OnKnockBackLeft)
 		{
@@ -779,22 +813,6 @@ void CPlayer2D::SetDamage(float Damage, bool Critical)
 
 	CClientManager::GetInst()->GetCharacterStatusWindow()->SetHPPercent(HPPercent);
 
-	//if (!m_IsChanging)
-	//{
-	//	if (m_MonsterInfo.HP <= 0.f)
-	//	{
-	//		// 죽는 애니메이션
-	//	}
-
-	//	else
-	//	{
-	//		m_Sprite->ChangeAnimation("OnionHitLeft");
-	//	}
-
-	//	m_IsChanging = true;
-	//}
-
-	//m_DamageWidgetComponent->Enable(true);
 	PushDamageFont(Damage);
 }
 
@@ -899,9 +917,11 @@ void CPlayer2D::FlipAll(float DeltaTime)
 
 void CPlayer2D::GotoNextMap(float DeltaTime)
 {
-	if (!m_Body->CheckPrevCollisionGameObjectType(typeid(CPortal).hash_code()))
+	if (CRenderManager::GetInst()->GetStartFadeIn() || CRenderManager::GetInst()->GetStartFadeOut())
 		return;
 
+	if (!m_Body->CheckPrevCollisionGameObjectType(typeid(CPortal).hash_code()))
+		return;
 
 	if (m_Scene->GetSceneMode()->GetTypeID() == typeid(CLobbyScene).hash_code())
 	{
@@ -1020,7 +1040,24 @@ void CPlayer2D::ProduceSecondSylphideLander(float DeltaTime)
 
 	Vector3 WorldPos = GetWorldPos();
 
-	CGameObject* NearMonster = m_Scene->FindIncludingNameObject("Onion", WorldPos, Vector2(400.f, 70.f));
+	CGameObject* NearMonster = nullptr;
+
+	CSceneMode* Mode = m_Scene->GetSceneMode();
+
+	// 근처의 스킬 타겟이 될 몬스터 탐색
+	if (Mode)
+	{
+		// true면 오른쪽을 바라보고 있으니까 오른쪽에서 타겟 몬스터를 찾아야한다
+		bool Flip = m_BodySprite->IsFlip();
+
+		if (m_Scene->GetSceneMode()->GetTypeID() == typeid(COnionScene).hash_code())
+			NearMonster = ((COnionScene*)Mode)->FindOnionMonster(Flip, GetWorldPos(), 400.f, 60.f);
+		else if (m_Scene->GetSceneMode()->GetTypeID() == typeid(CLibrary2ndScene).hash_code())
+			NearMonster = ((CLibrary2ndScene*)Mode)->FindLowerClassBook(Flip, GetWorldPos(), 400.f, 60.f);
+	}
+
+
+
 	Vector3 MirrorPos = m_SylphideLancerMirror->GetWorldPos();
 
 	for (int i = 0; i < 2; ++i)

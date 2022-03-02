@@ -1,11 +1,11 @@
 #pragma once
 
-#include "GameObject/GameObject.h"
+#include "Monster.h"
 #include "Component/SpriteComponent.h"
 #include "Component/ColliderBox2D.h"
 
 class CMonsterRadish :
-    public CGameObject
+    public CMonster
 {
     friend class CScene;
 

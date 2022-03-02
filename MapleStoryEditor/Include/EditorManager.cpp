@@ -24,6 +24,7 @@
 #include "Component/ColliderPixel.h"
 #include "Animation/AnimationSequence2DInstance.h"
 #include "Animation/OnionMonsterAnimation.h"
+#include "Animation/LowerClassBookAnimation.h"
 #include "IMGUIImage.h"
 #include "IMGUIListBox.h"
 #include "ObjectSet.h"
@@ -472,6 +473,13 @@ CGameObject* CEditorManager::CreateObject(CScene* Scene, size_t Type)
 		return Obj;
 	}
 
+	else if (Type == typeid(CLopeTileObject).hash_code())
+	{
+		CLopeTileObject* Obj = Scene->LoadGameObject<CLopeTileObject>();
+
+		return Obj;
+	}
+
 	return nullptr;
 }
 
@@ -558,6 +566,11 @@ void CEditorManager::CreateAnimInstance(CSpriteComponent* Sprite, size_t Type)
 	else if (Type == typeid(COnionMonsterAnimation).hash_code())
 	{
 		Sprite->LoadAnimationInstance<COnionMonsterAnimation>();
+	}
+
+	else if (Type == typeid(CLowerClassBookAnimation).hash_code())
+	{
+		Sprite->LoadAnimationInstance<CLowerClassBookAnimation>();
 	}
 }
 

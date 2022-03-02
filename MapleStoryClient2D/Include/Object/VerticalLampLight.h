@@ -2,7 +2,7 @@
 
 #include "GameObject/GameObject.h"
 #include "Component/SpriteComponent.h"
-#include "../Component/DragCollider.h"
+
 
 class CVerticalLampLight :
     public CGameObject
@@ -18,7 +18,7 @@ private:
     CSharedPtr<CSceneComponent>     m_RootComponent;
     CSharedPtr<CSpriteComponent>    m_LeftSprite;
     CSharedPtr<CSpriteComponent>    m_RightSprite;
-    CSharedPtr<CDragCollider>      m_DragCollider;
+
 
 public:
     virtual void Start();

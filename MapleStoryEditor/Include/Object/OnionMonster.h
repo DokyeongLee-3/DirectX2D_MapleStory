@@ -1,13 +1,13 @@
 #pragma once
 
-#include "GameObject/GameObject.h"
+#include "Monster.h"
 #include "Component/SpriteComponent.h"
 #include "Component/ColliderCircle.h"
 #include "Component/WidgetComponent.h"
 #include "Component/PaperBurnComponent.h"
 
 class COnionMonster :
-    public CGameObject
+    public CMonster
 {
     friend class CScene;
 

@@ -27,11 +27,6 @@ void CLoadingThread::Run()
 	// ·Îµù
 	if (m_LoadingScene == ThreadLoadingScene::Lobby)
 	{
-		/*CSceneManager::GetInst()->CreateNextScene(false);
-		CLobbyScene* LobbyScene = CSceneManager::GetInst()->CreateSceneModeEmpty<CLobbyScene>(false);*/
-
-		//MainScene->SetPlayerObject(CSceneManager::GetInst()->GetScene()->GetSceneMode()->GetPlayerObject());
-
 		CLobbyScene* LobbyScene = (CLobbyScene*)(CSceneManager::GetInst()->GetNextScene()->GetSceneMode());
 
 		LobbyScene->SetLoadingFunction<CLoadingThread>(this, &CLoadingThread::AddMessage);
@@ -43,11 +38,6 @@ void CLoadingThread::Run()
 
 	else if (m_LoadingScene == ThreadLoadingScene::Onion)
 	{
-		/*CSceneManager::GetInst()->CreateNextScene(false);
-		COnionScene* OnionScene = CSceneManager::GetInst()->CreateSceneModeEmpty<COnionScene>(false);*/
-
-		//MainScene->SetPlayerObject(CSceneManager::GetInst()->GetScene()->GetSceneMode()->GetPlayerObject());
-
 		COnionScene* OnionScene = (COnionScene*)(CSceneManager::GetInst()->GetNextScene()->GetSceneMode());
 
 		OnionScene->SetLoadingFunction<CLoadingThread>(this, &CLoadingThread::AddMessage);

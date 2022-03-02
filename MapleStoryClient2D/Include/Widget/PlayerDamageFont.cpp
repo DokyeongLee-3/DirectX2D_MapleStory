@@ -1,5 +1,6 @@
 
 #include "PlayerDamageFont.h"
+#include "Render/RenderManager.h"
 
 CPlayerDamageFont::CPlayerDamageFont()
 {
@@ -94,6 +95,9 @@ void CPlayerDamageFont::PostUpdate(float DeltaTime)
 
 void CPlayerDamageFont::Render()
 {
+  /*  if (CRenderManager::GetInst()->GetStartFadeIn())
+        return;*/
+
     CWidgetWindow::Render();
 }
 

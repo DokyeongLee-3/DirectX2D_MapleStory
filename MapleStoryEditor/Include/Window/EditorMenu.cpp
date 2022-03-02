@@ -67,6 +67,7 @@ bool CEditorMenu::Init()
 	m_ObjectCombo->AddItem("TileObj");
 	m_ObjectCombo->AddItem("Stage");
 	m_ObjectCombo->AddItem("VerticalLampLight");
+	m_ObjectCombo->AddItem("LopeTileObj");
 
 	CIMGUISameLine* Line = AddWidget<CIMGUISameLine>("Line");
 
@@ -204,6 +205,8 @@ void CEditorMenu::ObjectCreateButton()
 	case CreateObject_Type::VerticalLampLight:
 		CSceneManager::GetInst()->GetScene()->CreateGameObject<CVerticalLampLight>(m_ObjectNameInput->GetTextMultibyte());
 		break;
+	case CreateObject_Type::LopeTileMapObj:
+		CSceneManager::GetInst()->GetScene()->CreateGameObject<CLopeTileObject>(m_ObjectNameInput->GetTextMultibyte());
 		break;
 	}
 

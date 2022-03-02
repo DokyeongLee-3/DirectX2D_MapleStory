@@ -24,6 +24,12 @@ CDragCollider::CDragCollider(const CDragCollider& com) :
 
 CDragCollider::~CDragCollider()
 {
+
+}
+
+void CDragCollider::Update(float DeltaTime)
+{
+
 }
 
 void CDragCollider::Start()

@@ -22,8 +22,6 @@ COnionScene::COnionScene()
 
 COnionScene::~COnionScene()
 {
-	m_Scene->GetResource()->SoundStop("OnionSceneBGM");
-
 	SAFE_DELETE(m_LoadingThread);
 
 	CPlayer2D* Player = (CPlayer2D*)(m_Scene->GetPlayerObject());
@@ -33,6 +31,11 @@ COnionScene::~COnionScene()
 		Player->SetVoidPressure(nullptr);
 		Player->SetVoidPressureOrb(nullptr);
 	}
+}
+
+void COnionScene::PushOnionMonster(COnionMonster* Monster)
+{
+	m_OnionMonsterList.push_back(Monster);
 }
 
 void COnionScene::SetStageObject(CStage* Stage)
@@ -51,7 +54,11 @@ void COnionScene::Start()
 
 	if (m_PlayerObject)
 	{
-		((CPlayer2D*)m_PlayerObject.Get())->GetDamageWidgetComponent()->GetWidgetWindow()->GetViewport()->SetScene(m_Scene);
+		CWidgetWindow* Window = ((CPlayer2D*)m_PlayerObject.Get())->GetDamageWidgetComponent()->GetWidgetWindow();
+
+		Window->SetViewport(m_Scene->GetViewport());
+
+		Window->GetViewport()->SetScene(m_Scene);
 	}
 }
 
@@ -122,6 +129,7 @@ void COnionScene::Update(float DeltaTime)
 		{
 			CSceneManager::GetInst()->ChangeNextScene();
 			CRenderManager::GetInst()->SetStartFadeOut(true);
+			((CPlayer2D*)m_Scene->GetPlayerObject())->GetPlayerBody()->Enable(true);
 			return;
 		}
 
@@ -137,6 +145,7 @@ void COnionScene::Update(float DeltaTime)
 			{
 				CSceneManager::GetInst()->ChangeNextScene();
 				CRenderManager::GetInst()->SetStartFadeOut(true);
+				((CPlayer2D*)m_Scene->GetPlayerObject())->GetPlayerBody()->Enable(true);
 			}
 		}
 	}
@@ -260,8 +269,41 @@ void COnionScene::AddTileCollisionCallback()
 	}
 }
 
+COnionMonster* COnionScene::FindOnionMonster(bool Right, const Vector3& MyPos, float DistXConstraint, float DistYConstraint)
+{
+	auto iter =	m_OnionMonsterList.begin();
+	auto iterEnd = m_OnionMonsterList.end();
+
+	for (; iter != iterEnd; ++iter)
+	{
+		if ((*iter)->GetTypeID() == typeid(COnionMonster).hash_code())
+		{
+			Vector3 MonsterPos = (*iter)->GetWorldPos();
+
+			if (Right && MonsterPos.x < MyPos.x)
+				continue;
+
+			if (!Right && MonsterPos.x > MyPos.x)
+				continue;
+
+
+			if (abs(MonsterPos.x - MyPos.x) < DistXConstraint && MonsterPos.y - MyPos.y > 0.f && MonsterPos.y - MyPos.y < DistYConstraint)
+			{
+				if (!(*iter)->GetBody()->IsEnable())
+					continue;
+
+				return (*iter);
+			}
+		}
+	}
+
+	return nullptr;
+}
+
 void COnionScene::CreateWayToZakumScene()
 {
+	m_Scene->GetResource()->SoundStop("OnionSceneBGM");
+
 	CSceneManager::GetInst()->CreateNextScene(false);
 	CWayToZakumScene* WayToZakumScene = CSceneManager::GetInst()->CreateSceneModeEmpty<CWayToZakumScene>(false);
 

@@ -2,6 +2,7 @@
 #include "LowerClassBook.h"
 #include "Animation/AnimationSequence2DInstance.h"
 #include "Input.h"
+#include "../Animation/LowerClassBookAnimation.h"
 
 CLowerClassBook::CLowerClassBook() :
 	m_Sprite(nullptr),
@@ -11,7 +12,7 @@ CLowerClassBook::CLowerClassBook() :
 }
 
 CLowerClassBook::CLowerClassBook(const CLowerClassBook& obj) :
-	CGameObject(obj)
+	CMonster(obj)
 {
 	m_Sprite = (CSpriteComponent*)FindComponent("LowerClassBookSprite");
 	m_Body = (CColliderBox2D*)FindComponent("Body");
@@ -23,7 +24,7 @@ CLowerClassBook::~CLowerClassBook()
 
 void CLowerClassBook::Start()
 {
-	CGameObject::Start();
+	CMonster::Start();
 }
 
 bool CLowerClassBook::Init()
@@ -38,42 +39,24 @@ bool CLowerClassBook::Init()
 
 	m_Sprite->SetTransparency(true);
 
-	m_Sprite->CreateAnimationInstance<CAnimationSequence2DInstance>();
+	m_Sprite->CreateAnimationInstance<CLowerClassBookAnimation>();
 
 	m_Sprite->SetWorldScale(100.f, 100.f, 1.f);
 	m_Sprite->SetRelativePos(500.f, 300.f, 0.f);
 	m_Sprite->SetPivot(0.5f, 0.5f, 0.f);
 
 
-
-
-	CAnimationSequence2DInstance* Anim = m_Sprite->GetAnimationInstance();
-
-	// ÇÏ±Þ ¸¶¹ýÃ¥Àº IdleÀÌ¶û Move¶û °°Àº ½ÃÄö½º
-	Anim->AddAnimation(TEXT("LowerClassBookIdleLeft.sqc"), ANIMATION_PATH, "LowerClassBookIdleLeft", true, 1.f);
-	Anim->AddAnimation(TEXT("LowerClassBookIdleLeft.sqc"), ANIMATION_PATH, "LowerClassBookMoveLeft", true, 1.f);
-	Anim->AddAnimation(TEXT("LowerClassBookHitLeft.sqc"), ANIMATION_PATH, "LowerClassBookHitLeft", true, 1.f);
-	Anim->AddAnimation(TEXT("LowerClassBookDieLeft.sqc"), ANIMATION_PATH, "LowerClassBookDieLeft", true, 1.f);
-	Anim->AddAnimation(TEXT("LowerClassBookAttackLeft.sqc"), ANIMATION_PATH, "LowerClassBookAttackLeft", true, 1.f);
-
-	Anim->AddAnimation(TEXT("LowerClassBookAttackOrb.sqc"), ANIMATION_PATH, "LowerClassBookAttackOrb", true, 1.f);
-
-	CInput::GetInst()->CreateKey("Flip", 'F');
-	CInput::GetInst()->SetKeyCallback<CLowerClassBook>("Flip", KeyState_Down, this, &CLowerClassBook::FlipAll);
-	CInput::GetInst()->CreateKey("NextAnimation", 'N');
-	CInput::GetInst()->SetKeyCallback<CLowerClassBook>("NextAnimation", KeyState_Down, this, &CLowerClassBook::NextAnimation);
-
 	return true;
 }
 
 void CLowerClassBook::Update(float DeltaTime)
 {
-	CGameObject::Update(DeltaTime);
+	CMonster::Update(DeltaTime);
 }
 
 void CLowerClassBook::PostUpdate(float DeltaTime)
 {
-	CGameObject::PostUpdate(DeltaTime);
+	CMonster::PostUpdate(DeltaTime);
 }
 
 CLowerClassBook* CLowerClassBook::Clone()
@@ -83,12 +66,12 @@ CLowerClassBook* CLowerClassBook::Clone()
 
 void CLowerClassBook::Save(FILE* File)
 {
-	CGameObject::Save(File);
+	CMonster::Save(File);
 }
 
 void CLowerClassBook::Load(FILE* File)
 {
-	CGameObject::Load(File);
+	CMonster::Load(File);
 
 	m_Sprite = (CSpriteComponent*)FindComponent("LowerClassBookSprite");
 }

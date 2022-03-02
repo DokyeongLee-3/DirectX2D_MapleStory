@@ -24,7 +24,7 @@ private:
     CSharedPtr<CCharacterStatusWindow>  m_CharacterStatusWindow;
     CSharedPtr<CCharacterEXP>           m_CharacterEXPWindow;
     std::function<void(bool, float)>    m_LoadingFunction;
-
+    class CLoadingThread*               m_LoadingThread;
 
 public:
     class CStage* GetStageObject()    const

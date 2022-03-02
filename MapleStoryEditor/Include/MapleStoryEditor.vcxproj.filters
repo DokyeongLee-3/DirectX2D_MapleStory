@@ -156,6 +156,15 @@
     <ClCompile Include="Animation\OnionMonsterAnimation.cpp">
       <Filter>06. Animation</Filter>
     </ClCompile>
+    <ClCompile Include="Object\LopeTileObject.cpp">
+      <Filter>03. Object\04. MapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\LowerClassBookAnimation.cpp">
+      <Filter>06. Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\Monster.cpp">
+      <Filter>03. Object\03. Monster</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene\DefaultScene.h">
@@ -262,6 +271,15 @@
     </ClInclude>
     <ClInclude Include="Animation\OnionMonsterAnimation.h">
       <Filter>06. Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\LopeTileObject.h">
+      <Filter>03. Object\04. MapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation\LowerClassBookAnimation.h">
+      <Filter>06. Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Monster.h">
+      <Filter>03. Object\03. Monster</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

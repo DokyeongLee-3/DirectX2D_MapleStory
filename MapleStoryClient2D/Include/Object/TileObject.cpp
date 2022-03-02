@@ -116,16 +116,6 @@ void CTileObject::CollisionBeginCallback(const CollisionResult& Result)
 	}
 }
 
-//void CTileObject::CollisionStayCallback(const CollisionResult& Result)
-//{
-//	CGameObject* Dest = Result.Dest->GetGameObject();
-//	Vector3 DestPos = Dest->GetWorldPos();
-//	Vector3 DestTileCollisionPos = Dest->GetTileCollisionPos();
-//	Dest->SetWorldPos(DestPos.x, DestTileCollisionPos.y, DestPos.z);
-//	Dest->SetGravity(false);
-//	Dest->SetGravityAccTime(0.f);
-//}
-
 void CTileObject::CollisionEndCallback(const CollisionResult& Result)
 {
 	if (!Result.Dest)

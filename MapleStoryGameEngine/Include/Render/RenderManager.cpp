@@ -252,8 +252,15 @@ void CRenderManager::Render()
 			for (int i = 0; i < (*iter)->RenderCount; ++i)
 			{
 				(*iter)->RenderList[i]->PostRender();
+
+				// 추가
+				(*iter)->RenderList[i] = nullptr;
+
 			}
+			// 추가
+			(*iter)->RenderCount = 0;
 		}
+
 	}
 
 

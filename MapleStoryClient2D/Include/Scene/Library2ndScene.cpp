@@ -12,6 +12,8 @@
 #include "../Object/Player2D.h"
 #include "LoadingThread.h"
 #include "Render/RenderManager.h"
+#include "../Object/SylphideLancerHitEffect.h"
+#include "../Object/VoidPressureHitEffect.h"
 
 CLibrary2ndScene::CLibrary2ndScene()
 {
@@ -20,8 +22,6 @@ CLibrary2ndScene::CLibrary2ndScene()
 
 CLibrary2ndScene::~CLibrary2ndScene()
 {
-	m_Scene->GetResource()->SoundStop("FairyAcademyBGM");
-
 	SAFE_DELETE(m_LoadingThread);
 
 	CPlayer2D* Player = (CPlayer2D*)(m_Scene->GetPlayerObject());
@@ -31,6 +31,11 @@ CLibrary2ndScene::~CLibrary2ndScene()
 		Player->SetVoidPressure(nullptr);
 		Player->SetVoidPressureOrb(nullptr);
 	}
+}
+
+void CLibrary2ndScene::PushLowerClassBook(CLowerClassBook* Book)
+{
+	m_LowerClassBookList.push_back(Book);
 }
 
 void CLibrary2ndScene::SetStageObject(CStage* Stage)
@@ -44,7 +49,11 @@ void CLibrary2ndScene::Start()
 
 	if (m_PlayerObject)
 	{
-		((CPlayer2D*)m_PlayerObject.Get())->GetDamageWidgetComponent()->GetWidgetWindow()->GetViewport()->SetScene(m_Scene);
+		CWidgetWindow* Window = ((CPlayer2D*)m_PlayerObject.Get())->GetDamageWidgetComponent()->GetWidgetWindow();
+
+		Window->SetViewport(m_Scene->GetViewport());
+
+		Window->GetViewport()->SetScene(m_Scene);
 	}
 }
 
@@ -109,6 +118,7 @@ void CLibrary2ndScene::Update(float DeltaTime)
 		{
 			CSceneManager::GetInst()->ChangeNextScene();
 			CRenderManager::GetInst()->SetStartFadeOut(true);
+			((CPlayer2D*)m_Scene->GetPlayerObject())->GetPlayerBody()->Enable(true);
 			return;
 		}
 
@@ -124,6 +134,7 @@ void CLibrary2ndScene::Update(float DeltaTime)
 			{
 				CSceneManager::GetInst()->ChangeNextScene();
 				CRenderManager::GetInst()->SetStartFadeOut(true);
+				((CPlayer2D*)m_Scene->GetPlayerObject())->GetPlayerBody()->Enable(true);
 			}
 		}
 	}
@@ -139,6 +150,8 @@ void CLibrary2ndScene::CreateAnimationSequence()
 	CreatePlayerAnimationSequence();
 	CreateSkillAnimationSequence();
 	CreateMapAnimationSequence();
+	CreateMonsterAnimationSequence();
+	CreateEffectPrototype();
 }
 
 void CLibrary2ndScene::CreatePlayerAnimationSequence()
@@ -173,12 +186,27 @@ void CLibrary2ndScene::CreateSkillAnimationSequence()
 	m_Scene->GetResource()->LoadSequence2D("LightTransformingLeft.sqc");
 }
 
+void CLibrary2ndScene::CreateMonsterAnimationSequence()
+{
+	m_Scene->GetResource()->LoadSequence2D("LowerClassBookIdleLeft.sqc");
+	m_Scene->GetResource()->LoadSequence2D("LowerClassBookHitLeft.sqc");
+	m_Scene->GetResource()->LoadSequence2D("LowerClassBookDieLeft.sqc");
+	m_Scene->GetResource()->LoadSequence2D("LowerClassBookAttackLeft.sqc");
+	m_Scene->GetResource()->LoadSequence2D("LowerClassBookAttackOrb.sqc");
+}
+
 void CLibrary2ndScene::CreateMapAnimationSequence()
 {
 	m_Scene->GetResource()->LoadSequence2D("Portal.sqc");
 	m_Scene->GetResource()->LoadSequence2D("VerticalLampLight.sqc");
 	m_Scene->GetResource()->LoadSequence2D("LampBigHelix.sqc");
 	m_Scene->GetResource()->LoadSequence2D("Library2ndButterfly.sqc");
+}
+
+void CLibrary2ndScene::CreateEffectPrototype()
+{
+	CSylphideLancerHitEffect* SylphideLancerHitEffect = m_Scene->CreatePrototype<CSylphideLancerHitEffect>("SylphideLancerHitEffect");
+	CVoidPressureHitEffect* VoidPressureHitEffect = m_Scene->CreatePrototype<CVoidPressureHitEffect>("VoidPressureHitEffect");
 }
 
 void CLibrary2ndScene::LoadSound()
@@ -212,6 +240,8 @@ void CLibrary2ndScene::AddTileCollisionCallback()
 
 void CLibrary2ndScene::CreateLobbyScene()
 {
+	m_Scene->GetResource()->SoundStop("FairyAcademyBGM");
+
 	CSceneManager::GetInst()->CreateNextScene(false);
 	CLobbyScene* LobbyScene = CSceneManager::GetInst()->CreateSceneModeEmpty<CLobbyScene>(false);
 
@@ -225,4 +255,34 @@ void CLibrary2ndScene::CreateLobbyScene()
 	m_LoadingThread->SetLoadingScene(ThreadLoadingScene::Lobby);
 
 	m_LoadingThread->Start();
+}
+
+CLowerClassBook* CLibrary2ndScene::FindLowerClassBook(bool Right, const Vector3& MyPos, float DistXConstraint, float DistYConstraint)
+{
+	auto iter = m_LowerClassBookList.begin();
+	auto iterEnd = m_LowerClassBookList.end();
+
+	for (; iter != iterEnd; ++iter)
+	{
+		if ((*iter)->GetTypeID() == typeid(CLowerClassBook).hash_code())
+		{
+			Vector3 MonsterPos = (*iter)->GetWorldPos();
+
+			if (Right && MonsterPos.x < MyPos.x)
+				continue;
+
+			if (!Right && MonsterPos.x > MyPos.x)
+				continue;
+
+			if (abs(MonsterPos.x - MyPos.x) < DistXConstraint && MonsterPos.y - MyPos.y > 0.f && MonsterPos.y - MyPos.y < DistYConstraint)
+			{
+				if (!(*iter)->GetBody()->IsEnable())
+					continue;
+
+				return (*iter);
+			}
+		}
+	}
+
+	return nullptr;
 }

@@ -30,14 +30,12 @@ bool CVerticalLampLight::Init()
 	m_RootComponent = CreateComponent<CSceneComponent>("VerticalLampLightRoot");
 	m_LeftSprite = CreateComponent<CSpriteComponent>("VerticalLampLightLeftSprite");
 	m_RightSprite = CreateComponent<CSpriteComponent>("VerticalLampLightRightSprite");
-	m_DragCollider = CreateComponent<CDragCollider>("DragCollider");
 
-	m_DragCollider->SetCollisionProfile("DragCollider");
 
 	SetRootComponent(m_RootComponent);
 	m_RootComponent->AddChild(m_LeftSprite);
 	m_RootComponent->AddChild(m_RightSprite);
-	m_RootComponent->AddChild(m_DragCollider);
+
 
 	SetRootComponent(m_RootComponent);
 
@@ -57,7 +55,6 @@ bool CVerticalLampLight::Init()
 	m_RightSprite->SetRelativePos(500.f, 300.f, 0.f);
 	m_RightSprite->SetPivot(0.5f, 0.5f, 0.f);
 
-	m_DragCollider->SetWorldScale(40.f, 70.f, 1.f);
 
 
 	CAnimationSequence2DInstance* Anim = m_LeftSprite->GetAnimationInstance();

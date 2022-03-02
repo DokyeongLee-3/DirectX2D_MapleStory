@@ -9,6 +9,8 @@
 #include "Resource/Shader/StructuredBuffer.h"
 #include "../Object/FlowingVolcano.h"
 #include "../Object/Player2D.h"
+#include "LoadingThread.h"
+#include "Render/RenderManager.h"
 
 CWayToZakumScene::CWayToZakumScene()
 {
@@ -35,10 +37,14 @@ void CWayToZakumScene::Start()
 {
 	CSceneMode::Start();
 
-	//if (m_PlayerObject)
-	//{
-	//	((CPlayer2D*)m_PlayerObject.Get())->GetDamageWidgetComponent()->GetWidgetWindow()->GetViewport()->SetScene(m_Scene);
-	//}
+	if (m_PlayerObject)
+	{
+		CWidgetWindow* Window = ((CPlayer2D*)m_PlayerObject.Get())->GetDamageWidgetComponent()->GetWidgetWindow();
+
+		Window->SetViewport(m_Scene->GetViewport());
+
+		Window->GetViewport()->SetScene(m_Scene);
+	}
 }
 
 bool CWayToZakumScene::Init()
@@ -89,6 +95,35 @@ bool CWayToZakumScene::Init()
 void CWayToZakumScene::Update(float DeltaTime)
 {
 	CSceneMode::Update(DeltaTime);
+
+	if (m_LoadingThread)
+	{
+		CThreadQueue<LoadingMessage>* Queue = m_LoadingThread->GetLoadingQueue();
+
+		if (!m_LoadingThread)
+		{
+			CSceneManager::GetInst()->ChangeNextScene();
+			CRenderManager::GetInst()->SetStartFadeOut(true);
+			((CPlayer2D*)m_Scene->GetPlayerObject())->GetPlayerBody()->Enable(true);
+			return;
+		}
+
+		else if (!Queue->empty())
+		{
+			LoadingMessage	Msg = Queue->front();
+
+			Queue->pop();
+
+			//m_LoadingWidget->SetLoadingPercent(Msg.Percent);
+
+			if (Msg.Complete)
+			{
+				CSceneManager::GetInst()->ChangeNextScene();
+				CRenderManager::GetInst()->SetStartFadeOut(true);
+				((CPlayer2D*)m_Scene->GetPlayerObject())->GetPlayerBody()->Enable(true);
+			}
+		}
+	}
 }
 
 void CWayToZakumScene::CreateMaterial()

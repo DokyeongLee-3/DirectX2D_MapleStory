@@ -42,6 +42,8 @@ CMaterial::~CMaterial()
 		SAFE_DELETE((*iter));
 	}
 
+	m_RenderCallback.clear();
+
 	SAFE_DELETE(m_CBuffer);
 }
 
@@ -243,6 +245,9 @@ void CMaterial::Render()
 
 	for (; iter != iterEnd; ++iter)
 	{
+		if (m_RenderCallback.size() == 0)
+			int a = 3;
+
 		(*iter)->Func();
 	}
 }

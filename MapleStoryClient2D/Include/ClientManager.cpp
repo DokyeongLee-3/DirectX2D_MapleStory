@@ -17,6 +17,7 @@
 #include "Component/TileMapComponent.h"
 #include "Animation/AnimationSequence2DInstance.h"
 #include "Animation/OnionMonsterAnimation.h"
+#include "Animation/LowerClassBookAnimation.h"
 #include "Input.h"
 #include "Widget/MouseNormal.h"
 #include "Widget/MouseClick.h"
@@ -171,17 +172,16 @@ CGameObject* CClientManager::CreateObject(CScene* Scene, size_t Type)
 		return Obj;
 	}
 
+	else if (Type == typeid(CLowerClassBook).hash_code())
+	{
+		CLowerClassBook* Obj = Scene->LoadGameObject<CLowerClassBook>();
+
+		return Obj;
+	}
+
 	//else if (Type == typeid(CSingleHelixBlinkTree).hash_code())
 	//{
 	//	CSingleHelixBlinkTree* Obj = Scene->LoadGameObject<CSingleHelixBlinkTree>();
-
-	//	return Obj;
-	//}
-
-
-	//else if (Type == typeid(CLowerClassBook).hash_code())
-	//{
-	//	CLowerClassBook* Obj = Scene->LoadGameObject<CLowerClassBook>();
 
 	//	return Obj;
 	//}
@@ -210,6 +210,13 @@ CGameObject* CClientManager::CreateObject(CScene* Scene, size_t Type)
 	else if (Type == typeid(CTileObject).hash_code())
 	{
 		CTileObject* Obj = Scene->LoadGameObject<CTileObject>();
+
+		return Obj;
+	}
+
+	else if (Type == typeid(CLopeTileObject).hash_code())
+	{
+		CLopeTileObject* Obj = Scene->LoadGameObject<CLopeTileObject>();
 
 		return Obj;
 	}
@@ -343,6 +350,11 @@ void CClientManager::CreateAnimInstance(CSpriteComponent* Sprite, size_t Type)
 	else if (Type == typeid(COnionMonsterAnimation).hash_code())
 	{
 		Sprite->LoadAnimationInstance<COnionMonsterAnimation>();
+	}
+
+	else if (Type == typeid(CLowerClassBookAnimation).hash_code())
+	{
+		Sprite->LoadAnimationInstance<CLowerClassBookAnimation>();
 	}
 }
 

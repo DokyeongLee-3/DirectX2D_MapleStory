@@ -157,6 +157,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Animation\LowerClassBookAnimation.cpp" />
     <ClCompile Include="Animation\OnionMonsterAnimation.cpp" />
     <ClCompile Include="Animation\PlayerOrb.cpp" />
     <ClCompile Include="Animation\PlayerSkillBodyEffect.cpp" />
@@ -175,6 +176,9 @@
     <ClCompile Include="Object\LampLight.cpp" />
     <ClCompile Include="Object\LobbyBigLamp.cpp" />
     <ClCompile Include="Object\LobbySmallLamp.cpp" />
+    <ClCompile Include="Object\LopeTileObject.cpp" />
+    <ClCompile Include="Object\LowerClassBook.cpp" />
+    <ClCompile Include="Object\Monster.cpp" />
     <ClCompile Include="Object\OnionMonster.cpp" />
     <ClCompile Include="Object\Player2D.cpp" />
     <ClCompile Include="Object\PlayerAnimation2D.cpp" />
@@ -210,6 +214,7 @@
     <ClCompile Include="Widget\StartWidget.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Animation\LowerClassBookAnimation.h" />
     <ClInclude Include="Animation\OnionMonsterAnimation.h" />
     <ClInclude Include="Animation\PlayerOrb.h" />
     <ClInclude Include="Animation\PlayerSkillBodyEffect.h" />
@@ -228,6 +233,9 @@
     <ClInclude Include="Object\LampLight.h" />
     <ClInclude Include="Object\LobbyBigLamp.h" />
     <ClInclude Include="Object\LobbySmallLamp.h" />
+    <ClInclude Include="Object\LopeTileObject.h" />
+    <ClInclude Include="Object\LowerClassBook.h" />
+    <ClInclude Include="Object\Monster.h" />
     <ClInclude Include="Object\OnionMonster.h" />
     <ClInclude Include="Object\Player2D.h" />
     <ClInclude Include="Object\PlayerAnimation2D.h" />

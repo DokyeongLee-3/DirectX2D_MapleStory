@@ -20,3 +20,4 @@
 #include "Object/Stage.h"
 #include "Object/CharacterSelectBackLight.h"
 #include "Object/VerticalLampLight.h"
+#include "Object/LopeTileObject.h"

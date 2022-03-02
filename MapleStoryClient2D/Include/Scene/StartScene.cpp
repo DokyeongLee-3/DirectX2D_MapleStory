@@ -18,7 +18,7 @@ CStartScene::CStartScene()	:
 
 CStartScene::~CStartScene()
 {
-	m_Scene->GetResource()->SoundStop("CharacterSelectBGM");
+	//m_Scene->GetResource()->SoundStop("CharacterSelectBGM");
 
 	SAFE_DELETE(m_LoadingThread);
 }
@@ -77,6 +77,8 @@ void CStartScene::Update(float DeltaTime)
 
 void CStartScene::CreateNextScene()
 {
+	m_Scene->GetResource()->SoundStop("CharacterSelectBGM");
+
 	CSceneManager::GetInst()->CreateNextScene(false);
 	CSceneManager::GetInst()->CreateSceneModeEmpty<CLobbyScene>(false);
 

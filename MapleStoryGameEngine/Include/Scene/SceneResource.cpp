@@ -78,7 +78,7 @@ CSceneResource::~CSceneResource()
 		}
 	}*/
 
-	{
+	/*{
 		auto	iter = m_mapParticle.begin();
 		auto	iterEnd = m_mapParticle.end();
 
@@ -90,7 +90,7 @@ CSceneResource::~CSceneResource()
 
 			CResourceManager::GetInst()->ReleaseParticle(Name);
 		}
-	}
+	}*/
 }
 
 CMesh* CSceneResource::FindMesh(const std::string& Name)
