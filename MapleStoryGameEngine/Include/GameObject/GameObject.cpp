@@ -46,7 +46,7 @@ CGameObject::CGameObject(const CGameObject& obj)
 
 CGameObject::~CGameObject()
 {
-	m_SceneComponentList.clear();
+	//m_SceneComponentList.clear();
 }
 
 void CGameObject::SetScene(CScene* Scene)
@@ -193,15 +193,10 @@ void CGameObject::Update(float DeltaTime)
 
 	if (m_RootComponent)
 		m_RootComponent->Update(DeltaTime);
-
-	//m_PrevFrameWorldPos = GetWorldPos();
 }
 
 void CGameObject::PostUpdate(float DeltaTime)
 {
-	//Vector3 CurrentFrameWorldPos = GetWorldPos();
-	//m_CurrentFrameMove = CurrentFrameWorldPos - m_PrevFrameWorldPos;
-
 	size_t Size = m_vecObjectComponent.size();
 
 	for (size_t i = 0; i < Size; ++i)

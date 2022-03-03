@@ -71,7 +71,20 @@ protected:
 	CSharedPtr<class CShader>	m_Shader;
 	CSharedPtr<class CMesh>		m_Mesh;
 
+	bool m_RenderStart;
+
+
 public:
+	void SetRenderStart(bool Start)
+	{
+		m_RenderStart = Start;
+	}
+
+	bool GetRenderStart()	const
+	{
+		return m_RenderStart;
+	}
+
 	virtual void Enable(bool bEnable)
 	{
 		CRef::Enable(bEnable);

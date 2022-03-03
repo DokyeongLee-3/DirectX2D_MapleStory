@@ -25,11 +25,16 @@ bool COnionMonsterAnimation::Init()
 	AddAnimation(TEXT("OnionHitLeft.sqc"), ANIMATION_PATH, "OnionHitLeft", false, 0.6f);
 	AddAnimation(TEXT("OnionDieLeft.sqc"), ANIMATION_PATH, "OnionDieLeft", false, 1.5f);
 
+
 	return true;
 }
 
 COnionMonsterAnimation* COnionMonsterAnimation::Clone()
 {
 	return new COnionMonsterAnimation(*this);
+}
+
+void COnionMonsterAnimation::ReturnIdle()
+{
 }
 

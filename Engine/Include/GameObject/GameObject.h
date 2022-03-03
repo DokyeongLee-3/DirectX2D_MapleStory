@@ -43,15 +43,8 @@ protected:
 	float		m_GravityAccTime;
 	Vector3     m_TileCollisionPos;
 	bool		m_TileCollisionEnable;
-	//Vector3		m_CurrentFrameMove;
-	//Vector3		m_PrevFrameWorldPos;
 	
 public:
-	//Vector3	GetCurrentFrameMove()	const
-	//{
-	//	return m_CurrentFrameMove;
-	//}
-
 	void SetTileCollisionEnable(bool Enable)
 	{
 		m_TileCollisionEnable = Enable;
@@ -153,6 +146,20 @@ public:
 		{
 			if ((*iter)->CheckType<T>())
 				return (T*)*iter;
+		}
+
+		return nullptr;
+	}
+
+	CSceneComponent* FindComponentFromType(size_t TypeID)
+	{
+		auto	iter = m_SceneComponentList.begin();
+		auto	iterEnd = m_SceneComponentList.end();
+
+		for (; iter != iterEnd; ++iter)
+		{
+			if ((*iter)->GetTypeID() == TypeID)
+				return *iter;
 		}
 
 		return nullptr;

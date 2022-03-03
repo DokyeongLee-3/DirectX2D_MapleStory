@@ -18,7 +18,8 @@ CWidget::CWidget() :
 	m_MouseHovered(false),
 	m_CollisionMouseEnable(true),
 	m_Tint(1.f, 1.f, 1.f, 1.f),
-	m_Opacity(1.f)
+	m_Opacity(1.f),
+	m_RenderStart(false)
 {
 }
 
@@ -86,6 +87,8 @@ void CWidget::Update(float DeltaTime)
 {
 	if (!m_Start)
 		Start();
+
+	m_RenderStart = true;
 }
 
 void CWidget::PostUpdate(float DeltaTime)
@@ -93,21 +96,25 @@ void CWidget::PostUpdate(float DeltaTime)
 	if (!m_Start)
 		Start();
 
+	if (!m_RenderStart)
+		return;
+
 	m_RenderPos = m_Pos;
 
 	if (m_Owner)
 	{
-		if (m_Name.find("Damage") != std::string::npos)
-			int a = 3;
-
 		m_RenderPos += m_Owner->GetWindowPos();
 	}
+
 }
 
 void CWidget::Render()
 {
 	if (!m_Start)
 		Start();
+
+	if (!m_RenderStart)
+		return;
 
 	Matrix	matScale, matRot, matTrans;
 

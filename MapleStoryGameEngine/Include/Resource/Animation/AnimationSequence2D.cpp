@@ -285,3 +285,4 @@ bool CAnimationSequence2D::Load(const char* FileName, const std::string& PathNam
 	return LoadFullPath(FullPath);
 }
 
+

@@ -3,8 +3,10 @@
 #include "../Component/DragCollider.h"
 #include "Player2D.h"
 #include "Component/TileMapComponent.h"
+#include "LopeTileObject.h"
 
-CTileObject::CTileObject()
+CTileObject::CTileObject()	:
+	m_BottomMostFloor(false)
 {
 	SetTypeID<CTileObject>();
 }
@@ -12,7 +14,6 @@ CTileObject::CTileObject()
 CTileObject::CTileObject(const CTileObject& obj) :
 	CGameObject(obj)
 {
-
 }
 
 CTileObject::~CTileObject()
@@ -23,9 +24,16 @@ void CTileObject::Start()
 {
 	CGameObject::Start();
 
-	/*m_Floor->AddCollisionCallback(Collision_State::Begin, this, &CTileObject::CollisionBeginCallback);
-	m_Floor->AddCollisionCallback(Collision_State::Stay, this, &CTileObject::CollisionStayCallback);
-	m_Floor->AddCollisionCallback(Collision_State::End, this, &CTileObject::CollisionEndCallback);*/
+	if (m_Name.find("Floor") != std::string::npos)
+		m_BottomMostFloor = true;
+
+	m_Floor = FindComponentFromType<CColliderBox2D>();
+
+	if (m_Floor)
+	{
+		m_Floor->AddCollisionCallback(Collision_State::Begin, this, &CTileObject::CollisionBeginCallback);
+		m_Floor->AddCollisionCallback(Collision_State::End, this, &CTileObject::CollisionEndCallback);
+	}
 
 	CTileMapComponent* TileComponent = FindComponentFromType<CTileMapComponent>();
 
@@ -127,9 +135,18 @@ void CTileObject::CollisionEndCallback(const CollisionResult& Result)
 	{
 		if (DestObj->GetTypeID() == typeid(CPlayer2D).hash_code())
 		{
-			DestObj->SetGravity(true);
-			DestObj->SetTileCollisionEnable(false);
-			DestObj->SetGravityAccTime(0.f);
+			CPlayer2D* PlayerObj = (CPlayer2D*)DestObj;
+			if (!(PlayerObj->GetPlayerBody()->CheckPrevCollisionGameObjectType(typeid(CLopeTileObject).hash_code())))
+			{
+				// 플레이어가 로프에서 메달렸다가 옆으로 뛰어 내리다가 머리가 타일 하단부랑 부딪혔다가 떨어질때는 예외로 둔다
+				if (PlayerObj->GetIsLopeJump() && PlayerObj->GetCurrentFrameMove().y < 0.f)
+				{
+					return;
+				}
+
+				DestObj->SetGravity(true);
+				DestObj->SetTileCollisionEnable(false);
+			}
 		}
 	}
 }

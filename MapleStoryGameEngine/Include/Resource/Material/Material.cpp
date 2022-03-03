@@ -245,9 +245,6 @@ void CMaterial::Render()
 
 	for (; iter != iterEnd; ++iter)
 	{
-		if (m_RenderCallback.size() == 0)
-			int a = 3;
-
 		(*iter)->Func();
 	}
 }

@@ -98,13 +98,27 @@ private:
     float       m_OnHitTime;
     float       m_OnHitAccTime;
 
+    bool        m_OnLope;
+    // 로프 가장 위까지 전부 타고 올라가면 m_Gravity = true로 만들어서 떨어져서 바닥타일과 충돌하도록 유도하는데
+    // 그때도 위 방향키 계속 누르고있으면 떨어지고, 다시 로프타고 이걸 반복해서 그걸 제어해주는 bool 변수
+    bool        m_LopeEnable;
+    // 로프에서 메달려있다가 점프한건지
+    bool        m_LopeJump;
     // 플레이어와 충돌하고 있는 충돌체(ex. StaticMapObj, TileObj)들의 ID
     std::list<int>                  m_ListCollisionID;
 
     PlayerDir   m_Dir;
     PlayerInfo  m_PlayerInfo;
 
+    Vector3		m_PrevFrameWorldPos;
+    Vector3		m_CurrentFrameMove;
+
 public:
+    Vector3	GetCurrentFrameMove()	const
+    {
+        return m_CurrentFrameMove;
+    }
+
     void AddCollisionID(int ID)
     {
         m_ListCollisionID.push_back(ID);
@@ -153,6 +167,16 @@ public:
     float GetHitOpacity()   const
     {
         return m_HitOpacity;
+    }
+
+    bool GetIsLopeJump()    const
+    {
+        return m_LopeJump;
+    }
+
+    void SetLopeJump(bool LopeJump)
+    {
+        m_LopeJump = LopeJump;
     }
 
     void SetHitOpacity(float Opacity)
@@ -238,6 +262,7 @@ public:
     void ProduceSecondSylphideLander(float DeltaTime);
     void EffectEnd(float DeltaTime);
     void ReturnIdle(float DeltaTime);
+    void RopeActionStop(float DeltaTime);
 
 public:
     void VoidPressureCancle(float DeltaTime);

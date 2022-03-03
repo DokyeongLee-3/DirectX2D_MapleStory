@@ -114,6 +114,8 @@ bool COnionScene::Init()
 		m_PlayerObject->SetTileCollisionEnable(false);
 	}
 
+	m_Scene->GetResource()->SoundPlay("OnionSceneBGM");
+
 	return true;
 }
 
@@ -223,7 +225,6 @@ void COnionScene::CreateEffectPrototype()
 void COnionScene::LoadSound()
 {
 	m_Scene->GetResource()->LoadSound("BGM", true, "OnionSceneBGM", "TheFairyForest.mp3");
-	m_Scene->GetResource()->SoundPlay("OnionSceneBGM");
 
 	m_Scene->GetResource()->LoadSound("Effect", false, "Jump", "Jump.mp3");
 
@@ -320,6 +321,8 @@ void COnionScene::CreateWayToZakumScene()
 
 void COnionScene::CreateLobbyScene()
 {
+	m_Scene->GetResource()->SoundStop("OnionSceneBGM");
+
 	CSceneManager::GetInst()->CreateNextScene(false);
 	CLobbyScene* LobbyScene = CSceneManager::GetInst()->CreateSceneModeEmpty<CLobbyScene>(false);
 

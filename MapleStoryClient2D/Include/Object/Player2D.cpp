@@ -3,6 +3,7 @@
 #include "Stage.h"
 #include "Device.h"
 #include "Portal.h"
+#include "StaticMapObj.h"
 #include "Scene/Scene.h"
 #include "../Scene/LobbyScene.h"
 #include "../Scene/OnionScene.h"
@@ -24,6 +25,7 @@
 #include "../Widget/PlayerDamageFont.h"
 #include "Engine.h"
 #include "../Client.h"
+#include "Component/ColliderComponent.h"
 
 CPlayer2D::CPlayer2D() :
 	m_BodySprite(nullptr),
@@ -42,7 +44,10 @@ CPlayer2D::CPlayer2D() :
 	m_OnKnockBackAccTime(0.f),
 	m_HitOpacity(0.7f),
 	m_OnHitTime(1.f),
-	m_OnHitAccTime(0.f)
+	m_OnHitAccTime(0.f),
+	m_OnLope(false),
+	m_LopeJump(false),
+	m_LopeEnable(true)
 {
 	SetTypeID<CPlayer2D>();
 	m_PlayerSkillInfo = new CPlayerSkillInfo;
@@ -155,6 +160,8 @@ bool CPlayer2D::Init()
 	CInput::GetInst()->SetKeyCallback<CPlayer2D>("MoveRight", KeyState_Push, this, &CPlayer2D::MoveRight);
 	CInput::GetInst()->SetKeyCallback<CPlayer2D>("MoveLeft", KeyState_Up, this, &CPlayer2D::ReturnIdle);
 	CInput::GetInst()->SetKeyCallback<CPlayer2D>("MoveRight", KeyState_Up, this, &CPlayer2D::ReturnIdle);
+	CInput::GetInst()->SetKeyCallback<CPlayer2D>("MoveUp", KeyState_Up, this, &CPlayer2D::RopeActionStop);
+	CInput::GetInst()->SetKeyCallback<CPlayer2D>("MoveDown", KeyState_Up, this, &CPlayer2D::RopeActionStop);
 
 	CInput::GetInst()->SetKeyCallback<CPlayer2D>("SylphideLancer", KeyState_Down, this, &CPlayer2D::SylphideLancer);
 	CInput::GetInst()->SetKeyCallback<CPlayer2D>("VoidPressure", KeyState_Push, this, &CPlayer2D::VoidPressure);
@@ -175,6 +182,8 @@ bool CPlayer2D::Init()
 
 void CPlayer2D::Update(float DeltaTime)
 {
+	m_PrevFrameWorldPos = GetWorldPos();
+
 	CGameObject::Update(DeltaTime);
 
 	m_PlayerSkillInfo->Update(DeltaTime);
@@ -236,6 +245,9 @@ void CPlayer2D::PostUpdate(float DeltaTime)
 	CameraTrack();
 
 	CGameObject::PostUpdate(DeltaTime);
+
+	Vector3 CurrentFrameWorldPos = GetWorldPos();
+	m_CurrentFrameMove = CurrentFrameWorldPos - m_PrevFrameWorldPos;
 }
 
 CPlayer2D* CPlayer2D::Clone()
@@ -250,20 +262,150 @@ void CPlayer2D::SetScene(CScene* Scene)
 
 void CPlayer2D::MoveUp(float DeltaTime)
 {
-	//m_BodySprite->AddRelativePos(m_BodySprite->GetWorldAxis(AXIS_Y) * 300.f * DeltaTime);
 	m_Dir = PlayerDir::Up;
+
+	if (m_OnLope)
+	{
+		AddWorldPos(0.f, 120.f * DeltaTime, 0.f);
+
+		CAnimationSequence2DData* CurrentAnim = m_BodySprite->GetCurrentAnimation();
+		CAnimationSequence2DInstance* Instance = m_BodySprite->GetAnimationInstance();
+
+		if(CurrentAnim && Instance && Instance->CheckCurrentAnimation("Rope") && !CurrentAnim->IsLoop())
+			CurrentAnim->SetLoop(true);
+
+		if (m_Body->CheckPrevCollisionGameObjectType(typeid(CLopeTileObject).hash_code()))
+		{
+			CColliderBox2D* Component = (CColliderBox2D*)m_Body->FindPrevCollisionComponentByObjectType(typeid(CLopeTileObject).hash_code());
+
+			if (Component)
+			{
+				// 로프를 아래에서 위로 타고 올라갈때만 적용 -> 로프 최상단이 플레이어 발밑 y좌표보다 높거나 같아야한다
+				Box2DInfo Info = Component->GetInfo();
+				Box2DInfo PlayerInfo = m_Body->GetInfo();
+
+				// 이 경우 로프를 끝까지 다 올라갔다
+				if (Info.Center.y + Info.Length.y <= PlayerInfo.Center.y - PlayerInfo.Length.y + 3.f)
+				{
+					m_LopeJump = false;
+					m_OnJump = false;
+					m_OnLope = false;
+					m_Gravity = true;
+					m_LopeEnable = false;
+					return;
+				}
+			}
+		}
+		return;
+	}
+
+
+	if (m_Body->CheckPrevCollisionGameObjectType(typeid(CLopeTileObject).hash_code()))
+	{
+		CColliderBox2D* Component = (CColliderBox2D*)m_Body->FindPrevCollisionComponentByObjectType(typeid(CLopeTileObject).hash_code());
+
+		if (Component)
+		{
+			Box2DInfo MyInfo = m_Body->GetInfo();
+			Box2DInfo ComponentInfo = Component->GetInfo();
+
+			bool TileCollision = m_Body->CheckPrevCollisionGameObjectType(typeid(CTileObject).hash_code());
+
+			// 로프 최하단에 처음 메달릴때 조건 
+			// 1. 타일에 서서 로프 최상단에 플레이어와 로프가 충돌한 상황에서 위방향키 누른다고 메달리는 경우 제외하기 
+			// 2. 로프 끝까지 다 올라가서 m_Gravity = true되어서 플레이어가 떨어지는 와중에 위방향키를 계속 누르고 있어도 다시 줄에 메달리지 않게하기
+			if (!TileCollision && m_LopeEnable && abs(MyInfo.Center.x - ComponentInfo.Center.x) < 8.f)
+			{
+				SetWorldPos(Component->GetWorldPos().x, GetWorldPos().y, 0.f);
+
+				m_Gravity = false;
+				m_OnJump = false;
+				m_OnLope = true;
+				m_GravityAccTime = 0.f;
+				m_BodySprite->ChangeAnimation("Rope");
+
+			}
+		}
+
+		return;
+	}
+
 	GotoNextMap(DeltaTime);
 }
 
 void CPlayer2D::MoveDown(float DeltaTime)
 {
 	m_Dir = PlayerDir::Down;
-	//m_BodySprite->AddRelativePos(m_BodySprite->GetWorldAxis(AXIS_Y) * -300.f * DeltaTime);
+
+	if (m_OnLope)
+	{
+		CAnimationSequence2DData* CurrentAnim = m_BodySprite->GetCurrentAnimation();
+		CAnimationSequence2DInstance* Instance = m_BodySprite->GetAnimationInstance();
+
+		if (CurrentAnim && Instance && Instance->CheckCurrentAnimation("Rope") && !CurrentAnim->IsLoop())
+			CurrentAnim->SetLoop(true);
+
+		AddWorldPos(0.f, -120.f * DeltaTime, 0.f);
+
+
+		// 로프를 끝까지 다 내려갔는지 체크
+		if (m_Body->CheckPrevCollisionGameObjectType(typeid(CLopeTileObject).hash_code()))
+		{
+			CColliderBox2D* Component = (CColliderBox2D*)m_Body->FindPrevCollisionComponentByObjectType(typeid(CLopeTileObject).hash_code());
+
+			if (Component)
+			{
+				// 로프를 아래에서 위로 타고 올라갈때만 적용 -> 로프 최상단이 플레이어 발밑 y좌표보다 높거나 같아야한다
+				Box2DInfo Info = Component->GetInfo();
+				Box2DInfo PlayerInfo = m_Body->GetInfo();
+
+				// 이 경우 로프를 끝까지 다 내려갔다
+				if (Info.Center.y - Info.Length.y >= PlayerInfo.Center.y + PlayerInfo.Length.y - 3.f)
+				{
+					m_LopeJump = false;
+					m_OnJump = false;
+					m_OnLope = false;
+					m_Gravity = true;
+					return;
+				}
+			}
+		}
+		return;
+	}
+
+	// 타일 밟고 있으면서 로프 최상단에서 처음 메달려서 내려갈때
+	if (m_Body->CheckPrevCollisionGameObjectType(typeid(CLopeTileObject).hash_code()))
+	{
+		CColliderBox2D* Component = (CColliderBox2D*)m_Body->FindPrevCollisionComponentByObjectType(typeid(CLopeTileObject).hash_code());
+
+		if (Component)
+		{
+			Box2DInfo MyInfo = m_Body->GetInfo();
+			Box2DInfo ComponentInfo = Component->GetInfo();
+
+			bool TileCollision = m_Body->CheckPrevCollisionGameObjectType(typeid(CTileObject).hash_code());
+
+			//  타일 밟고 있으면서 로프 최상단에서 처음 메달려서 내려갈때
+			if (TileCollision && MyInfo.Center.y > ComponentInfo.Center.y && abs(MyInfo.Center.x - ComponentInfo.Center.x) < 8.f)
+			{
+				SetWorldPos(Component->GetWorldPos().x, GetWorldPos().y, 0.f);
+
+				m_Gravity = false;
+				m_OnJump = false;
+				m_OnLope = true;
+				m_GravityAccTime = 0.f;
+				m_BodySprite->ChangeAnimation("Rope");
+
+			}
+		}
+
+		return;
+	}
 }
 
 void CPlayer2D::MoveLeft(float DeltaTime)
 {
-	if (m_OnKnockBack)
+	if (m_OnKnockBack || m_OnLope)
 		return;
 
 	if (m_VoidPressure)
@@ -289,7 +431,7 @@ void CPlayer2D::MoveLeft(float DeltaTime)
 
 		m_BodySprite->AddWorldPos(m_BodySprite->GetWorldAxis(AXIS_X) * -180.f * DeltaTime);
 
-		if (!m_OnJump)
+		if (!m_OnJump && !m_BodySprite->GetAnimationInstance()->CheckCurrentAnimation("WalkLeft"))
 			m_BodySprite->ChangeAnimation("WalkLeft");
 
 		m_Dir = PlayerDir::Left;
@@ -298,7 +440,7 @@ void CPlayer2D::MoveLeft(float DeltaTime)
 
 void CPlayer2D::MoveRight(float DeltaTime)
 {
-	if (m_OnKnockBack)
+ 	if (m_OnKnockBack || m_OnLope)
 		return;
 
 	if (m_VoidPressure)
@@ -324,7 +466,7 @@ void CPlayer2D::MoveRight(float DeltaTime)
 
 		m_BodySprite->AddWorldPos(m_BodySprite->GetWorldAxis(AXIS_X) * 180.f * DeltaTime);
 
-		if (!m_OnJump)
+		if (!m_OnJump && !m_BodySprite->GetAnimationInstance()->CheckCurrentAnimation("WalkLeft"))
 			m_BodySprite->ChangeAnimation("WalkLeft");
 
 		m_Dir = PlayerDir::Right;
@@ -339,11 +481,26 @@ void CPlayer2D::Jump(float DeltaTime)
 	if (m_OnJump || m_Gravity)
 		return;
 
+	if (m_OnLope)
+	{
+		m_LopeJump = true;
+		m_OnJump = true;
+		m_OnLope = false;
+		m_Gravity = true;
+		m_GravityAccTime = 0.f;
 
-	if (m_Dir != PlayerDir::Down)
+		m_BodySprite->GetAnimationInstance()->ChangeAnimation("JumpLeft");
+		m_Scene->GetResource()->SoundPlay("Jump");
+
+		return;
+	}
+
+	// 밑으로 누르면서 점프키누르면 밟고 있는 타일을 내려가야하므로 m_Dir이 Down일때는 위로 점프하지 않도록하기 위해 걸러낸다
+	// 단 로프에 메달려 있을때는 아래로 누르면서 점프해도 점프하는 애니메이션이 동작되게 한다
+	if (m_Dir != PlayerDir::Down || m_OnLope)
 	{
 		m_OnJump = true;
-		//AddWorldPos(0.f, 5.f, 0.f);
+		m_GravityAccTime = 0.f;
 		m_BodySprite->GetAnimationInstance()->ChangeAnimation("JumpLeft");
 	}
 	
@@ -352,8 +509,40 @@ void CPlayer2D::Jump(float DeltaTime)
 		m_ListCollisionID.clear();
 		m_Gravity = true;
 		m_TileCollisionEnable = false;
+		m_OnLope = false;
+		m_OnJump = false;
 		m_Dir = PlayerDir::None;
 		m_BodySprite->GetAnimationInstance()->ChangeAnimation("JumpLeft");
+		m_Scene->GetResource()->SoundPlay("Jump");
+
+
+		return;
+	}
+
+	if (m_Dir == PlayerDir::Down)
+	{
+		CColliderComponent* TileCollider = m_Body->FindPrevCollisionComponentByObjectType(typeid(CTileObject).hash_code());
+
+		if (TileCollider)
+		{
+			CTileObject* FloorTile = (CTileObject*)TileCollider->GetGameObject();
+
+			// 최하단 바닥 타일이면 밑으로 낙하하면 안된다
+			if (FloorTile->IsBottomMostFloor())
+				return;
+		}
+
+		m_Gravity = true;
+		m_OnJump = false;
+		m_OnLope = false;
+		m_BodySprite->GetAnimationInstance()->ChangeAnimation("JumpLeft");
+	}
+	
+	else
+	{
+		m_OnLope = false;
+		m_Gravity = true;
+		m_OnJump = true;
 	}
 
 	m_Scene->GetResource()->SoundPlay("Jump");
@@ -652,29 +841,55 @@ void CPlayer2D::VoidPressureCancle(float DeltaTime)
 
 void CPlayer2D::CollisionBeginCallback(const CollisionResult& Result)
 {
+	CGameObject* DestObj = Result.Dest->GetGameObject();
+
+	if (DestObj->GetTypeID() == typeid(CTileObject).hash_code())
+	{
+		CTileObject* TileObj = ((CTileObject*)DestObj);
+		CColliderBox2D* TileObjCollider = TileObj->FindComponentFromType<CColliderBox2D>();
+
+		if (TileObjCollider)
+		{
+			// 로프를 타고 올라가다가 머리가 타일 최하단이랑 닿으면 무시해야하고
+			// 로프를 타고 내려오다가 발이 타일 최상단이랑 닿으면 타일에 착지해야한다
+			if (m_OnLope && m_Body->GetInfo().Center.y < TileObjCollider->GetInfo().Center.y)
+			{
+				return;
+			}
+		}
+
+		// 점프하다가 플레이어 머리랑 타일 밑부분이랑 부딪히면 무시
+		if ((m_OnJump || m_LopeJump) && GetCurrentFrameMove().y > 0.f)
+			return;
+
+		Box2DInfo TileInfo = TileObjCollider->GetInfo();
+		Box2DInfo MyInfo = m_Body->GetInfo();
+
+		// 왼쪽이나 오른쪽으로 이동하다가 타일과 충돌이 끝나서 떨어지려는데 그때 타일 옆부분이랑 충돌하면 무시 
+		if (MyInfo.Center.y - MyInfo.Length.y < TileInfo.Center.y - TileInfo.Length.y)
+			return;
+
+		m_Dir = PlayerDir::None;
+
+		m_LopeJump = false;
+		m_OnJump = false;
+		m_Gravity = false;
+		m_OnLope = false;
+		m_LopeEnable = true;
+		m_GravityAccTime = 0.f;
+		m_BodySprite->ChangeAnimation("IdleLeft");
+
+	}
+
 	if (CRenderManager::GetInst()->GetStartFadeIn())
 		return;
 
-	CGameObject* Dest = Result.Dest->GetGameObject();
-
-	if (Dest->GetTypeID() == typeid(CTileObject).hash_code())
+	if (DestObj->GetTypeID() == typeid(COnionMonster).hash_code() || DestObj->GetTypeID() == typeid(CLowerClassBook).hash_code())
 	{
-		m_BodySprite->ChangeAnimation("IdleLeft");
-		m_Dir = PlayerDir::None;
-		m_OnJump = false;
-	}
-
-	if (Dest->GetTypeID() == typeid(CLopeTileObject).hash_code())
-	{
-		int a = 3;
-	}
-
-	if (Dest->GetTypeID() == typeid(COnionMonster).hash_code() || Dest->GetTypeID() == typeid(CLowerClassBook).hash_code())
-	{
-		if (m_OnHit)
+		if (m_OnHit || m_OnLope)
 			return;
 
-		Vector3 DestPos = Dest->GetWorldPos();
+		Vector3 DestPos = DestObj->GetWorldPos();
 		Vector3 MyPos = GetWorldPos();
 
 		// 나보다 왼쪽에서 몬스터가 충돌 -> 오른쪽으로 튕겨나가야한다
@@ -687,12 +902,31 @@ void CPlayer2D::CollisionBeginCallback(const CollisionResult& Result)
 		m_OnHit = true;
 
 		m_GravityAccTime = 0.f;
+		m_Gravity = true;
 	}
 }
 
 
 void CPlayer2D::CollisionEndCallback(const CollisionResult& Result)
 {
+	if (!Result.Dest)
+		return;
+
+	CGameObject* Dest = Result.Dest->GetGameObject();
+
+	if (Dest->GetTypeID() == typeid(CLopeTileObject).hash_code())
+	{
+		Box2DInfo MyInfo = m_Body->GetInfo();
+		Box2DInfo LopeInfo = ((CColliderBox2D*)(Result.Dest))->GetInfo();
+
+		// 로프 끝까지 다 올라가거나 다 내려온 경우
+		if (MyInfo.Center.y - MyInfo.Length.y >= LopeInfo.Center.y + LopeInfo.Length.y ||
+			MyInfo.Center.y + MyInfo.Length.y <= LopeInfo.Center.y - LopeInfo.Length.y )
+		{
+			m_OnLope = false;
+			m_Gravity = true;
+		}
+	}
 
 }
 
@@ -1104,7 +1338,24 @@ void CPlayer2D::EffectEnd(float DeltaTime)
 
 void CPlayer2D::ReturnIdle(float DeltaTime)
 {
+	if (m_OnLope || m_OnJump)
+		return;
+
 	m_BodySprite->ChangeAnimation("IdleLeft");
+	m_Dir = PlayerDir::None;
+}
+
+void CPlayer2D::RopeActionStop(float DeltaTime)
+{
+	if (m_OnLope)
+	{
+		CAnimationSequence2DData* CurrentAnim = m_BodySprite->GetCurrentAnimation();
+		CAnimationSequence2DInstance* Instance = m_BodySprite->GetAnimationInstance();
+
+		if (CurrentAnim && Instance && Instance->CheckCurrentAnimation("Rope"))
+			CurrentAnim->SetLoop(false);
+	}
+
 	m_Dir = PlayerDir::None;
 }
 

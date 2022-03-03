@@ -32,6 +32,7 @@ public:
 		Damage->SetTexture(Name, m_vecFileName);
 		Damage->AddFrameData(10);
 		Damage->SetNumber(Number);
+		Damage->SetRenderStart(false);
 
 		m_ListDamage.push_back(Damage);
 	}

@@ -13,5 +13,6 @@ public:
 public:
 	virtual bool Init();
 	virtual COnionMonsterAnimation* Clone();
+	void ReturnIdle();
 };
 

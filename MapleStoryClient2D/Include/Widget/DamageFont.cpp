@@ -71,10 +71,8 @@ bool CDamageFont::Init()
 
 void CDamageFont::Update(float DeltaTime)
 {
-   /* if (m_ListDamage.empty() && m_ListCriticalEffect.empty())
-        m_Enable = false;
-    else
-        m_Enable = true;*/
+
+    m_Enable = true;
 
     auto iter = m_ListDamage.begin();
     auto iterEnd = m_ListDamage.end();
@@ -104,6 +102,9 @@ void CDamageFont::Update(float DeltaTime)
 
 void CDamageFont::PostUpdate(float DeltaTime)
 {
+    if (!m_Enable)
+        return; 
+
     CWidgetWindow::PostUpdate(DeltaTime);
 
     if (!m_ListDamage.empty())
@@ -152,6 +153,9 @@ void CDamageFont::Render()
 {
   /*  if (CRenderManager::GetInst()->GetStartFadeIn())
         return;*/
+
+    if (!m_Enable)
+        return;
 
     CWidgetWindow::Render();
 }

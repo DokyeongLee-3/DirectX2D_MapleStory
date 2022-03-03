@@ -13,8 +13,8 @@ CLowerClassBook::CLowerClassBook()
 	SetTypeID<CLowerClassBook>();
 
 	m_TileCollisionEnable = true;
-	m_MonsterInfo.HP = 5000;
-	m_MonsterInfo.HPMax = 5000;
+	m_MonsterInfo.HP = 7000;
+	m_MonsterInfo.HPMax = 7000;
 	m_MonsterInfo.Level = 50;
 	m_MonsterInfo.Attack = 10;
 
@@ -144,6 +144,17 @@ void CLowerClassBook::FlipAll(float DeltaTime)
 
 void CLowerClassBook::ReturnIdle()
 {
+	if (m_MonsterInfo.HP <= 0.f)
+	{
+		m_Body->Enable(false);
+		m_IsChanging = true;
+
+		GetRootComponent()->DeleteChild("Body");
+		m_Sprite->GetAnimationInstance()->ChangeAnimation("LowerClassBookDieLeft");
+
+		return;
+	}
+
 	m_IsChanging = false;
 	m_Sprite->ChangeAnimation("LowerClassBookIdleLeft");
 }
@@ -152,28 +163,30 @@ void CLowerClassBook::SetDamage(float Damage, bool Critical)
 {
 	m_MonsterInfo.HP -= (int)Damage;
 
-	m_MonsterState = Monster_State::Track;
-
-	if (!m_IsChanging)
+	if (m_MonsterInfo.HP <= 0.f)
 	{
-		if (m_MonsterInfo.HP <= 0.f)
-		{
-			//m_PaperBurn->StartPaperBurn();
-			m_Body->Enable(false);
+		m_Body->Enable(false);
 
-			GetRootComponent()->DeleteChild("Body");
-			m_Sprite->GetAnimationInstance()->ChangeAnimation("LowerClassBookDieLeft");
-		}
-
-		else
-		{
-			m_Sprite->ChangeAnimation("LowerClassBookHitLeft");
-		}
-
+		GetRootComponent()->DeleteChild("Body");
+		m_Sprite->GetAnimationInstance()->ChangeAnimation("LowerClassBookDieLeft");
 		m_IsChanging = true;
+
+		PushDamageFont(Damage, Critical);
 	}
 
-	PushDamageFont(Damage, Critical);
+	else
+	{
+		m_MonsterState = Monster_State::Track;
+
+		if (!m_IsChanging)
+		{
+			m_Sprite->ChangeAnimation("LowerClassBookHitLeft");
+
+			m_IsChanging = true;
+		}
+
+		PushDamageFont(Damage, Critical);
+	}
 }
 
 void CLowerClassBook::PushDamageFont(float Damage, bool Critical)
@@ -188,7 +201,28 @@ void CLowerClassBook::FiniteState(float DeltaTime)
 
 	if (m_MonsterState == Monster_State::Track)
 	{
+		CPlayer2D* Player = (CPlayer2D*)m_Scene->GetPlayerObject();
+		
+		if (Player)
+		{
+			Vector3 PlayerPos = Player->GetWorldPos();
+			Vector3 MyPos = GetWorldPos();
+			if (PlayerPos.x - MyPos.x > 10.f)
+			{
+				if (!m_Sprite->IsFlip())
+					m_Sprite->Flip();
 
+				AddWorldPos(100.f * DeltaTime, 0.f, 0.f);
+			}
+
+			else if (PlayerPos.x - MyPos.x < -10.f)
+			{
+				if (m_Sprite->IsFlip())
+					m_Sprite->Flip();
+
+				AddWorldPos(-100.f * DeltaTime, 0.f, 0.f);
+			}
+		}
 
 		return;
 	}

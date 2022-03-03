@@ -43,15 +43,8 @@ protected:
 	float		m_GravityAccTime;
 	Vector3     m_TileCollisionPos;
 	bool		m_TileCollisionEnable;
-	//Vector3		m_CurrentFrameMove;
-	//Vector3		m_PrevFrameWorldPos;
 	
 public:
-	//Vector3	GetCurrentFrameMove()	const
-	//{
-	//	return m_CurrentFrameMove;
-	//}
-
 	void SetTileCollisionEnable(bool Enable)
 	{
 		m_TileCollisionEnable = Enable;

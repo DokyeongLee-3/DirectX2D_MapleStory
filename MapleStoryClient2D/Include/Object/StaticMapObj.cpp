@@ -115,6 +115,7 @@ void CStaticMapObj::CollisionBeginCallback(const CollisionResult& Result)
 				DestObj->SetGravity(false);
 				DestObj->SetGravityAccTime(0.f);
 				((CPlayer2D*)DestObj)->SetOnJump(false);
+				((CPlayer2D*)DestObj)->SetLopeJump(false);
 				((CPlayer2D*)DestObj)->GetRootSpriteComponent()->ChangeAnimation("IdleLeft");
 				((CPlayer2D*)DestObj)->SetDir(PlayerDir::None);
 

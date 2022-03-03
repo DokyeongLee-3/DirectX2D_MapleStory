@@ -218,6 +218,9 @@ void CNumber::PostUpdate(float DeltaTime)
 
 void CNumber::Render()
 {
+	if (!m_RenderStart)
+		return;
+
 	// 현재 숫자를 분리한다.
 	int	Number = m_Number;
 
@@ -299,7 +302,6 @@ void CNumber::Render()
 
 		//m_RenderPos.x += (m_Size.x);
 		m_RenderPos.x += Offset.x;
-
 
 		CWidget::Render();
 	}

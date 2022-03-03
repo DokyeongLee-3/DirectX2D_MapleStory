@@ -36,12 +36,14 @@ public:
 			Damage->SetTexture(Name, m_vecCriticalFileName);
 			Damage->AddFrameData(10);
 			Damage->SetNumber(Number);
+			Damage->SetRenderStart(false);
 			m_ListDamage.push_back(Damage);
 
 			CImage* CriticalEffect = CreateWidget<CImage>("CriticalEffect");
 			CriticalEffect->SetTexture("CriticalEffect", TEXT("UI/DamageFont/NoCri1.effect.png"));
 			CriticalEffect->SetPos(-10.f, 20.f + Size * 35.f);
 			CriticalEffect->SetSize(62.f, 57.f);
+			CriticalEffect->SetRenderStart(false);
 			m_ListCriticalEffect.push_back(CriticalEffect);
 
 		}
@@ -54,6 +56,7 @@ public:
 			Damage->SetTexture(Name, m_vecFileName);
 			Damage->AddFrameData(10);
 			Damage->SetNumber(Number);
+			Damage->SetRenderStart(false);
 
 			m_ListDamage.push_back(Damage);
 		}

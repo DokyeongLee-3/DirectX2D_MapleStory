@@ -39,8 +39,12 @@ CColliderComponent::~CColliderComponent()
 
 	for (; iter != iterEnd; ++iter)
 	{
-		(*iter)->CallCollisionCallback(Collision_State::End);
-		CallCollisionCallback(Collision_State::End);
+		// Ãß°¡
+		(*iter)->SetDestCollisionResult(this);
+		SetDestCollisionResult(*iter);
+
+		//(*iter)->CallCollisionCallback(Collision_State::End);
+		//CallCollisionCallback(Collision_State::End);
 		(*iter)->DeletePrevCollision(this);
 
 
@@ -177,6 +181,20 @@ bool CColliderComponent::CheckPrevCollisionGameObjectType(size_t TypeID)
 	}
 
 	return false;
+}
+
+CColliderComponent* CColliderComponent::FindPrevCollisionComponentByObjectType(size_t TypeID)
+{
+	auto iter = m_PrevCollisionList.begin();
+	auto iterEnd = m_PrevCollisionList.end();
+
+	for (; iter != iterEnd; ++iter)
+	{
+		if ((*iter)->GetGameObject()->GetTypeID() == TypeID)
+			return *iter;
+	}
+
+	return nullptr;
 }
 
 bool CColliderComponent::CheckCurrentFrameCollision(CColliderComponent* Collider)
