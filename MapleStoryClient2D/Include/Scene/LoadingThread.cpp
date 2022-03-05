@@ -4,6 +4,7 @@
 #include "OnionScene.h"
 #include "WayToZakumScene.h"
 #include "Library2ndScene.h"
+#include "RadishScene.h"
 #include "Scene/SceneManager.h"
 
 CLoadingThread::CLoadingThread()
@@ -65,6 +66,17 @@ void CLoadingThread::Run()
 		LibraryScene->SetLoadingFunction<CLoadingThread>(this, &CLoadingThread::AddMessage);
 
 		LibraryScene->Init();
+
+		AddMessage(true, 1.f);
+	}
+
+	else if (m_LoadingScene == ThreadLoadingScene::Radish)
+	{
+		CRadishScene* RadishScene = (CRadishScene*)(CSceneManager::GetInst()->GetNextScene()->GetSceneMode());
+
+		RadishScene->SetLoadingFunction<CLoadingThread>(this, &CLoadingThread::AddMessage);
+
+		RadishScene->Init();
 
 		AddMessage(true, 1.f);
 	}

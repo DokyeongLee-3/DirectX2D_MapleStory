@@ -163,6 +163,10 @@ bool CDetailWindow::Init()
 	m_ScalingY->SetTextType(ImGuiText_Type::Float);
 	m_ScalingY->SetCallback(this, &CDetailWindow::ScalingYCallback);
 
+	m_FlipButton = AddWidget<CIMGUIButton>("Flip", 100.f, 30.f);
+	m_FlipButton->SetClickCallback(this, &CDetailWindow::FlipComponent);
+
+
 	return true;
 }
 
@@ -436,6 +440,21 @@ void CDetailWindow::ScalingYCallback()
 	Scale.y = m_ScalingY->GetValueFloat();
 
 	((CSceneComponent*)Comp)->SetWorldScale(Scale);
+}
+
+void CDetailWindow::FlipComponent()
+{
+	CObjectHierarchy* Window = (CObjectHierarchy*)CIMGUIManager::GetInst()->FindIMGUIWindow("ObjectHierarchy");
+
+	if (Window)
+	{
+		CSceneComponent* SelectComp = Window->GetSelectComponent();
+
+		if (SelectComp->GetTypeID() != typeid(CSpriteComponent).hash_code())
+			return;
+
+		((CSpriteComponent*)SelectComp)->Flip();
+	}
 }
 
 void CDetailWindow::ClearDetailWindowInfo()

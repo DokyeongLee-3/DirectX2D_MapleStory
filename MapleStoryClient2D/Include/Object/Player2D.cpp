@@ -7,6 +7,7 @@
 #include "Scene/Scene.h"
 #include "../Scene/LobbyScene.h"
 #include "../Scene/OnionScene.h"
+#include "../Scene/RadishScene.h"
 #include "../Scene/WayToZakumScene.h"
 #include "../Scene/Library2ndScene.h"
 #include "Input.h"
@@ -54,6 +55,16 @@ CPlayer2D::CPlayer2D() :
 	m_Gravity = true;
 
 	m_JumpForce = 370.f;
+	m_DirVector = Vector3(1.f, 0.f, 0.f);
+
+	//Vector3 Test = Vector3(1.f, 0.f, 0.f);
+
+	//Matrix matRot;
+	//matRot.Rotation(Vector3(0.f, 0.f, 36.f));
+
+	//Vector3 ret = Test.TransformCoord(matRot);
+
+	//int a = 3;
 }
 
 CPlayer2D::CPlayer2D(const CPlayer2D& obj) :
@@ -90,7 +101,7 @@ bool CPlayer2D::Init()
 	m_DamageWidgetComponent = CreateComponent<CWidgetComponent>("PlayerDamageFont");
 
 	m_Body = CreateComponent<CColliderBox2D>("PlayerBody");
-	m_Body->SetExtent(25.f, 35.f);
+	m_Body->SetExtent(14.f, 35.f);
 	m_Body->SetOffset(0.f, 13.f, 0.f);
 
 	m_Camera = CreateComponent<CCameraComponent>("Camera");
@@ -316,7 +327,7 @@ void CPlayer2D::MoveUp(float DeltaTime)
 			// 2. 로프 끝까지 다 올라가서 m_Gravity = true되어서 플레이어가 떨어지는 와중에 위방향키를 계속 누르고 있어도 다시 줄에 메달리지 않게하기
 			if (!TileCollision && m_LopeEnable && abs(MyInfo.Center.x - ComponentInfo.Center.x) < 8.f)
 			{
-				SetWorldPos(Component->GetWorldPos().x, GetWorldPos().y, 0.f);
+				SetWorldPos(ComponentInfo.Center.x, GetWorldPos().y, 0.f);
 
 				m_Gravity = false;
 				m_OnJump = false;
@@ -429,7 +440,8 @@ void CPlayer2D::MoveLeft(float DeltaTime)
 		if (IsFlip)
 			FlipAll(DeltaTime);
 
-		m_BodySprite->AddWorldPos(m_BodySprite->GetWorldAxis(AXIS_X) * -180.f * DeltaTime);
+		//m_BodySprite->AddWorldPos(m_BodySprite->GetWorldAxis(AXIS_X) * -180.f * DeltaTime);
+		m_BodySprite->AddWorldPos(Vector3(-180.f * DeltaTime, -180.f * DeltaTime, 0.f) * m_DirVector);
 
 		if (!m_OnJump && !m_BodySprite->GetAnimationInstance()->CheckCurrentAnimation("WalkLeft"))
 			m_BodySprite->ChangeAnimation("WalkLeft");
@@ -464,7 +476,8 @@ void CPlayer2D::MoveRight(float DeltaTime)
  		if (!m_BodySprite->IsFlip())
 			FlipAll(DeltaTime);
 
-		m_BodySprite->AddWorldPos(m_BodySprite->GetWorldAxis(AXIS_X) * 180.f * DeltaTime);
+		//m_BodySprite->AddWorldPos(m_BodySprite->GetWorldAxis(AXIS_X) * 180.f * DeltaTime);
+		m_BodySprite->AddWorldPos(Vector3(180.f * DeltaTime, 180.f * DeltaTime, 0.f) * m_DirVector);
 
 		if (!m_OnJump && !m_BodySprite->GetAnimationInstance()->CheckCurrentAnimation("WalkLeft"))
 			m_BodySprite->ChangeAnimation("WalkLeft");
@@ -523,14 +536,33 @@ void CPlayer2D::Jump(float DeltaTime)
 	{
 		CColliderComponent* TileCollider = m_Body->FindPrevCollisionComponentByObjectType(typeid(CTileObject).hash_code());
 
-		if (TileCollider)
+		std::vector<CColliderBox2D*> vecCollider;
+		m_Body->FindMultipleCollisionComponent<CColliderBox2D, CTileObject>(vecCollider);
+
+		size_t Count = vecCollider.size();
+
+		for (size_t i = 0; i < Count; ++i)
 		{
-			CTileObject* FloorTile = (CTileObject*)TileCollider->GetGameObject();
+			CTileObject* FloorTile = (CTileObject*)vecCollider[i]->GetGameObject();
 
 			// 최하단 바닥 타일이면 밑으로 낙하하면 안된다
 			if (FloorTile->IsBottomMostFloor())
 				return;
+
+			if (vecCollider[i]->GetWorldRot().z != 0.f)
+				return;
 		}
+
+		//if (TileCollider)
+		//{
+		//	CTileObject* FloorTile = (CTileObject*)TileCollider->GetGameObject();
+
+		//	// 최하단 바닥 타일이면 밑으로 낙하하면 안된다
+		//	if (FloorTile->IsBottomMostFloor())
+		//		return;
+
+		//	if(FloorTile)
+		//}
 
 		m_Gravity = true;
 		m_OnJump = false;
@@ -846,28 +878,103 @@ void CPlayer2D::CollisionBeginCallback(const CollisionResult& Result)
 	if (DestObj->GetTypeID() == typeid(CTileObject).hash_code())
 	{
 		CTileObject* TileObj = ((CTileObject*)DestObj);
-		CColliderBox2D* TileObjCollider = TileObj->FindComponentFromType<CColliderBox2D>();
 
+		std::vector<CColliderBox2D*> vecCollider;
+
+		m_Body->FindMultipleCollisionComponent<CColliderBox2D, CTileObject>(vecCollider);
+		CColliderBox2D* TileObjCollider = nullptr;
+		// 만약 원래 하나의 충돌체와 충돌중이었고, 같은 오브젝트 내에 또 다른 충돌체와 이제 막 충돌해서 두개의 충돌체와
+		// 충돌중일때, 원래 충돌하고 있던 충돌체
+		CColliderBox2D* EarlyCollider = nullptr;
+
+		size_t Count = vecCollider.size();
+		int SameTileObjColliderCount = 0;
+
+		for (size_t i = 0; i < Count; ++i)
+		{
+			if ((CTileObject*)vecCollider[i]->GetGameObject() == TileObj)
+				++SameTileObjColliderCount;
+
+			if (vecCollider[i] != Result.Dest)
+				EarlyCollider = vecCollider[i];
+		}
+
+		if (Count == 0)
+			return;
+
+		TileObjCollider = (CColliderBox2D*)Result.Dest;
+		Vector3 ColliderRot = TileObjCollider->GetWorldRot();
+
+		// 예외처리 구간
 		if (TileObjCollider)
 		{
+			Box2DInfo TileInfo = TileObjCollider->GetInfo();
+			Box2DInfo MyInfo = m_Body->GetInfo();
+
 			// 로프를 타고 올라가다가 머리가 타일 최하단이랑 닿으면 무시해야하고
 			// 로프를 타고 내려오다가 발이 타일 최상단이랑 닿으면 타일에 착지해야한다
-			if (m_OnLope && m_Body->GetInfo().Center.y < TileObjCollider->GetInfo().Center.y)
+			if (m_OnLope && MyInfo.Center.y < TileInfo.Center.y)
 			{
 				return;
 			}
+
+			// 점프하다가 플레이어 머리랑 타일 밑부분이랑 부딪히면 무시
+			if ((m_OnJump || m_LopeJump) && GetCurrentFrameMove().y > 0.f)
+				return;
+
+			if ((m_OnJump || m_LopeJump) && MyInfo.Center.y - MyInfo.Length.y <= TileInfo.Center.y)
+				return;
+
+			// 왼쪽이나 오른쪽으로 이동하다가 타일과 충돌이 끝나서 떨어지려는데 그때 타일 옆부분이랑 충돌하면 무시
+			// 단, 오브젝트 내에 하나의 충돌체만 있는 경우에만 예외처리로 빼준다
+			if (Count == 1 && MyInfo.Center.y - MyInfo.Length.y < TileInfo.Center.y - TileInfo.Length.y)
+				return;
 		}
 
-		// 점프하다가 플레이어 머리랑 타일 밑부분이랑 부딪히면 무시
-		if ((m_OnJump || m_LopeJump) && GetCurrentFrameMove().y > 0.f)
-			return;
 
-		Box2DInfo TileInfo = TileObjCollider->GetInfo();
-		Box2DInfo MyInfo = m_Body->GetInfo();
+		if (SameTileObjColliderCount == 2 && EarlyCollider)
+		{
+			ColliderRot = ColliderRot - EarlyCollider->GetWorldRot();
 
-		// 왼쪽이나 오른쪽으로 이동하다가 타일과 충돌이 끝나서 떨어지려는데 그때 타일 옆부분이랑 충돌하면 무시 
-		if (MyInfo.Center.y - MyInfo.Length.y < TileInfo.Center.y - TileInfo.Length.y)
-			return;
+			if (ColliderRot.z == 0.f)
+			{
+				m_DirVector = Vector3(1.f, 0.f, 0.f);
+			}
+
+			else
+			{
+				Matrix matRot;
+
+				matRot.Rotation(ColliderRot);
+
+				m_DirVector = m_DirVector.TransformCoord(matRot);
+			}
+			
+			m_DirRotation = ColliderRot;
+		}
+
+		else
+		{
+			m_DirRotation = ColliderRot - m_DirRotation;
+
+			if (ColliderRot.z == 0.f)
+			{
+				m_DirVector = Vector3(1.f, 0.f, 0.f);
+			}
+
+			else
+			{
+				Matrix matRot;
+
+				matRot.Rotation(m_DirRotation);
+
+				m_DirVector = m_DirVector.TransformCoord(matRot);
+			}
+
+			m_DirRotation = ColliderRot;
+		}
+
+		//TileObjCollider = TileObj->FindComponentFromType<CColliderBox2D>();
 
 		m_Dir = PlayerDir::None;
 
@@ -878,7 +985,6 @@ void CPlayer2D::CollisionBeginCallback(const CollisionResult& Result)
 		m_LopeEnable = true;
 		m_GravityAccTime = 0.f;
 		m_BodySprite->ChangeAnimation("IdleLeft");
-
 	}
 
 	if (CRenderManager::GetInst()->GetStartFadeIn())
@@ -957,6 +1063,11 @@ void CPlayer2D::CameraTrack()
 		else if (SceneMode->GetTypeID() == typeid(CLibrary2ndScene).hash_code())
 		{
 			m_CurrentStage = ((CLibrary2ndScene*)SceneMode)->GetStageObject();
+		}
+
+		else if (SceneMode->GetTypeID() == typeid(CRadishScene).hash_code())
+		{
+			m_CurrentStage = ((CRadishScene*)SceneMode)->GetStageObject();
 		}
 
 		if (m_CurrentStage)
@@ -1209,27 +1320,39 @@ void CPlayer2D::GotoNextMap(float DeltaTime)
 
 	if (m_Scene->GetSceneMode()->GetTypeID() == typeid(COnionScene).hash_code())
 	{
-		CGameObject* Portal = m_Scene->FindObject("Portal1");
+		CGameObject* LeftPortal = m_Scene->FindObject("Portal1");
+		CGameObject* RightPortal = m_Scene->FindObject("Portal2");
 
-		if (Portal)
+		if (LeftPortal)
 		{
-			CComponent* Body = ((CPortal*)Portal)->FindComponent("Body");
+			CComponent* LeftBody = ((CPortal*)LeftPortal)->FindComponent("Body");
+			CComponent* RightBody = ((CPortal*)RightPortal)->FindComponent("Body");
 
-			if (Body)
+			if (LeftBody && RightBody)
 			{
 				// GotoNextMap함수는 CInput::Update에서 호출하는거라 아직 이번 프레임의 충돌 조사가 아직 안됐을 때니까
 				// 이전 프레임 기준으로 검사한다
-				bool Collision = ((CColliderBox2D*)Body)->CheckPrevCollision(m_Body);
+				bool LeftCollision = ((CColliderBox2D*)LeftBody)->CheckPrevCollision(m_Body);
+				bool RightCollision = ((CColliderBox2D*)RightBody)->CheckPrevCollision(m_Body);
 
 				// LobbyScene의 오른쪽 Entrance 포탈에 충돌했고, 위쪽 방향키를 누르고 있을때 여기로 들어온다
 				// ==> 양파 재배지 맵을 멀티쓰레드 활용해서 로딩후 SceneChange하기
-				if (Collision)
+				if (LeftCollision)
 				{
 					m_ListCollisionID.clear();
 
 					COnionScene* Scene = (COnionScene*)(GetScene()->GetSceneMode());
 					CRenderManager::GetInst()->SetStartFadeIn(true);
 					CSceneManager::GetInst()->SetFadeInEndCallback<COnionScene>(Scene, &COnionScene::CreateLobbyScene);
+				}
+
+				else if (RightCollision)
+				{
+					m_ListCollisionID.clear();
+
+					COnionScene* Scene = (COnionScene*)(GetScene()->GetSceneMode());
+					CRenderManager::GetInst()->SetStartFadeIn(true);
+					CSceneManager::GetInst()->SetFadeInEndCallback<COnionScene>(Scene, &COnionScene::CreateRadishScene);
 				}
 			}
 		}

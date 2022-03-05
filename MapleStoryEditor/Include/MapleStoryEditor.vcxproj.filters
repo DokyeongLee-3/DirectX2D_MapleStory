@@ -90,9 +90,6 @@
     <ClCompile Include="Object\Player2D.cpp">
       <Filter>03. Object\01. Player</Filter>
     </ClCompile>
-    <ClCompile Include="Object\MonsterRadish.cpp">
-      <Filter>03. Object\03. Monster</Filter>
-    </ClCompile>
     <ClCompile Include="Object\PlayerSkillSet.cpp">
       <Filter>03. Object\02. Skill</Filter>
     </ClCompile>
@@ -165,6 +162,12 @@
     <ClCompile Include="Object\Monster.cpp">
       <Filter>03. Object\03. Monster</Filter>
     </ClCompile>
+    <ClCompile Include="Object\RadishMonster.cpp">
+      <Filter>03. Object\03. Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\RadishMonsterAnimation.cpp">
+      <Filter>06. Animation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene\DefaultScene.h">
@@ -202,9 +205,6 @@
     </ClInclude>
     <ClInclude Include="Object\Player2D.h">
       <Filter>03. Object\01. Player</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\MonsterRadish.h">
-      <Filter>03. Object\03. Monster</Filter>
     </ClInclude>
     <ClInclude Include="Object\PlayerSkillSet.h">
       <Filter>03. Object\02. Skill</Filter>
@@ -280,6 +280,12 @@
     </ClInclude>
     <ClInclude Include="Object\Monster.h">
       <Filter>03. Object\03. Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\RadishMonster.h">
+      <Filter>03. Object\03. Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation\RadishMonsterAnimation.h">
+      <Filter>06. Animation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

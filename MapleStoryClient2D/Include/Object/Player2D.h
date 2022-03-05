@@ -108,6 +108,8 @@ private:
     std::list<int>                  m_ListCollisionID;
 
     PlayerDir   m_Dir;
+    Vector3     m_DirVector;
+    Vector3     m_DirRotation;
     PlayerInfo  m_PlayerInfo;
 
     Vector3		m_PrevFrameWorldPos;

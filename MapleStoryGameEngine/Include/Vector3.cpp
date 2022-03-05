@@ -358,7 +358,7 @@ Vector3 Vector3::TransformNormal(const Matrix& m) const
 
 Vector3 Vector3::TransformCoord(const Matrix& m) const
 {
-	return Vector3(XMVector2TransformCoord(Convert(), m.m));
+	return Vector3(XMVector3TransformCoord(Convert(), m.m));
 }
 
 XMVECTOR Vector3::Convert() const

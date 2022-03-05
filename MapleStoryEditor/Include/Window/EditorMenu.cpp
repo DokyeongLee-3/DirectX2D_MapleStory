@@ -148,8 +148,8 @@ void CEditorMenu::ObjectCreateButton()
 	case CreateObject_Type::Player:
 		CSceneManager::GetInst()->GetScene()->CreateGameObject<CPlayer2D>(m_ObjectNameInput->GetTextMultibyte());
 		break;
-	case CreateObject_Type::MonsterRadish:
-		CSceneManager::GetInst()->GetScene()->CreateGameObject<CMonsterRadish>(m_ObjectNameInput->GetTextMultibyte());
+	case CreateObject_Type::RadishMonster:
+		CSceneManager::GetInst()->GetScene()->CreateGameObject<CRadishMonster>(m_ObjectNameInput->GetTextMultibyte());
 		break;
 	case CreateObject_Type::OnionMonster:
 		CSceneManager::GetInst()->GetScene()->CreateGameObject<COnionMonster>(m_ObjectNameInput->GetTextMultibyte());
@@ -202,6 +202,7 @@ void CEditorMenu::ObjectCreateButton()
 			((CDefaultScene*)CSceneManager::GetInst()->GetScene()->GetSceneMode())->SetStageObject(Stage);
 		}
 	}
+		break;
 	case CreateObject_Type::VerticalLampLight:
 		CSceneManager::GetInst()->GetScene()->CreateGameObject<CVerticalLampLight>(m_ObjectNameInput->GetTextMultibyte());
 		break;

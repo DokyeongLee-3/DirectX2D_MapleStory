@@ -171,6 +171,19 @@ public:
         return nullptr;
     }
 
+    template <typename T>
+    void FindMultipleCollisionComponent(std::vector<T>& vecComp)
+    {
+        auto iter = m_PrevCollisionList.begin();
+        auto iterEnd = m_PrevCollisionList.end();
+
+        for (; iter != iterEnd; ++iter)
+        {
+            if ((*iter)->GetTypeID() == typeid(T).hash_code())
+                vecComp.push_back((T)*iter);
+        }
+    }
+
 public:
     template <typename T>
     void AddCollisionCallback(Collision_State State, T* Obj, void(T::* Func)(const CollisionResult&))

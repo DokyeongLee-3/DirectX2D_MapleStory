@@ -64,6 +64,7 @@ public:
 public:
     void CreateWayToZakumScene();
     void CreateLobbyScene();
+    void CreateRadishScene();
 
 public:
     template <typename T>

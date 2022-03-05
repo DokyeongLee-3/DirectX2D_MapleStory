@@ -25,6 +25,7 @@
 #include "Animation/AnimationSequence2DInstance.h"
 #include "Animation/OnionMonsterAnimation.h"
 #include "Animation/LowerClassBookAnimation.h"
+#include "Animation/RadishMonsterAnimation.h"
 #include "IMGUIImage.h"
 #include "IMGUIListBox.h"
 #include "ObjectSet.h"
@@ -350,9 +351,9 @@ CGameObject* CEditorManager::CreateObject(CScene* Scene, size_t Type)
 		return Obj;
 	}
 
-	else if (Type == typeid(CMonsterRadish).hash_code())
+	else if (Type == typeid(CRadishMonster).hash_code())
 	{
-		CMonsterRadish* Obj = Scene->LoadGameObject<CMonsterRadish>();
+		CRadishMonster* Obj = Scene->LoadGameObject<CRadishMonster>();
 
 		return Obj;
 	}
@@ -564,6 +565,11 @@ void CEditorManager::CreateAnimInstance(CSpriteComponent* Sprite, size_t Type)
 	}
 
 	else if (Type == typeid(COnionMonsterAnimation).hash_code())
+	{
+		Sprite->LoadAnimationInstance<COnionMonsterAnimation>();
+	}
+
+	else if (Type == typeid(CRadishMonsterAnimation).hash_code())
 	{
 		Sprite->LoadAnimationInstance<COnionMonsterAnimation>();
 	}

@@ -8,6 +8,7 @@
 #include "Scene/WayToZakumScene.h"
 #include "Scene/Library2ndScene.h"
 #include "Scene/StartScene.h"
+#include "Scene/RadishScene.h"
 #include "Client.h"
 #include "Component/ColliderBox2D.h"
 #include "Component/ColliderCircle.h"
@@ -18,6 +19,7 @@
 #include "Animation/AnimationSequence2DInstance.h"
 #include "Animation/OnionMonsterAnimation.h"
 #include "Animation/LowerClassBookAnimation.h"
+#include "Animation/RadishMonsterAnimation.h"
 #include "Input.h"
 #include "Widget/MouseNormal.h"
 #include "Widget/MouseClick.h"
@@ -115,12 +117,12 @@ CGameObject* CClientManager::CreateObject(CScene* Scene, size_t Type)
 	//	return Obj;
 	//}
 
-	//else if (Type == typeid(CMonsterRadish).hash_code())
-	//{
-	//	CMonsterRadish* Obj = Scene->LoadGameObject<CMonsterRadish>();
+	else if (Type == typeid(CRadishMonster).hash_code())
+	{
+		CRadishMonster* Obj = Scene->LoadGameObject<CRadishMonster>();
 
-	//	return Obj;
-	//}
+		return Obj;
+	}
 
 	else if (Type == typeid(COnionMonster).hash_code())
 	{
@@ -179,12 +181,12 @@ CGameObject* CClientManager::CreateObject(CScene* Scene, size_t Type)
 		return Obj;
 	}
 
-	//else if (Type == typeid(CSingleHelixBlinkTree).hash_code())
-	//{
-	//	CSingleHelixBlinkTree* Obj = Scene->LoadGameObject<CSingleHelixBlinkTree>();
+	else if (Type == typeid(CSingleHelixBlinkTree).hash_code())
+	{
+		CSingleHelixBlinkTree* Obj = Scene->LoadGameObject<CSingleHelixBlinkTree>();
 
-	//	return Obj;
-	//}
+		return Obj;
+	}
 
 	//else if (Type == typeid(CLibrary2ndLampLight).hash_code())
 	//{
@@ -264,6 +266,11 @@ CGameObject* CClientManager::CreateObject(CScene* Scene, size_t Type)
 				else if (NextSceneMode->GetTypeID() == typeid(CLibrary2ndScene).hash_code())
 				{
 					((CLibrary2ndScene*)(NextSceneMode))->SetStageObject(Obj);
+				}
+
+				else if (NextSceneMode->GetTypeID() == typeid(CRadishScene).hash_code())
+				{
+					((CRadishScene*)(NextSceneMode))->SetStageObject(Obj);
 				}
 			}
 		}
@@ -355,6 +362,11 @@ void CClientManager::CreateAnimInstance(CSpriteComponent* Sprite, size_t Type)
 	else if (Type == typeid(CLowerClassBookAnimation).hash_code())
 	{
 		Sprite->LoadAnimationInstance<CLowerClassBookAnimation>();
+	}
+
+	else if (Type == typeid(CRadishMonsterAnimation).hash_code())
+	{
+		Sprite->LoadAnimationInstance<CRadishMonsterAnimation>();
 	}
 }
 

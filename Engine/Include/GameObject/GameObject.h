@@ -151,18 +151,20 @@ public:
 		return nullptr;
 	}
 
-	CSceneComponent* FindComponentFromType(size_t TypeID)
+	template <typename T>
+	void FindComponentFromType(std::vector<T*>& vecComp)
 	{
 		auto	iter = m_SceneComponentList.begin();
 		auto	iterEnd = m_SceneComponentList.end();
 
 		for (; iter != iterEnd; ++iter)
 		{
-			if ((*iter)->GetTypeID() == TypeID)
-				return *iter;
+			if ((*iter)->CheckType<T>())
+			{
+				vecComp.push_back((T*)*iter);
+			}
 		}
 
-		return nullptr;
 	}
 
 	void SetLifeSpan(float LifeSpan)

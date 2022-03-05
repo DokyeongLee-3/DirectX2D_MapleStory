@@ -42,7 +42,7 @@ bool CSingleHelixBlinkTree::Init()
 
 	CAnimationSequence2DInstance* Anim = m_Sprite->GetAnimationInstance();
 
-	Anim->AddAnimation(TEXT("SingleHelixBlinkTree.sqc"), ANIMATION_PATH, "SingleHelixBlinkTree", true, 0.6f);
+	Anim->AddAnimation(TEXT("SingleHelixBlinkTree.sqc"), ANIMATION_PATH, "SingleHelixBlinkTree", true, 1.6f);
 
 
 	return true;
@@ -73,5 +73,7 @@ void CSingleHelixBlinkTree::Load(FILE* File)
 	CGameObject::Load(File);
 
 	m_Sprite = (CSpriteComponent*)FindComponent("SingleHelixBlinkTreeSprite");
+
+	m_Sprite->GetAnimationInstance()->FindAnimation("SingleHelixBlinkTree")->SetPlayTime(1.6f);
 }
 

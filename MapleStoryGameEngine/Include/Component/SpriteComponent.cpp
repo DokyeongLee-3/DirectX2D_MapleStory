@@ -272,6 +272,9 @@ void CSpriteComponent::Save(FILE* File)
 		m_Animation->Save(File);
 	}
 
+	//추가
+	fwrite(&m_Flip, sizeof(bool), 1, File);
+
 	CSceneComponent::Save(File);
 }
 
@@ -303,6 +306,12 @@ void CSpriteComponent::Load(FILE* File)
 
 		m_Animation->Load(File);
 	}
+
+	//추가
+	fread(&m_Flip, sizeof(bool), 1, File);
+
+	if (m_Flip && m_Animation)
+		m_Animation->Flip();
 		
 	CSceneComponent::Load(File);
 }

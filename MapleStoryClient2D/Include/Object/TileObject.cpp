@@ -27,12 +27,14 @@ void CTileObject::Start()
 	if (m_Name.find("Floor") != std::string::npos)
 		m_BottomMostFloor = true;
 
-	m_Floor = FindComponentFromType<CColliderBox2D>();
+	FindComponentFromType<CColliderBox2D>(m_vecFloor);
 
-	if (m_Floor)
+	size_t Count = m_vecFloor.size();
+
+	for (size_t i = 0 ; i < Count; ++i)
 	{
-		m_Floor->AddCollisionCallback(Collision_State::Begin, this, &CTileObject::CollisionBeginCallback);
-		m_Floor->AddCollisionCallback(Collision_State::End, this, &CTileObject::CollisionEndCallback);
+		m_vecFloor[i]->AddCollisionCallback(Collision_State::Begin, this, &CTileObject::CollisionBeginCallback);
+		m_vecFloor[i]->AddCollisionCallback(Collision_State::End, this, &CTileObject::CollisionEndCallback);
 	}
 
 	CTileMapComponent* TileComponent = FindComponentFromType<CTileMapComponent>();
@@ -144,7 +146,27 @@ void CTileObject::CollisionEndCallback(const CollisionResult& Result)
 					return;
 				}
 
-				DestObj->SetGravity(true);
+				std::vector<CColliderBox2D*> vecCollider;
+				PlayerObj->GetPlayerBody()->FindMultipleCollisionComponent<CColliderBox2D, CTileObject>(vecCollider);
+
+				size_t Count = vecCollider.size();
+				
+				bool ContinueTileCollision = false;
+
+				for (size_t i = 0; i < Count; ++i)
+				{
+					if (((CTileObject*)vecCollider[i]->GetGameObject()) == this)
+						ContinueTileCollision = true;
+				}
+
+				// 지금 막 떨어지는 충돌체는 Player의 m_PrevCollisionList에서 이미 지워졌다.
+				// Player가 내가 가진 또 다른 충돌체(지금 플레이어와 떨어진 충돌체말고)와 충돌이 되고 있다면
+				// 그때는 그 또 다른 충돌체와 충돌처리를 이어나가야하므로 Gravity를 true로 하지 않는다
+				if (ContinueTileCollision)
+					DestObj->SetGravity(false);
+				else
+					DestObj->SetGravity(true);
+
 				DestObj->SetTileCollisionEnable(false);
 			}
 		}

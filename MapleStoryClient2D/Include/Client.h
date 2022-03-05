@@ -14,7 +14,9 @@
 #include "Object/LopeTileObject.h"
 #include "Object/VerticalLampLight.h"
 #include "Object/OnionMonster.h"
+#include "Object/RadishMonster.h"
 #include "Object/LowerClassBook.h"
+#include "Object/SingleHelixBlinkTree.h"
 
 //struct MonsterInfo
 //{

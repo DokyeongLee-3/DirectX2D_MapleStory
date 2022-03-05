@@ -225,15 +225,15 @@ void CLobbyScene::LoadSound()
 
 void CLobbyScene::AddTileCollisionCallback()
 {
-	CTileObject* FloorTile = (CTileObject*)m_Scene->FindObject("LobbyTileObj");
+	//CTileObject* FloorTile = (CTileObject*)m_Scene->FindObject("LobbyTileObj");
 
-	if (FloorTile)
-	{
-		CColliderBox2D* Collider = (CColliderBox2D*)FloorTile->FindComponent("LobbyTileCollider");
-		Collider->AddCollisionCallback<CTileObject>(Collision_State::Begin, FloorTile, &CTileObject::CollisionBeginCallback);
-		//Collider->AddCollisionCallback<CTileObject>(Collision_State::Stay, FloorTile, &CTileObject::CollisionStayCallback);
-		Collider->AddCollisionCallback<CTileObject>(Collision_State::End, FloorTile, &CTileObject::CollisionEndCallback);
-	}
+	//if (FloorTile)
+	//{
+	//	CColliderBox2D* Collider = (CColliderBox2D*)FloorTile->FindComponent("LobbyTileCollider");
+	//	Collider->AddCollisionCallback<CTileObject>(Collision_State::Begin, FloorTile, &CTileObject::CollisionBeginCallback);
+	//	//Collider->AddCollisionCallback<CTileObject>(Collision_State::Stay, FloorTile, &CTileObject::CollisionStayCallback);
+	//	Collider->AddCollisionCallback<CTileObject>(Collision_State::End, FloorTile, &CTileObject::CollisionEndCallback);
+	//}
 
 	for (int i = 1; i <= 10; ++i)
 	{

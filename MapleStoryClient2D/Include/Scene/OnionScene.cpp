@@ -14,6 +14,7 @@
 #include "LoadingThread.h"
 #include "Render/RenderManager.h"
 #include "../Object/Player2D.h"
+#include "RadishScene.h"
 
 COnionScene::COnionScene()
 {
@@ -94,19 +95,7 @@ bool COnionScene::Init()
 	m_Scene->LoadFullPath(FullPath);
 
 
-	//for (int i = 0; i < 10; ++i)
-	//{
-	//	char MonsterName[128] = {};
-
-	//	sprintf_s(MonsterName, "OnionMonster%d", i);
-
-	//	COnionMonster* OnionMonster = m_Scene->CreateGameObject<COnionMonster>(MonsterName);
-	//	OnionMonster->SetAllSceneComponentsLayer("MovingObjFront");
-	//	OnionMonster->SetWorldPos(300.f + i * 150.f, 300.f, 0.f);
-	//}
-
 	LoadSound();
-	AddTileCollisionCallback();
 
 	if (m_PlayerObject)
 	{
@@ -241,33 +230,33 @@ void COnionScene::LoadSound()
 
 void COnionScene::AddTileCollisionCallback()
 {
-	CTileObject* FloorTile = (CTileObject*)m_Scene->FindObject("OnionFloorTileObj");
+	//CTileObject* FloorTile = (CTileObject*)m_Scene->FindObject("OnionFloorTileObj");
 
-	if (FloorTile)
-	{
-		CColliderBox2D* Collider = (CColliderBox2D*)FloorTile->FindComponent("OnionFloorTileCollider");
-		Collider->AddCollisionCallback<CTileObject>(Collision_State::Begin, FloorTile, &CTileObject::CollisionBeginCallback);
-		//Collider->AddCollisionCallback<CTileObject>(Collision_State::Stay, FloorTile, &CTileObject::CollisionStayCallback);
-		Collider->AddCollisionCallback<CTileObject>(Collision_State::End, FloorTile, &CTileObject::CollisionEndCallback);
-	}
+	//if (FloorTile)
+	//{
+	//	CColliderBox2D* Collider = (CColliderBox2D*)FloorTile->FindComponent("OnionFloorTileCollider");
+	//	Collider->AddCollisionCallback<CTileObject>(Collision_State::Begin, FloorTile, &CTileObject::CollisionBeginCallback);
+	//	//Collider->AddCollisionCallback<CTileObject>(Collision_State::Stay, FloorTile, &CTileObject::CollisionStayCallback);
+	//	Collider->AddCollisionCallback<CTileObject>(Collision_State::End, FloorTile, &CTileObject::CollisionEndCallback);
+	//}
 
-	for (int i = 0; i <= 5; ++i)
-	{
-		char TileObjName[128] = {};
-		sprintf_s(TileObjName, "TileObj%d", i);
-		CTileObject* TileObj = (CTileObject*)m_Scene->FindObject(TileObjName);
+	//for (int i = 0; i <= 5; ++i)
+	//{
+	//	char TileObjName[128] = {};
+	//	sprintf_s(TileObjName, "TileObj%d", i);
+	//	CTileObject* TileObj = (CTileObject*)m_Scene->FindObject(TileObjName);
 
-		if (TileObj)
-		{
-			CColliderBox2D* TileCollider = (CColliderBox2D*)TileObj->FindComponent("TileMapCollider");
+	//	if (TileObj)
+	//	{
+	//		CColliderBox2D* TileCollider = (CColliderBox2D*)TileObj->FindComponent("TileMapCollider");
 
-			if (TileCollider)
-			{
-				TileCollider->AddCollisionCallback<CTileObject>(Collision_State::Begin, TileObj, &CTileObject::CollisionBeginCallback);
-				TileCollider->AddCollisionCallback<CTileObject>(Collision_State::End, TileObj, &CTileObject::CollisionEndCallback);
-			}
-		}
-	}
+	//		if (TileCollider)
+	//		{
+	//			TileCollider->AddCollisionCallback<CTileObject>(Collision_State::Begin, TileObj, &CTileObject::CollisionBeginCallback);
+	//			TileCollider->AddCollisionCallback<CTileObject>(Collision_State::End, TileObj, &CTileObject::CollisionEndCallback);
+	//		}
+	//	}
+	//}
 }
 
 COnionMonster* COnionScene::FindOnionMonster(bool Right, const Vector3& MyPos, float DistXConstraint, float DistYConstraint)
@@ -334,6 +323,25 @@ void COnionScene::CreateLobbyScene()
 	//SAFE_DELETE(m_LoadingThread);
 	m_LoadingThread = CThread::CreateThread<CLoadingThread>("LobbySceneLoadingThread");
 	m_LoadingThread->SetLoadingScene(ThreadLoadingScene::Lobby);
+
+	m_LoadingThread->Start();
+}
+
+void COnionScene::CreateRadishScene()
+{
+	m_Scene->GetResource()->SoundStop("OnionSceneBGM");
+
+	CSceneManager::GetInst()->CreateNextScene(false);
+	CRadishScene* RadishScene = CSceneManager::GetInst()->CreateSceneModeEmpty<CRadishScene>(false);
+
+	RadishScene->SetPlayerObject(m_PlayerObject);
+
+	// 다음 Scene에서의 위치를 Scene의 왼쪽에 위치하도록 잡아주기
+	m_PlayerObject->SetWorldPos(200.f, 300.f, 0.f);
+
+	//SAFE_DELETE(m_LoadingThread);
+	m_LoadingThread = CThread::CreateThread<CLoadingThread>("RadishSceneLoadingThread");
+	m_LoadingThread->SetLoadingScene(ThreadLoadingScene::Radish);
 
 	m_LoadingThread->Start();
 }

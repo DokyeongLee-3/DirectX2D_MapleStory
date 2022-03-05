@@ -101,8 +101,6 @@ bool CLibrary2ndScene::Init()
 		m_PlayerObject->SetTileCollisionEnable(false);
 	}
 
-	AddTileCollisionCallback();
-
 	return true;
 }
 
@@ -228,14 +226,14 @@ void CLibrary2ndScene::LoadSound()
 
 void CLibrary2ndScene::AddTileCollisionCallback()
 {
-	CTileObject* FloorTile = (CTileObject*)m_Scene->FindObject("FloorTile");
+	/*CTileObject* FloorTile = (CTileObject*)m_Scene->FindObject("FloorTile");
 
 	if (FloorTile)
 	{
 		CColliderBox2D* Collider = (CColliderBox2D*)FloorTile->FindComponent("FloorTileCollider");
 		Collider->AddCollisionCallback<CTileObject>(Collision_State::Begin, FloorTile, &CTileObject::CollisionBeginCallback);
 		Collider->AddCollisionCallback<CTileObject>(Collision_State::End, FloorTile, &CTileObject::CollisionEndCallback);
-	}
+	}*/
 }
 
 void CLibrary2ndScene::CreateLobbyScene()

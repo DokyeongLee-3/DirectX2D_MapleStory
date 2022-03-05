@@ -22,6 +22,7 @@ private:
 	class CIMGUITextInput* m_ScalingX;
 	class CIMGUITextInput* m_ScalingY;
 
+	class CIMGUIButton* m_FlipButton;
 
 public:
 	virtual bool Init();
@@ -92,6 +93,9 @@ private:
 private:
 	void ScalingXCallback();
 	void ScalingYCallback();
+
+private:
+	void FlipComponent();
 
 public:
 	void ClearDetailWindowInfo();

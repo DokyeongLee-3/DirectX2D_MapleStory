@@ -161,6 +161,7 @@
     <ClCompile Include="Animation\OnionMonsterAnimation.cpp" />
     <ClCompile Include="Animation\PlayerOrb.cpp" />
     <ClCompile Include="Animation\PlayerSkillBodyEffect.cpp" />
+    <ClCompile Include="Animation\RadishMonsterAnimation.cpp" />
     <ClCompile Include="Animation\SylphideLancerMirrorAnimation.cpp" />
     <ClCompile Include="Animation\VoidPressureAttackSphere.cpp" />
     <ClCompile Include="Animation\VoidPressureOrbAnimation.cpp" />
@@ -184,6 +185,8 @@
     <ClCompile Include="Object\PlayerAnimation2D.cpp" />
     <ClCompile Include="Object\PlayerSkillInfo.cpp" />
     <ClCompile Include="Object\Portal.cpp" />
+    <ClCompile Include="Object\RadishMonster.cpp" />
+    <ClCompile Include="Object\SingleHelixBlinkTree.cpp" />
     <ClCompile Include="Object\Stage.cpp" />
     <ClCompile Include="Object\StaticMapObj.cpp" />
     <ClCompile Include="Object\SylphideLancer.cpp" />
@@ -197,6 +200,7 @@
     <ClCompile Include="Scene\LoadingThread.cpp" />
     <ClCompile Include="Scene\LobbyScene.cpp" />
     <ClCompile Include="Scene\OnionScene.cpp" />
+    <ClCompile Include="Scene\RadishScene.cpp" />
     <ClCompile Include="Scene\StartScene.cpp" />
     <ClCompile Include="Scene\WayToZakumScene.cpp" />
     <ClCompile Include="Widget\BossMatching.cpp" />
@@ -218,6 +222,7 @@
     <ClInclude Include="Animation\OnionMonsterAnimation.h" />
     <ClInclude Include="Animation\PlayerOrb.h" />
     <ClInclude Include="Animation\PlayerSkillBodyEffect.h" />
+    <ClInclude Include="Animation\RadishMonsterAnimation.h" />
     <ClInclude Include="Animation\SylphideLancerMirrorAnimation.h" />
     <ClInclude Include="Animation\VoidPressureAttackSphere.h" />
     <ClInclude Include="Animation\VoidPressureOrbAnimation.h" />
@@ -241,6 +246,8 @@
     <ClInclude Include="Object\PlayerAnimation2D.h" />
     <ClInclude Include="Object\PlayerSkillInfo.h" />
     <ClInclude Include="Object\Portal.h" />
+    <ClInclude Include="Object\RadishMonster.h" />
+    <ClInclude Include="Object\SingleHelixBlinkTree.h" />
     <ClInclude Include="Object\Stage.h" />
     <ClInclude Include="Object\StaticMapObj.h" />
     <ClInclude Include="Object\SylphideLancer.h" />
@@ -255,6 +262,7 @@
     <ClInclude Include="Scene\LoadingThread.h" />
     <ClInclude Include="Scene\LobbyScene.h" />
     <ClInclude Include="Scene\OnionScene.h" />
+    <ClInclude Include="Scene\RadishScene.h" />
     <ClInclude Include="Scene\StartScene.h" />
     <ClInclude Include="Scene\WayToZakumScene.h" />
     <ClInclude Include="Widget\BossMatching.h" />

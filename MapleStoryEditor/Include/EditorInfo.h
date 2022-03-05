@@ -6,7 +6,7 @@ enum class CreateObject_Type
 {
 	GameObject,
 	Player,
-	MonsterRadish,
+	RadishMonster,
 	OnionMonster,
 	LowerClassBook,
 	PlayerSkillSet,

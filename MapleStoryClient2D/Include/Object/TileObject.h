@@ -15,7 +15,7 @@ protected:
     virtual ~CTileObject();
 
 private:
-    CColliderBox2D* m_Floor;
+    std::vector<CColliderBox2D*> m_vecFloor;
     // 맵 최하단 바닥타일인지 아닌지
     bool            m_BottomMostFloor;
 

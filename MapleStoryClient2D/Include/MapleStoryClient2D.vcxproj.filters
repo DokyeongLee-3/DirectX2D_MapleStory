@@ -243,6 +243,18 @@
     <ClCompile Include="Object\Monster.cpp">
       <Filter>02. Object\02. Monster\01. Object</Filter>
     </ClCompile>
+    <ClCompile Include="Object\RadishMonster.cpp">
+      <Filter>02. Object\02. Monster\01. Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\RadishMonsterAnimation.cpp">
+      <Filter>05. Animation\02. Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\RadishScene.cpp">
+      <Filter>01. SceneMode</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\SingleHelixBlinkTree.cpp">
+      <Filter>02. Object\05. MapObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -412,6 +424,18 @@
     </ClInclude>
     <ClInclude Include="Object\Monster.h">
       <Filter>02. Object\02. Monster\01. Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\RadishMonster.h">
+      <Filter>02. Object\02. Monster\01. Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation\RadishMonsterAnimation.h">
+      <Filter>05. Animation\02. Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\RadishScene.h">
+      <Filter>01. SceneMode</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\SingleHelixBlinkTree.h">
+      <Filter>02. Object\05. MapObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
