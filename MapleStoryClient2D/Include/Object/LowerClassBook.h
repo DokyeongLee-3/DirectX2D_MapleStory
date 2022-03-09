@@ -50,7 +50,9 @@ private:
 
 public:
     void ReturnIdle();
-    void FiniteState(float DeltaTime);
+    void FiniteState(float DeltaTime);   
+    virtual void SetTrackState();
+
 
 public:
     void CollisionBeginCallback(const CollisionResult& Result);

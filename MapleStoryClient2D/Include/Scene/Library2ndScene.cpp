@@ -14,6 +14,7 @@
 #include "Render/RenderManager.h"
 #include "../Object/SylphideLancerHitEffect.h"
 #include "../Object/VoidPressureHitEffect.h"
+#include "../Object/DeathSideHitEffect.h"
 
 CLibrary2ndScene::CLibrary2ndScene()
 {
@@ -65,12 +66,15 @@ bool CLibrary2ndScene::Init()
 	CConfigurationWindow* ConfigurationWindow = CClientManager::GetInst()->GetConfigurationWindow();
 	CCharacterEXP* EXPWindow = CClientManager::GetInst()->GetCharacterEXPWindow();
 	CBossMatching* BossMatching = CClientManager::GetInst()->GetBossMatchingWindow();
+	CStatWindow* StatWindow = CClientManager::GetInst()->GetStatWindow();
+
 	m_Scene->GetViewport()->AddWindow(StatusWindow);
 	m_Scene->GetViewport()->AddWindow(Inventory);
 	m_Scene->GetViewport()->AddWindow(SkillQuickSlot);
 	m_Scene->GetViewport()->AddWindow(ConfigurationWindow);
 	m_Scene->GetViewport()->AddWindow(EXPWindow);
 	m_Scene->GetViewport()->AddWindow(BossMatching);
+	m_Scene->GetViewport()->AddWindow(StatWindow);
 
 	// 보스맵 들어와서도 보스매칭 UI가 켜져있으면 꺼준다
 	if (BossMatching->IsEnable())
@@ -159,7 +163,7 @@ void CLibrary2ndScene::CreatePlayerAnimationSequence()
 	m_Scene->GetResource()->LoadSequence2D("PlayerHealLeft.sqc");
 	m_Scene->GetResource()->LoadSequence2D("PlayerRope.sqc");
 	m_Scene->GetResource()->LoadSequence2D("PlayerJumpLeft.sqc");
-
+	m_Scene->GetResource()->LoadSequence2D("PlayerLevelUpEffect.sqc");
 }
 
 void CLibrary2ndScene::CreateSkillAnimationSequence()
@@ -182,6 +186,9 @@ void CLibrary2ndScene::CreateSkillAnimationSequence()
 	m_Scene->GetResource()->LoadSequence2D("VoidPressureHit.sqc");
 
 	m_Scene->GetResource()->LoadSequence2D("LightTransformingLeft.sqc");
+
+	m_Scene->GetResource()->LoadSequence2D("DeathSide.sqc");
+	m_Scene->GetResource()->LoadSequence2D("DeathSideHitEffect.sqc");
 }
 
 void CLibrary2ndScene::CreateMonsterAnimationSequence()
@@ -205,6 +212,7 @@ void CLibrary2ndScene::CreateEffectPrototype()
 {
 	CSylphideLancerHitEffect* SylphideLancerHitEffect = m_Scene->CreatePrototype<CSylphideLancerHitEffect>("SylphideLancerHitEffect");
 	CVoidPressureHitEffect* VoidPressureHitEffect = m_Scene->CreatePrototype<CVoidPressureHitEffect>("VoidPressureHitEffect");
+	CDeathSideHitEffect* DeathSideHitEffect = m_Scene->CreatePrototype<CDeathSideHitEffect>("DeathSideHitEffect");
 }
 
 void CLibrary2ndScene::LoadSound()
@@ -222,6 +230,14 @@ void CLibrary2ndScene::LoadSound()
 	m_Scene->GetResource()->LoadSound("Effect", false, "VoidPressureHit", "VoidPressureHit.mp3");
 
 	m_Scene->GetResource()->LoadSound("Effect", false, "LightTransforming", "LightTransformingUse.mp3");
+
+	m_Scene->GetResource()->LoadSound("Effect", false, "DeathSideHit", "DeathSideHit.mp3");
+	m_Scene->GetResource()->LoadSound("Effect", false, "DeathSideUse", "DeathSideUse.mp3");
+	m_Scene->GetResource()->LoadSound("Effect", false, "DeathSideVoice1", "DeathSideVoice1.mp3");
+	m_Scene->GetResource()->LoadSound("Effect", false, "DeathSideVoice2", "DeathSideVoice2.mp3");
+
+	m_Scene->GetResource()->LoadSound("Effect", false, "LevelUp", "LevelUp.mp3");
+	m_Scene->GetResource()->LoadSound("Effect", false, "PickUpItem", "PickUpItem.mp3");
 }
 
 void CLibrary2ndScene::AddTileCollisionCallback()

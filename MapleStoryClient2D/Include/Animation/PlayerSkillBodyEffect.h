@@ -14,7 +14,10 @@ public:
 	virtual bool Init();
 	virtual CPlayerSkillBodyEffect* Clone();
 
+
 private:
 	void EndSkillEffect();
+	void LevelUpEndEffect();
+	void UpPos();
 };
 

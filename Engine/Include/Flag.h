@@ -203,9 +203,9 @@ enum class ThreadLoadingScene
 {
 	Lobby,
 	Onion,
+	Radish,
 	WayToZakum,
-	Library2nd,
-	Radish
+	Library2nd
 };
 
 
@@ -236,4 +236,13 @@ enum class Monster_State
 	Move,
 	Track,
 	End
+};
+
+enum class Item_Category
+{
+	Equipment,
+	Consume,
+	Etc,
+	Money,
+	Max
 };

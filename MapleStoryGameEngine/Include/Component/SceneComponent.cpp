@@ -22,7 +22,16 @@ CSceneComponent::CSceneComponent()	:
 
 	m_Parent = nullptr;
 
-	m_LayerName = "Default";
+	m_LayerName = "MapObjBack";
+
+	float ZValue = CRenderManager::GetInst()->GetLayerUpperBoundZOrder("MapObjBack");
+
+	Vector3 Pos = GetWorldPos();
+
+	SetWorldPos(Pos.x, Pos.y, ZValue);
+
+	m_FadeApply = true;
+	m_DefaultZValueSet = false;
 }
 
 CSceneComponent::CSceneComponent(const CSceneComponent& com) :
@@ -84,6 +93,24 @@ void CSceneComponent::SetSceneComponent(CGameObject* Object)
 	{
 		m_vecChild[i]->SetSceneComponent(Object);
 	}
+}
+
+void CSceneComponent::SetLayerName(const std::string& Name)
+{
+	m_LayerName = Name;
+
+	float ZValue = CRenderManager::GetInst()->GetLayerUpperBoundZOrder(Name);
+
+	Vector3 Pos = GetWorldPos();
+	SetWorldPos(Pos.x, Pos.y, ZValue);
+
+	size_t Size = m_vecChild.size();
+
+	for (size_t i = 0; i < Size; ++i)
+	{
+		m_vecChild[i]->SetLayerName(Name);
+	}
+
 }
 
 void CSceneComponent::GetAllSceneComponentsName(std::vector<FindComponentName>& vecNames)
@@ -367,6 +394,9 @@ void CSceneComponent::CheckCollision()
 
 void CSceneComponent::PrevRender()
 {
+	if (m_Name.find("LobbyTile") != std::string::npos)
+		int a = 3;
+
 	if (!m_Enable)
 		return;
 
@@ -395,7 +425,6 @@ void CSceneComponent::PrevRender()
 			return;
 		}
 	}
-
 
 	if (m_Render)
 	{

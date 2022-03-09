@@ -7,6 +7,7 @@
 #include "Widget/CharacterEXP.h"
 #include "Widget/CharacterStatusWindow.h"
 #include "Widget/BossMatching.h"
+#include "Widget/StatWindow.h"
 
 struct MonsterInfo
 {
@@ -32,14 +33,20 @@ public:
 	int Run();
 
 private:
-	CSharedPtr<CConfigurationWindow>    m_ConfigurationWindow;
-	CSharedPtr<CInventory>              m_Inventory;
-	CSharedPtr<CSkillQuickSlotWindow>   m_SkillQuickSlot;
-	CSharedPtr<CCharacterStatusWindow>  m_CharacterStatusWindow;
-	CSharedPtr<CCharacterEXP>           m_CharacterEXPWindow;
-	CSharedPtr<CBossMatching>           m_BossMatchingWindow;
+	CConfigurationWindow*    m_ConfigurationWindow;
+	CInventory*              m_Inventory;
+	CSkillQuickSlotWindow*   m_SkillQuickSlot;
+	CCharacterStatusWindow*  m_CharacterStatusWindow;
+	CCharacterEXP*           m_CharacterEXPWindow;
+	CBossMatching*           m_BossMatchingWindow;
+	CStatWindow*			 m_StatWindow;
 
 public:
+	void SetStatWindow(CStatWindow* Window)
+	{
+		m_StatWindow = Window;
+	}
+
 	void SetCharacterStatusWindow(CCharacterStatusWindow* Window)
 	{
 		m_CharacterStatusWindow = Window;
@@ -68,6 +75,11 @@ public:
 	void SetBossMatchingWindow(CBossMatching* Window)
 	{
 		m_BossMatchingWindow = Window;
+	}
+
+	CCharacterEXP* GetEXPWindow()	const
+	{
+		return m_CharacterEXPWindow;
 	}
 
 public:
@@ -101,6 +113,11 @@ public:
 		return m_BossMatchingWindow;
 	}
 
+	CStatWindow* GetStatWindow()	const
+	{
+		return m_StatWindow;
+	}
+
 public:
 	void CreateSceneMode(class CScene* Scene, size_t Type);
 	class CGameObject* CreateObject(class CScene* Scene, size_t Type);
@@ -113,6 +130,7 @@ public:
 	void OnOffInventory(float DeltaTime);
 	void OnOffConfiguration(float DeltaTime);
 	void OnOffBossMatching(float DeltaTime);
+	void OnOffStatWindow(float DeltaTime);
 
 public:
 	//bool IsCritical(int Factor);

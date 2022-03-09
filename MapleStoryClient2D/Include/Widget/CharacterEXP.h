@@ -30,5 +30,11 @@ public:
 	virtual void Render();
 	virtual CCharacterEXP* Clone();
 
+public:
+	void SetEXP(int EXP);
+	void SetEXPMax(int Max)
+	{
+		m_EXPMaxNumber->SetNumber(Max);
+	}
 };
 

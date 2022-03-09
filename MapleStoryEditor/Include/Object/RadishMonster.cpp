@@ -14,7 +14,7 @@ CRadishMonster::CRadishMonster(const CRadishMonster& obj) :
 	CMonster(obj)
 {
 	m_Sprite = (CSpriteComponent*)FindComponent("RadishMonsterSprite");
-	m_Body = (CColliderCircle*)FindComponent("Body");
+	m_Body = (CColliderBox2D*)FindComponent("Body");
 }
 
 CRadishMonster::~CRadishMonster()
@@ -24,11 +24,10 @@ CRadishMonster::~CRadishMonster()
 bool CRadishMonster::Init()
 {
 	m_Sprite = CreateComponent<CSpriteComponent>("RadishMonsterSprite");
-	m_Body = CreateComponent<CColliderCircle>("Body");
-	m_Body->SetRadius(30.f);
+	m_Body = CreateComponent<CColliderBox2D>("Body");
 
 	m_Sprite->AddChild(m_Body);
-
+	m_Body->SetWorldScale(40.f, 65.f, 1.f);
 
 	m_Sprite->SetTransparency(true);
 	//m_Sprite->SetOpacity(0.5f);

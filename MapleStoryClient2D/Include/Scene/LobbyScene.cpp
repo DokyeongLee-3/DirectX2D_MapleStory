@@ -66,41 +66,12 @@ bool CLobbyScene::Init()
 
 		Player->SetWorldPos(400.f, 200.f, 0.f);
 
-		Player->SetAllSceneComponentsLayer("MovingObjFront");
+		//Player->SetAllSceneComponentsLayer("MovingObjFront");
+		Player->GetRootComponent()->SetLayerName("MovingObjFront");
 	}
 
-	m_ConfigurationWindow = m_Scene->GetViewport()->CreateWidgetWindow<CConfigurationWindow>("ConfigurationWindow");
-	m_ConfigurationWindow->SetZOrder(2);
-	m_ConfigurationWindow->SetPos(200.f, 200.f);
-	m_ConfigurationWindow->Enable(false);
-	CClientManager::GetInst()->SetConfigurationWindow(m_ConfigurationWindow);
+	CreateInGameWidgetWindow();
 
-	m_Inventory = m_Scene->GetViewport()->CreateWidgetWindow<CInventory>("Inventory");
-	m_Inventory->SetZOrder(2);
-	m_Inventory->SetPos(250.f, 150.f);
-	m_Inventory->Enable(false);
-	CClientManager::GetInst()->SetInventoryWindow(m_Inventory);
-
-	m_BossMatchingWindow = m_Scene->GetViewport()->CreateWidgetWindow<CBossMatching>("BossMatching");
-	m_BossMatchingWindow->SetZOrder(2);
-	m_BossMatchingWindow->SetPos(200.f, 100.f);
-	m_BossMatchingWindow->Enable(false);
-	CClientManager::GetInst()->SetBossMatchingWindow(m_BossMatchingWindow);
-
-	m_CharacterStatusWindow = m_Scene->GetViewport()->CreateWidgetWindow<CCharacterStatusWindow>("MainStatus");
-	m_CharacterStatusWindow->SetPos(550.f, 13.f);
-	m_CharacterStatusWindow->SetZOrder(1);
-	m_CharacterStatusWindow->SetMouseCollisionEnable(false);
-	CClientManager::GetInst()->SetCharacterStatusWindow(m_CharacterStatusWindow);
-
-	m_CharacterEXPWindow = m_Scene->GetViewport()->CreateWidgetWindow<CCharacterEXP>("EXPWindow");
-	m_CharacterEXPWindow->SetZOrder(1);
-	m_CharacterEXPWindow->SetMouseCollisionEnable(false);
-	CClientManager::GetInst()->SetEXPWindow(m_CharacterEXPWindow);
-
-	m_SkillQuickSlot = m_Scene->GetViewport()->CreateWidgetWindow<CSkillQuickSlotWindow>("SkillQuickSlot");
-	m_SkillQuickSlot->SetZOrder(1);
-	CClientManager::GetInst()->SetSkillQuickSlot(m_SkillQuickSlot);
 
 	m_Scene->GetResource()->SoundPlay("FairyAcademyBGM");
 
@@ -173,7 +144,7 @@ void CLobbyScene::CreatePlayerAnimationSequence()
 	m_Scene->GetResource()->LoadSequence2D("PlayerHealLeft.sqc");
 	m_Scene->GetResource()->LoadSequence2D("PlayerRope.sqc");
 	m_Scene->GetResource()->LoadSequence2D("PlayerJumpLeft.sqc");
-
+	m_Scene->GetResource()->LoadSequence2D("PlayerLevelUpEffect.sqc");
 }
 
 void CLobbyScene::CreateSkillAnimationSequence()
@@ -194,6 +165,8 @@ void CLobbyScene::CreateSkillAnimationSequence()
 	m_Scene->GetResource()->LoadSequence2D("VoidPressureOrbDestroy.sqc");
 
 	m_Scene->GetResource()->LoadSequence2D("LightTransformingLeft.sqc");
+
+	m_Scene->GetResource()->LoadSequence2D("DeathSide.sqc");
 }
 
 void CLobbyScene::CreateMapAnimationSequence()
@@ -221,6 +194,13 @@ void CLobbyScene::LoadSound()
 	m_Scene->GetResource()->LoadSound("Effect", false, "VoidPressureEnd", "VoidPressureEnd.mp3");
 
 	m_Scene->GetResource()->LoadSound("Effect", false, "LightTransforming", "LightTransformingUse.mp3");
+
+	m_Scene->GetResource()->LoadSound("Effect", false, "DeathSideUse", "DeathSideUse.mp3");
+	m_Scene->GetResource()->LoadSound("Effect", false, "DeathSideVoice1", "DeathSideVoice1.mp3");
+	m_Scene->GetResource()->LoadSound("Effect", false, "DeathSideVoice2", "DeathSideVoice2.mp3");
+
+	m_Scene->GetResource()->LoadSound("Effect", false, "LevelUp", "LevelUp.mp3");
+	m_Scene->GetResource()->LoadSound("Effect", false, "PickUpItem", "PickUpItem.mp3");
 }
 
 void CLobbyScene::AddTileCollisionCallback()
@@ -277,6 +257,48 @@ void CLobbyScene::AddTileCollisionCallback()
 		}
 	}
 
+}
+
+void CLobbyScene::CreateInGameWidgetWindow()
+{
+	m_ConfigurationWindow = m_Scene->GetViewport()->CreateWidgetWindow<CConfigurationWindow>("ConfigurationWindow");
+	m_ConfigurationWindow->SetZOrder(2);
+	m_ConfigurationWindow->SetPos(200.f, 200.f);
+	m_ConfigurationWindow->Enable(false);
+	CClientManager::GetInst()->SetConfigurationWindow(m_ConfigurationWindow);
+
+	m_Inventory = m_Scene->GetViewport()->CreateWidgetWindow<CInventory>("Inventory");
+	m_Inventory->SetZOrder(2);
+	m_Inventory->SetPos(250.f, 150.f);
+	m_Inventory->Enable(false);
+	CClientManager::GetInst()->SetInventoryWindow(m_Inventory);
+
+	m_BossMatchingWindow = m_Scene->GetViewport()->CreateWidgetWindow<CBossMatching>("BossMatching");
+	m_BossMatchingWindow->SetZOrder(2);
+	m_BossMatchingWindow->SetPos(200.f, 100.f);
+	m_BossMatchingWindow->Enable(false);
+	CClientManager::GetInst()->SetBossMatchingWindow(m_BossMatchingWindow);
+
+	m_CharacterStatusWindow = m_Scene->GetViewport()->CreateWidgetWindow<CCharacterStatusWindow>("MainStatus");
+	m_CharacterStatusWindow->SetPos(550.f, 13.f);
+	m_CharacterStatusWindow->SetZOrder(1);
+	m_CharacterStatusWindow->SetMouseCollisionEnable(false);
+	CClientManager::GetInst()->SetCharacterStatusWindow(m_CharacterStatusWindow);
+
+	m_CharacterEXPWindow = m_Scene->GetViewport()->CreateWidgetWindow<CCharacterEXP>("EXPWindow");
+	m_CharacterEXPWindow->SetZOrder(1);
+	m_CharacterEXPWindow->SetMouseCollisionEnable(false);
+	CClientManager::GetInst()->SetEXPWindow(m_CharacterEXPWindow);
+
+	m_SkillQuickSlot = m_Scene->GetViewport()->CreateWidgetWindow<CSkillQuickSlotWindow>("SkillQuickSlot");
+	m_SkillQuickSlot->SetZOrder(1);
+	CClientManager::GetInst()->SetSkillQuickSlot(m_SkillQuickSlot);
+
+	m_StatWindow = m_Scene->GetViewport()->CreateWidgetWindow<CStatWindow>("Stat");
+	m_StatWindow->SetZOrder(2);
+	m_StatWindow->SetPos(200.f, 100.f);
+	m_StatWindow->Enable(false);
+	CClientManager::GetInst()->SetStatWindow(m_StatWindow);
 }
 
 void CLobbyScene::CreateOnionScene()

@@ -1,5 +1,7 @@
 
 #include "PlayerSkillBodyEffect.h"
+#include "Component/SpriteComponent.h"
+#include "../Object/Player2D.h"
 
 CPlayerSkillBodyEffect::CPlayerSkillBodyEffect()
 {
@@ -22,11 +24,15 @@ bool CPlayerSkillBodyEffect::Init()
 	//AddAnimation("Blank", "Blank", false, 1.f);
 	AddAnimation("SylphideLancerBodyEffectLeft", "SylphideLancerBodyEffectLeft", false, 0.4f);
 	AddAnimation("LightTransformingLeft", "LightTransformingLeft", false, 0.4f);
+	AddAnimation("PlayerLevelUpEffect", "PlayerLevelUpEffect", false, 1.8f);
 
 	SetCurrentAnimation(nullptr);
 
 	SetEndFunction<CPlayerSkillBodyEffect>("SylphideLancerBodyEffectLeft", this, &CPlayerSkillBodyEffect::EndSkillEffect);
 	SetEndFunction<CPlayerSkillBodyEffect>("LightTransformingLeft", this, &CPlayerSkillBodyEffect::EndSkillEffect);
+	
+	AddNotify<CPlayerSkillBodyEffect>("PlayerLevelUpEffect", "PlayerLevelUpEffect", 0, this, &CPlayerSkillBodyEffect::UpPos);
+	SetEndFunction<CPlayerSkillBodyEffect>("PlayerLevelUpEffect", this, &CPlayerSkillBodyEffect::LevelUpEndEffect);
 
 	return true;
 }
@@ -39,4 +45,19 @@ CPlayerSkillBodyEffect* CPlayerSkillBodyEffect::Clone()
 void CPlayerSkillBodyEffect::EndSkillEffect()
 {
 	SetCurrentAnimation(nullptr);
+}
+
+void CPlayerSkillBodyEffect::LevelUpEndEffect()
+{
+	CPlayer2D* Player = (CPlayer2D*)m_Owner->GetGameObject();
+	Player->SetChanging(false);
+
+	SetCurrentAnimation(nullptr);
+	// 원래 위치로 복귀
+	m_Owner->SetRelativePos(0.f, 11.f, 0.f);
+}
+
+void CPlayerSkillBodyEffect::UpPos()
+{
+	m_Owner->AddWorldPos(0.f, 250.f, 0.f);
 }

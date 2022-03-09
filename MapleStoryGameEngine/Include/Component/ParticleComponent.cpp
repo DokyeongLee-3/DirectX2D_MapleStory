@@ -3,6 +3,7 @@
 #include "../Scene/Scene.h"
 #include "../Scene/SceneResource.h"
 #include "../Resource/Shader/StructuredBuffer.h"
+#include "../Render/RenderManager.h"
 
 CParticleComponent::CParticleComponent()	:
 	m_SpawnTime(0.f),
@@ -15,6 +16,12 @@ CParticleComponent::CParticleComponent()	:
 	m_Render = true;
 
 	m_LayerName = "Particle";
+
+	float ZValue = CRenderManager::GetInst()->GetLayerUpperBoundZOrder("Particle");
+
+	Vector3 Pos = GetWorldPos();
+
+	SetWorldPos(Pos.x, Pos.y, ZValue);
 }
 
 CParticleComponent::CParticleComponent(const CParticleComponent& com) :

@@ -11,7 +11,7 @@ public:
 	CAnimationSequence2DInstance(const CAnimationSequence2DInstance& Anim);
 	virtual ~CAnimationSequence2DInstance();
 
-private:
+protected:
 	size_t		m_TypeID;
 	class CSpriteComponent* m_Owner;
 	class CScene* m_Scene;

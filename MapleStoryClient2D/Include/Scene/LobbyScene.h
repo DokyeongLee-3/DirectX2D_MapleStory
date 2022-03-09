@@ -7,6 +7,7 @@
 #include "../Widget/CharacterEXP.h"
 #include "../Widget/CharacterStatusWindow.h"
 #include "../Widget/BossMatching.h"
+#include "../Widget/StatWindow.h"
 
 class CLobbyScene :
     public CSceneMode
@@ -27,6 +28,7 @@ private:
     CSharedPtr<CCharacterStatusWindow>  m_CharacterStatusWindow;
     CSharedPtr<CCharacterEXP>           m_CharacterEXPWindow;
     CSharedPtr<CBossMatching>           m_BossMatchingWindow;
+    CSharedPtr<CStatWindow>             m_StatWindow;
 
     std::function<void(bool, float)>    m_LoadingFunction;
     class CLoadingThread*               m_LoadingThread;
@@ -65,6 +67,7 @@ private:
     void CreateMapAnimationSequence();
     void LoadSound();
     void AddTileCollisionCallback();
+    void CreateInGameWidgetWindow();
 
 public:
     void CreateOnionScene();

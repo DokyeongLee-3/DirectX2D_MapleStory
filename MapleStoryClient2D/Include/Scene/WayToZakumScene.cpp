@@ -68,6 +68,7 @@ bool CWayToZakumScene::Init()
 
 	CreateAnimationSequence();
 	CreateMaterial();
+	LoadSound();
 
 	// 자쿰으로 통하는 길 Scene 만들어놓은 scn파일까지의 경로
 	const PathInfo* Info = CPathManager::GetInst()->FindPath(SCENE_PATH);
@@ -81,8 +82,6 @@ bool CWayToZakumScene::Init()
 
 	m_Scene->LoadFullPath(FullPath);
 
-
-	m_Scene->GetResource()->LoadSound("BGM", true, "WayToZakumBGM", "HellGate.mp3");
 	m_Scene->GetResource()->SoundPlay("WayToZakumBGM");
 
 
@@ -151,7 +150,7 @@ void CWayToZakumScene::CreatePlayerAnimationSequence()
 	m_Scene->GetResource()->LoadSequence2D("PlayerHealLeft.sqc");
 	m_Scene->GetResource()->LoadSequence2D("PlayerRope.sqc");
 	m_Scene->GetResource()->LoadSequence2D("PlayerJumpLeft.sqc");
-
+	m_Scene->GetResource()->LoadSequence2D("PlayerLevelUpEffect.sqc");
 }
 
 void CWayToZakumScene::CreateSkillAnimationSequence()
@@ -167,4 +166,26 @@ void CWayToZakumScene::CreateSkillAnimationSequence()
 void CWayToZakumScene::CreateMapAnimationSequence()
 {
 
+}
+
+void CWayToZakumScene::LoadSound()
+{
+	m_Scene->GetResource()->LoadSound("BGM", true, "WayToZakumBGM", "HellGate.mp3");
+
+	m_Scene->GetResource()->LoadSound("Effect", false, "Jump", "Jump.mp3");
+
+	m_Scene->GetResource()->LoadSound("Effect", false, "SylphideLancerUse", "SylphideLancerUse.mp3");
+	m_Scene->GetResource()->LoadSound("Effect", false, "SylphideLancerHit", "SylphideLancerHit.mp3");
+
+	m_Scene->GetResource()->LoadSound("Effect", false, "VoidPressureUse", "VoidPressureUse.mp3");
+	m_Scene->GetResource()->LoadSound("Effect", false, "VoidPressureLoop", "VoidPressureLoop.mp3");
+	m_Scene->GetResource()->LoadSound("Effect", false, "VoidPressureEnd", "VoidPressureEnd.mp3");
+	m_Scene->GetResource()->LoadSound("Effect", false, "VoidPressureHit", "VoidPressureHit.mp3");
+
+	m_Scene->GetResource()->LoadSound("Effect", false, "LightTransforming", "LightTransformingUse.mp3");
+
+	m_Scene->GetResource()->LoadSound("Effect", false, "DeathSideHit", "DeathSideHit.mp3");
+	m_Scene->GetResource()->LoadSound("Effect", false, "DeathSideUse", "DeathSideUse.mp3");
+
+	m_Scene->GetResource()->LoadSound("Effect", false, "LevelUp", "LevelUp.mp3");
 }

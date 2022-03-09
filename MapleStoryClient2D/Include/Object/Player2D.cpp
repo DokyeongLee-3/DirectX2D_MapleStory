@@ -22,11 +22,13 @@
 #include "Render/RenderManager.h"
 #include "VoidPressure.h"
 #include "VoidPressureOrb.h"
+#include "DeathSide.h"
 #include "PlayerSkillInfo.h"
 #include "../Widget/PlayerDamageFont.h"
 #include "Engine.h"
 #include "../Client.h"
 #include "Component/ColliderComponent.h"
+#include "Bill.h"
 
 CPlayer2D::CPlayer2D() :
 	m_BodySprite(nullptr),
@@ -41,14 +43,16 @@ CPlayer2D::CPlayer2D() :
 	m_OnJump(false),
 	m_OnKnockBack(false),
 	m_OnKnockBackLeft(false),
-	m_OnKnockBackTime(2.f),
+	m_OnKnockBackTime(1.f),
 	m_OnKnockBackAccTime(0.f),
 	m_HitOpacity(0.7f),
-	m_OnHitTime(1.f),
+	m_OnHit(false),
+	m_OnHitTime(2.f),
 	m_OnHitAccTime(0.f),
 	m_OnLope(false),
 	m_LopeJump(false),
-	m_LopeEnable(true)
+	m_LopeEnable(true),
+	m_IsChanging(false)
 {
 	SetTypeID<CPlayer2D>();
 	m_PlayerSkillInfo = new CPlayerSkillInfo;
@@ -56,15 +60,6 @@ CPlayer2D::CPlayer2D() :
 
 	m_JumpForce = 370.f;
 	m_DirVector = Vector3(1.f, 0.f, 0.f);
-
-	//Vector3 Test = Vector3(1.f, 0.f, 0.f);
-
-	//Matrix matRot;
-	//matRot.Rotation(Vector3(0.f, 0.f, 36.f));
-
-	//Vector3 ret = Test.TransformCoord(matRot);
-
-	//int a = 3;
 }
 
 CPlayer2D::CPlayer2D(const CPlayer2D& obj) :
@@ -105,7 +100,7 @@ bool CPlayer2D::Init()
 	m_Body->SetOffset(0.f, 13.f, 0.f);
 
 	m_Camera = CreateComponent<CCameraComponent>("Camera");
-
+	m_Camera->SetInheritParentRotationPosZ(false);
 
 	m_Body->SetCollisionProfile("Player");
 
@@ -163,6 +158,8 @@ bool CPlayer2D::Init()
 	CInput::GetInst()->CreateKey("VoidPressure", 'W');
 	CInput::GetInst()->CreateKey("LightTransforming", VK_SPACE);
 	CInput::GetInst()->CreateKey("Jump", 'Z');
+	CInput::GetInst()->CreateKey("DeathSide", 'E');
+	CInput::GetInst()->CreateKey("PickItem", 'X');
 	//CInput::GetInst()->CreateKey("Flip", 'F');
 
 	CInput::GetInst()->SetKeyCallback<CPlayer2D>("MoveUp", KeyState_Push, this, &CPlayer2D::MoveUp);
@@ -179,6 +176,8 @@ bool CPlayer2D::Init()
 	CInput::GetInst()->SetKeyCallback<CPlayer2D>("VoidPressure", KeyState_Up, this, &CPlayer2D::VoidPressureCancle);
 	CInput::GetInst()->SetKeyCallback<CPlayer2D>("LightTransforming", KeyState_Down, this, &CPlayer2D::LightTransforming);
 	CInput::GetInst()->SetKeyCallback<CPlayer2D>("Jump", KeyState_Down, this, &CPlayer2D::Jump);
+	CInput::GetInst()->SetKeyCallback<CPlayer2D>("DeathSide", KeyState_Down, this, &CPlayer2D::DeathSide);
+	CInput::GetInst()->SetKeyCallback<CPlayer2D>("PickItem", KeyState_Down, this, &CPlayer2D::PickItem);
 	//CInput::GetInst()->SetKeyCallback<CPlayer2D>("Flip", KeyState_Down, this, &CPlayer2D::FlipAll);
 
 	//CInput::GetInst()->SetKeyCallback("DirUp", KeyState_Down, this, &CPlayer2D::GotoNextMap);
@@ -219,7 +218,15 @@ void CPlayer2D::Update(float DeltaTime)
 	{
 		m_OnHitAccTime += DeltaTime;
 
-		int Percent = int(m_OnHitAccTime * 10) % 11;
+		if (m_OnHitAccTime >= m_OnHitTime)
+		{
+			m_OnHit = false;
+			m_OnHitAccTime = 0.f;
+			m_BodySprite->SetOpacity(1.f);
+			return;
+		}
+
+		int Percent = int(m_OnHitAccTime * 10) % 10;
 
 		switch (Percent)
 		{
@@ -229,28 +236,32 @@ void CPlayer2D::Update(float DeltaTime)
 		case 7:
 		case 9:
 			m_BodySprite->SetOpacity(m_HitOpacity);
-			break;
+		break;
+
+		case 0:
 		case 2:
 		case 4:
 		case 6:
 		case 8:
 			m_BodySprite->SetOpacity(1.f);
-			break;
+		break;
+
 		}
 
-		if (m_OnHitAccTime >= m_OnHitTime)
-		{
-			m_OnHit = false;
-			m_OnHitAccTime = 0.f;
-			m_BodySprite->SetOpacity(1.f);
-		}
+		KnockBack(DeltaTime);
 	}
 	
-	KnockBack(DeltaTime);
 }
 
 void CPlayer2D::PostUpdate(float DeltaTime)
 {
+	// 이렇게 강제로 Camera의 transform중 Z값을 0으로 안잡아주면 카메라가 Player의 Root Component의 카메라가 자신의 Z값으로 물려받아서 
+	// 크기는 Z값을 갖고, 부호는 음수인 값이 카메라의 m_matView[4][3]에 저장돼서 그만큼 매번 z방향으로 translation되게 해서 렌더링돼서
+	// 결국 그 값의 절댓값보다 작은 z값을 가지는 레이어(ex.지금 이 코드에선 CoveringMapObj 레이어에 속한 SceneComponent들)나
+	// SceneComponent는 결국 view변환후에는 Z값이 음수가돼서 출력이 안될것이다
+	Vector3 CamWorldPos = m_Camera->GetWorldPos();
+	m_Camera->SetWorldPos(CamWorldPos.x, CamWorldPos.y, 0.f);
+
 	// 카메라가 화면 밖으로 나가는거도 보정을 한 뒤에 최종적으로 만들어지는 transform으로 뷰행렬을 만들어야하므로 
 	// 무조건 CGameObject::PostUpdate보다 먼저 해줘야한다
 	CameraTrack();
@@ -610,6 +621,8 @@ void CPlayer2D::SylphideLancer(float DeltaTime)
 			NearMonster = ((COnionScene*)Mode)->FindOnionMonster(Flip, GetWorldPos(), 400.f, 120.f);
 		else if (m_Scene->GetSceneMode()->GetTypeID() == typeid(CLibrary2ndScene).hash_code())
 			NearMonster = ((CLibrary2ndScene*)Mode)->FindLowerClassBook(Flip, GetWorldPos(), 400.f, 120.f);
+		else if (m_Scene->GetSceneMode()->GetTypeID() == typeid(CRadishScene).hash_code())
+			NearMonster = ((CRadishScene*)Mode)->FindRadishMonster(Flip, GetWorldPos(), 400.f, 120.f);
 	}
 
 	m_Scene->GetResource()->SoundPlay("SylphideLancerUse");
@@ -758,7 +771,7 @@ void CPlayer2D::VoidPressure(float DeltaTime)
 
 void CPlayer2D::LightTransforming(float DeltaTime)
 {
-	if (m_OnJump)
+	if (m_OnJump || m_IsChanging)
 		return;
 
 	if (m_Dir == PlayerDir::None)
@@ -851,6 +864,38 @@ void CPlayer2D::LightTransforming(float DeltaTime)
 
 }
 
+void CPlayer2D::DeathSide(float DeltaTime)
+{
+	if (m_OnJump || m_IsChanging)
+		return;
+
+	if (CRenderManager::GetInst()->GetStartFadeOut())
+		return;
+
+	SkillInfo* SkillInfo = m_PlayerSkillInfo->FindSkillInfo("DeathSide");
+
+	if (SkillInfo->Active == true && SkillInfo->AccTime < SkillInfo->CoolTime)
+		return;
+
+
+	// Scene의 m_ObjList에서 몬스터 찾아서 여기서 실피드랜서 방향 설정해주기
+
+	m_BodySprite->ChangeAnimation("HealLeft");
+
+	m_Scene->GetResource()->SoundPlay("DeathSideUse");
+	m_Scene->GetResource()->SoundPlay("DeathSideVoice2");
+
+	CDeathSide* DeathSide = m_Scene->CreateGameObject<CDeathSide>("DeathSide");
+	DeathSide->SetWorldPos(m_BodySprite->GetWorldPos());
+	DeathSide->SetAllSceneComponentsLayer("MovingObjFront");
+	DeathSide->SetCollisionProfile("PlayerAttack");
+
+	m_BodySprite->SetFadeApply(false);
+	m_PlayerOrb->SetFadeApply(false);
+
+	SkillInfo->Active = true;
+}
+
 void CPlayer2D::VoidPressureCancle(float DeltaTime)
 {
 	m_Scene->GetResource()->SoundPlay("VoidPressureEnd");
@@ -861,6 +906,8 @@ void CPlayer2D::VoidPressureCancle(float DeltaTime)
 		m_VoidPressure->SetVoidPressureLifeSpan(6.f);
 		CSpriteComponent* SpriteComp = (CSpriteComponent*)(m_VoidPressure->GetRootComponent());
 		SpriteComp->GetAnimationInstance()->ChangeAnimation("VoidPressureDestroy");
+		m_VoidPressure->GetBody()->Enable(false);
+		m_VoidPressure->Enable(false);
 		m_VoidPressure->SetOnDestroy(true);
 	}
 
@@ -974,6 +1021,7 @@ void CPlayer2D::CollisionBeginCallback(const CollisionResult& Result)
 			m_DirRotation = ColliderRot;
 		}
 
+
 		//TileObjCollider = TileObj->FindComponentFromType<CColliderBox2D>();
 
 		m_Dir = PlayerDir::None;
@@ -984,13 +1032,18 @@ void CPlayer2D::CollisionBeginCallback(const CollisionResult& Result)
 		m_OnLope = false;
 		m_LopeEnable = true;
 		m_GravityAccTime = 0.f;
+		m_OnKnockBack = false;
+		m_OnKnockBackAccTime = 0.f;
+
 		m_BodySprite->ChangeAnimation("IdleLeft");
 	}
 
 	if (CRenderManager::GetInst()->GetStartFadeIn())
 		return;
 
-	if (DestObj->GetTypeID() == typeid(COnionMonster).hash_code() || DestObj->GetTypeID() == typeid(CLowerClassBook).hash_code())
+	if (DestObj->GetTypeID() == typeid(COnionMonster).hash_code() ||
+		DestObj->GetTypeID() == typeid(CLowerClassBook).hash_code() ||
+		DestObj->GetTypeID() == typeid(CRadishMonster).hash_code())
 	{
 		if (m_OnHit || m_OnLope)
 			return;
@@ -1118,20 +1171,45 @@ void CPlayer2D::KnockBack(float DeltaTime)
 		if (m_OnJump)
 			m_OnJump = false;
 
+
 		// 왼쪽으로 튕겨나감
 		if (m_OnKnockBackLeft)
 		{
-			Vector3 KnockBackDir = Vector3(-200.f * DeltaTime, 100.f * DeltaTime, 0.f);
+			if (m_DirRotation.z >= 0.f)
+			{
+				Vector3 KnockBackDir = Vector3(-200.f * DeltaTime, 100.f * DeltaTime, 0.f);
 
-			AddWorldPos(KnockBackDir);
+				AddWorldPos(KnockBackDir);
+			}
+
+			// 음의 기울기를 가진 대각선 타일을 밟고 있을때
+			else
+			{
+				Vector3 KnockBackDir = Vector3(-20.f * DeltaTime, 120.f * DeltaTime, 0.f) * m_DirVector;
+
+				AddWorldPos(KnockBackDir);
+			}
 		}
 
+		// 오른쪽으로 튕겨나감
 		else
 		{
-			Vector3 KnockBackDir = Vector3(200.f * DeltaTime, 100.f * DeltaTime, 0.f);
+			if (m_DirRotation.z <= 0.f)
+			{
+				Vector3 KnockBackDir = Vector3(200.f * DeltaTime, 100.f * DeltaTime, 0.f);
 
-			AddWorldPos(KnockBackDir);
+				AddWorldPos(KnockBackDir);
+			}
+
+			// 양의 기울기를 대각선 타일을 밟고 있을때
+			else
+			{
+				Vector3 KnockBackDir = Vector3(20.f * DeltaTime, 120.f * DeltaTime, 0.f) * m_DirVector;
+
+				AddWorldPos(KnockBackDir);
+			}
 		}
+
 
 
 		m_TileCollisionEnable = false;
@@ -1167,6 +1245,73 @@ void CPlayer2D::PushDamageFont(float Damage)
 		m_DamageWidgetComponent->GetWidgetWindow()->GetViewport()->SetScene(m_Scene);
 
 	((CPlayerDamageFont*)m_DamageWidgetComponent->GetWidgetWindow())->PushDamageNumber((int)Damage);
+}
+
+void CPlayer2D::PickItem(float DeltaTime)
+{
+	if (m_Body->CheckPrevCollisionGameObjectType(typeid(CBill).hash_code()))
+	{
+		m_Scene->GetResource()->SoundPlay("PickUpItem");
+	}
+}
+
+void CPlayer2D::GetEXP(int EXP)
+{
+	m_PlayerInfo.EXP += (int)EXP;
+
+	if (m_PlayerInfo.EXP >= m_PlayerInfo.EXPMax)
+	{
+		LevelUp();
+	}
+
+	CCharacterEXP* EXPWindow = CClientManager::GetInst()->GetEXPWindow();
+
+	EXPWindow->SetEXP(m_PlayerInfo.EXP);
+}
+
+void CPlayer2D::LevelUp()
+{
+	m_PlayerInfo.EXP = 0;
+	m_PlayerInfo.EXPMax = (int)(m_PlayerInfo.EXPMax * 1.2f);
+	m_PlayerInfo.Level += 1;
+	CCharacterStatusWindow* StatusWindow = CClientManager::GetInst()->GetCharacterStatusWindow();
+	CCharacterEXP* EXPWindow = CClientManager::GetInst()->GetEXPWindow();
+	CStatWindow* StatWindow = CClientManager::GetInst()->GetStatWindow();
+
+	StatusWindow->SetLevel(m_PlayerInfo.Level);
+	EXPWindow->SetEXPMax(m_PlayerInfo.EXPMax);
+	m_SkillBodyEffect->GetAnimationInstance()->ChangeAnimation("PlayerLevelUpEffect");
+	m_Scene->GetResource()->SoundPlay("LevelUp");
+
+	// Stat창의 스탯찍을 수 있는 AbilityPoint 5 늘려주기
+	CStatWindow* Window = CClientManager::GetInst()->GetStatWindow();
+
+	if (Window)
+	{
+		Window->AddAbilityPoint(5);
+	}
+
+	m_IsChanging = true;
+}
+
+void CPlayer2D::UpSTR(int Count)
+{
+	m_PlayerInfo.STR += Count;
+}
+
+void CPlayer2D::UpDEX(int Count)
+{
+	m_PlayerInfo.DEX += Count;
+}
+
+void CPlayer2D::UpINT(int Count)
+{
+	m_PlayerInfo.INT += Count;
+}
+
+void CPlayer2D::UpLUK(int Count)
+{
+	m_PlayerInfo.LUK += Count;
 }
 
 
@@ -1411,6 +1556,8 @@ void CPlayer2D::ProduceSecondSylphideLander(float DeltaTime)
 			NearMonster = ((COnionScene*)Mode)->FindOnionMonster(Flip, GetWorldPos(), 400.f, 60.f);
 		else if (m_Scene->GetSceneMode()->GetTypeID() == typeid(CLibrary2ndScene).hash_code())
 			NearMonster = ((CLibrary2ndScene*)Mode)->FindLowerClassBook(Flip, GetWorldPos(), 400.f, 60.f);
+		else if (m_Scene->GetSceneMode()->GetTypeID() == typeid(CRadishScene).hash_code())
+			NearMonster = ((CRadishScene*)Mode)->FindRadishMonster(Flip, GetWorldPos(), 400.f, 120.f);
 	}
 
 
@@ -1480,6 +1627,12 @@ void CPlayer2D::RopeActionStop(float DeltaTime)
 	}
 
 	m_Dir = PlayerDir::None;
+}
+
+void CPlayer2D::ReturnFadeApply()
+{
+	m_BodySprite->SetFadeApply(true);
+	m_PlayerOrb->SetFadeApply(true);
 }
 
 

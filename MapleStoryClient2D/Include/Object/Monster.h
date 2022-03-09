@@ -49,6 +49,10 @@ public:
     virtual void Save(FILE* File);
     virtual void Load(FILE* File);
 
+public:
+    virtual void SetTrackState();
+    void GiveEXP();
     void Die();
+    void DropItem();
 };
 

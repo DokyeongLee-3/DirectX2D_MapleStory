@@ -63,6 +63,11 @@ public:
         m_OnDestroy = OnDestroy;
     }
 
+    CColliderCircle* GetBody()  const
+    {
+        return m_Body;
+    }
+
 public:
     void SetCollisionProfile(const std::string& Name);
 

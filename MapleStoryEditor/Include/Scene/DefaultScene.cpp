@@ -96,6 +96,9 @@ bool CDefaultScene::LoadAnimationSequence2D()
     m_Scene->GetResource()->LoadSequence2D("VoidPressureOrb.sqc");
     m_Scene->GetResource()->LoadSequence2D("VoidPressureDestroy.sqc");
 
+    m_Scene->GetResource()->LoadSequence2D("DeathSide.sqc");
+    m_Scene->GetResource()->LoadSequence2D("DeathSideHitEffect.sqc");
+
     m_Scene->GetResource()->LoadSequence2D("RadishIdleLeft.sqc");
     m_Scene->GetResource()->LoadSequence2D("RadishWalkLeft.sqc");
     m_Scene->GetResource()->LoadSequence2D("RadishHitLeft.sqc");
@@ -124,6 +127,9 @@ bool CDefaultScene::LoadAnimationSequence2D()
     m_Scene->GetResource()->LoadSequence2D("LowerClassBookDieLeft.sqc");
     m_Scene->GetResource()->LoadSequence2D("LowerClassBookAttackLeft.sqc");
     m_Scene->GetResource()->LoadSequence2D("LowerClassBookAttackOrb.sqc");
+
+    m_Scene->GetResource()->LoadSequence2D("FloatingBill.sqc");
+
     return true;
 }
 

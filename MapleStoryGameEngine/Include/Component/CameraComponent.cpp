@@ -1,6 +1,7 @@
 
 #include "CameraComponent.h"
 #include "../Device.h"
+#include "../GameObject/GameObject.h"
 
 CCameraComponent::CCameraComponent()
 {

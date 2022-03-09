@@ -20,6 +20,7 @@
 #include "Animation/AnimationSequence2DData.h"
 #include "ObjectHierarchy.h"
 #include "IMGUIManager.h"
+#include "Render/RenderManager.h"
 
 CDetailWindow::CDetailWindow()
 {
@@ -259,23 +260,39 @@ void CDetailWindow::PositionZCallback()
 	if (!Hierarchy)
 		return;
 
-	CGameObject* Obj = nullptr;
+	CGameObject* Obj = Hierarchy->GetSelectObject();
+
+	if (!Obj)
+		return;
+
+	CSceneComponent* SelectComp = Hierarchy->GetSelectComponent();
+
+	if (!SelectComp)
+		return;
 
 	CIMGUIListBox* ObjList = Hierarchy->GetObjectList();
 
 	if (ObjList->GetSelectIndex() == -1)
 		return;
 
-	Obj = CSceneManager::GetInst()->GetScene()->FindObject(ObjList->GetSelectItem());
+	//Obj = CSceneManager::GetInst()->GetScene()->FindObject(ObjList->GetSelectItem());
 
-	if (!Obj)
-		return;
-
-	Vector3	Pos = Obj->GetRootComponent()->GetWorldPos();
+	Vector3	Pos = SelectComp->GetWorldPos();
 
 	Pos.z = m_PosZ->GetValueFloat();
 
-	Obj->GetRootComponent()->SetWorldPos(Pos);
+	std::string LayerName = SelectComp->GetLayerName();
+	float LowerBound = CRenderManager::GetInst()->GetLayerLowerBoundZOrder(LayerName);
+	float UpperBound = CRenderManager::GetInst()->GetLayerUpperBoundZOrder(LayerName);
+
+	if (Pos.z > UpperBound)
+		m_PosZ->SetValueFloat(UpperBound);
+	if (Pos.z < LowerBound)
+		m_PosZ->SetValueFloat(LowerBound);
+
+	Pos.z = m_PosZ->GetValueFloat();
+
+	SelectComp->SetWorldPos(Pos);
 }
 
 void CDetailWindow::RotationXCallback()

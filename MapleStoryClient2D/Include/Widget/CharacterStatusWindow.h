@@ -40,6 +40,11 @@ public:
 	virtual CCharacterStatusWindow* Clone();
 
 public:
+	void SetLevel(int Level)
+	{
+		m_LevelNumber->SetNumber(Level);
+	}
+
 	void SetHPPercent(float Percent)
 	{
 		if (Percent < m_HPBar->GetPercent())

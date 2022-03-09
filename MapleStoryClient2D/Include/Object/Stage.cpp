@@ -32,7 +32,7 @@ bool CStage::Init()
 
 	m_Sprite->SetTransparency(true);
 	m_Sprite->SetWorldScale(100.f, 100.f, 1.f);
-	m_Sprite->SetRelativePos(0.f, 0.f, 0.f);
+	m_Sprite->SetRelativePos(0.f, 0.f, 999.f);
 	m_Sprite->SetPivot(0.f, 0.f, 0.f);
 
 

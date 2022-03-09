@@ -18,6 +18,8 @@ CWidgetComponent::CWidgetComponent() :
 	SetInheritRotZ(false);
 
 	m_Render = true;
+
+	m_FadeApply = false;
 }
 
 CWidgetComponent::CWidgetComponent(const CWidgetComponent& com) :

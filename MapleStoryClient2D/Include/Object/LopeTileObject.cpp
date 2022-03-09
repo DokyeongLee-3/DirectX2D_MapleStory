@@ -22,10 +22,10 @@ void CLopeTileObject::Start()
 {
 	CGameObject::Start();
 
-	CTileMapComponent* TileComponent = FindComponentFromType<CTileMapComponent>();
+	/*CTileMapComponent* TileComponent = FindComponentFromType<CTileMapComponent>();
 
 	if (TileComponent)
-		TileComponent->EnableClientMode(true);
+		TileComponent->EnableClientMode(true);*/
 }
 
 bool CLopeTileObject::Init()

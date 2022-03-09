@@ -83,6 +83,7 @@ private:
 
     float       m_Opacity;
     bool        m_IsFlip;
+    bool        m_IsChanging;
     bool        m_OnVoidPressure;
     bool        m_OnLightTransforming;
     bool        m_OnJump;
@@ -94,7 +95,7 @@ private:
     float       m_HitOpacity;
 
     // 몬스터와 충돌했을때 깜빡거리는 효과를 시작할건지 말건지
-    float       m_OnHit;
+    bool        m_OnHit;
     float       m_OnHitTime;
     float       m_OnHitAccTime;
 
@@ -108,14 +109,22 @@ private:
     std::list<int>                  m_ListCollisionID;
 
     PlayerDir   m_Dir;
-    Vector3     m_DirVector;
-    Vector3     m_DirRotation;
     PlayerInfo  m_PlayerInfo;
 
     Vector3		m_PrevFrameWorldPos;
     Vector3		m_CurrentFrameMove;
 
 public:
+    void SetChanging(bool Changing)
+    {
+        m_IsChanging = Changing;
+    }
+
+    bool IsChanging()   const
+    {
+        return m_IsChanging;
+    }
+
     Vector3	GetCurrentFrameMove()	const
     {
         return m_CurrentFrameMove;
@@ -251,6 +260,7 @@ private:
     void SylphideLancer(float DeltaTime);
     void VoidPressure(float DeltaTime);
     void LightTransforming(float DeltaTime);
+    void DeathSide(float DeltaTime);
 
 
 
@@ -265,6 +275,7 @@ public:
     void EffectEnd(float DeltaTime);
     void ReturnIdle(float DeltaTime);
     void RopeActionStop(float DeltaTime);
+    void ReturnFadeApply();
 
 public:
     void VoidPressureCancle(float DeltaTime);
@@ -277,7 +288,15 @@ public:
     void KnockBack(float DeltaTime);
     virtual void SetDamage(float Damage, bool Critical = false);
     void PushDamageFont(float Damage);
+    void PickItem(float DeltaTime);
 
+public:
+    void GetEXP(int EXP);
+    void LevelUp();
+    void UpSTR(int Count);
+    void UpDEX(int Count);
+    void UpINT(int Count);
+    void UpLUK(int Count);
    // void MovePointDown(float DeltaTime);
     //void PathResult(const std::list<Vector3>& PathList);
 };

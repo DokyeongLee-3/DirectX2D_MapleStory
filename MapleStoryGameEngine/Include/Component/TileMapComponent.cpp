@@ -22,7 +22,15 @@ CTileMapComponent::CTileMapComponent()
 	m_CountY = 0;
 	m_RenderCount = 0;
 	m_TileShape = Tile_Shape::Rect;
-	m_LayerName = "Back";
+	m_LayerName = "CoveringMapObj";
+
+	float ZVal = CRenderManager::GetInst()->GetLayerUpperBoundZOrder("CoveringMapObj");
+
+	Vector3 WorldPos = GetWorldPos();
+
+	SetWorldPos(WorldPos.x, WorldPos.y, ZVal);
+
+
 	m_TileInfoBuffer = nullptr;
 
 	for (int i = 0; i < (int)Tile_Type::End; ++i)
@@ -33,7 +41,7 @@ CTileMapComponent::CTileMapComponent()
 	m_TileColor[(int)Tile_Type::Edge] = Vector4(1.f, 0.f, 0.f, 1.f);
 
 	m_EditMode = false;
-	m_ClientMode = false;
+	m_SortDisable = false;
 }
 
 CTileMapComponent::CTileMapComponent(const CTileMapComponent& com) :
@@ -843,12 +851,14 @@ void CTileMapComponent::PrevRender()
 			{
 				int	Index = i * m_CountX + j;
 
-				m_vecTile[Index]->Update(m_DeltaTime);
+				m_vecTile[Index]->Update(m_DeltaTime, m_SortDisable);
 
 				if (m_vecTile[Index]->GetRender())
 				{
 #ifdef _DEBUG
-					if (m_EditMode || m_ClientMode)
+					bool ClientMode = CEngine::GetInst()->IsClientMode();
+
+					if (m_EditMode || ClientMode)
 					{
 						m_vecTileInfo[m_RenderCount].TileColor = m_TileColor[(int)m_vecTile[Index]->GetTileType()];
 					}

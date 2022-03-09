@@ -43,6 +43,9 @@ protected:
 	float		m_GravityAccTime;
 	Vector3     m_TileCollisionPos;
 	bool		m_TileCollisionEnable;
+
+	Vector3     m_DirVector;
+	Vector3     m_DirRotation;
 	
 public:
 	void SetTileCollisionEnable(bool Enable)

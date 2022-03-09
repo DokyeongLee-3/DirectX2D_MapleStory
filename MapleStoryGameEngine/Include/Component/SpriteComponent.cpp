@@ -310,8 +310,8 @@ void CSpriteComponent::Load(FILE* File)
 	//Ãß°¡
 	fread(&m_Flip, sizeof(bool), 1, File);
 
-	if (m_Flip && m_Animation)
-		m_Animation->Flip();
+	//if (m_Flip && m_Animation)
+	//	m_Animation->Flip();
 		
 	CSceneComponent::Load(File);
 }

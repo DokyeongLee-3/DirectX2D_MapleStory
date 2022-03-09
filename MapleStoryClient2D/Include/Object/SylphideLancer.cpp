@@ -8,6 +8,7 @@
 #include "Scene/Scene.h"
 #include "Scene/SceneMode.h"
 #include "../Object/SylphideLancerHitEffect.h"
+#include "Monster.h"
 #include <time.h>
 
 CSylphideLancer::CSylphideLancer() :
@@ -124,7 +125,11 @@ void CSylphideLancer::CollisionBeginCallback(const CollisionResult& result)
 	// 크리티컬 데미지가 뜬 경우 -> 추가적으로 이펙트 달아주기
 	bool IsCritical = random > 0;
 
-	result.Dest->GetGameObject()->SetDamage(Damage, IsCritical);
+	CGameObject* Dest = result.Dest->GetGameObject();
+	Dest->SetDamage(Damage, IsCritical);
+
+	((CMonster*)Dest)->SetTrackState();
+
 	m_Scene->GetResource()->SoundPlay("SylphideLancerHit");
 
 	if (m_LancerID == 0)

@@ -31,8 +31,8 @@ bool CPlayerAnimation2D::Init()
 	AddAnimation(TEXT("PlayerRope.sqc"), ANIMATION_PATH, "Rope", false);
 	AddAnimation(TEXT("PlayerJumpLeft.sqc"), ANIMATION_PATH, "JumpLeft", false);
 
-	//CAnimationSequence2DData* Data = FindAnimation("HealLeft");
-	//Data->SetEndFunction<CPlayerAnimation2D>(this, &CPlayerAnimation2D::ReturnToIdle);
+	CAnimationSequence2DData* Data = FindAnimation("HealLeft");
+	Data->SetEndFunction<CPlayerAnimation2D>(this, &CPlayerAnimation2D::ReturnToIdle);
 
 
 	return true;

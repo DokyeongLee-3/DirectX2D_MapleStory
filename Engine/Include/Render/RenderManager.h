@@ -11,12 +11,16 @@ struct RenderLayer
 	int LayerPriority;
 	std::vector<class CSceneComponent*> RenderList;
 	int RenderCount;
+	float LayerZUpperLimit;
+	float LayerZLowerLimit;
 
 	RenderLayer()
 	{
 		LayerPriority = 0;
 		RenderCount = 0;
 		RenderList.resize(500);
+		LayerZUpperLimit = 0;
+		LayerZLowerLimit = 0;
 	}
 
 	static bool SortSceneComponent(CSceneComponent* Src, CSceneComponent* Dest)
@@ -43,7 +47,32 @@ private:
 	bool m_StartFadeIn;
 	bool m_StartFadeOut;
 
+	float m_FadeInLimit;
+	float m_FadeOutLimit;
+	float m_FadeInSpeed;
+	float m_FadeOutSpeed;
+
 public:
+	float GetFadeInSpeed()	const
+	{
+		return m_FadeInSpeed;
+	}
+
+	float GetFadeOutSpeed()	const
+	{
+		return m_FadeOutSpeed;
+	}
+
+	void SetFadeInSpeed(float Speed)
+	{
+		m_FadeInSpeed = Speed;
+	}
+
+	void SetFadeOutSpeed(float Speed)
+	{
+		m_FadeOutSpeed = Speed;
+	}
+
 	bool GetStartFadeIn()	const
 	{
 		return m_StartFadeIn;
@@ -63,6 +92,30 @@ public:
 	{
 		m_StartFadeOut = FadeOutStart;
 	}
+
+	void SetFadeInLimit(float Limit)
+	{
+		m_FadeInLimit = Limit;
+	}
+
+	void SetFadeOutLimit(float Limit)
+	{
+		m_FadeOutLimit = Limit;
+	}
+
+	float GetFadeInLimit()	const
+	{
+		return m_FadeInLimit;
+	}
+
+	float GetFadeOutLimit()	const
+	{
+		return m_FadeOutLimit;
+	}
+
+public:
+	float GetLayerLowerBoundZOrder(std::string LayerName);
+	float GetLayerUpperBoundZOrder(std::string LayerName);
 
 public:
 	class CStandard2DConstantBuffer* GetStandard2DCBuffer()	const

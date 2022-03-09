@@ -104,7 +104,7 @@ bool CObjectHierarchy::Init()
 	m_LayerCombo = AddWidget<CIMGUIComboBox>("Select Layer", 130.f, 30.f);
 
 	m_LayerCombo->SetHideName(true);
-	m_LayerCombo->AddItem("Default");
+	//m_LayerCombo->AddItem("Default");
 	m_LayerCombo->AddItem("Stage");
 	m_LayerCombo->AddItem("MapObjBackMost");
 	m_LayerCombo->AddItem("MapObjBack");

@@ -23,6 +23,11 @@ CStartScene::~CStartScene()
 	SAFE_DELETE(m_LoadingThread);
 }
 
+void CStartScene::Start()
+{
+	CSceneMode::Start();
+}
+
 bool CStartScene::Init()
 {
 	/*CPlayer2D* Player = m_Scene->CreateGameObject<CPlayer2D>("Player");
@@ -82,8 +87,8 @@ void CStartScene::CreateNextScene()
 	CSceneManager::GetInst()->CreateNextScene(false);
 	CSceneManager::GetInst()->CreateSceneModeEmpty<CLobbyScene>(false);
 
-	m_LoadingThread = CThread::CreateThread<CLoadingThread>("LobbyLoadingThread");
 
+	m_LoadingThread = CThread::CreateThread<CLoadingThread>("LobbyLoadingThread");
 	m_LoadingThread->SetLoadingScene(ThreadLoadingScene::Lobby);
 	//m_LoadingThread->SetLoadingScene(ThreadLoadingScene::Main);
 

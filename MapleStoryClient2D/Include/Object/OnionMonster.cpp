@@ -115,7 +115,10 @@ void COnionMonster::Update(float DeltaTime)
 	if (TileMapCom)
 	{
 		if (EdgeTileCheck(TileMapCom, m_Body->GetWorldPos(), m_Body->GetWorldScale()))
+		{
+			m_MonsterState = Monster_State::Move;
 			m_Sprite->Flip();
+		}
 	}
 
 }
@@ -143,6 +146,8 @@ void COnionMonster::SetDamage(float Damage, bool Critical)
 		m_IsChanging = true;
 
 		PushDamageFont(Damage, Critical);
+
+		DropItem();
 	}
 
 	else
@@ -166,10 +171,20 @@ void COnionMonster::PushDamageFont(float Damage, bool Critical)
 	CMonster::PushDamageFont(Damage, Critical);
 }
 
+void COnionMonster::SetTrackState()
+{
+	CMonster::SetTrackState();
+}
+
 void COnionMonster::ReturnIdle()
 {
 	m_IsChanging = false;
-	m_Sprite->ChangeAnimation("OnionIdleLeft");
+
+	if (m_MonsterState == Monster_State::Track)
+		m_Sprite->ChangeAnimation("OnionWalkLeft");
+
+	else
+		m_Sprite->ChangeAnimation("OnionIdleLeft");
 }
 
 void COnionMonster::FiniteState(float DeltaTime)
@@ -185,6 +200,14 @@ void COnionMonster::FiniteState(float DeltaTime)
 		{
 			Vector3 PlayerPos = Player->GetWorldPos();
 			Vector3 MyPos = GetWorldPos();
+
+			if (abs(PlayerPos.y - MyPos.y) > 200.f)
+			{
+				m_AccTime = 0.f;
+				m_MonsterState = Monster_State::Idle;
+				return;
+			}
+
 			if (PlayerPos.x - MyPos.x > 10.f)
 			{
 				if (!m_Sprite->IsFlip())

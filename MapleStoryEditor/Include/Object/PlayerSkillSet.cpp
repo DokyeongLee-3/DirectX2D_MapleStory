@@ -78,7 +78,11 @@ bool CPlayerSkillSet::Init()
 	Anim->AddAnimation(TEXT("NoxSpearTopEffect.sqc"), ANIMATION_PATH, "NoxSpearTopEffect", true, 2.f);
 
 	Anim->AddAnimation(TEXT("DeathSide.sqc"), ANIMATION_PATH, "DeathSide", true, 2.f);
+	Anim->AddAnimation(TEXT("DeathSideHitEffect.sqc"), ANIMATION_PATH, "DeathSideHitEffect", true, 2.f);
+
 	Anim->AddAnimation(TEXT("PlayerLevelUpEffect.sqc"), ANIMATION_PATH, "PlayerLevelUpEffect", true, 2.f);
+	Anim->AddAnimation(TEXT("FloatingBill.sqc"), ANIMATION_PATH, "FloatingBill", true, 0.8f);
+
 
 	CInput::GetInst()->CreateKey("Flip", 'F');
 	CInput::GetInst()->SetKeyCallback<CPlayerSkillSet>("Flip", KeyState_Down, this, &CPlayerSkillSet::FlipAll);

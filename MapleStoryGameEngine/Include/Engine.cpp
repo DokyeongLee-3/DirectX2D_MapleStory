@@ -32,6 +32,7 @@ CEngine::CEngine()	:
 	m_ClearColor[0] = 0.f;
 	m_ClearColor[1] = 0.f;
 	m_ClearColor[2] = 0.f;
+	m_ClientMode = true;
 }
 
 CEngine::~CEngine()
@@ -131,8 +132,8 @@ bool CEngine::Init(HINSTANCE hInst, HWND hWnd,
 	if (!CSceneManager::GetInst()->Init())
 		return false;
 
-	//srand((unsigned int)time(0));
-	//rand();
+	srand((unsigned int)time(0));
+	rand();
 
 	//// 난수 전용 구조화버퍼 생성
 	//m_RandomBuffer = new CStructuredBuffer;

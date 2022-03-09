@@ -2,7 +2,7 @@
 
 #include "Monster.h"
 #include "Component/SpriteComponent.h"
-#include "Component/ColliderCircle.h"
+#include "Component/ColliderBox2D.h"
 #include "Component/WidgetComponent.h"
 #include "Component/PaperBurnComponent.h"
 
@@ -18,7 +18,7 @@ protected:
 
 private:
     CSharedPtr<CSpriteComponent>    m_Sprite;
-    CSharedPtr<CColliderCircle>     m_Body;
+    CSharedPtr<CColliderBox2D>     m_Body;
 
 public:
     virtual bool Init();

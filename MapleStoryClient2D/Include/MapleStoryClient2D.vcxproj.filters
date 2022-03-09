@@ -49,12 +49,6 @@
     <Filter Include="02. Object\02. Monster">
       <UniqueIdentifier>{523790ee-a74e-42b1-b50d-ff932ec1e7e1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. Object\02. Monster\01. Object">
-      <UniqueIdentifier>{a76f0114-44ad-4189-a5e2-11b4b377615d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. Object\02. Monster\02. Animation">
-      <UniqueIdentifier>{b6ca54af-6da5-442a-83e5-b9ff3c74e405}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02. Object\03. Bullet">
       <UniqueIdentifier>{a948177d-8b66-4cec-a0c8-c31a7e4c129d}</UniqueIdentifier>
     </Filter>
@@ -88,9 +82,6 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Object\BulletCamera.cpp">
-      <Filter>02. Object\03. Bullet</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\Bullet.cpp">
       <Filter>02. Object\03. Bullet</Filter>
     </ClCompile>
     <ClCompile Include="Object\Stage.cpp">
@@ -165,9 +156,6 @@
     <ClCompile Include="Scene\OnionScene.cpp">
       <Filter>01. SceneMode</Filter>
     </ClCompile>
-    <ClCompile Include="Object\OnionMonster.cpp">
-      <Filter>02. Object\02. Monster\01. Object</Filter>
-    </ClCompile>
     <ClCompile Include="Object\SylphideLancer.cpp">
       <Filter>02. Object\03. Bullet</Filter>
     </ClCompile>
@@ -234,17 +222,8 @@
     <ClCompile Include="Object\LopeTileObject.cpp">
       <Filter>02. Object\06. TileMap</Filter>
     </ClCompile>
-    <ClCompile Include="Object\LowerClassBook.cpp">
-      <Filter>02. Object\02. Monster\01. Object</Filter>
-    </ClCompile>
     <ClCompile Include="Animation\LowerClassBookAnimation.cpp">
       <Filter>05. Animation\02. Monster</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\Monster.cpp">
-      <Filter>02. Object\02. Monster\01. Object</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\RadishMonster.cpp">
-      <Filter>02. Object\02. Monster\01. Object</Filter>
     </ClCompile>
     <ClCompile Include="Animation\RadishMonsterAnimation.cpp">
       <Filter>05. Animation\02. Monster</Filter>
@@ -254,6 +233,33 @@
     </ClCompile>
     <ClCompile Include="Object\SingleHelixBlinkTree.cpp">
       <Filter>02. Object\05. MapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\DeathSide.cpp">
+      <Filter>02. Object\03. Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\DeathSideAnimation.cpp">
+      <Filter>05. Animation\01. Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\LowerClassBook.cpp">
+      <Filter>02. Object\02. Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\Monster.cpp">
+      <Filter>02. Object\02. Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\OnionMonster.cpp">
+      <Filter>02. Object\02. Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\RadishMonster.cpp">
+      <Filter>02. Object\02. Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\DeathSideHitEffect.cpp">
+      <Filter>02. Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\StatWindow.cpp">
+      <Filter>03. UI\02. InGame</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\Bill.cpp">
+      <Filter>02. Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -267,9 +273,6 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Object\BulletCamera.h">
-      <Filter>02. Object\03. Bullet</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\Bullet.h">
       <Filter>02. Object\03. Bullet</Filter>
     </ClInclude>
     <ClInclude Include="Object\Stage.h">
@@ -347,9 +350,6 @@
     <ClInclude Include="Scene\OnionScene.h">
       <Filter>01. SceneMode</Filter>
     </ClInclude>
-    <ClInclude Include="Object\OnionMonster.h">
-      <Filter>02. Object\02. Monster\01. Object</Filter>
-    </ClInclude>
     <ClInclude Include="Object\SylphideLancer.h">
       <Filter>02. Object\03. Bullet</Filter>
     </ClInclude>
@@ -416,17 +416,8 @@
     <ClInclude Include="Object\LopeTileObject.h">
       <Filter>02. Object\06. TileMap</Filter>
     </ClInclude>
-    <ClInclude Include="Object\LowerClassBook.h">
-      <Filter>02. Object\02. Monster\01. Object</Filter>
-    </ClInclude>
     <ClInclude Include="Animation\LowerClassBookAnimation.h">
       <Filter>05. Animation\02. Monster</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\Monster.h">
-      <Filter>02. Object\02. Monster\01. Object</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\RadishMonster.h">
-      <Filter>02. Object\02. Monster\01. Object</Filter>
     </ClInclude>
     <ClInclude Include="Animation\RadishMonsterAnimation.h">
       <Filter>05. Animation\02. Monster</Filter>
@@ -436,6 +427,33 @@
     </ClInclude>
     <ClInclude Include="Object\SingleHelixBlinkTree.h">
       <Filter>02. Object\05. MapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\DeathSide.h">
+      <Filter>02. Object\03. Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation\DeathSideAnimation.h">
+      <Filter>05. Animation\01. Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\LowerClassBook.h">
+      <Filter>02. Object\02. Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Monster.h">
+      <Filter>02. Object\02. Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\OnionMonster.h">
+      <Filter>02. Object\02. Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\RadishMonster.h">
+      <Filter>02. Object\02. Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\DeathSideHitEffect.h">
+      <Filter>02. Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\StatWindow.h">
+      <Filter>03. UI\02. InGame</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Bill.h">
+      <Filter>02. Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

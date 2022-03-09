@@ -95,6 +95,7 @@ bool CEditorManager::Init(HINSTANCE hInst)
 		return false;
 	}
 
+	CEngine::GetInst()->EnableClientMode(false);
 
 	CSceneManager::GetInst()->SetCreateSceneModeFunction<CEditorManager>(this, &CEditorManager::CreateSceneMode);
 	CSceneManager::GetInst()->SetCreateObjectFunction<CEditorManager>(this, &CEditorManager::CreateObject);

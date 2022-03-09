@@ -32,6 +32,7 @@ public:
     }
 
 public:
+    virtual void Start();
     virtual bool Init();
     virtual void Update(float DeltaTime);
 

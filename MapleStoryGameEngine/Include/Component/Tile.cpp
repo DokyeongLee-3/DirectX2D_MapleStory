@@ -106,7 +106,7 @@ void CTile::Start()
 	m_Center = m_Pos + m_Size / 2.f;
 }
 
-void CTile::Update(float DeltaTime)
+void CTile::Update(float DeltaTime, bool SortDiable)
 {
 	if (m_AnimInstance)
 	{
@@ -121,10 +121,20 @@ void CTile::Update(float DeltaTime)
 
 	Vector3	Pos = OwnerPos + m_Pos;
 
+	Vector3	WorldPos = Pos;
+
+	if (CEngine::GetInst()->GetEngineSpace() == Engine_Space::Space2D)
+	{
+		if (SortDiable)
+			WorldPos.z = 999.999f;
+		else
+			WorldPos.z = m_Owner->GetWorldPos().z;
+	}
+
 	Matrix	matScale, matTranslate;
 
 	matScale.Scaling(m_Size.x, m_Size.y, 1.f);
-	matTranslate.Translation(Pos);
+	matTranslate.Translation(WorldPos);
 
 	m_matWorld = matScale * matTranslate;
 }

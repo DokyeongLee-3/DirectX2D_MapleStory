@@ -116,7 +116,6 @@ void CSceneCollision::CollisionMouse(float DeltaTime)
 	// m_WidgetClick은 CInput에서 확인한 Widget과의 클릭 여부를 담고있다
 	bool	MouseCollision = m_WidgetClick;
 
-
 	// UI와 마우스가 충돌된 물체가 없다면 월드공간의 물체와 충돌을 진행한다.
 	if (!MouseCollision)
 	{

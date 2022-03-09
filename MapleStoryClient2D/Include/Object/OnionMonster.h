@@ -46,6 +46,7 @@ public:
 
 
 public:
+    virtual void SetTrackState();
     void ReturnIdle();
     void FiniteState(float DeltaTime);
 

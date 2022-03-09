@@ -139,7 +139,12 @@ void CGameObject::SetAllSceneComponentsLayer(const std::string& Name)
 
 void CGameObject::ClearSceneComponents()
 {
+	if (m_RootComponent)
+	{
+		m_RootComponent = nullptr;
+	}
 
+	m_SceneComponentList.clear();
 }
 
 void CGameObject::SetDamage(float Damage, bool Critical)

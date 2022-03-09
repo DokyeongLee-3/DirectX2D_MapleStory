@@ -45,6 +45,7 @@ private:
     void CreatePlayerAnimationSequence();
     void CreateSkillAnimationSequence();
     void CreateMapAnimationSequence();
+    void LoadSound();
 
 public:
     template <typename T>

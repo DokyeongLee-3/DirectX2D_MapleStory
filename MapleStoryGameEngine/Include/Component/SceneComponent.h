@@ -26,9 +26,31 @@ protected:
 	// 어떤 Layer에 속해 있는지
 	std::string		m_LayerName;
 	int m_ZOrder;
-
+	// FadeIn/Out 효과시 적용을 받을건지 말건지
+	bool	m_FadeApply;
+	bool	m_DefaultZValueSet;
 
 public:
+	void DefaultZValueSet(bool Set)
+	{
+		m_DefaultZValueSet = Set;
+	}
+
+	bool GetDefaultZValueSet()	const
+	{
+		return m_DefaultZValueSet;
+	}
+
+	bool GetFadeApply()	const
+	{
+		return m_FadeApply;
+	}
+
+	void SetFadeApply(bool Apply)
+	{
+		m_FadeApply = Apply;
+	}
+
 	CSceneComponent* GetParent()	const
 	{
 		return m_Parent;
@@ -65,17 +87,7 @@ public:
 	}
 
 public:
-	void SetLayerName(const std::string& Name)
-	{
-		m_LayerName = Name;
-
-		size_t Size = m_vecChild.size();
-
-		for (size_t i = 0; i < Size; ++i)
-		{
-			m_vecChild[i]->SetLayerName(Name);
-		}
-	}
+	void SetLayerName(const std::string& Name);
 
 	void SetAllChildComponentScene(class CScene* Scene);
 

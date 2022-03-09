@@ -26,8 +26,20 @@ private:
 	//CSharedPtr<class CTexture>	m_GlobalNoiseTexture;
 	//class CStructuredBuffer* m_RandomBuffer;
 
+	bool m_ClientMode;
+
 public:
 	void SetMouseState(Mouse_State State);
+
+	void EnableClientMode(bool Mode)
+	{
+		m_ClientMode = Mode;
+	}
+
+	bool IsClientMode()	const
+	{
+		return m_ClientMode;
+	}
 
 	class CWidgetWindow* GetMouseWidget()	const
 	{

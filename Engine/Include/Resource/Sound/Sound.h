@@ -6,6 +6,7 @@ class CSound :
     public CRef
 {
     friend class CSoundManager;
+    friend class CButton;
 
 private:
     CSound();

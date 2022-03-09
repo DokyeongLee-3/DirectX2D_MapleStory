@@ -5,6 +5,7 @@
 #include "Scene/Scene.h"
 #include "Player2D.h"
 #include "VoidPressureHitEffect.h"
+#include "Monster.h"
 
 CVoidPressure::CVoidPressure() :
 	m_Distance(400.f),
@@ -55,37 +56,29 @@ void CVoidPressure::Update(float DeltaTime)
 
 	if (m_VoidPressureLifeSpan <= 0.f)
 	{
-	/*	m_Scene->GetResource()->SoundPlay("VoidPressureEnd");
-		m_Sprite->ChangeAnimation("VoidPressureDestroy");*/
-
 		CPlayer2D* Player = (CPlayer2D*)m_Scene->GetPlayerObject();
 
 		Player->VoidPressureCancle(DeltaTime);
 
-	/*	Player->SetVoidPressure(nullptr);
-		Player->SetVoidPressureOrb(nullptr);
-
-		Player->GetRootSpriteComponent()->ChangeAnimation("IdleLeft");
-
-		CVoidPressureOrb* Orb = Player->GetVoidPressureOrb();
-		((CSpriteComponent*)Orb->GetRootComponent())->ChangeAnimation("VoidPressureOrbDestroy");*/
-
 		m_VoidPressureLifeSpan = 6.f;
 	}
 
-	m_VoidPressureLifeSpan -= DeltaTime;
-
-	Vector3 Pos = GetWorldPos();
-
-	// 구체가 지정된 이동 범위보다 더 많이 가려고하면 더 이상 못가게 해야한다
-	if (m_OriginPos.x - Pos.x >= m_Distance)
+	if (!m_OnDestroy)
 	{
-		SetWorldPos(m_OriginPos.x - m_Distance, Pos.y, Pos.z);
-	}
+		m_VoidPressureLifeSpan -= DeltaTime;
 
-	else if (m_OriginPos.x - Pos.x <= -m_Distance)
-	{
-		SetWorldPos(m_OriginPos.x + m_Distance, Pos.y, Pos.z);
+		Vector3 Pos = GetWorldPos();
+
+		// 구체가 지정된 이동 범위보다 더 많이 가려고하면 더 이상 못가게 해야한다
+		if (m_OriginPos.x - Pos.x >= m_Distance)
+		{
+			SetWorldPos(m_OriginPos.x - m_Distance, Pos.y, Pos.z);
+		}
+
+		else if (m_OriginPos.x - Pos.x <= -m_Distance)
+		{
+			SetWorldPos(m_OriginPos.x + m_Distance, Pos.y, Pos.z);
+		}
 	}
 }
 
@@ -93,7 +86,7 @@ void CVoidPressure::PostUpdate(float DeltaTime)
 {
 	CGameObject::PostUpdate(DeltaTime);
 
-	if (m_Enable && !m_Body->IsEnable())
+	if (!m_OnDestroy && m_Enable && !m_Body->IsEnable())
 	{
 		if (m_AccCollisionFrequency >= m_CollisionFrequency)
 		{
@@ -139,6 +132,7 @@ void CVoidPressure::CollisionBeginCallback(const CollisionResult& result)
 	bool IsCritical = random > 0;
 
 	CGameObject* Dest = result.Dest->GetGameObject();
+	((CMonster*)Dest)->SetTrackState();
 
 	Dest->SetDamage(Damage, IsCritical);
 

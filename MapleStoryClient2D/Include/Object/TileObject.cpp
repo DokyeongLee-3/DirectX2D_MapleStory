@@ -2,6 +2,7 @@
 #include "TileObject.h"
 #include "../Component/DragCollider.h"
 #include "Player2D.h"
+#include "RadishMonster.h"
 #include "Component/TileMapComponent.h"
 #include "LopeTileObject.h"
 
@@ -37,10 +38,10 @@ void CTileObject::Start()
 		m_vecFloor[i]->AddCollisionCallback(Collision_State::End, this, &CTileObject::CollisionEndCallback);
 	}
 
-	CTileMapComponent* TileComponent = FindComponentFromType<CTileMapComponent>();
+	//CTileMapComponent* TileComponent = FindComponentFromType<CTileMapComponent>();
 
-	if (TileComponent)
-		TileComponent->EnableClientMode(true);
+	//if (TileComponent)
+	//	TileComponent->EnableClientMode(true);
 }
 
 bool CTileObject::Init()
@@ -169,6 +170,31 @@ void CTileObject::CollisionEndCallback(const CollisionResult& Result)
 
 				DestObj->SetTileCollisionEnable(false);
 			}
+		}
+
+		else if (DestObj->GetTypeID() == typeid(CRadishMonster).hash_code())
+		{
+			CRadishMonster* RadishMonster = (CRadishMonster*)DestObj;
+			std::vector<CColliderBox2D*> vecCollider;
+			RadishMonster->GetBody()->FindMultipleCollisionComponent<CColliderBox2D, CTileObject>(vecCollider);
+
+			size_t Count = vecCollider.size();
+
+			bool ContinueTileCollision = false;
+
+			for (size_t i = 0; i < Count; ++i)
+			{
+				if (((CTileObject*)vecCollider[i]->GetGameObject()) == this)
+					ContinueTileCollision = true;
+			}
+
+			// 지금 막 떨어지는 충돌체는 Player의 m_PrevCollisionList에서 이미 지워졌다.
+			// Player가 내가 가진 또 다른 충돌체(지금 플레이어와 떨어진 충돌체말고)와 충돌이 되고 있다면
+			// 그때는 그 또 다른 충돌체와 충돌처리를 이어나가야하므로 Gravity를 true로 하지 않는다
+			if (ContinueTileCollision)
+				DestObj->SetGravity(false);
+			else
+				DestObj->SetGravity(true);
 		}
 	}
 }

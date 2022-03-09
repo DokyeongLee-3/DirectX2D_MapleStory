@@ -44,6 +44,8 @@ bool CClientManager::Init(HINSTANCE hInst)
 		return false;
 	}
 
+	CEngine::GetInst()->EnableClientMode(true);
+
 	CSceneManager::GetInst()->SetCreateSceneModeFunction<CClientManager>(this, &CClientManager::CreateSceneMode);
 	CSceneManager::GetInst()->SetCreateObjectFunction<CClientManager>(this, &CClientManager::CreateObject);
 	CSceneManager::GetInst()->SetCreateComponentFunction<CClientManager>(this, &CClientManager::CreateComponent);
@@ -52,11 +54,13 @@ bool CClientManager::Init(HINSTANCE hInst)
 	CInput::GetInst()->CreateKey("Inventory", 'I');
 	CInput::GetInst()->CreateKey("Configuration", 'C');	
 	CInput::GetInst()->CreateKey("BossMatching", 'B');
+	CInput::GetInst()->CreateKey("Stat", 'S');
 	CInput::GetInst()->CreateKey("TurnOffUIWindow", VK_ESCAPE);
 
 	CInput::GetInst()->SetKeyCallback<CClientManager>("Inventory", KeyState_Down, this, &CClientManager::OnOffInventory);
 	CInput::GetInst()->SetKeyCallback<CClientManager>("Configuration", KeyState_Down, this, &CClientManager::OnOffConfiguration);
 	CInput::GetInst()->SetKeyCallback<CClientManager>("BossMatching", KeyState_Down, this, &CClientManager::OnOffBossMatching);
+	CInput::GetInst()->SetKeyCallback<CClientManager>("Stat", KeyState_Down, this, &CClientManager::OnOffStatWindow);
 	CInput::GetInst()->SetKeyCallback<CClientManager>("TurnOffUIWindow", Key_State::KeyState_Down, this, &CClientManager::TurnOffWindow);
 
 	//CInput::GetInst()->CreateKey("MovePoint", VK_RBUTTON);
@@ -506,6 +510,57 @@ void CClientManager::OnOffBossMatching(float DeltaTime)
 					BossMatching->Enable(true);
 					int ZOrder = Viewport->GetTopmostWindowZOrder();
 					BossMatching->SetZOrder(ZOrder + 1);
+				}
+			}
+		}
+	}
+}
+
+void CClientManager::OnOffStatWindow(float DeltaTime)
+{
+	CScene* Scene = CSceneManager::GetInst()->GetScene();
+
+	CSceneMode* Mode = Scene->GetSceneMode();
+	if (Mode->GetTypeID() == typeid(CStartScene).hash_code())
+		return;
+
+	if (Scene)
+	{
+		CViewport* Viewport = Scene->GetViewport();
+		if (Viewport)
+		{
+			CStatWindow* StatWindow = (CStatWindow*)Viewport->FindWidgetWindow<CStatWindow>("Stat");
+
+			if (StatWindow)
+			{
+				bool IsEnable = StatWindow->IsEnable();
+
+				if (IsEnable)
+				{
+					StatWindow->Enable(false);
+					StatWindow->SetZOrder(2);
+				}
+
+				else
+				{
+					CScene* Scene = CSceneManager::GetInst()->GetScene(); 
+					
+					if (Scene)
+					{
+						CPlayer2D* Player = (CPlayer2D*)Scene->GetPlayerObject();
+
+						if (Player)
+						{
+							PlayerInfo Info = Player->GetInfo();
+
+							StatWindow->SetHP(Info.HP);
+							StatWindow->SetMP(Info.MP);
+						}
+					}
+
+					StatWindow->Enable(true);
+					int ZOrder = Viewport->GetTopmostWindowZOrder();
+					StatWindow->SetZOrder(ZOrder + 1);
 				}
 			}
 		}

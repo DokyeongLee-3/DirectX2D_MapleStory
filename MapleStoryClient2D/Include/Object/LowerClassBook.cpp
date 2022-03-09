@@ -100,7 +100,10 @@ void CLowerClassBook::Update(float DeltaTime)
 	if (TileMapCom)
 	{
 		if (EdgeTileCheck(TileMapCom, m_Body->GetWorldPos(), m_Body->GetWorldScale()))
+		{
+			m_MonsterState = Monster_State::Move;
 			m_Sprite->Flip();
+		}
 	}
 }
 
@@ -172,6 +175,8 @@ void CLowerClassBook::SetDamage(float Damage, bool Critical)
 		m_IsChanging = true;
 
 		PushDamageFont(Damage, Critical);
+
+		DropItem();
 	}
 
 	else
@@ -202,11 +207,19 @@ void CLowerClassBook::FiniteState(float DeltaTime)
 	if (m_MonsterState == Monster_State::Track)
 	{
 		CPlayer2D* Player = (CPlayer2D*)m_Scene->GetPlayerObject();
-		
+
 		if (Player)
 		{
 			Vector3 PlayerPos = Player->GetWorldPos();
 			Vector3 MyPos = GetWorldPos();
+
+			if (abs(PlayerPos.y - MyPos.y) > 200.f)
+			{
+				m_AccTime = 0.f;
+				m_MonsterState = Monster_State::Idle;
+				return;
+			}
+
 			if (PlayerPos.x - MyPos.x > 10.f)
 			{
 				if (!m_Sprite->IsFlip())
@@ -268,6 +281,11 @@ void CLowerClassBook::FiniteState(float DeltaTime)
 		break;
 		}
 	}
+}
+
+void CLowerClassBook::SetTrackState()
+{
+	CMonster::SetTrackState();
 }
 
 void CLowerClassBook::CollisionBeginCallback(const CollisionResult& Result)

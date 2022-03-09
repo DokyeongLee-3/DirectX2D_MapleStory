@@ -101,8 +101,6 @@ void CCharacterEXP::Update(float DeltaTime)
 void CCharacterEXP::PostUpdate(float DeltaTime)
 {
     CWidgetWindow::PostUpdate(DeltaTime);
-
-
 }
 
 void CCharacterEXP::Render()
@@ -114,5 +112,14 @@ CCharacterEXP* CCharacterEXP::Clone()
 {
     return new CCharacterEXP(*this);
 }
+
+void CCharacterEXP::SetEXP(int EXP)
+{
+    PlayerInfo Info = ((CPlayer2D*)m_Viewport->GetScene()->GetPlayerObject())->GetInfo();
+
+    m_EXPNumber->SetNumber(EXP);
+    m_EXPBar->SetPercent((float)EXP / Info.EXPMax);
+}
+
 
 

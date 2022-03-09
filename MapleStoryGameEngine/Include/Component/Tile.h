@@ -171,7 +171,7 @@ public:
 
 public:
 	void Start();
-	void Update(float DeltaTime);
+	void Update(float DeltaTime, bool SortDiable);
 	void Save(FILE* File);
 	void Load(FILE* File);
 };

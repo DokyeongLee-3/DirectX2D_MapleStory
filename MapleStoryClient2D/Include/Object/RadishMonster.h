@@ -2,7 +2,7 @@
 
 #include "Monster.h"
 #include "Component/SpriteComponent.h"
-#include "Component/ColliderCircle.h"
+#include "Component/ColliderBox2D.h"
 #include "Component/WidgetComponent.h"
 #include "Component/PaperBurnComponent.h"
 
@@ -18,9 +18,10 @@ protected:
 
 private:
     CSharedPtr<CSpriteComponent>    m_Sprite;
-    CSharedPtr<CColliderCircle>     m_Body;
+    CSharedPtr<CColliderBox2D>     m_Body;
 
 public:
+    virtual void Start();
     virtual bool Init();
     virtual void Update(float DeltaTime);
     virtual void PostUpdate(float DeltaTime);
@@ -34,9 +35,22 @@ public:
         return m_Sprite;
     }
 
-    CColliderCircle* GetBody()    const
+    CColliderBox2D* GetBody()    const
     {
         return m_Body;
     }
+
+public:
+    virtual void SetDamage(float Damage, bool Critical = false);
+    virtual void PushDamageFont(float Damage, bool Critical = false);
+
+public:
+    void ReturnIdle();
+    void FiniteState(float DeltaTime);
+    virtual void SetTrackState();
+
+public:
+    void CollisionBeginCallback(const CollisionResult& Result);
+    void CollisionEndCallback(const CollisionResult& Result);
 };
 

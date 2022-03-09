@@ -49,7 +49,7 @@ public:
             SetInheritRotX(true);
             SetInheritRotY(true);
             SetInheritRotZ(true);
-            SetLayerName("Default");
+            SetLayerName("MapObjBack");
         }
     }
 

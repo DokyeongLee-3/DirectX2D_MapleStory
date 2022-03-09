@@ -34,16 +34,10 @@ protected:
     Vector3 m_TileSize;
     Vector4 m_TileColor[(int)Tile_Type::End];
     bool    m_EditMode;
-    bool    m_ClientMode;
     float   m_DeltaTime;
+    bool    m_SortDisable;
 
 public:
-    void EnableClientMode(bool Mode)
-    {
-        m_ClientMode = Mode;
-    }
-
-
     void EnableEditMode(bool Mode)
     {
         m_EditMode = Mode;
