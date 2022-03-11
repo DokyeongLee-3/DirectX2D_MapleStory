@@ -129,6 +129,7 @@ bool CDefaultScene::LoadAnimationSequence2D()
     m_Scene->GetResource()->LoadSequence2D("LowerClassBookAttackOrb.sqc");
 
     m_Scene->GetResource()->LoadSequence2D("FloatingBill.sqc");
+    m_Scene->GetResource()->LoadSequence2D("PlayerDead.sqc");
 
     return true;
 }

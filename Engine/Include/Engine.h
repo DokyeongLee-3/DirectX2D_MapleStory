@@ -86,6 +86,11 @@ public:
 		return m_Timer->GetDeltaTime();
 	}
 
+	Resolution	GetResolution()	const
+	{
+		return m_RS;
+	}
+
 public:
 	// WindowMode는 창여부모드 여부
 	bool Init(HINSTANCE hInst, const TCHAR* Name, unsigned int Width,

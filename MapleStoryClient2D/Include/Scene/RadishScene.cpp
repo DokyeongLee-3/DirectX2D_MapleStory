@@ -74,6 +74,7 @@ bool CRadishScene::Init()
 	CCharacterEXP* EXPWindow = CClientManager::GetInst()->GetCharacterEXPWindow();
 	CBossMatching* BossMatching = CClientManager::GetInst()->GetBossMatchingWindow();
 	CStatWindow* StatWindow = CClientManager::GetInst()->GetStatWindow();
+	CDyingNoticeWindow* DyingNoticeWindow = CClientManager::GetInst()->GetDyingNoticeWindow();
 
 	m_Scene->GetViewport()->AddWindow(StatusWindow);
 	m_Scene->GetViewport()->AddWindow(Inventory);
@@ -82,6 +83,7 @@ bool CRadishScene::Init()
 	m_Scene->GetViewport()->AddWindow(EXPWindow);
 	m_Scene->GetViewport()->AddWindow(BossMatching);
 	m_Scene->GetViewport()->AddWindow(StatWindow);
+	m_Scene->GetViewport()->AddWindow(DyingNoticeWindow);
 
 	CreateAnimationSequence();
 	// Effect Hit들을 Scene의 m_mapPrototype에 만들어놓기
@@ -144,6 +146,25 @@ void CRadishScene::Update(float DeltaTime)
 			}
 		}
 	}
+
+	if (m_RadishMonsterList.size() < 5)
+	{
+		int Count = 0;
+		auto iter = m_DeadPos.begin();
+		auto iterEnd = m_DeadPos.end();
+
+		for (; iter != iterEnd; )
+		{
+			CRadishMonster* Radish = m_Scene->CreateGameObject<CRadishMonster>("Radish");
+			Radish->SetWorldPos((*iter));
+			Radish->GetRootComponent()->SetLayerName("MovingObjFront");
+			iter = m_DeadPos.erase(iter);
+			iterEnd = m_DeadPos.end();
+			((CSpriteComponent*)Radish->GetRootComponent())->SetOpacity(0.5f);
+
+			m_RadishMonsterList.push_back(Radish);
+		}
+	}
 }
 
 void CRadishScene::CreateMaterial()
@@ -166,6 +187,7 @@ void CRadishScene::CreatePlayerAnimationSequence()
 	m_Scene->GetResource()->LoadSequence2D("PlayerRope.sqc");
 	m_Scene->GetResource()->LoadSequence2D("PlayerJumpLeft.sqc");
 	m_Scene->GetResource()->LoadSequence2D("PlayerLevelUpEffect.sqc");
+	m_Scene->GetResource()->LoadSequence2D("PlayerDead.sqc");
 }
 
 void CRadishScene::CreateSkillAnimationSequence()
@@ -242,6 +264,7 @@ void CRadishScene::LoadSound()
 
 	m_Scene->GetResource()->LoadSound("Effect", false, "LevelUp", "LevelUp.mp3");
 	m_Scene->GetResource()->LoadSound("Effect", false, "PickUpItem", "PickUpItem.mp3");
+	m_Scene->GetResource()->LoadSound("Effect", false, "Tombstone", "Tombstone.mp3");
 }
 
 void CRadishScene::AddTileCollisionCallback()
@@ -274,6 +297,36 @@ void CRadishScene::AddTileCollisionCallback()
 	}*/
 }
 
+void CRadishScene::DeleteRadishMonster(const std::string& Name)
+{
+	auto iter = m_RadishMonsterList.begin();
+	auto iterEnd = m_RadishMonsterList.end();
+
+	for (; iter != iterEnd; ++iter)
+	{
+		if ((*iter)->GetName() == Name)
+		{
+			m_RadishMonsterList.erase(iter);
+			return;
+		}
+	}
+}
+
+void CRadishScene::DeleteRadishMonster(CRadishMonster* Monster)
+{
+	auto iter = m_RadishMonsterList.begin();
+	auto iterEnd = m_RadishMonsterList.end();
+
+	for (; iter != iterEnd; ++iter)
+	{
+		if ((*iter) == Monster)
+		{
+			m_RadishMonsterList.erase(iter);
+			return;
+		}
+	}
+}
+
 CRadishMonster* CRadishScene::FindRadishMonster(bool Right, const Vector3& MyPos, float DistXConstraint, float DistYConstraint)
 {
 	auto iter = m_RadishMonsterList.begin();
@@ -292,7 +345,7 @@ CRadishMonster* CRadishScene::FindRadishMonster(bool Right, const Vector3& MyPos
 				continue;
 
 
-			if (abs(MonsterPos.x - MyPos.x) < DistXConstraint && MonsterPos.y - MyPos.y > 0.f && MonsterPos.y - MyPos.y < DistYConstraint)
+			if (abs(MonsterPos.x - MyPos.x) < DistXConstraint && abs(MonsterPos.y - MyPos.y) < DistYConstraint)
 			{
 				if (!(*iter)->GetBody()->IsEnable())
 					continue;
@@ -339,6 +392,12 @@ void CRadishScene::CreateLobbyScene()
 	m_LoadingThread = CThread::CreateThread<CLoadingThread>("LobbySceneLoadingThread");
 	m_LoadingThread->SetLoadingScene(ThreadLoadingScene::Lobby);
 
+	if (((CPlayer2D*)m_PlayerObject.Get())->IsDead())
+	{
+		((CPlayer2D*)m_PlayerObject.Get())->ReturnAlive();
+	}
+
+
 	m_LoadingThread->Start();
 }
 
@@ -352,7 +411,8 @@ void CRadishScene::CreateOnionScene()
 	OnionScene->SetPlayerObject(m_PlayerObject);
 
 	// 다음 Scene에서의 위치를 Scene의 왼쪽에 위치하도록 잡아주기
-	m_PlayerObject->SetWorldPos(200.f, 300.f, 0.f);
+	Vector3 WorldPos = m_PlayerObject->GetWorldPos();
+	m_PlayerObject->SetWorldPos(2010.f, 300.f, WorldPos.z);
 
 	//SAFE_DELETE(m_LoadingThread);
 	m_LoadingThread = CThread::CreateThread<CLoadingThread>("OnionSceneLoadingThread");

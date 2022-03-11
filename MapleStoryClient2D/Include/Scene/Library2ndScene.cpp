@@ -67,6 +67,7 @@ bool CLibrary2ndScene::Init()
 	CCharacterEXP* EXPWindow = CClientManager::GetInst()->GetCharacterEXPWindow();
 	CBossMatching* BossMatching = CClientManager::GetInst()->GetBossMatchingWindow();
 	CStatWindow* StatWindow = CClientManager::GetInst()->GetStatWindow();
+	CDyingNoticeWindow* DyingNoticeWindow = CClientManager::GetInst()->GetDyingNoticeWindow();
 
 	m_Scene->GetViewport()->AddWindow(StatusWindow);
 	m_Scene->GetViewport()->AddWindow(Inventory);
@@ -75,6 +76,7 @@ bool CLibrary2ndScene::Init()
 	m_Scene->GetViewport()->AddWindow(EXPWindow);
 	m_Scene->GetViewport()->AddWindow(BossMatching);
 	m_Scene->GetViewport()->AddWindow(StatWindow);
+	m_Scene->GetViewport()->AddWindow(DyingNoticeWindow);
 
 	// 보스맵 들어와서도 보스매칭 UI가 켜져있으면 꺼준다
 	if (BossMatching->IsEnable())
@@ -140,6 +142,25 @@ void CLibrary2ndScene::Update(float DeltaTime)
 			}
 		}
 	}
+
+	if (m_LowerClassBookList.size() < 5)
+	{
+		int Count = 0;
+		auto iter = m_DeadPos.begin();
+		auto iterEnd = m_DeadPos.end();
+
+		for (; iter != iterEnd; )
+		{
+			CLowerClassBook* Book = m_Scene->CreateGameObject<CLowerClassBook>("LowerClassBook");
+			Book->SetWorldPos((*iter));
+			Book->GetRootComponent()->SetLayerName("MovingObjFront");
+			iter = m_DeadPos.erase(iter);
+			iterEnd = m_DeadPos.end();
+			((CSpriteComponent*)Book->GetRootComponent())->SetOpacity(0.5f);
+
+			m_LowerClassBookList.push_back(Book);
+		}
+	}
 }
 
 void CLibrary2ndScene::CreateMaterial()
@@ -164,6 +185,7 @@ void CLibrary2ndScene::CreatePlayerAnimationSequence()
 	m_Scene->GetResource()->LoadSequence2D("PlayerRope.sqc");
 	m_Scene->GetResource()->LoadSequence2D("PlayerJumpLeft.sqc");
 	m_Scene->GetResource()->LoadSequence2D("PlayerLevelUpEffect.sqc");
+	m_Scene->GetResource()->LoadSequence2D("PlayerDead.sqc");
 }
 
 void CLibrary2ndScene::CreateSkillAnimationSequence()
@@ -238,6 +260,7 @@ void CLibrary2ndScene::LoadSound()
 
 	m_Scene->GetResource()->LoadSound("Effect", false, "LevelUp", "LevelUp.mp3");
 	m_Scene->GetResource()->LoadSound("Effect", false, "PickUpItem", "PickUpItem.mp3");
+	m_Scene->GetResource()->LoadSound("Effect", false, "Tombstone", "Tombstone.mp3");
 }
 
 void CLibrary2ndScene::AddTileCollisionCallback()
@@ -252,6 +275,36 @@ void CLibrary2ndScene::AddTileCollisionCallback()
 	}*/
 }
 
+void CLibrary2ndScene::DeleteLowerClassBook(const std::string& Name)
+{
+	auto iter = m_LowerClassBookList.begin();
+	auto iterEnd = m_LowerClassBookList.end();
+
+	for (; iter != iterEnd; ++iter)
+	{
+		if ((*iter)->GetName() == Name)
+		{
+			m_LowerClassBookList.erase(iter);
+			return;
+		}
+	}
+}
+
+void CLibrary2ndScene::DeleteLowerClassBook(CLowerClassBook* Monster)
+{
+	auto iter = m_LowerClassBookList.begin();
+	auto iterEnd = m_LowerClassBookList.end();
+
+	for (; iter != iterEnd; ++iter)
+	{
+		if ((*iter) == Monster)
+		{
+			m_LowerClassBookList.erase(iter);
+			return;
+		}
+	}
+}
+
 void CLibrary2ndScene::CreateLobbyScene()
 {
 	m_Scene->GetResource()->SoundStop("FairyAcademyBGM");
@@ -262,11 +315,17 @@ void CLibrary2ndScene::CreateLobbyScene()
 	LobbyScene->SetPlayerObject(m_PlayerObject);
 
 	// 다음 Scene에서의 위치를 Scene의 왼쪽에 위치하도록 잡아주기
-	m_PlayerObject->SetWorldPos(981.f, 640.f, 0.f);
+	Vector3 WorldPos = m_PlayerObject->GetWorldPos();
+	m_PlayerObject->SetWorldPos(981.f, 640.f, WorldPos.z);
 
 	//SAFE_DELETE(m_LoadingThread);
 	m_LoadingThread = CThread::CreateThread<CLoadingThread>("LobbySceneLoadingThread");
 	m_LoadingThread->SetLoadingScene(ThreadLoadingScene::Lobby);
+
+	if (((CPlayer2D*)m_PlayerObject.Get())->IsDead())
+	{
+		((CPlayer2D*)m_PlayerObject.Get())->ReturnAlive();
+	}
 
 	m_LoadingThread->Start();
 }
@@ -288,7 +347,7 @@ CLowerClassBook* CLibrary2ndScene::FindLowerClassBook(bool Right, const Vector3&
 			if (!Right && MonsterPos.x > MyPos.x)
 				continue;
 
-			if (abs(MonsterPos.x - MyPos.x) < DistXConstraint && MonsterPos.y - MyPos.y > 0.f && MonsterPos.y - MyPos.y < DistYConstraint)
+			if (abs(MonsterPos.x - MyPos.x) < DistXConstraint && abs(MonsterPos.y - MyPos.y) < DistYConstraint)
 			{
 				if (!(*iter)->GetBody()->IsEnable())
 					continue;

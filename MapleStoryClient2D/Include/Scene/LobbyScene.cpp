@@ -68,6 +68,8 @@ bool CLobbyScene::Init()
 
 		//Player->SetAllSceneComponentsLayer("MovingObjFront");
 		Player->GetRootComponent()->SetLayerName("MovingObjFront");
+		CSceneComponent* BodyEffect = (CSceneComponent*)Player->FindComponent("PlayerSkillBodyEffect");
+		BodyEffect->SetRelativePos(0.f, 11.f, -5.f);
 	}
 
 	CreateInGameWidgetWindow();
@@ -88,6 +90,7 @@ bool CLobbyScene::Init()
 	m_Scene->LoadFullPath(FullPath);
 
 	AddTileCollisionCallback();
+
 
 	return true;
 }
@@ -261,44 +264,122 @@ void CLobbyScene::AddTileCollisionCallback()
 
 void CLobbyScene::CreateInGameWidgetWindow()
 {
-	m_ConfigurationWindow = m_Scene->GetViewport()->CreateWidgetWindow<CConfigurationWindow>("ConfigurationWindow");
-	m_ConfigurationWindow->SetZOrder(2);
-	m_ConfigurationWindow->SetPos(200.f, 200.f);
-	m_ConfigurationWindow->Enable(false);
-	CClientManager::GetInst()->SetConfigurationWindow(m_ConfigurationWindow);
+	if (!CClientManager::GetInst()->GetConfigurationWindow())
+	{
+		m_ConfigurationWindow = m_Scene->GetViewport()->CreateWidgetWindow<CConfigurationWindow>("ConfigurationWindow");
+		m_ConfigurationWindow->SetZOrder(2);
+		m_ConfigurationWindow->SetPos(200.f, 200.f);
+		m_ConfigurationWindow->Enable(false);
+		CClientManager::GetInst()->SetConfigurationWindow(m_ConfigurationWindow);
+	}
 
-	m_Inventory = m_Scene->GetViewport()->CreateWidgetWindow<CInventory>("Inventory");
-	m_Inventory->SetZOrder(2);
-	m_Inventory->SetPos(250.f, 150.f);
-	m_Inventory->Enable(false);
-	CClientManager::GetInst()->SetInventoryWindow(m_Inventory);
+	else
+	{
+		CConfigurationWindow* ConfigurationWindow = CClientManager::GetInst()->GetConfigurationWindow();
+		m_Scene->GetViewport()->AddWindow(ConfigurationWindow);
+	}
 
-	m_BossMatchingWindow = m_Scene->GetViewport()->CreateWidgetWindow<CBossMatching>("BossMatching");
-	m_BossMatchingWindow->SetZOrder(2);
-	m_BossMatchingWindow->SetPos(200.f, 100.f);
-	m_BossMatchingWindow->Enable(false);
-	CClientManager::GetInst()->SetBossMatchingWindow(m_BossMatchingWindow);
+	if (!CClientManager::GetInst()->GetInventoryWindow())
+	{
+		m_Inventory = m_Scene->GetViewport()->CreateWidgetWindow<CInventory>("Inventory");
+		m_Inventory->SetZOrder(2);
+		m_Inventory->SetPos(250.f, 150.f);
+		m_Inventory->Enable(false);
+		CClientManager::GetInst()->SetInventoryWindow(m_Inventory);
+	}
 
-	m_CharacterStatusWindow = m_Scene->GetViewport()->CreateWidgetWindow<CCharacterStatusWindow>("MainStatus");
-	m_CharacterStatusWindow->SetPos(550.f, 13.f);
-	m_CharacterStatusWindow->SetZOrder(1);
-	m_CharacterStatusWindow->SetMouseCollisionEnable(false);
-	CClientManager::GetInst()->SetCharacterStatusWindow(m_CharacterStatusWindow);
+	else
+	{
+		CInventory* Inventory = CClientManager::GetInst()->GetInventoryWindow();
+		m_Scene->GetViewport()->AddWindow(Inventory);
+	}
 
-	m_CharacterEXPWindow = m_Scene->GetViewport()->CreateWidgetWindow<CCharacterEXP>("EXPWindow");
-	m_CharacterEXPWindow->SetZOrder(1);
-	m_CharacterEXPWindow->SetMouseCollisionEnable(false);
-	CClientManager::GetInst()->SetEXPWindow(m_CharacterEXPWindow);
+	if (!CClientManager::GetInst()->GetBossMatchingWindow())
+	{
+		m_BossMatchingWindow = m_Scene->GetViewport()->CreateWidgetWindow<CBossMatching>("BossMatching");
+		m_BossMatchingWindow->SetZOrder(2);
+		m_BossMatchingWindow->SetPos(200.f, 100.f);
+		m_BossMatchingWindow->Enable(false);
+		CClientManager::GetInst()->SetBossMatchingWindow(m_BossMatchingWindow);
+	}
 
-	m_SkillQuickSlot = m_Scene->GetViewport()->CreateWidgetWindow<CSkillQuickSlotWindow>("SkillQuickSlot");
-	m_SkillQuickSlot->SetZOrder(1);
-	CClientManager::GetInst()->SetSkillQuickSlot(m_SkillQuickSlot);
+	else
+	{
+		CBossMatching* BossMatching = CClientManager::GetInst()->GetBossMatchingWindow();
+		m_Scene->GetViewport()->AddWindow(BossMatching);
+	}
 
-	m_StatWindow = m_Scene->GetViewport()->CreateWidgetWindow<CStatWindow>("Stat");
-	m_StatWindow->SetZOrder(2);
-	m_StatWindow->SetPos(200.f, 100.f);
-	m_StatWindow->Enable(false);
-	CClientManager::GetInst()->SetStatWindow(m_StatWindow);
+	if (!CClientManager::GetInst()->GetCharacterStatusWindow())
+	{
+		m_CharacterStatusWindow = m_Scene->GetViewport()->CreateWidgetWindow<CCharacterStatusWindow>("MainStatus");
+		m_CharacterStatusWindow->SetPos(550.f, 13.f);
+		m_CharacterStatusWindow->SetZOrder(1);
+		m_CharacterStatusWindow->SetMouseCollisionEnable(false);
+		CClientManager::GetInst()->SetCharacterStatusWindow(m_CharacterStatusWindow);
+	}
+
+	else
+	{
+		CCharacterStatusWindow* StatusWindow = CClientManager::GetInst()->GetCharacterStatusWindow();
+		m_Scene->GetViewport()->AddWindow(StatusWindow);
+	}
+
+	if (!CClientManager::GetInst()->GetCharacterEXPWindow())
+	{
+		m_CharacterEXPWindow = m_Scene->GetViewport()->CreateWidgetWindow<CCharacterEXP>("EXPWindow");
+		m_CharacterEXPWindow->SetZOrder(1);
+		m_CharacterEXPWindow->SetMouseCollisionEnable(false);
+		CClientManager::GetInst()->SetEXPWindow(m_CharacterEXPWindow);
+	}
+
+	else
+	{
+		CCharacterEXP* EXPWindow = CClientManager::GetInst()->GetCharacterEXPWindow();
+		m_Scene->GetViewport()->AddWindow(EXPWindow);
+	}
+
+	if (!CClientManager::GetInst()->GetSkillQuickSlotWindow())
+	{
+		m_SkillQuickSlot = m_Scene->GetViewport()->CreateWidgetWindow<CSkillQuickSlotWindow>("SkillQuickSlot");
+		m_SkillQuickSlot->SetZOrder(1);
+		CClientManager::GetInst()->SetSkillQuickSlot(m_SkillQuickSlot);
+	}
+
+	else
+	{
+		CSkillQuickSlotWindow* SkillQuickSlot = CClientManager::GetInst()->GetSkillQuickSlotWindow();
+		m_Scene->GetViewport()->AddWindow(SkillQuickSlot);
+	}
+
+	if (!CClientManager::GetInst()->GetStatWindow())
+	{
+		m_StatWindow = m_Scene->GetViewport()->CreateWidgetWindow<CStatWindow>("Stat");
+		m_StatWindow->SetZOrder(2);
+		m_StatWindow->SetPos(200.f, 100.f);
+		m_StatWindow->Enable(false);
+		CClientManager::GetInst()->SetStatWindow(m_StatWindow);
+	}
+	
+	else
+	{
+		CStatWindow* StatWindow = CClientManager::GetInst()->GetStatWindow();
+		m_Scene->GetViewport()->AddWindow(StatWindow);
+	}
+
+	if (!CClientManager::GetInst()->GetDyingNoticeWindow())
+	{
+		m_DyingNoticeWindow = m_Scene->GetViewport()->CreateWidgetWindow<CDyingNoticeWindow>("DyingNoticeWindow");
+		m_DyingNoticeWindow->SetZOrder(2);
+		m_DyingNoticeWindow->SetPos(490.f, 300.f);
+		m_DyingNoticeWindow->Enable(false);
+		CClientManager::GetInst()->SetDyingNoticeWindow(m_DyingNoticeWindow);
+	}
+
+	else
+	{
+		CDyingNoticeWindow* DyingNoticeWindow = CClientManager::GetInst()->GetDyingNoticeWindow();
+		m_Scene->GetViewport()->AddWindow(DyingNoticeWindow);
+	}
 }
 
 void CLobbyScene::CreateOnionScene()
@@ -312,7 +393,8 @@ void CLobbyScene::CreateOnionScene()
 
 
 	// 다음 Scene에서의 위치를 Scene의 왼쪽에 위치하도록 잡아주기
-	m_PlayerObject->SetWorldPos(170.f, 270.f, 0.f);
+	Vector3 WorldPos = m_PlayerObject->GetWorldPos();
+	m_PlayerObject->SetWorldPos(170.f, 270.f, WorldPos.z);
 
 	m_LoadingThread = CThread::CreateThread<CLoadingThread>("OnionSceneLoadingThread");
 	m_LoadingThread->SetLoadingScene(ThreadLoadingScene::Onion);
@@ -331,7 +413,8 @@ void CLobbyScene::CreateWayToZakumScene()
 
 
 	// 다음 Scene에서의 위치를 Scene의 왼쪽에 위치하도록 잡아주기
-	m_PlayerObject->SetWorldPos(180.f, 200.f, 0.f);
+	Vector3 WorldPos = m_PlayerObject->GetWorldPos();
+	m_PlayerObject->SetWorldPos(180.f, 200.f, WorldPos.z);
 
 	m_LoadingThread = CThread::CreateThread<CLoadingThread>("WayToZakumSceneLoadingThread");
 	m_LoadingThread->SetLoadingScene(ThreadLoadingScene::WayToZakum);
@@ -349,7 +432,8 @@ void CLobbyScene::CreateLibrary2ndScene()
 	LibraryScene->SetPlayerObject(m_PlayerObject);
 
 	// 다음 Scene에서의 위치를 Scene의 왼쪽에 위치하도록 잡아주기
-	m_PlayerObject->SetWorldPos(510.f, 200.f, 0.f);
+	Vector3 WorldPos = m_PlayerObject->GetWorldPos();
+	m_PlayerObject->SetWorldPos(510.f, 200.f, WorldPos.z);
 
 	m_LoadingThread = CThread::CreateThread<CLoadingThread>("Library2ndSceneLoadingThread");
 	m_LoadingThread->SetLoadingScene(ThreadLoadingScene::Library2nd);

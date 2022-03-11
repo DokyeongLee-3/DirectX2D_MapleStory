@@ -56,6 +56,10 @@ private:
     void AddTileCollisionCallback();
 
 public:
+    void DeleteLowerClassBook(const std::string& Name);
+    void DeleteLowerClassBook(class CLowerClassBook* Monster);
+
+public:
     void CreateLobbyScene();
 
 public:

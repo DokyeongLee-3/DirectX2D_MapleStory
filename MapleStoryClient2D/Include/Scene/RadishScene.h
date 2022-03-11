@@ -59,6 +59,10 @@ private:
     void AddTileCollisionCallback();
 
 public:
+    void DeleteRadishMonster(const std::string& Name);
+    void DeleteRadishMonster(class CRadishMonster* Monster);
+
+public:
     class CRadishMonster* FindRadishMonster(bool Right, const Vector3& MyPos, float DistXConstraint, float DistYConstraint);
 
 public:

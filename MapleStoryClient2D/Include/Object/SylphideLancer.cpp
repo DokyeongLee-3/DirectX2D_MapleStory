@@ -112,74 +112,78 @@ void CSylphideLancer::FlipAll(float DeltaTime)
 
 void CSylphideLancer::CollisionBeginCallback(const CollisionResult& result)
 {
-	PlayerInfo Info = ((CPlayer2D*)m_Scene->GetSceneMode()->GetPlayerObject())->GetInfo();
-
-	int Factor = (int)Info.INT * Info.Level;
-
-	int RamdomNumber = rand();
-
-	int random = (RamdomNumber % (Factor / 20 + 1)) - (Factor / 30);
-
-	float Damage = Factor / 10.f + random;
-
-	// 크리티컬 데미지가 뜬 경우 -> 추가적으로 이펙트 달아주기
-	bool IsCritical = random > 0;
-
 	CGameObject* Dest = result.Dest->GetGameObject();
-	Dest->SetDamage(Damage, IsCritical);
 
-	((CMonster*)Dest)->SetTrackState();
-
-	m_Scene->GetResource()->SoundPlay("SylphideLancerHit");
-
-	if (m_LancerID == 0)
+	if (Dest)
 	{
-		Vector3 HitEffectPos = GetWorldPos();
+		PlayerInfo Info = ((CPlayer2D*)m_Scene->GetSceneMode()->GetPlayerObject())->GetInfo();
 
-		// 오른쪽으로 날아가다가 충돌
-		if (m_Sprite->IsFlip())
-			HitEffectPos.x += 30.f;
+		int Factor = (int)Info.INT * Info.Level;
 
-		// 왼쪽으로 날아가다가 충돌
-		else
-			HitEffectPos.x -= 30.f;
+		int RamdomNumber = rand();
 
-		CSylphideLancerHitEffect* HitEffect = m_Scene->CloneFromPrototype<CSylphideLancerHitEffect>(
-			"SylphideLancerHitEffect", "SylphideLancerHitEffect",
-			HitEffectPos);
+		int random = (RamdomNumber % (Factor / 20 + 1)) - (Factor / 30);
 
-		// 실피드랜서 첫번째 그룹이 150보다 적게 날아가서 충돌해서 소멸해도 두번째 그룹을 이어서 발사하도록한다
-		if (m_Distance < 150.f)
+		float Damage = Factor / 10.f + random;
+
+		// 크리티컬 데미지가 뜬 경우 -> 추가적으로 이펙트 달아주기
+		bool IsCritical = random > 0;
+
+		Dest->SetDamage(Damage, IsCritical);
+
+		((CMonster*)Dest)->SetTrackState();
+
+		m_Scene->GetResource()->SoundPlay("SylphideLancerHit");
+
+		if (m_LancerID == 0)
 		{
-			CPlayer2D* Player = (CPlayer2D*)(m_Scene->GetSceneMode()->GetPlayerObject());
-			Player->ProduceSecondSylphideLander(CEngine::GetInst()->GetDeltaTime());
-			m_ProduceLatterGroup = true;
+			Vector3 HitEffectPos = GetWorldPos();
+
+			// 오른쪽으로 날아가다가 충돌
+			if (m_Sprite->IsFlip())
+				HitEffectPos.x += 30.f;
+
+			// 왼쪽으로 날아가다가 충돌
+			else
+				HitEffectPos.x -= 30.f;
+
+			CSylphideLancerHitEffect* HitEffect = m_Scene->CloneFromPrototype<CSylphideLancerHitEffect>(
+				"SylphideLancerHitEffect", "SylphideLancerHitEffect",
+				HitEffectPos);
+
+			// 실피드랜서 첫번째 그룹이 150보다 적게 날아가서 충돌해서 소멸해도 두번째 그룹을 이어서 발사하도록한다
+			if (m_Distance < 150.f)
+			{
+				CPlayer2D* Player = (CPlayer2D*)(m_Scene->GetSceneMode()->GetPlayerObject());
+				Player->ProduceSecondSylphideLander(CEngine::GetInst()->GetDeltaTime());
+				m_ProduceLatterGroup = true;
+			}
 		}
+
+		// 두번째 그룹이 충돌
+		else if (m_LancerID == 2)
+		{
+			Vector3 HitEffectPos = GetWorldPos();
+
+			// 오른쪽으로 날아가다가 충돌
+			if (m_Sprite->IsFlip())
+				HitEffectPos.x += 30.f;
+
+			// 왼쪽으로 날아가다가 충돌
+			else
+				HitEffectPos.x -= 30.f;
+
+			CSylphideLancerHitEffect* HitEffect = m_Scene->CloneFromPrototype<CSylphideLancerHitEffect>(
+				"SylphideLancerHitEffect", "SylphideLancerHitEffect",
+				HitEffectPos);
+
+			CSpriteComponent* Root = (CSpriteComponent*)HitEffect->GetRootComponent();
+
+			Root->ChangeAnimation("SylphideLancerHitPurple");
+		}
+
+		Destroy();
 	}
-
-	// 두번째 그룹이 충돌
-	else if(m_LancerID == 2)
-	{
-		Vector3 HitEffectPos = GetWorldPos();
-
-		// 오른쪽으로 날아가다가 충돌
-		if (m_Sprite->IsFlip())
-			HitEffectPos.x += 30.f;
-
-		// 왼쪽으로 날아가다가 충돌
-		else
-			HitEffectPos.x -= 30.f;
-
-		CSylphideLancerHitEffect* HitEffect = m_Scene->CloneFromPrototype<CSylphideLancerHitEffect>(
-			"SylphideLancerHitEffect", "SylphideLancerHitEffect",
-			HitEffectPos);
-
-		CSpriteComponent* Root = (CSpriteComponent*)HitEffect->GetRootComponent();
-
-		Root->ChangeAnimation("SylphideLancerHitPurple");
-	}
-
-	Destroy();
 }
 
 void CSylphideLancer::CollisionEndCallback(const CollisionResult& result)

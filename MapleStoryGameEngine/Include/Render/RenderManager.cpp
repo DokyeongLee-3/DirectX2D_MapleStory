@@ -97,7 +97,7 @@ void CRenderManager::AddRenderList(CSceneComponent* Component)
 	{
 	}*/
 
-	Vector3 Pos = Component->GetWorldPos();
+	//Vector3 Pos = Component->GetWorldPos();
 	//float Upper = Layer->LayerZUpperLimit;
 	//float Lower = Layer->LayerZLowerLimit;
 
@@ -106,7 +106,7 @@ void CRenderManager::AddRenderList(CSceneComponent* Component)
 	//if (Pos.z < Lower)
 	//	Pos.z = Lower;
 
-	Component->SetWorldPos(Pos.x, Pos.y, Pos.z);
+	//Component->SetWorldPos(Pos.x, Pos.y, Pos.z);
 
 	++Layer->RenderCount;
 }

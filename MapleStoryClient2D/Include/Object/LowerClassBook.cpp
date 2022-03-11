@@ -53,8 +53,6 @@ void CLowerClassBook::Start()
 
 	//m_DamageWidgetComponent->SetWorldPos(WorldPos.x - 20.f, WorldPos.y, 0.f);
 
-
-
 	CLowerClassBookAnimation* Instance = (CLowerClassBookAnimation*)m_Sprite->GetAnimationInstance();
 
 	Instance->SetEndFunction<CLowerClassBook>("LowerClassBookHitLeft", this, &CLowerClassBook::ReturnIdle);
@@ -62,11 +60,11 @@ void CLowerClassBook::Start()
 
 	m_Body->AddCollisionCallback<CLowerClassBook>(Collision_State::Begin, this, &CLowerClassBook::CollisionBeginCallback);
 	m_Body->AddCollisionCallback<CLowerClassBook>(Collision_State::End, this, &CLowerClassBook::CollisionEndCallback);
+	m_Body->Enable(true);
 
 	int LeftStart = rand() % 2 - 1;
 	if (LeftStart < 0)
 		m_Sprite->Flip();
-
 }
 
 bool CLowerClassBook::Init()
@@ -81,10 +79,12 @@ bool CLowerClassBook::Init()
 
 	m_Sprite->SetTransparency(true);
 
-	m_Sprite->SetWorldScale(100.f, 100.f, 1.f);
-	m_Sprite->SetRelativePos(500.f, 300.f, 0.f);
 	m_Sprite->SetPivot(0.5f, 0.5f, 0.f);
 
+	m_Body->SetWorldScale(60.f, 60.f, 1.f);
+	m_Body->SetExtent(30.f, 30.f);
+
+	m_Sprite->CreateAnimationInstance<CLowerClassBookAnimation>();
 
 	return true;
 }
@@ -104,6 +104,17 @@ void CLowerClassBook::Update(float DeltaTime)
 			m_MonsterState = Monster_State::Move;
 			m_Sprite->Flip();
 		}
+	}
+
+	CSpriteComponent* Root = (CSpriteComponent*)m_RootComponent.Get();
+	float Opacity = Root->GetOpacity();
+
+	if (Opacity < 1.f)
+	{
+		if (Opacity + DeltaTime > 1.f)
+			Root->SetOpacity(1.f);
+		else
+			Root->SetOpacity(Opacity + DeltaTime);
 	}
 }
 
@@ -168,15 +179,25 @@ void CLowerClassBook::SetDamage(float Damage, bool Critical)
 
 	if (m_MonsterInfo.HP <= 0.f)
 	{
+		PushDamageFont(Damage, Critical);
+
+		if (!m_Body->IsEnable())
+			return;
+
 		m_Body->Enable(false);
 
 		GetRootComponent()->DeleteChild("Body");
 		m_Sprite->GetAnimationInstance()->ChangeAnimation("LowerClassBookDieLeft");
 		m_IsChanging = true;
 
-		PushDamageFont(Damage, Critical);
-
 		DropItem();
+
+		CSceneMode* SceneMode = m_Scene->GetSceneMode();
+		if (SceneMode)
+		{
+			SceneMode->PushDeadPos(GetWorldPos());
+			((CLibrary2ndScene*)SceneMode)->DeleteLowerClassBook(this);
+		}
 	}
 
 	else

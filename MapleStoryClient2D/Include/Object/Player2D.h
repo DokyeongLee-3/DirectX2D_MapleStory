@@ -21,6 +21,7 @@ struct PlayerInfo
     int LUK;
     int EXPMax;
     int EXP;
+    int Meso;
 
     PlayerInfo() :
         Name(TEXT("가막못의오리")),
@@ -35,7 +36,8 @@ struct PlayerInfo
         DEX(4),
         LUK(4),
         EXPMax(Level * 1000),
-        EXP(10000)
+        EXP(10000),
+        Meso(0)
     {
     }
 };
@@ -114,7 +116,17 @@ private:
     Vector3		m_PrevFrameWorldPos;
     Vector3		m_CurrentFrameMove;
 
+    bool        m_Dead;
+    Vector3     m_GhostVector;
+
+    int         m_PrevSameTileObjColliderCount;
+
 public:
+    void ClearListCollision()
+    {
+        m_ListCollisionID.clear();
+    }
+
     void SetChanging(bool Changing)
     {
         m_IsChanging = Changing;
@@ -242,6 +254,11 @@ public:
         return m_DamageWidgetComponent;
     }
 
+    bool IsDead()   const
+    {
+        return m_Dead;
+    }
+
 public:
     virtual bool Init();
     virtual void Update(float DeltaTime);
@@ -276,6 +293,7 @@ public:
     void ReturnIdle(float DeltaTime);
     void RopeActionStop(float DeltaTime);
     void ReturnFadeApply();
+    void ReturnAlive();
 
 public:
     void VoidPressureCancle(float DeltaTime);
@@ -289,6 +307,7 @@ public:
     virtual void SetDamage(float Damage, bool Critical = false);
     void PushDamageFont(float Damage);
     void PickItem(float DeltaTime);
+    void FallTomb();
 
 public:
     void GetEXP(int EXP);
@@ -297,6 +316,8 @@ public:
     void UpDEX(int Count);
     void UpINT(int Count);
     void UpLUK(int Count);
+    void Die();
+    void DeadRound();
    // void MovePointDown(float DeltaTime);
     //void PathResult(const std::list<Vector3>& PathList);
 };

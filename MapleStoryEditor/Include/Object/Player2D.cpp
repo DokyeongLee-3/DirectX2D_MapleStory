@@ -164,6 +164,7 @@ void CPlayer2D::AddMotionAnimation()
 	Anim->AddAnimation(TEXT("PlayerHealLeft.sqc"), ANIMATION_PATH, "HealLeft", true);
 	Anim->AddAnimation(TEXT("PlayerRope.sqc"), ANIMATION_PATH, "Rope", true);
 	Anim->AddAnimation(TEXT("PlayerJumpLeft.sqc"), ANIMATION_PATH, "JumpLeft", true);
+	Anim->AddAnimation(TEXT("PlayerDead.sqc"), ANIMATION_PATH, "PlayerDead", true);
 
 	Anim = m_BodyEffectSprite->GetAnimationInstance();
 	

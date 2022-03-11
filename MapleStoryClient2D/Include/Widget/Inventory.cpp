@@ -97,6 +97,38 @@ bool CInventory::Init()
     m_BlankCollider->SetClickCallback(this, &CInventory::DragWindow);
     m_BlankCollider->SetZOrder(2);
 
+    m_MesoImage = CreateWidget<CButton>("MesoButton");
+    m_MesoImage->SetTexture(Button_State::Normal, "MesoNormal", TEXT("UI/Inventory/meso.png"));
+    m_MesoImage->SetTexture(Button_State::MouseOn, "MesoMouseOn", TEXT("UI/Inventory/mesoMouseOn.png"));
+    m_MesoImage->SetTexture(Button_State::Click, "MesoClick", TEXT("UI/Inventory/mesopressed.png"));
+    m_MesoImage->SetPos(9.f, 58.f);
+    m_MesoImage->SetSize(40.f, 16.f);
+
+    m_Money = CreateWidget<CNumber>("Meso");
+
+    std::vector<TCHAR*> vecFileName;
+
+    for (int i = 0; i < 10; ++i)
+    {
+        TCHAR* FileName = new TCHAR[MAX_PATH];
+        memset(FileName, 0, sizeof(TCHAR) * MAX_PATH);
+
+        wsprintf(FileName, TEXT("UI/Inventory/StatNumber%d.png"), i);
+
+        vecFileName.push_back(FileName);
+    }
+
+    m_Money->SetTexture("Meso", vecFileName);
+    m_Money->SetNumber(0);
+    m_Money->SetPos(132.f, 61.f);
+    m_Money->SetSize(7.f, 9.f);
+
+    for (int i = 0; i < 10; ++i)
+    {
+        SAFE_DELETE_ARRAY(vecFileName[i]);
+    }
+
+
     return true;
 }
 
@@ -159,6 +191,15 @@ void CInventory::DragWindow()
     m_Pos += MouseMove;
 
     m_BlankCollider->SetClicked(false);
+}
+
+void CInventory::AddMoney(int Money)
+{
+    int CurrentMoney = m_Money->GetNumber();
+
+    CurrentMoney += Money;
+
+    m_Money->SetNumber(CurrentMoney);
 }
 
 

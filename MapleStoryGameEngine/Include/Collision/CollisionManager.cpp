@@ -20,6 +20,7 @@ CCollisionManager::~CCollisionManager()
 
 bool CCollisionManager::Init()
 {
+	// 아이템 같은 물체들은 Object로 Profile 설정
 	CreateProfile("Object", Collision_Channel::Object, true);
 	CreateProfile("Player", Collision_Channel::Player, true);
 	CreateProfile("Monster", Collision_Channel::Monster, true);
@@ -52,6 +53,11 @@ bool CCollisionManager::Init()
 	SetCollisionState("DragCollider", Collision_Channel::Monster, Collision_Interaction::Ignore);
 	SetCollisionState("DragCollider", Collision_Channel::MonsterAttack, Collision_Interaction::Ignore);
 	SetCollisionState("DragCollider", Collision_Channel::PlayerAttack, Collision_Interaction::Ignore);
+
+	SetCollisionState("Object", Collision_Channel::Monster, Collision_Interaction::Ignore);
+	SetCollisionState("Object", Collision_Channel::MonsterAttack, Collision_Interaction::Ignore);
+	SetCollisionState("Object", Collision_Channel::PlayerAttack, Collision_Interaction::Ignore);
+	SetCollisionState("Object", Collision_Channel::Object, Collision_Interaction::Ignore);
 
 	return true;
 }

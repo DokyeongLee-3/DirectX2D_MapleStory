@@ -2,6 +2,8 @@
 
 #include "Widget/WidgetWindow.h"
 #include "Widget/Image.h"
+#include "Widget/Button.h"
+#include "Widget/Number.h"
 
 class CInventory :
     public CWidgetWindow
@@ -25,10 +27,11 @@ private:
 	CSharedPtr<CImage>	m_InstallTab;
 	CSharedPtr<CImage>	m_CashTab;
 	CSharedPtr<CImage>	m_DecorationTab;
-	CSharedPtr<CImage>	m_MesoImage;
+	CSharedPtr<CButton>	m_MesoImage;
 	CSharedPtr<CImage>	m_MaplePointImage;
 	CSharedPtr<CImage>	m_SideScroll;
 	CSharedPtr<CImage>	m_BlankCollider;
+	CSharedPtr<CNumber>	m_Money;
 
 	Vector2 m_SlotSize;
 
@@ -42,5 +45,6 @@ public:
 
 public:
 	void DragWindow();
+	void AddMoney(int Money);
 };
 

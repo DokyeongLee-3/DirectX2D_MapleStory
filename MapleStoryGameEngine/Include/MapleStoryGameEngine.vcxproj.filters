@@ -18,9 +18,6 @@
     <Filter Include="01. Engine\02. Math">
       <UniqueIdentifier>{c2365ad9-532d-41c7-b4d2-4e50cdb28fab}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. Engine\03.Ref">
-      <UniqueIdentifier>{d51bac2c-0db8-417e-9541-9c479130f1bd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01. Engine\04. SharedPtr">
       <UniqueIdentifier>{54ebd350-0b36-49b6-a53a-66b0ee421c3b}</UniqueIdentifier>
     </Filter>
@@ -220,6 +217,9 @@
     <Filter Include="02. Resource\02. Shader\03. ConstantBuffer\11. MovingTileMap">
       <UniqueIdentifier>{a0963d9e-8720-4c60-b273-39a834528de2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Engine\03. Ref">
+      <UniqueIdentifier>{d51bac2c-0db8-417e-9541-9c479130f1bd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -241,7 +241,7 @@
       <Filter>01. Engine\02. Math</Filter>
     </ClCompile>
     <ClCompile Include="Ref.cpp">
-      <Filter>01. Engine\03.Ref</Filter>
+      <Filter>01. Engine\03. Ref</Filter>
     </ClCompile>
     <ClCompile Include="Resource\ResourceManager.cpp">
       <Filter>02. Resource</Filter>
@@ -624,7 +624,7 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Ref.h">
-      <Filter>01. Engine\03.Ref</Filter>
+      <Filter>01. Engine\03. Ref</Filter>
     </ClInclude>
     <ClInclude Include="SharedPtr.h">
       <Filter>01. Engine\04. SharedPtr</Filter>

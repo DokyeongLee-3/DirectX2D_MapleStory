@@ -1,16 +1,21 @@
 
 #include "Bill.h"
 #include "Animation/AnimationSequence2DInstance.h"
+#include "TileObject.h"
 
 CBill::CBill()	:
-	m_JumpForce(350.f)
+	m_JumpForce(350.f),
+	m_EatByPlayer(false)
 {
+	SetTypeID<CBill>();
+
 	m_Gravity = true;
-	m_GravityFactor = 600.f;
+	m_GravityFactor = 900.f;
 	m_ItemCategory = Item_Category::Money;
 
-	srand(0);
 	m_Money = rand() % 100 + 100;
+
+	m_JumpForce = 320.f;
 }
 
 CBill::CBill(const CBill& obj)	:
@@ -32,7 +37,7 @@ bool CBill::Init()
 	m_Sprite = CreateComponent<CSpriteComponent>("BillSprite");
 	m_Body = CreateComponent<CColliderBox2D>("Body");
 
-	m_Body->SetCollisionProfile("Monster");
+	m_Body->SetCollisionProfile("Object");
 
 	SetRootComponent(m_Sprite);
 	m_Sprite->AddChild(m_Body);
@@ -54,6 +59,8 @@ bool CBill::Init()
 
 	Anim->AddAnimation(TEXT("FloatingBill.sqc"), ANIMATION_PATH, "FloatingBill", true, 0.7f);
 
+	m_Gravity = true;
+
 	return true;
 }
 
@@ -61,8 +68,22 @@ void CBill::Update(float DeltaTime)
 {
 	CGameObject::Update(DeltaTime);
 
-	if (m_Gravity)
+	if (m_Gravity && !m_EatByPlayer)
 	{
+		AddWorldPos(0.f, m_JumpForce * DeltaTime, 0.f);
+	}
+
+	else if (m_EatByPlayer)
+	{
+		if (m_JumpForce * DeltaTime < m_GravityAccTime * m_GravityFactor * DeltaTime)
+		{
+			m_Sprite->AddOpacity(-0.007f);
+
+			if (m_Sprite->GetOpacity() <= 0.f)
+				Destroy();
+		}
+
+
 		AddWorldPos(0.f, m_JumpForce * DeltaTime, 0.f);
 	}
 }
@@ -77,19 +98,26 @@ CBill* CBill::Clone()
 	return new CBill(*this);
 }
 
-void CBill::Save(FILE* File)
-{
-	CGameObject::Save(File);
-}
-
-void CBill::Load(FILE* File)
-{
-	CGameObject::Load(File);
-}
-
 void CBill::CollisionBeginCallback(const CollisionResult& Result)
 {
-	m_JumpForce = 0.f;
+	CGameObject* Tile = Result.Dest->GetGameObject();
+
+	if (Tile->GetTypeID() == typeid(CTileObject).hash_code())
+	{
+		CColliderBox2D* DestCollider = (CColliderBox2D*)Result.Dest;
+
+		if (DestCollider->GetInfo().Center.y >= m_Body->GetInfo().Center.y)
+			return;
+
+		//m_GravityAccTime = 0.f;
+		m_Gravity = false;
+	}
+}
+
+void CBill::GetByPlayer()
+{
+	AddWorldPos(0.f, 10.f, 0.f);
+	m_Gravity = true;
 	m_GravityAccTime = 0.f;
-	m_Gravity = false;
+	m_EatByPlayer = true;
 }

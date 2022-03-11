@@ -9,13 +9,15 @@ struct SkillInfo
     float AccTime;
     float Factor;
     bool Active;
+    int MPRequire;
 
     SkillInfo() :
         Level(0),
         CoolTime(0.f),
         AccTime(0.f),
         Factor(0.f),
-        Active(false)
+        Active(false),
+        MPRequire(0)
     {
     }
 };

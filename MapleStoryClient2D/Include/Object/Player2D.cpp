@@ -29,6 +29,7 @@
 #include "../Client.h"
 #include "Component/ColliderComponent.h"
 #include "Bill.h"
+#include "Tomb.h"
 
 CPlayer2D::CPlayer2D() :
 	m_BodySprite(nullptr),
@@ -52,7 +53,9 @@ CPlayer2D::CPlayer2D() :
 	m_OnLope(false),
 	m_LopeJump(false),
 	m_LopeEnable(true),
-	m_IsChanging(false)
+	m_IsChanging(false),
+	m_Dead(false),
+	m_PrevSameTileObjColliderCount(0)
 {
 	SetTypeID<CPlayer2D>();
 	m_PlayerSkillInfo = new CPlayerSkillInfo;
@@ -106,6 +109,8 @@ bool CPlayer2D::Init()
 
 	m_Camera->OnViewportCenter();
 
+	SetRootComponent(m_BodySprite);
+
 	m_BodySprite->AddChild(m_PlayerOrb);
 	m_BodySprite->AddChild(m_SylphideLancerMirror);
 	m_BodySprite->AddChild(m_SkillBodyEffect);
@@ -124,17 +129,17 @@ bool CPlayer2D::Init()
 	m_SkillBodyEffect->CreateAnimationInstance<CPlayerSkillBodyEffect>();
 	m_PlayerOrb->CreateAnimationInstance<CPlayerOrb>();
 
-	m_SkillBodyEffect->SetPivot(0.5f, 0.5f, 0.f);
-	m_SkillBodyEffect->SetRelativePos(0.f, 11.f, 0.f);
-
 	m_SylphideLancerMirror->CreateAnimationInstance<CSylphideLancerMirrorAnimation>();
 	m_SylphideLancerMirror->SetInheritRotZ(false);
 	m_SylphideLancerMirror->SetPivot(0.5f, 0.5f, 0.f);
 	m_SylphideLancerMirror->SetRelativePos(50.f, 80.f, 0.f);
 	m_SylphideLancerMirror->SetPivot(0.5f, 0.5f, 0.f);
 
-	m_BodySprite->SetRelativePos(100.f, 100.f, 0.f);
+	//m_BodySprite->SetRelativePos(100.f, 100.f, 0.f);
 	m_BodySprite->SetPivot(0.5f, 0.5f, 0.f);
+
+	m_SkillBodyEffect->SetPivot(0.5f, 0.5f, 0.f);
+	m_SkillBodyEffect->SetRelativePos(0.f, 11.f, -5.f);
 
 	m_PlayerOrb->SetRelativePos(60.f, 50.f, 0.f);
 	m_PlayerOrb->SetPivot(0.5f, 0.5f, 0.f);
@@ -148,7 +153,6 @@ bool CPlayer2D::Init()
 	//m_DamageWidgetComponent->SetRelativePos(-20.f, 0.f, 0.f);
 
 	CPlayerDamageFont* DamageFont = m_DamageWidgetComponent->CreateWidgetWindow<CPlayerDamageFont>("DamageFontWidget");
-
 
 	CInput::GetInst()->CreateKey("MoveUp", VK_UP);
 	CInput::GetInst()->CreateKey("MoveDown", VK_DOWN);
@@ -186,6 +190,8 @@ bool CPlayer2D::Init()
 
 	//CInput::GetInst()->SetKeyCallback<CPlayer2D>("MovePoint", KeyState_Down, this, &CPlayer2D::MovePointDown);
 
+	m_GhostVector = Vector3(1.f, 0.f, 0.f);
+
 
 	return true;
 }
@@ -198,7 +204,19 @@ void CPlayer2D::Update(float DeltaTime)
 
 	m_PlayerSkillInfo->Update(DeltaTime);
 
-	if (m_OnLightTransforming)
+	if (m_Dead)
+	{
+		GetRootComponent()->AddWorldPos(m_GhostVector.x / 10.f, m_GhostVector.y / 10.f, 0.f);
+
+		Vector3 Rot = Vector3(0.f, 0.f, DeltaTime * 100.f);
+
+		Matrix	matRot;
+		matRot.Rotation(Rot);
+
+		m_GhostVector = m_GhostVector.TransformCoord(matRot);
+	}
+
+	if (m_OnLightTransforming && !m_Dead)
 	{
 		SkillInfo* Info = m_PlayerSkillInfo->FindSkillInfo("LightTransforming");
 
@@ -209,12 +227,12 @@ void CPlayer2D::Update(float DeltaTime)
 		}
 	}
 
-	if (m_OnJump)
+	if (m_OnJump && !m_Dead)
 	{
 		AddWorldPos(0.f, DeltaTime * m_JumpForce, 0.f);
 	}
 
-	if (m_OnHit)
+	if (m_OnHit && !m_Dead)
 	{
 		m_OnHitAccTime += DeltaTime;
 
@@ -250,7 +268,7 @@ void CPlayer2D::Update(float DeltaTime)
 
 		KnockBack(DeltaTime);
 	}
-	
+
 }
 
 void CPlayer2D::PostUpdate(float DeltaTime)
@@ -338,7 +356,8 @@ void CPlayer2D::MoveUp(float DeltaTime)
 			// 2. 로프 끝까지 다 올라가서 m_Gravity = true되어서 플레이어가 떨어지는 와중에 위방향키를 계속 누르고 있어도 다시 줄에 메달리지 않게하기
 			if (!TileCollision && m_LopeEnable && abs(MyInfo.Center.x - ComponentInfo.Center.x) < 8.f)
 			{
-				SetWorldPos(ComponentInfo.Center.x, GetWorldPos().y, 0.f);
+				Vector3 MyPos = GetWorldPos();
+				SetWorldPos(ComponentInfo.Center.x, MyPos.y, MyPos.z);
 
 				m_Gravity = false;
 				m_OnJump = false;
@@ -427,7 +446,7 @@ void CPlayer2D::MoveDown(float DeltaTime)
 
 void CPlayer2D::MoveLeft(float DeltaTime)
 {
-	if (m_OnKnockBack || m_OnLope)
+	if (m_OnKnockBack || m_OnLope || m_Dead)
 		return;
 
 	if (m_VoidPressure)
@@ -451,8 +470,29 @@ void CPlayer2D::MoveLeft(float DeltaTime)
 		if (IsFlip)
 			FlipAll(DeltaTime);
 
+		std::vector<CColliderBox2D*>	vecCollider;
+
+		m_Body->FindMultipleCollisionComponent<CColliderBox2D, CTileObject>(vecCollider);
+
+		size_t Count = vecCollider.size();
+
+		for (size_t i = 0; i < Count; ++i)
+		{
+			if (Count >= 2 && vecCollider[i]->GetWorldRot().z < 0.f && m_DirVector.y == 0.f)
+			{
+				Vector3 DirRot = vecCollider[i]->GetWorldRot();
+				Matrix MatRot;
+				MatRot.Rotation(DirRot);
+				m_DirVector = m_DirVector.TransformCoord(MatRot);
+				break;
+			}
+		}
+
 		//m_BodySprite->AddWorldPos(m_BodySprite->GetWorldAxis(AXIS_X) * -180.f * DeltaTime);
-		m_BodySprite->AddWorldPos(Vector3(-180.f * DeltaTime, -180.f * DeltaTime, 0.f) * m_DirVector);
+		if(m_OnJump)
+			m_RootComponent->AddWorldPos(Vector3(-180.f * DeltaTime, 0.f, 0.f) * m_DirVector);
+		else
+			m_RootComponent->AddWorldPos(Vector3(-180.f * DeltaTime, -180.f * DeltaTime, 0.f) * m_DirVector);
 
 		if (!m_OnJump && !m_BodySprite->GetAnimationInstance()->CheckCurrentAnimation("WalkLeft"))
 			m_BodySprite->ChangeAnimation("WalkLeft");
@@ -463,7 +503,7 @@ void CPlayer2D::MoveLeft(float DeltaTime)
 
 void CPlayer2D::MoveRight(float DeltaTime)
 {
- 	if (m_OnKnockBack || m_OnLope)
+ 	if (m_OnKnockBack || m_OnLope || m_Dead)
 		return;
 
 	if (m_VoidPressure)
@@ -488,7 +528,36 @@ void CPlayer2D::MoveRight(float DeltaTime)
 			FlipAll(DeltaTime);
 
 		//m_BodySprite->AddWorldPos(m_BodySprite->GetWorldAxis(AXIS_X) * 180.f * DeltaTime);
-		m_BodySprite->AddWorldPos(Vector3(180.f * DeltaTime, 180.f * DeltaTime, 0.f) * m_DirVector);
+
+		std::vector<CColliderBox2D*>	vecCollider;
+
+		m_Body->FindMultipleCollisionComponent<CColliderBox2D, CTileObject>(vecCollider);
+
+		size_t Count = vecCollider.size();
+
+		//평지랑 오르막길 만나는 지점에서 가끔씩 오르막 안올라가고 직진해버릴때가 있음 
+		// -> m_DirVector는 (1, 0, 0)나오는데 m_DirRotation은 (0, 0, -34) 나옴
+		// 그 이유는 왼쪽 이동하면서 내리막 내려감(CollisionBegin에서 if (SameTileObjColliderCount == 2 && EarlyCollider)이 아니고 else에 들어가서
+		// m_DirRotation은 34되고, m_DirVector는 34도만큼 TransformCoor됨), 그러고 충돌체 곧바로 뒤에 충돌체 2개 동시에 부딪힌
+		// if (SameTileObjColliderCount == 2 && EarlyCollider)에 들어가는데 ColliderRot은 평지 충돌체, EarlyCollider는 34도 충돌체이다
+		// 그래서 ColliderRot은 0 - 34해서 - 34가 되고, m_DirRotation은 0이 되고 m_DirVector는(1, 0, 0)이 되어서
+		// 이 상태에서 오른쪽 방향키로 오른쪽 이동하면 오르막 안올라가고 그걸 뚫고 직진해버리므로 그 경우를 예외처리한다
+		for (size_t i = 0; i < Count; ++i)
+		{
+			if (Count >= 2 && vecCollider[i]->GetWorldRot().z > 0.f && m_DirVector.y == 0.f)
+			{
+				Vector3 DirRot = vecCollider[i]->GetWorldRot();
+				Matrix MatRot;
+				MatRot.Rotation(DirRot);
+				m_DirVector = m_DirVector.TransformCoord(MatRot);
+				break;
+			}
+		}
+
+		if (m_OnJump)
+			m_RootComponent->AddWorldPos(Vector3(180.f * DeltaTime, 0.f, 0.f) * m_DirVector);
+		else
+			m_RootComponent->AddWorldPos(Vector3(180.f * DeltaTime, 180.f * DeltaTime, 0.f) * m_DirVector);
 
 		if (!m_OnJump && !m_BodySprite->GetAnimationInstance()->CheckCurrentAnimation("WalkLeft"))
 			m_BodySprite->ChangeAnimation("WalkLeft");
@@ -502,7 +571,7 @@ void CPlayer2D::Jump(float DeltaTime)
 	if (m_VoidPressure && m_VoidPressure->IsEnable())
 		return;
 
-	if (m_OnJump || m_Gravity)
+	if (m_OnJump || m_Gravity || m_Dead)
 		return;
 
 	if (m_OnLope)
@@ -593,7 +662,7 @@ void CPlayer2D::Jump(float DeltaTime)
 
 void CPlayer2D::SylphideLancer(float DeltaTime)
 {
-	if (m_OnJump)
+	if (m_OnJump || m_IsChanging || m_Dead)
 		return;
 
 	SkillInfo* SkillInfo = m_PlayerSkillInfo->FindSkillInfo("SylphideLancer");
@@ -601,11 +670,17 @@ void CPlayer2D::SylphideLancer(float DeltaTime)
 	if (SkillInfo->Active == true && SkillInfo->AccTime < SkillInfo->CoolTime)
 		return;
 
+	if (SkillInfo->MPRequire > m_PlayerInfo.MP)
+		return;
 
 	// Scene의 m_ObjList에서 몬스터 찾아서 여기서 실피드랜서 방향 설정해주기
 
 	m_BodySprite->ChangeAnimation("HealLeft");
+	m_PlayerInfo.MP -= SkillInfo->MPRequire;
 
+	CCharacterStatusWindow* Window = CClientManager::GetInst()->GetCharacterStatusWindow();
+	Window->SetCurrentMP(m_PlayerInfo.MP);
+	Window->SetMPPercent((float)m_PlayerInfo.MP / m_PlayerInfo.MPMax);
 
 	CGameObject* NearMonster = nullptr;
 
@@ -637,7 +712,7 @@ void CPlayer2D::SylphideLancer(float DeltaTime)
 
 		Lancer->SetAllSceneComponentsLayer("MovingObjFront");
 		Lancer->SetLancerID(i);
-		Lancer->SetWorldPos(MirrorPos.x, MirrorPos.y - 10.f + i * 30.f, MirrorPos.z);
+		Lancer->SetWorldPos(MirrorPos.x, MirrorPos.y - 10.f + i * 30.f, GetWorldPos().z - 20.f);
 		Lancer->SetCollisionProfile("PlayerAttack");
 		Lancer->SetSpeed(-400.f);
 		Vector3 LancerPos = Lancer->GetWorldPos();
@@ -670,12 +745,15 @@ void CPlayer2D::SylphideLancer(float DeltaTime)
 
 void CPlayer2D::VoidPressure(float DeltaTime)
 {
-	if (m_OnJump)
+	if (m_OnJump || m_IsChanging || m_Dead)
 		return;
 
 	SkillInfo* SkillInfo = m_PlayerSkillInfo->FindSkillInfo("VoidPressure");
 
 	if (SkillInfo->Active == true && SkillInfo->AccTime < SkillInfo->CoolTime)
+		return;
+
+	if (SkillInfo->MPRequire > m_PlayerInfo.MP)
 		return;
 
 	if(!m_Scene->GetResource()->IsPlaying("VoidPressureLoop"))
@@ -701,10 +779,15 @@ void CPlayer2D::VoidPressure(float DeltaTime)
 
 		float VoidPosX = PlayerWorldPos.x - RelativePos.x * 2.f;
 
-		m_VoidPressure->SetWorldPos(VoidPosX, WorldPos.y, 0.f);
-		m_VoidPressure->SetOriginPos(VoidPosX, WorldPos.y, 0.f);
+		m_VoidPressure->SetWorldPos(VoidPosX, WorldPos.y, PlayerWorldPos.z - 20.f);
+		m_VoidPressure->SetOriginPos(VoidPosX, WorldPos.y, PlayerWorldPos.z - 20.f);
 
 		SkillInfo->Active = true;
+
+		m_PlayerInfo.MP -= SkillInfo->MPRequire;
+		CCharacterStatusWindow* Window = CClientManager::GetInst()->GetCharacterStatusWindow();
+		Window->SetCurrentMP(m_PlayerInfo.MP);
+		Window->SetMPPercent((float)m_PlayerInfo.MP / m_PlayerInfo.MPMax);
 	}
 
 	if (m_VoidPressure && !m_VoidPressure->IsEnable())
@@ -719,11 +802,16 @@ void CPlayer2D::VoidPressure(float DeltaTime)
 
 		float VoidPosX = PlayerWorldPos.x - RelativePos.x * 2.f;
 
-		m_VoidPressure->SetWorldPos(VoidPosX, WorldPos.y, 0.f);
-		m_VoidPressure->SetOriginPos(VoidPosX, WorldPos.y, 0.f);
+		m_VoidPressure->SetWorldPos(VoidPosX, WorldPos.y, PlayerWorldPos.z - 20.f);
+		m_VoidPressure->SetOriginPos(VoidPosX, WorldPos.y, PlayerWorldPos.z - 20.f);
 		m_VoidPressure->SetOnDestroy(false);
 
 		SkillInfo->Active = true;
+
+		m_PlayerInfo.MP -= SkillInfo->MPRequire;
+		CCharacterStatusWindow* Window = CClientManager::GetInst()->GetCharacterStatusWindow();
+		Window->SetCurrentMP(m_PlayerInfo.MP);
+		Window->SetMPPercent((float)m_PlayerInfo.MP / m_PlayerInfo.MPMax);
 	}
 
 	if (!m_VoidPressureOrb)
@@ -746,8 +834,8 @@ void CPlayer2D::VoidPressure(float DeltaTime)
 		else
 			VoidPosX -= 5.f;
 
-		m_VoidPressureOrb->SetWorldPos(VoidPosX, WorldPos.y - 39.f, 0.f);
-		m_VoidPressureOrb->SetOriginPos(VoidPosX, WorldPos.y - 39.f, 0.f);
+		m_VoidPressureOrb->SetWorldPos(VoidPosX, WorldPos.y - 39.f, PlayerWorldPos.z - 20.f);
+		m_VoidPressureOrb->SetOriginPos(VoidPosX, WorldPos.y - 39.f, PlayerWorldPos.z - 20.f);
 	}
 
 	if (m_VoidPressureOrb && !m_VoidPressureOrb->IsEnable())
@@ -771,7 +859,7 @@ void CPlayer2D::VoidPressure(float DeltaTime)
 
 void CPlayer2D::LightTransforming(float DeltaTime)
 {
-	if (m_OnJump || m_IsChanging)
+	if (m_OnJump || m_IsChanging || m_Dead)
 		return;
 
 	if (m_Dir == PlayerDir::None)
@@ -785,8 +873,17 @@ void CPlayer2D::LightTransforming(float DeltaTime)
 	if (SkillInfo->Active == true && SkillInfo->AccTime < SkillInfo->CoolTime)
 		return;
 
+	if (SkillInfo->MPRequire > m_PlayerInfo.MP)
+		return;
+
 	m_OnLightTransforming = true;
 	m_BodySprite->SetOpacity(0.5f);
+	m_PlayerInfo.MP -= SkillInfo->MPRequire;
+
+	CCharacterStatusWindow* Window = CClientManager::GetInst()->GetCharacterStatusWindow();
+	Window->SetCurrentMP(m_PlayerInfo.MP);
+	Window->SetMPPercent((float)m_PlayerInfo.MP / m_PlayerInfo.MPMax);
+
 	//m_Body->Enable(false);
 
 	m_Scene->GetResource()->SoundPlay("LightTransforming");
@@ -794,10 +891,10 @@ void CPlayer2D::LightTransforming(float DeltaTime)
 	m_SkillBodyEffect->ChangeAnimation("LightTransformingLeft");
 
 	if (m_Dir == PlayerDir::Right)
-		m_BodySprite->AddWorldPos(200.f, 0.f, 0.f);
+		m_RootComponent->AddWorldPos(200.f, 0.f, 0.f);
 
 	else if (m_Dir == PlayerDir::Left)
-		m_BodySprite->AddWorldPos(-200.f, 0.f, 0.f);
+		m_RootComponent->AddWorldPos(-200.f, 0.f, 0.f);
 
 	SkillInfo->Active = true;
 
@@ -866,7 +963,7 @@ void CPlayer2D::LightTransforming(float DeltaTime)
 
 void CPlayer2D::DeathSide(float DeltaTime)
 {
-	if (m_OnJump || m_IsChanging)
+	if (m_OnJump || m_IsChanging || m_Dead)
 		return;
 
 	if (CRenderManager::GetInst()->GetStartFadeOut())
@@ -877,6 +974,14 @@ void CPlayer2D::DeathSide(float DeltaTime)
 	if (SkillInfo->Active == true && SkillInfo->AccTime < SkillInfo->CoolTime)
 		return;
 
+	if (SkillInfo->MPRequire > m_PlayerInfo.MP)
+		return;
+
+	m_PlayerInfo.MP -= SkillInfo->MPRequire;
+
+	CCharacterStatusWindow* Window = CClientManager::GetInst()->GetCharacterStatusWindow();
+	Window->SetCurrentMP(m_PlayerInfo.MP);
+	Window->SetMPPercent((float)m_PlayerInfo.MP / m_PlayerInfo.MPMax);
 
 	// Scene의 m_ObjList에서 몬스터 찾아서 여기서 실피드랜서 방향 설정해주기
 
@@ -885,8 +990,10 @@ void CPlayer2D::DeathSide(float DeltaTime)
 	m_Scene->GetResource()->SoundPlay("DeathSideUse");
 	m_Scene->GetResource()->SoundPlay("DeathSideVoice2");
 
+	Vector3 WorldPos = GetRootComponent()->GetWorldPos();
+
 	CDeathSide* DeathSide = m_Scene->CreateGameObject<CDeathSide>("DeathSide");
-	DeathSide->SetWorldPos(m_BodySprite->GetWorldPos());
+	DeathSide->SetWorldPos(WorldPos.x, WorldPos.y, WorldPos.z - 10.f);
 	DeathSide->SetAllSceneComponentsLayer("MovingObjFront");
 	DeathSide->SetCollisionProfile("PlayerAttack");
 
@@ -969,7 +1076,7 @@ void CPlayer2D::CollisionBeginCallback(const CollisionResult& Result)
 			if ((m_OnJump || m_LopeJump) && GetCurrentFrameMove().y > 0.f)
 				return;
 
-			if ((m_OnJump || m_LopeJump) && MyInfo.Center.y - MyInfo.Length.y <= TileInfo.Center.y)
+			if ((m_OnJump || m_LopeJump) && MyInfo.Center.y - MyInfo.Length.y <= TileInfo.Center.y && TileObjCollider->GetWorldRot().z == 0.f)
 				return;
 
 			// 왼쪽이나 오른쪽으로 이동하다가 타일과 충돌이 끝나서 떨어지려는데 그때 타일 옆부분이랑 충돌하면 무시
@@ -981,8 +1088,6 @@ void CPlayer2D::CollisionBeginCallback(const CollisionResult& Result)
 
 		if (SameTileObjColliderCount == 2 && EarlyCollider)
 		{
-			ColliderRot = ColliderRot - EarlyCollider->GetWorldRot();
-
 			if (ColliderRot.z == 0.f)
 			{
 				m_DirVector = Vector3(1.f, 0.f, 0.f);
@@ -990,6 +1095,8 @@ void CPlayer2D::CollisionBeginCallback(const CollisionResult& Result)
 
 			else
 			{
+				ColliderRot = ColliderRot - EarlyCollider->GetWorldRot();
+
 				Matrix matRot;
 
 				matRot.Rotation(ColliderRot);
@@ -998,27 +1105,54 @@ void CPlayer2D::CollisionBeginCallback(const CollisionResult& Result)
 			}
 			
 			m_DirRotation = ColliderRot;
+			m_PrevSameTileObjColliderCount = 2;
 		}
 
 		else
 		{
-			m_DirRotation = ColliderRot - m_DirRotation;
-
-			if (ColliderRot.z == 0.f)
+			if (m_PrevSameTileObjColliderCount == 0)
 			{
-				m_DirVector = Vector3(1.f, 0.f, 0.f);
+				m_DirRotation = ColliderRot;
+
+				if (ColliderRot.z == 0.f)
+				{
+					m_DirVector = Vector3(1.f, 0.f, 0.f);
+				}
+
+				else
+				{
+					m_DirVector = Vector3(1.f, 0.f, 0.f);
+
+					Matrix matRot;
+
+					matRot.Rotation(m_DirRotation);
+
+					m_DirVector = m_DirVector.TransformCoord(matRot);
+				}
 			}
 
 			else
 			{
-				Matrix matRot;
+				m_DirRotation = ColliderRot - m_DirRotation;
 
-				matRot.Rotation(m_DirRotation);
+				if (ColliderRot.z == 0.f)
+				{
+					m_DirVector = Vector3(1.f, 0.f, 0.f);
+				}
 
-				m_DirVector = m_DirVector.TransformCoord(matRot);
+				else
+				{
+					Matrix matRot;
+
+					matRot.Rotation(m_DirRotation);
+
+					m_DirVector = m_DirVector.TransformCoord(matRot);
+				}
+
+				m_DirRotation = ColliderRot;
 			}
 
-			m_DirRotation = ColliderRot;
+			m_PrevSameTileObjColliderCount = 1;
 		}
 
 
@@ -1045,7 +1179,7 @@ void CPlayer2D::CollisionBeginCallback(const CollisionResult& Result)
 		DestObj->GetTypeID() == typeid(CLowerClassBook).hash_code() ||
 		DestObj->GetTypeID() == typeid(CRadishMonster).hash_code())
 	{
-		if (m_OnHit || m_OnLope)
+		if (m_OnHit || m_OnLope || m_Dead)
 			return;
 
 		Vector3 DestPos = DestObj->GetWorldPos();
@@ -1062,6 +1196,11 @@ void CPlayer2D::CollisionBeginCallback(const CollisionResult& Result)
 
 		m_GravityAccTime = 0.f;
 		m_Gravity = true;
+
+		if (m_OnKnockBackLeft && atan(m_DirVector.y / m_DirVector.x) < 0.f)
+			m_Gravity = false;
+		if (!m_OnKnockBackLeft && atan(m_DirVector.y / m_DirVector.x) > 0.f)
+			m_Gravity = false;
 	}
 }
 
@@ -1072,6 +1211,11 @@ void CPlayer2D::CollisionEndCallback(const CollisionResult& Result)
 		return;
 
 	CGameObject* Dest = Result.Dest->GetGameObject();
+
+	if (Dest->GetTypeID() == typeid(CTileObject).hash_code())
+	{
+		--m_PrevSameTileObjColliderCount;
+	}
 
 	if (Dest->GetTypeID() == typeid(CLopeTileObject).hash_code())
 	{
@@ -1166,6 +1310,9 @@ void CPlayer2D::CameraTrack()
 
 void CPlayer2D::KnockBack(float DeltaTime)
 {
+	if (m_Dead)
+		return;
+
 	if (m_OnKnockBack)
 	{
 		if (m_OnJump)
@@ -1175,7 +1322,7 @@ void CPlayer2D::KnockBack(float DeltaTime)
 		// 왼쪽으로 튕겨나감
 		if (m_OnKnockBackLeft)
 		{
-			if (m_DirRotation.z >= 0.f)
+			if (atan(m_DirVector.y / m_DirVector.x) >= 0.f)
 			{
 				Vector3 KnockBackDir = Vector3(-200.f * DeltaTime, 100.f * DeltaTime, 0.f);
 
@@ -1185,16 +1332,16 @@ void CPlayer2D::KnockBack(float DeltaTime)
 			// 음의 기울기를 가진 대각선 타일을 밟고 있을때
 			else
 			{
-				Vector3 KnockBackDir = Vector3(-20.f * DeltaTime, 120.f * DeltaTime, 0.f) * m_DirVector;
+				//Vector3 KnockBackDir = Vector3(0.f, 100.f * DeltaTime, 0.f) * m_DirVector;
 
-				AddWorldPos(KnockBackDir);
+				//AddWorldPos(KnockBackDir);
 			}
 		}
 
 		// 오른쪽으로 튕겨나감
 		else
 		{
-			if (m_DirRotation.z <= 0.f)
+			if (atan(m_DirVector.y / m_DirVector.x) <= 0.f)
 			{
 				Vector3 KnockBackDir = Vector3(200.f * DeltaTime, 100.f * DeltaTime, 0.f);
 
@@ -1204,9 +1351,11 @@ void CPlayer2D::KnockBack(float DeltaTime)
 			// 양의 기울기를 대각선 타일을 밟고 있을때
 			else
 			{
-				Vector3 KnockBackDir = Vector3(20.f * DeltaTime, 120.f * DeltaTime, 0.f) * m_DirVector;
+				//Vector3 KnockBackDir = Vector3(0.f, 100.f * DeltaTime, 0.f) * m_DirVector;
 
-				AddWorldPos(KnockBackDir);
+				//AddWorldPos(KnockBackDir);
+
+				
 			}
 		}
 
@@ -1234,9 +1383,18 @@ void CPlayer2D::SetDamage(float Damage, bool Critical)
 
 	float HPPercent = (float)m_PlayerInfo.HP / m_PlayerInfo.HPMax;
 
+	CClientManager::GetInst()->GetCharacterStatusWindow()->SetCurrentHP(m_PlayerInfo.HP);
 	CClientManager::GetInst()->GetCharacterStatusWindow()->SetHPPercent(HPPercent);
 
 	PushDamageFont(Damage);
+
+	if (m_PlayerInfo.HP < 0.f)
+	{
+		m_PlayerInfo.HP = 0;
+		CClientManager::GetInst()->GetCharacterStatusWindow()->SetCurrentHP(0);
+		CClientManager::GetInst()->GetCharacterStatusWindow()->SetHPPercent(0);
+		Die();
+	}
 }
 
 void CPlayer2D::PushDamageFont(float Damage)
@@ -1251,8 +1409,38 @@ void CPlayer2D::PickItem(float DeltaTime)
 {
 	if (m_Body->CheckPrevCollisionGameObjectType(typeid(CBill).hash_code()))
 	{
-		m_Scene->GetResource()->SoundPlay("PickUpItem");
+		CColliderComponent* BillCollider = m_Body->FindPrevCollisionComponentByObjectType(typeid(CBill).hash_code());
+
+		if (BillCollider)
+		{
+
+			CBill* Bill = (CBill*)BillCollider->GetGameObject();
+
+			if (!Bill->GetEatByPlayer())
+			{
+				m_Scene->GetResource()->SoundPlay("PickUpItem");
+
+				int Money = Bill->GetMoney();
+
+				CInventory* Inven = CClientManager::GetInst()->GetInventoryWindow();
+
+				Inven->AddMoney(Money);
+
+				m_PlayerInfo.Meso += Money;
+
+				Bill->GetByPlayer();
+			}
+		}
 	}
+}
+
+void CPlayer2D::FallTomb()
+{
+	CTomb* Tomb = m_Scene->CreateGameObject<CTomb>("Tomb");
+
+	Vector3 MyPos = GetWorldPos();
+
+	Tomb->SetWorldPos(MyPos.x - 8.f, CEngine::GetInst()->GetResolution().Height - 50.f, MyPos.z + 3.f);
 }
 
 void CPlayer2D::GetEXP(int EXP)
@@ -1312,6 +1500,38 @@ void CPlayer2D::UpINT(int Count)
 void CPlayer2D::UpLUK(int Count)
 {
 	m_PlayerInfo.LUK += Count;
+}
+
+void CPlayer2D::Die()
+{
+	m_Scene->GetResource()->SoundPlay("Tombstone");
+	m_BodySprite->ChangeAnimation("PlayerDead");
+
+	m_Dead = true;
+	m_PlayerOrb->GetAnimationInstance()->SetCurrentAnimation(nullptr);
+	m_Body->Enable(false);
+	m_Gravity = false;
+	m_BodySprite->SetOpacity(1.f);
+
+	FallTomb();
+
+	DeadRound();
+
+	CDyingNoticeWindow* Window = CClientManager::GetInst()->GetDyingNoticeWindow();
+
+	if(Window)
+		Window->Enable(true);
+}
+
+void CPlayer2D::DeadRound()
+{
+	//Vector3 CurrentPos = GetWorldPos();
+
+	//m_BodySprite->SetInheritRotZ(true);
+
+	AddWorldPos(0.f, 10.f, 0.f);
+
+	//m_BodySprite->AddRelativePos(30.f, 0.f, 0.f);
 }
 
 
@@ -1463,7 +1683,7 @@ void CPlayer2D::GotoNextMap(float DeltaTime)
 		}
 	}
 
-	if (m_Scene->GetSceneMode()->GetTypeID() == typeid(COnionScene).hash_code())
+	else if (m_Scene->GetSceneMode()->GetTypeID() == typeid(COnionScene).hash_code())
 	{
 		CGameObject* LeftPortal = m_Scene->FindObject("Portal1");
 		CGameObject* RightPortal = m_Scene->FindObject("Portal2");
@@ -1503,7 +1723,7 @@ void CPlayer2D::GotoNextMap(float DeltaTime)
 		}
 	}
 
-	if (m_Scene->GetSceneMode()->GetTypeID() == typeid(CLibrary2ndScene).hash_code())
+	else if (m_Scene->GetSceneMode()->GetTypeID() == typeid(CLibrary2ndScene).hash_code())
 	{
 		CGameObject* Portal = m_Scene->FindObject("Portal");
 
@@ -1526,6 +1746,30 @@ void CPlayer2D::GotoNextMap(float DeltaTime)
 					CLibrary2ndScene* Scene = (CLibrary2ndScene*)(GetScene()->GetSceneMode());
 					CRenderManager::GetInst()->SetStartFadeIn(true);
 					CSceneManager::GetInst()->SetFadeInEndCallback<CLibrary2ndScene>(Scene, &CLibrary2ndScene::CreateLobbyScene);
+				}
+			}
+		}
+	}
+
+	else if (m_Scene->GetSceneMode()->GetTypeID() == typeid(CRadishScene).hash_code())
+	{
+		CGameObject* Portal = m_Scene->FindObject("LeftPortal");
+
+		if (Portal)
+		{
+			CComponent* Body = ((CPortal*)Portal)->FindComponent("Body");
+
+			if (Body)
+			{
+				bool Collision = ((CColliderBox2D*)Body)->CheckPrevCollision(m_Body);
+
+				if (Collision)
+				{
+					m_ListCollisionID.clear();
+
+					CRadishScene* Scene = (CRadishScene*)(GetScene()->GetSceneMode());
+					CRenderManager::GetInst()->SetStartFadeIn(true);
+					CSceneManager::GetInst()->SetFadeInEndCallback<CRadishScene>(Scene, &CRadishScene::CreateOnionScene);
 				}
 			}
 		}
@@ -1570,7 +1814,7 @@ void CPlayer2D::ProduceSecondSylphideLander(float DeltaTime)
 
 		Lancer->SetAllSceneComponentsLayer("MovingObjFront");
 		Lancer->SetLancerID(i + 2);
-		Lancer->SetWorldPos(MirrorPos.x, MirrorPos.y - 10.f + i * 30.f, MirrorPos.z);
+		Lancer->SetWorldPos(MirrorPos.x, MirrorPos.y - 10.f + i * 30.f, GetWorldPos().z - 20.f);
 		Lancer->SetCollisionProfile("PlayerAttack");
 		Lancer->SetSpeed(-400.f);
 
@@ -1608,7 +1852,7 @@ void CPlayer2D::EffectEnd(float DeltaTime)
 
 void CPlayer2D::ReturnIdle(float DeltaTime)
 {
-	if (m_OnLope || m_OnJump)
+	if (m_OnLope || m_OnJump || m_Dead)
 		return;
 
 	m_BodySprite->ChangeAnimation("IdleLeft");
@@ -1633,6 +1877,41 @@ void CPlayer2D::ReturnFadeApply()
 {
 	m_BodySprite->SetFadeApply(true);
 	m_PlayerOrb->SetFadeApply(true);
+}
+
+void CPlayer2D::ReturnAlive()
+{
+	m_Dead = false;
+	m_BodySprite->ChangeAnimation("IdleLeft");
+	m_Dir = PlayerDir::None;
+	m_Gravity = true;
+
+	m_PlayerOrb->GetAnimationInstance()->ChangeAnimation("PlayerOrb");
+	m_Body->Enable(true);
+	m_BodySprite->SetOpacity(1.f);
+
+	CCharacterStatusWindow* StatusWindow = CClientManager::GetInst()->GetCharacterStatusWindow();
+
+	if (StatusWindow)
+	{
+		StatusWindow->SetCurrentHP(m_PlayerInfo.HPMax);
+		StatusWindow->SetCurrentMP(m_PlayerInfo.MPMax);
+		StatusWindow->SetHPPercent(1.f);
+		StatusWindow->SetMPPercent(1.f);
+		m_PlayerInfo.HP = m_PlayerInfo.HPMax;
+		m_PlayerInfo.MP = m_PlayerInfo.MPMax;
+	}
+
+	// Tomb찾아서 Destroy해주기
+	CTomb* Tomb = (CTomb*)m_Scene->FindObject("Tomb");
+
+	if (Tomb)
+		Tomb->Destroy();
+
+	CDyingNoticeWindow* NoticeWindow = CClientManager::GetInst()->GetDyingNoticeWindow();
+
+	if (NoticeWindow)
+		NoticeWindow->Enable(false);
 }
 
 

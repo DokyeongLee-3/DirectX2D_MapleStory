@@ -73,6 +73,7 @@ bool COnionScene::Init()
 	CCharacterEXP* EXPWindow = CClientManager::GetInst()->GetCharacterEXPWindow();
 	CBossMatching* BossMatching = CClientManager::GetInst()->GetBossMatchingWindow();
 	CStatWindow* StatWindow = CClientManager::GetInst()->GetStatWindow();
+	CDyingNoticeWindow* DyingNoticeWindow = CClientManager::GetInst()->GetDyingNoticeWindow();
 
 	m_Scene->GetViewport()->AddWindow(StatusWindow);
 	m_Scene->GetViewport()->AddWindow(Inventory);
@@ -81,6 +82,7 @@ bool COnionScene::Init()
 	m_Scene->GetViewport()->AddWindow(EXPWindow);
 	m_Scene->GetViewport()->AddWindow(BossMatching);
 	m_Scene->GetViewport()->AddWindow(StatWindow);
+	m_Scene->GetViewport()->AddWindow(DyingNoticeWindow);
 
 	CreateAnimationSequence();
 	// Effect Hit들을 Scene의 m_mapPrototype에 만들어놓기
@@ -144,6 +146,25 @@ void COnionScene::Update(float DeltaTime)
 			}
 		}
 	}
+
+	if (m_OnionMonsterList.size() < 5)
+	{
+		int Count = 0;
+		auto iter = m_DeadPos.begin();
+		auto iterEnd = m_DeadPos.end();
+
+		for (; iter != iterEnd; )
+		{
+			COnionMonster* Onion = m_Scene->CreateGameObject<COnionMonster>("Onion");
+			Onion->SetWorldPos((*iter));
+			Onion->GetRootComponent()->SetLayerName("MovingObjFront");
+			iter = m_DeadPos.erase(iter);
+			iterEnd = m_DeadPos.end();
+			((CSpriteComponent*)Onion->GetRootComponent())->SetOpacity(0.5f);
+
+			m_OnionMonsterList.push_back(Onion);
+		}
+	}
 }
 
 void COnionScene::CreateMaterial()
@@ -166,6 +187,7 @@ void COnionScene::CreatePlayerAnimationSequence()
 	m_Scene->GetResource()->LoadSequence2D("PlayerRope.sqc");
 	m_Scene->GetResource()->LoadSequence2D("PlayerJumpLeft.sqc");
 	m_Scene->GetResource()->LoadSequence2D("PlayerLevelUpEffect.sqc");
+	m_Scene->GetResource()->LoadSequence2D("PlayerDead.sqc");
 }
 
 void COnionScene::CreateSkillAnimationSequence()
@@ -242,6 +264,7 @@ void COnionScene::LoadSound()
 
 	m_Scene->GetResource()->LoadSound("Effect", false, "LevelUp", "LevelUp.mp3");
 	m_Scene->GetResource()->LoadSound("Effect", false, "PickUpItem", "PickUpItem.mp3");
+	m_Scene->GetResource()->LoadSound("Effect", false, "Tombstone", "Tombstone.mp3");
 }
 
 void COnionScene::AddTileCollisionCallback()
@@ -293,7 +316,7 @@ COnionMonster* COnionScene::FindOnionMonster(bool Right, const Vector3& MyPos, f
 				continue;
 
 
-			if (abs(MonsterPos.x - MyPos.x) < DistXConstraint && MonsterPos.y - MyPos.y > 0.f && MonsterPos.y - MyPos.y < DistYConstraint)
+			if (abs(MonsterPos.x - MyPos.x) < DistXConstraint && abs(MonsterPos.y - MyPos.y) < DistYConstraint)
 			{
 				if (!(*iter)->GetBody()->IsEnable())
 					continue;
@@ -334,11 +357,18 @@ void COnionScene::CreateLobbyScene()
 	LobbyScene->SetPlayerObject(m_PlayerObject);
 
 	// 다음 Scene에서의 위치를 Scene의 왼쪽에 위치하도록 잡아주기
-	m_PlayerObject->SetWorldPos(1750.f, 300.f, 0.f);
+	Vector3 WorldPos = m_PlayerObject->GetWorldPos();
+	m_PlayerObject->SetWorldPos(1750.f, 300.f, WorldPos.z);
 
 	//SAFE_DELETE(m_LoadingThread);
 	m_LoadingThread = CThread::CreateThread<CLoadingThread>("LobbySceneLoadingThread");
 	m_LoadingThread->SetLoadingScene(ThreadLoadingScene::Lobby);
+
+	if (((CPlayer2D*)m_PlayerObject.Get())->IsDead())
+	{
+		((CPlayer2D*)m_PlayerObject.Get())->ReturnAlive();
+	}
+
 
 	m_LoadingThread->Start();
 }
@@ -353,11 +383,42 @@ void COnionScene::CreateRadishScene()
 	RadishScene->SetPlayerObject(m_PlayerObject);
 
 	// 다음 Scene에서의 위치를 Scene의 왼쪽에 위치하도록 잡아주기
-	m_PlayerObject->SetWorldPos(200.f, 300.f, 0.f);
+	Vector3 WorldPos = m_PlayerObject->GetWorldPos();
+	m_PlayerObject->SetWorldPos(200.f, 300.f, WorldPos.z);
 
 	//SAFE_DELETE(m_LoadingThread);
 	m_LoadingThread = CThread::CreateThread<CLoadingThread>("RadishSceneLoadingThread");
 	m_LoadingThread->SetLoadingScene(ThreadLoadingScene::Radish);
 
 	m_LoadingThread->Start();
+}
+
+void COnionScene::DeleteOnionMonster(const std::string& Name)
+{
+	auto iter = m_OnionMonsterList.begin();
+	auto iterEnd = m_OnionMonsterList.end();
+
+	for (; iter != iterEnd; ++iter)
+	{
+		if ((*iter)->GetName() == Name)
+		{
+			m_OnionMonsterList.erase(iter);
+			return;
+		}
+	}
+}
+
+void COnionScene::DeleteOnionMonster(COnionMonster* Monster)
+{
+	auto iter = m_OnionMonsterList.begin();
+	auto iterEnd = m_OnionMonsterList.end();
+
+	for (; iter != iterEnd; ++iter)
+	{
+		if ((*iter) == Monster)
+		{
+			m_OnionMonsterList.erase(iter);
+			return;
+		}
+	}
 }

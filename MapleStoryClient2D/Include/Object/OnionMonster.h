@@ -49,6 +49,7 @@ public:
     virtual void SetTrackState();
     void ReturnIdle();
     void FiniteState(float DeltaTime);
+    void PushDeadPosition(const Vector3& Pos);
 
 public:
     void CollisionBeginCallback(const CollisionResult& Result);

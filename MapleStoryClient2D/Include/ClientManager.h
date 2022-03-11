@@ -8,6 +8,7 @@
 #include "Widget/CharacterStatusWindow.h"
 #include "Widget/BossMatching.h"
 #include "Widget/StatWindow.h"
+#include "Widget/DyingNoticeWindow.h"
 
 struct MonsterInfo
 {
@@ -40,6 +41,7 @@ private:
 	CCharacterEXP*           m_CharacterEXPWindow;
 	CBossMatching*           m_BossMatchingWindow;
 	CStatWindow*			 m_StatWindow;
+	CDyingNoticeWindow*      m_DyingNoticeWindow;
 
 public:
 	void SetStatWindow(CStatWindow* Window)
@@ -76,13 +78,24 @@ public:
 	{
 		m_BossMatchingWindow = Window;
 	}
+	
+	void SetDyingNoticeWindow(CDyingNoticeWindow* Window)
+	{
+		m_DyingNoticeWindow = Window;
+	}
+
+public:
 
 	CCharacterEXP* GetEXPWindow()	const
 	{
 		return m_CharacterEXPWindow;
 	}
 
-public:
+	CDyingNoticeWindow* GetDyingNoticeWindow()	const
+	{
+		return m_DyingNoticeWindow;
+	}
+
 	CCharacterStatusWindow* GetCharacterStatusWindow()	const
 	{
 		return m_CharacterStatusWindow;

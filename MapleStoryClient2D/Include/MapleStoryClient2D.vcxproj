@@ -195,6 +195,7 @@
     <ClCompile Include="Object\SylphideLancer.cpp" />
     <ClCompile Include="Object\SylphideLancerHitEffect.cpp" />
     <ClCompile Include="Object\TileObject.cpp" />
+    <ClCompile Include="Object\Tomb.cpp" />
     <ClCompile Include="Object\VerticalLampLight.cpp" />
     <ClCompile Include="Object\VoidPressure.cpp" />
     <ClCompile Include="Object\VoidPressureHitEffect.cpp" />
@@ -212,6 +213,7 @@
     <ClCompile Include="Widget\CharacterStatusWindow.cpp" />
     <ClCompile Include="Widget\ConfigurationWindow.cpp" />
     <ClCompile Include="Widget\DamageFont.cpp" />
+    <ClCompile Include="Widget\DyingNoticeWindow.cpp" />
     <ClCompile Include="Widget\Inventory.cpp" />
     <ClCompile Include="Widget\MouseCatch.cpp" />
     <ClCompile Include="Widget\MouseClick.cpp" />
@@ -260,6 +262,7 @@
     <ClInclude Include="Object\SylphideLancer.h" />
     <ClInclude Include="Object\SylphideLancerHitEffect.h" />
     <ClInclude Include="Object\TileObject.h" />
+    <ClInclude Include="Object\Tomb.h" />
     <ClInclude Include="Object\VerticalLampLight.h" />
     <ClInclude Include="Object\VoidPressure.h" />
     <ClInclude Include="Object\VoidPressureHitEffect.h" />
@@ -278,6 +281,7 @@
     <ClInclude Include="Widget\CharacterStatusWindow.h" />
     <ClInclude Include="Widget\ConfigurationWindow.h" />
     <ClInclude Include="Widget\DamageFont.h" />
+    <ClInclude Include="Widget\DyingNoticeWindow.h" />
     <ClInclude Include="Widget\Inventory.h" />
     <ClInclude Include="Widget\MouseCatch.h" />
     <ClInclude Include="Widget\MouseClick.h" />

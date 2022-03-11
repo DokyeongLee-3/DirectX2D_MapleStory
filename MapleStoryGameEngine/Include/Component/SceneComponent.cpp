@@ -394,9 +394,6 @@ void CSceneComponent::CheckCollision()
 
 void CSceneComponent::PrevRender()
 {
-	if (m_Name.find("LobbyTile") != std::string::npos)
-		int a = 3;
-
 	if (!m_Enable)
 		return;
 

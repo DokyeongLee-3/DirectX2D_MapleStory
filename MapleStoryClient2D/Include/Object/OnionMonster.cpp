@@ -63,6 +63,7 @@ void COnionMonster::Start()
 
 	m_Body->AddCollisionCallback<COnionMonster>(Collision_State::Begin, this, &COnionMonster::CollisionBeginCallback);
 	m_Body->AddCollisionCallback<COnionMonster>(Collision_State::End, this, &COnionMonster::CollisionEndCallback);
+	m_Body->Enable(true);
 
 	int LeftStart = rand() % 2 - 1;
 	if (LeftStart < 0)
@@ -83,6 +84,7 @@ bool COnionMonster::Init()
 	m_Sprite->AddChild(m_Body);
 
 	m_Sprite->SetTransparency(true);
+	m_Body->SetCollisionProfile("Monster");
 	//m_Sprite->SetOpacity(0.5f);
 
 	//m_PaperBurn->SetMaterial(m_Sprite->GetMaterial());
@@ -121,6 +123,16 @@ void COnionMonster::Update(float DeltaTime)
 		}
 	}
 
+	CSpriteComponent* Root = (CSpriteComponent*)m_RootComponent.Get();
+	float Opacity = Root->GetOpacity();	
+
+	if (Opacity < 1.f)
+	{
+		if (Opacity + DeltaTime > 1.f)
+			Root->SetOpacity(1.f);
+		else
+			Root->SetOpacity(Opacity + DeltaTime);
+	}
 }
 
 void COnionMonster::PostUpdate(float DeltaTime)
@@ -139,15 +151,26 @@ void COnionMonster::SetDamage(float Damage, bool Critical)
 
 	if (m_MonsterInfo.HP <= 0.f)
 	{
+		PushDamageFont(Damage, Critical);
+
+		if (!m_Body->IsEnable())
+			return;
+
 		m_Body->Enable(false);
 
 		GetRootComponent()->DeleteChild("Body");
 		m_Sprite->GetAnimationInstance()->ChangeAnimation("OnionDieLeft");
 		m_IsChanging = true;
 
-		PushDamageFont(Damage, Critical);
-
 		DropItem();
+
+
+		CSceneMode* SceneMode = m_Scene->GetSceneMode();
+		if (SceneMode)
+		{
+			SceneMode->PushDeadPos(GetWorldPos());
+			((COnionScene*)SceneMode)->DeleteOnionMonster(this);
+		}
 	}
 
 	else
@@ -270,6 +293,7 @@ void COnionMonster::FiniteState(float DeltaTime)
 		}
 	}	
 }
+
 
 void COnionMonster::CollisionBeginCallback(const CollisionResult& Result)
 {

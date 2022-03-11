@@ -261,6 +261,12 @@
     <ClCompile Include="Object\Bill.cpp">
       <Filter>02. Object</Filter>
     </ClCompile>
+    <ClCompile Include="Object\Tomb.cpp">
+      <Filter>02. Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\DyingNoticeWindow.cpp">
+      <Filter>03. UI\02. InGame</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -454,6 +460,12 @@
     </ClInclude>
     <ClInclude Include="Object\Bill.h">
       <Filter>02. Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Tomb.h">
+      <Filter>02. Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\DyingNoticeWindow.h">
+      <Filter>03. UI\02. InGame</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

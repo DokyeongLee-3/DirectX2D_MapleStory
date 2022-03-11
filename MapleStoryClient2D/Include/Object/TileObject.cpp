@@ -82,48 +82,50 @@ void CTileObject::CollisionBeginCallback(const CollisionResult& Result)
 
 	CGameObject* DestObj = Result.Dest->GetGameObject();
 
-	bool TileCollisionEnable = DestObj->GetTileCollisionEnable();
-
-	if (!TileCollisionEnable)
+	if (DestObj->GetTypeID() == typeid(CPlayer2D).hash_code())
 	{
-		float DestYScale = Result.Dest->GetWorldScale().y;
-		float SrcYScale = Result.Src->GetWorldScale().y;
-		// Src 충돌체의 현재 WorldPos
-		float SrcColliderPos = Result.Src->GetWorldPos().y + Result.Src->GetOffset().y;
-		// Dest 충돌체의 현재 WorldPos
-		float DestColliderPos = Result.Dest->GetWorldPos().y + Result.Dest->GetOffset().y;
-		// Src 충돌체의 높이의 절반
-		float HalfHeight = SrcYScale / 2.f;
-		// Dest 충돌체의 높이의 절반
-		float PlayerHalfHeight = DestYScale / 2.f;
+		bool TileCollisionEnable = DestObj->GetTileCollisionEnable();
 
-		// Player의 발밑 좌표 -> Player는 Pivot이 (0.5, 0.5)이다
-		float DestBottomPos = DestColliderPos - DestYScale / 2.f;
-
-
-		if (DestBottomPos <= SrcColliderPos + SrcYScale / 2.f && DestBottomPos > SrcColliderPos &&
-			(HalfHeight + PlayerHalfHeight) - (DestColliderPos - SrcColliderPos) < 6.f)
+		if (!TileCollisionEnable)
 		{
-			DestObj->SetTileCollisionEnable(true);
-			DestObj->SetTileCollisionPos(DestObj->GetWorldPos());
-			DestObj->SetGravity(false);
-			DestObj->SetGravityAccTime(0.f);
+			float DestYScale = Result.Dest->GetWorldScale().y;
+			float SrcYScale = Result.Src->GetWorldScale().y;
+			// Src 충돌체의 현재 WorldPos
+			float SrcColliderPos = Result.Src->GetWorldPos().y + Result.Src->GetOffset().y;
+			// Dest 충돌체의 현재 WorldPos
+			float DestColliderPos = Result.Dest->GetWorldPos().y + Result.Dest->GetOffset().y;
+			// Src 충돌체의 높이의 절반
+			float HalfHeight = SrcYScale / 2.f;
+			// Dest 충돌체의 높이의 절반
+			float PlayerHalfHeight = DestYScale / 2.f;
 
-			if (DestObj->GetTypeID() == typeid(CPlayer2D).hash_code())
+			// Player의 발밑 좌표 -> Player는 Pivot이 (0.5, 0.5)이다
+			float DestBottomPos = DestColliderPos - DestYScale / 2.f;
+
+
+			if (DestBottomPos <= SrcColliderPos + SrcYScale / 2.f && DestBottomPos > SrcColliderPos &&
+				(HalfHeight + PlayerHalfHeight) - (DestColliderPos - SrcColliderPos) < 6.f)
 			{
-				CPlayer2D* PlayerObj = ((CPlayer2D*)DestObj);
+				DestObj->SetTileCollisionEnable(true);
+				DestObj->SetTileCollisionPos(DestObj->GetWorldPos());
+				DestObj->SetGravity(false);
+				DestObj->SetGravityAccTime(0.f);
 
-				PlayerObj->SetOnJump(false);
-				PlayerObj->GetRootSpriteComponent()->ChangeAnimation("IdleLeft");
-
-				if (PlayerObj->GetOnKnockBack())
+				if (DestObj->GetTypeID() == typeid(CPlayer2D).hash_code())
 				{
-					PlayerObj->SetOnKnockBack(false);
-					PlayerObj->SetOnKnockBackAccTime(0.f);
+					CPlayer2D* PlayerObj = ((CPlayer2D*)DestObj);
+
+					PlayerObj->SetOnJump(false);
+					PlayerObj->GetRootSpriteComponent()->ChangeAnimation("IdleLeft");
+
+					if (PlayerObj->GetOnKnockBack())
+					{
+						PlayerObj->SetOnKnockBack(false);
+						PlayerObj->SetOnKnockBackAccTime(0.f);
+					}
 				}
 			}
 		}
-
 	}
 }
 

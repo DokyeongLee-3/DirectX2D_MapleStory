@@ -179,7 +179,7 @@ void CProgressBar::Update(float DeltaTime)
 
 		m_ProgressCBuffer->SetPercent(Current + (DeltaTime / 5.f));
 
-		if (Current + (DeltaTime / 5.f) <= Goal)
+		if (Current + (DeltaTime / 5.f) >= Goal)
 			m_OnIncreasing = false;
 
 		m_ProgressCBuffer->UpdateCBuffer();

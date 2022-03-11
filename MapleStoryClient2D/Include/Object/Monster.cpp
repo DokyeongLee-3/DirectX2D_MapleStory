@@ -88,7 +88,7 @@ void CMonster::DropItem()
 	Vector3 Pos = GetWorldPos();
 	Vector3 Scale = GetWorldScale();
 
-	Bill->SetWorldPos(Pos.x, Pos.y - Scale.y / 2.f, Pos.z);
+	Bill->SetWorldPos(Pos.x, Pos.y + 10.f, Pos.z);
 	
 }
 

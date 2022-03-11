@@ -176,6 +176,11 @@ public:
 		m_Transform->InheritParentRotationPos(Current);
 	}
 
+	void InheritParentRotationWorldPos(bool Current)
+	{
+		m_Transform->InheritParentRotationWorldPos(Current);
+	}
+
 	void InheritWorldScale(bool Current)
 	{
 		m_Transform->InheritWorldScale(Current);

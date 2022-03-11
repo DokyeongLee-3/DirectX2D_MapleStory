@@ -65,6 +65,8 @@ public:
     void CreateWayToZakumScene();
     void CreateLobbyScene();
     void CreateRadishScene();
+    void DeleteOnionMonster(const std::string& Name);
+    void DeleteOnionMonster(class COnionMonster* Monster);
 
 public:
     template <typename T>

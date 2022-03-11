@@ -14,6 +14,10 @@ protected:
 protected:
     class CScene* m_Scene;
     CSharedPtr<class CGameObject>   m_PlayerObject;
+    std::list<Vector3>                  m_DeadPos;
+
+public:
+    void PushDeadPos(const Vector3& Pos);
 
 public:
     void SetPlayerObject(class CGameObject* Obj);

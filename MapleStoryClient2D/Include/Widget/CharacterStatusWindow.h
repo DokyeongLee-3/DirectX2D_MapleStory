@@ -47,6 +47,9 @@ public:
 
 	void SetHPPercent(float Percent)
 	{
+		//if (Percent == 0.f && m_HPBar->GetPercent() == 0.f)
+		//	return;
+
 		if (Percent < m_HPBar->GetPercent())
 			m_HPBar->SetOnDecreasing(true);
 

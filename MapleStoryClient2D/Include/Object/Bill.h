@@ -21,11 +21,22 @@ private:
     int                             m_Money;
     float                           m_JumpForce;
     Item_Category                   m_ItemCategory;
+    bool                            m_EatByPlayer;
 
 public:
     int GetMoney()  const
     {
         return m_Money;
+    }
+
+    bool GetEatByPlayer()  const
+    {
+        return m_EatByPlayer;
+    }
+
+    void SetEatByPlayer(bool Eat)
+    {
+        m_EatByPlayer = Eat;
     }
 
 public:
@@ -34,10 +45,11 @@ public:
     virtual void Update(float DeltaTime);
     virtual void PostUpdate(float DeltaTime);
     virtual CBill* Clone();
-    virtual void Save(FILE* File);
-    virtual void Load(FILE* File);
 
 public:
     void CollisionBeginCallback(const CollisionResult& Result);
+
+public:
+    void GetByPlayer();
 };
 

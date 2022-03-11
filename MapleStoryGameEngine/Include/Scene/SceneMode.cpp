@@ -13,6 +13,11 @@ CSceneMode::~CSceneMode()
 {
 }
 
+void CSceneMode::PushDeadPos(const Vector3& Pos)
+{
+	m_DeadPos.push_back(Pos);
+}
+
 void CSceneMode::SetPlayerObject(CGameObject* Obj)
 {
 	m_PlayerObject = Obj;
