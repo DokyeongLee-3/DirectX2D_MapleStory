@@ -35,6 +35,9 @@ private:
 
 	Vector2 m_SlotSize;
 
+	CImage*				m_CurrentOpenTab;
+
+
 public:
 	virtual void Start();
 	virtual bool Init();
@@ -46,5 +49,11 @@ public:
 public:
 	void DragWindow();
 	void AddMoney(int Money);
+	void ClickEquipTab();
+	void ClickConsumeTab();
+	void ClickInstallTab();
+	void ClickCashTab();
+	void ClickDecorationTab();
+	void ClickEtcTab();
 };
 

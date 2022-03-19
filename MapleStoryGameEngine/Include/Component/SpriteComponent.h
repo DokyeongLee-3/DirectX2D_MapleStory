@@ -51,6 +51,7 @@ public:
 public:
     void SetBaseColor(const Vector4& Color);
     void SetBaseColor(float r, float g, float b, float a);
+    Vector4 GetBaseColor() const;
     void SetRenderState(class CRenderState* State);
     void SetRenderState(const std::string& Name);
     void SetTransparency(bool Enable);

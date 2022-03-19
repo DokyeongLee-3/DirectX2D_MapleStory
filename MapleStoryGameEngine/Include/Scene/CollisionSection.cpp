@@ -61,60 +61,64 @@ void CCollisionSection::Collision(float DeltaTime)
 			CollisionProfile* SrcProfile = Src->GetCollisionProfile();
 			CollisionProfile* DestProfile = Dest->GetCollisionProfile();
 
-			if (SrcProfile->vecInteraction[(int)DestProfile->Channel] ==
-				Collision_Interaction::Ignore ||
-				DestProfile->vecInteraction[(int)SrcProfile->Channel] ==
-				Collision_Interaction::Ignore)
-				continue;
-
-			if (Src->Collision(Dest))
+			if (SrcProfile && DestProfile)
 			{
-				// 지금 충돌이 된건지를 판단한다.
-				// 즉, 이전 프레임에 충돌된 목록에 없다면 지금 막 충돌이 시작된 것이다.
-				if (!Src->CheckPrevCollision(Dest))
-				{
-					Src->AddPrevCollision(Dest);
-					Dest->AddPrevCollision(Src);
 
-					Src->CallCollisionCallback(Collision_State::Begin);
-					Dest->CallCollisionCallback(Collision_State::Begin);
+				if (SrcProfile->vecInteraction[(int)DestProfile->Channel] ==
+					Collision_Interaction::Ignore ||
+					DestProfile->vecInteraction[(int)SrcProfile->Channel] ==
+					Collision_Interaction::Ignore)
+					continue;
+
+				if (Src->Collision(Dest))
+				{
+					// 지금 충돌이 된건지를 판단한다.
+					// 즉, 이전 프레임에 충돌된 목록에 없다면 지금 막 충돌이 시작된 것이다.
+					if (!Src->CheckPrevCollision(Dest))
+					{
+						Src->AddPrevCollision(Dest);
+						Dest->AddPrevCollision(Src);
+
+						Src->CallCollisionCallback(Collision_State::Begin);
+						Dest->CallCollisionCallback(Collision_State::Begin);
+					}
+
+					Src->AddCurrentFrameCollision(Dest);
+					Dest->AddCurrentFrameCollision(Src);
 				}
 
-				Src->AddCurrentFrameCollision(Dest);
-				Dest->AddCurrentFrameCollision(Src);
-			}
-
-			// 이전 프레임에 충돌이 되었는데 현재프레임에 충돌이 안되는 상황이라면
-			// 충돌되었다가 이제 떨어지는 의미이다.
-			else if (Src->CheckPrevCollision(Dest))
-			{
-				Src->DeletePrevCollision(Dest);
-				Dest->DeletePrevCollision(Src);
-
-				CColliderComponent* SrcResultDestComp = Src->GetCollisionResult().Dest;
-				CColliderComponent* DestResultDestComp = Dest->GetCollisionResult().Dest;
-
-				// 이전 iteration에서 A와 B가 충돌해서 각각의 m_Result에 서로를 설정해놓고 다음 iteration에서 A와 C와 충돌 검사를 해보니
-				// 이제 막 떨어진 경우라서 여기 else if로 들어왔을때 A의 m_Result.Dest는 B가 설정되어있을건데 여기서 그냥
-				// CollisionEnd의 콜백을 호출하면 A의 m_Result.Dest에는 여전히 B가 들어가있어서 CollisionEnd인자로도 Result.Dest를 B로 넘겨줄것이므로
-				// 그건 잘못된 것이므로 CollisionEnd 호출시에 이제 막 떨어지는 대상을 인자로 넣어주고 CollisionEnd 콜백이 끝나면 원상복귀 시켜준다
-				if (Src->GetCollisionResult().Dest != Dest)
+				// 이전 프레임에 충돌이 되었는데 현재프레임에 충돌이 안되는 상황이라면
+				// 충돌되었다가 이제 떨어지는 의미이다.
+				else if (Src->CheckPrevCollision(Dest))
 				{
-					Src->SetDestCollisionResult(Dest);
+					Src->DeletePrevCollision(Dest);
+					Dest->DeletePrevCollision(Src);
+
+					CColliderComponent* SrcResultDestComp = Src->GetCollisionResult().Dest;
+					CColliderComponent* DestResultDestComp = Dest->GetCollisionResult().Dest;
+
+					// 이전 iteration에서 A와 B가 충돌해서 각각의 m_Result에 서로를 설정해놓고 다음 iteration에서 A와 C와 충돌 검사를 해보니
+					// 이제 막 떨어진 경우라서 여기 else if로 들어왔을때 A의 m_Result.Dest는 B가 설정되어있을건데 여기서 그냥
+					// CollisionEnd의 콜백을 호출하면 A의 m_Result.Dest에는 여전히 B가 들어가있어서 CollisionEnd인자로도 Result.Dest를 B로 넘겨줄것이므로
+					// 그건 잘못된 것이므로 CollisionEnd 호출시에 이제 막 떨어지는 대상을 인자로 넣어주고 CollisionEnd 콜백이 끝나면 원상복귀 시켜준다
+					if (Src->GetCollisionResult().Dest != Dest)
+					{
+						Src->SetDestCollisionResult(Dest);
+					}
+
+					if (Dest->GetCollisionResult().Dest != Src)
+					{
+						Dest->SetDestCollisionResult(Src);
+					}
+
+
+					Src->CallCollisionCallback(Collision_State::End);
+					Dest->CallCollisionCallback(Collision_State::End);
+
+					// CollisionResult 원상복구 시켜준다
+					Src->SetDestCollisionResult(SrcResultDestComp);
+					Dest->SetDestCollisionResult(DestResultDestComp);
 				}
-
-				if (Dest->GetCollisionResult().Dest != Src)
-				{
-					Dest->SetDestCollisionResult(Src);
-				}
-
-
-				Src->CallCollisionCallback(Collision_State::End);
-				Dest->CallCollisionCallback(Collision_State::End);
-
-				// CollisionResult 원상복구 시켜준다
-				Src->SetDestCollisionResult(SrcResultDestComp);
-				Dest->SetDestCollisionResult(DestResultDestComp);
 			}
 		}
 	}

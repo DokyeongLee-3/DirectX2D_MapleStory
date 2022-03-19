@@ -21,3 +21,5 @@
 #include "Object/CharacterSelectBackLight.h"
 #include "Object/VerticalLampLight.h"
 #include "Object/LopeTileObject.h"
+#include "Object/NPCAdobis.h"
+#include "Object/ZakumBody.h"

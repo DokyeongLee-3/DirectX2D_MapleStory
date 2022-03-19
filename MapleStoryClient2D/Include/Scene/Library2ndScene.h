@@ -1,11 +1,14 @@
 #pragma once
 
 #include "Scene/SceneMode.h"
-#include "../Widget/ConfigurationWindow.h"
-#include "../Widget/Inventory.h"
-#include "../Widget/SkillQuickSlotWindow.h"
-#include "../Widget/CharacterEXP.h"
-#include "../Widget/CharacterStatusWindow.h"
+//#include "../Widget/ConfigurationWindow.h"
+//#include "../Widget/Inventory.h"
+//#include "../Widget/SkillQuickSlotWindow.h"
+//#include "../Widget/CharacterEXP.h"
+//#include "../Widget/CharacterStatusWindow.h"
+//#include "../Widget/BossMatching.h"
+//#include "../Widget/StatWindow.h"
+//#include "../Widget/DyingNoticeWindow.h"
 
 class CLibrary2ndScene :
     public CSceneMode
@@ -18,11 +21,14 @@ private:
     class CStage* m_StageObject;
 
 private:
-    CSharedPtr<CConfigurationWindow>    m_ConfigurationWindow;
-    CSharedPtr<CInventory>              m_Inventory;
-    CSharedPtr<CSkillQuickSlotWindow>   m_SkillQuickSlot;
-    CSharedPtr<CCharacterStatusWindow>  m_CharacterStatusWindow;
-    CSharedPtr<CCharacterEXP>           m_CharacterEXPWindow;
+    //CSharedPtr<CConfigurationWindow>    m_ConfigurationWindow;
+    //CSharedPtr<CInventory>              m_Inventory;
+    //CSharedPtr<CSkillQuickSlotWindow>   m_SkillQuickSlot;
+    //CSharedPtr<CCharacterStatusWindow>  m_CharacterStatusWindow;
+    //CSharedPtr<CCharacterEXP>           m_CharacterEXPWindow;
+    //CSharedPtr<CBossMatching>           m_BossMatchingWindow;
+    //CSharedPtr<CStatWindow>             m_StatWindow;
+    //CSharedPtr<CDyingNoticeWindow>      m_DyingNoticeWindow;
 
     std::function<void(bool, float)>    m_LoadingFunction;
     class CLoadingThread* m_LoadingThread;
@@ -61,6 +67,7 @@ public:
 
 public:
     void CreateLobbyScene();
+    void CreateWayToZakumScene();
 
 public:
     class CLowerClassBook* FindLowerClassBook(bool Right, const Vector3& MyPos, float DistXConstraint, float DistYConstraint);

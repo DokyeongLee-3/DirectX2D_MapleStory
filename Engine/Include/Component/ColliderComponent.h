@@ -171,18 +171,29 @@ public:
         return nullptr;
     }
 
-    // 여러개의 T1타입 충돌체를 갖고 있는 T2타입 오브젝트가 있을때, 그 하나의 오브젝트 내에서 자신과 충돌체들을 모두 찾아주는 함수
-    template <typename T1, typename T2>
-    void FindMultipleCollisionComponent(std::vector<T1*>& vecComp)
+    template <typename T>
+    void FindMultipleCollisionComponent(std::vector<T>& vecComp)
     {
         auto iter = m_PrevCollisionList.begin();
         auto iterEnd = m_PrevCollisionList.end();
 
         for (; iter != iterEnd; ++iter)
         {
-            if ((*iter)->GetGameObject()->GetTypeID() == typeid(T2).hash_code() 
-                && (*iter)->GetTypeID() == typeid(T1).hash_code())
-                vecComp.push_back((T1*)(*iter));
+            if ((*iter)->GetTypeID() == typeid(T).hash_code())
+                vecComp.push_back((T)*iter);
+        }
+    }
+
+    template <typename T1, typename T2>
+    void FindMultipleCollisionComponentByObjType(std::vector<T1*>& vecComp)
+    {
+        auto iter = m_PrevCollisionList.begin();
+        auto iterEnd = m_PrevCollisionList.end();
+
+        for (; iter != iterEnd; ++iter)
+        {
+            if ((*iter)->GetTypeID() == typeid(T1).hash_code() && (*iter)->GetGameObject()->GetTypeID() == typeid(T2).hash_code())
+                vecComp.push_back((T1*)*iter);
         }
     }
 

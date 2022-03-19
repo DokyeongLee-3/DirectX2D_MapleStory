@@ -7,7 +7,8 @@
 
 CStaticMapObj::CStaticMapObj() :
 	m_Sprite(nullptr),
-	m_CollisionID(-1)
+	m_CollisionID(-1),
+	m_IsFloor(false)
 {
 	SetTypeID<CStaticMapObj>();
 }
@@ -20,8 +21,6 @@ CStaticMapObj::CStaticMapObj(const CStaticMapObj& obj) :
 
 CStaticMapObj::~CStaticMapObj()
 {
-	if (m_Name.find("SmallLamp") != std::string::npos)
-		int a = 3;
 }
 
 void CStaticMapObj::Start()
@@ -89,7 +88,7 @@ void CStaticMapObj::CollisionBeginCallback(const CollisionResult& Result)
 				return;
 		}
 
-		if (!TileCollisionEnable)
+		if (!TileCollisionEnable && !m_IsFloor)
 		{
 			float DestYScale = Result.Dest->GetWorldScale().y;
 			float SrcYScale = Result.Src->GetWorldScale().y;
@@ -121,10 +120,21 @@ void CStaticMapObj::CollisionBeginCallback(const CollisionResult& Result)
 
 				if(!((CPlayer2D*)DestObj)->CheckCollisionID(m_CollisionID))
 					((CPlayer2D*)DestObj)->AddCollisionID(m_CollisionID);
-
-
 			}
 
+		}
+
+		else if(m_IsFloor)
+		{
+			DestObj->SetGravity(false);
+			DestObj->SetGravityAccTime(0.f);
+			((CPlayer2D*)DestObj)->SetOnJump(false);
+			((CPlayer2D*)DestObj)->SetLopeJump(false);
+			((CPlayer2D*)DestObj)->GetRootSpriteComponent()->ChangeAnimation("IdleLeft");
+			((CPlayer2D*)DestObj)->SetDir(PlayerDir::None);
+
+			if (!((CPlayer2D*)DestObj)->CheckCollisionID(m_CollisionID))
+				((CPlayer2D*)DestObj)->AddCollisionID(m_CollisionID);
 		}
 	}
 }
@@ -138,13 +148,17 @@ void CStaticMapObj::CollisionEndCallback(const CollisionResult& Result)
 
 	if (DestObj && DestObj->GetTypeID() == typeid(CPlayer2D).hash_code())
 	{
-		if (((CPlayer2D*)DestObj)->CheckCollisionID(m_CollisionID))
+		CPlayer2D* Player = (CPlayer2D*)DestObj;
+
+		if (Player->CheckCollisionID(m_CollisionID))
 		{
-			if (DestObj->GetTypeID() == typeid(CPlayer2D).hash_code())
+			DestObj->SetGravity(true);
+			((CPlayer2D*)DestObj)->SetTileCollisionEnable(false);
+			((CPlayer2D*)DestObj)->EraseCollisionID(m_CollisionID);
+
+			if (m_IsFloor && !Player->IsCollisionIDEmpty())
 			{
-				DestObj->SetGravity(true);
-				((CPlayer2D*)DestObj)->SetTileCollisionEnable(false);
-				((CPlayer2D*)DestObj)->EraseCollisionID(m_CollisionID);
+				DestObj->SetGravity(false);
 			}
 		}
 	}

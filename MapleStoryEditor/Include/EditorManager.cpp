@@ -26,6 +26,8 @@
 #include "Animation/OnionMonsterAnimation.h"
 #include "Animation/LowerClassBookAnimation.h"
 #include "Animation/RadishMonsterAnimation.h"
+#include "Animation/ZakumBodyAnimation.h"
+#include "Animation/ZakumHandAnimation.h"
 #include "IMGUIImage.h"
 #include "IMGUIListBox.h"
 #include "ObjectSet.h"
@@ -104,7 +106,7 @@ bool CEditorManager::Init(HINSTANCE hInst)
 
 	// IMGUI로 에디터에서 사용할 윈도우를 만들어준다.
 	m_SpriteWindow = CIMGUIManager::GetInst()->AddWindow<CSpriteWindow>("SpriteWindow");
-	m_DetailWindow = CIMGUIManager::GetInst()->AddWindow<CDetailWindow>("DetailWindow");
+	m_DetailWindow = CIMGUIManager::GetInst()->AddWindow<CDetailWindow>("DetailWindow");	
 	m_EditorMenu = CIMGUIManager::GetInst()->AddWindow<CEditorMenu>("EditorMenu");
 	m_ObjectHierarchy = CIMGUIManager::GetInst()->AddWindow<CObjectHierarchy>("ObjectHierarchy");
 	m_TileMapWindow = CIMGUIManager::GetInst()->AddWindow<CTileMapWindow>("TileMapWindow");
@@ -183,9 +185,10 @@ void CEditorManager::MouseLButtonPush(float DeltaTime)
 		if (m_DragObj)
 		{
 			Vector2 MouseWorldPos = CInput::GetInst()->GetMouseWorld2DPos();
-			m_DragObj->SetEndPos(CInput::GetInst()->GetMouseWorld2DPos());
+			m_DragObj->SetEndPos(MouseWorldPos);
 
 			Vector2 DragObjEndPos = m_DragObj->GetEndPos();
+
 
 			CIMGUITextInput* FrameEndPosX = m_SpriteWindow->GetFrameEndPosX();
 			CIMGUITextInput* FrameEndPosY = m_SpriteWindow->GetFrameEndPosY();
@@ -482,6 +485,20 @@ CGameObject* CEditorManager::CreateObject(CScene* Scene, size_t Type)
 		return Obj;
 	}
 
+	else if (Type == typeid(CNPCAdobis).hash_code())
+	{
+		CNPCAdobis* Obj = Scene->LoadGameObject<CNPCAdobis>();
+
+		return Obj;
+	}
+
+	else if (Type == typeid(CZakumBody).hash_code())
+	{
+		CZakumBody* Obj = Scene->LoadGameObject<CZakumBody>();
+
+		return Obj;
+	}
+
 	return nullptr;
 }
 
@@ -578,6 +595,16 @@ void CEditorManager::CreateAnimInstance(CSpriteComponent* Sprite, size_t Type)
 	else if (Type == typeid(CLowerClassBookAnimation).hash_code())
 	{
 		Sprite->LoadAnimationInstance<CLowerClassBookAnimation>();
+	}
+
+	else if (Type == typeid(CZakumBodyAnimation).hash_code())
+	{
+		Sprite->LoadAnimationInstance<CZakumBodyAnimation>();
+	}
+
+	else if (Type == typeid(CZakumHandAnimation).hash_code())
+	{
+		Sprite->LoadAnimationInstance<CZakumHandAnimation>();
 	}
 }
 

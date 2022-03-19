@@ -36,7 +36,6 @@ protected:
     bool        m_IsRepeat;
 
 public:
-    void SetOwner(class CGameObject* Owner);
     void SetRepeatPos(const Vector2& Pos);
 
 public:
@@ -57,8 +56,12 @@ public:
     void SetFrame(int Index, const Vector2& Start, const Vector2& End);
     void SetFrame(int Index, float StartX, float StartY, float EndX, float EndY);
     void SetOpacity(int Index, float Opacity);
+    void SetTransparency(bool Transparency);
     void SetCount(int Count);
     void SetSpeed(const Vector2& Speed);
+    void SetTilePos(const Vector2& Pos);
+    void SetTilePos(int Index, const Vector2& Pos);
+    Vector2 GetTilePos(int Index);
 
 public:
     virtual void Start();

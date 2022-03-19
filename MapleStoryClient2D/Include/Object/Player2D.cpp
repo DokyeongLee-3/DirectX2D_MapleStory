@@ -10,6 +10,7 @@
 #include "../Scene/RadishScene.h"
 #include "../Scene/WayToZakumScene.h"
 #include "../Scene/Library2ndScene.h"
+#include "../Scene/ZakumAltarScene.h"
 #include "Input.h"
 #include "PlayerAnimation2D.h"
 #include "../Animation/SylphideLancerMirrorAnimation.h"
@@ -55,13 +56,19 @@ CPlayer2D::CPlayer2D() :
 	m_LopeEnable(true),
 	m_IsChanging(false),
 	m_Dead(false),
-	m_PrevSameTileObjColliderCount(0)
+	m_PrevSameTileObjColliderCount(0),
+	m_OnCameraShake(false),
+	m_CameraShakeFrequency(0.1f),
+	m_CameraShakeTime(1.f),
+	m_AccCameraShakeTime(0.f),
+	m_CameraShakeDir(0.f, 1.f),
+	m_AccCameraShakeSingleDirTime(0.f)
 {
 	SetTypeID<CPlayer2D>();
 	m_PlayerSkillInfo = new CPlayerSkillInfo;
 	m_Gravity = true;
 
-	m_JumpForce = 370.f;
+	m_JumpForce = 400.f;
 	m_DirVector = Vector3(1.f, 0.f, 0.f);
 }
 
@@ -83,6 +90,11 @@ CPlayer2D::CPlayer2D(const CPlayer2D& obj) :
 CPlayer2D::~CPlayer2D()
 {
 	SAFE_DELETE(m_PlayerSkillInfo);
+}
+
+CPlayerSkillInfo* CPlayer2D::GetPlayerSkillInfo() const
+{
+	return m_PlayerSkillInfo;
 }
 
 CVoidPressureOrb* CPlayer2D::GetVoidPressureOrb() const
@@ -146,10 +158,11 @@ bool CPlayer2D::Init()
 
 	m_Body->AddCollisionCallback<CPlayer2D>(Collision_State::Begin, this, &CPlayer2D::CollisionBeginCallback);
 	m_Body->AddCollisionCallback<CPlayer2D>(Collision_State::End, this, &CPlayer2D::CollisionEndCallback);
-	SetGravityFactor(1000.f);
+	SetGravityFactor(1100.f);
 
 
 	m_DamageWidgetComponent->UseAlphaBlend(true);
+	m_DamageWidgetComponent->SetLayerName("ScreenWidgetComponent");
 	//m_DamageWidgetComponent->SetRelativePos(-20.f, 0.f, 0.f);
 
 	CPlayerDamageFont* DamageFont = m_DamageWidgetComponent->CreateWidgetWindow<CPlayerDamageFont>("DamageFontWidget");
@@ -164,6 +177,7 @@ bool CPlayer2D::Init()
 	CInput::GetInst()->CreateKey("Jump", 'Z');
 	CInput::GetInst()->CreateKey("DeathSide", 'E');
 	CInput::GetInst()->CreateKey("PickItem", 'X');
+	CInput::GetInst()->CreateKey("LevelUp", 'L');
 	//CInput::GetInst()->CreateKey("Flip", 'F');
 
 	CInput::GetInst()->SetKeyCallback<CPlayer2D>("MoveUp", KeyState_Push, this, &CPlayer2D::MoveUp);
@@ -182,6 +196,7 @@ bool CPlayer2D::Init()
 	CInput::GetInst()->SetKeyCallback<CPlayer2D>("Jump", KeyState_Down, this, &CPlayer2D::Jump);
 	CInput::GetInst()->SetKeyCallback<CPlayer2D>("DeathSide", KeyState_Down, this, &CPlayer2D::DeathSide);
 	CInput::GetInst()->SetKeyCallback<CPlayer2D>("PickItem", KeyState_Down, this, &CPlayer2D::PickItem);
+	CInput::GetInst()->SetKeyCallback<CPlayer2D>("LevelUp", KeyState_Down, this, &CPlayer2D::LevelUp);
 	//CInput::GetInst()->SetKeyCallback<CPlayer2D>("Flip", KeyState_Down, this, &CPlayer2D::FlipAll);
 
 	//CInput::GetInst()->SetKeyCallback("DirUp", KeyState_Down, this, &CPlayer2D::GotoNextMap);
@@ -273,21 +288,37 @@ void CPlayer2D::Update(float DeltaTime)
 
 void CPlayer2D::PostUpdate(float DeltaTime)
 {
+
+	Vector3 CamWorldPos = m_Camera->GetWorldPos();
+
+	m_CurrentFrameCameraMove = Vector2(CamWorldPos.x - m_PrevFrameCameraMove.x, CamWorldPos.y - m_PrevFrameCameraMove.y);
 	// 이렇게 강제로 Camera의 transform중 Z값을 0으로 안잡아주면 카메라가 Player의 Root Component의 카메라가 자신의 Z값으로 물려받아서 
 	// 크기는 Z값을 갖고, 부호는 음수인 값이 카메라의 m_matView[4][3]에 저장돼서 그만큼 매번 z방향으로 translation되게 해서 렌더링돼서
 	// 결국 그 값의 절댓값보다 작은 z값을 가지는 레이어(ex.지금 이 코드에선 CoveringMapObj 레이어에 속한 SceneComponent들)나
 	// SceneComponent는 결국 view변환후에는 Z값이 음수가돼서 출력이 안될것이다
-	Vector3 CamWorldPos = m_Camera->GetWorldPos();
 	m_Camera->SetWorldPos(CamWorldPos.x, CamWorldPos.y, 0.f);
 
 	// 카메라가 화면 밖으로 나가는거도 보정을 한 뒤에 최종적으로 만들어지는 transform으로 뷰행렬을 만들어야하므로 
 	// 무조건 CGameObject::PostUpdate보다 먼저 해줘야한다
 	CameraTrack();
 
+	if (m_OnCameraShake)
+	{
+		CameraShake(DeltaTime);
+	}
+
 	CGameObject::PostUpdate(DeltaTime);
 
 	Vector3 CurrentFrameWorldPos = GetWorldPos();
 	m_CurrentFrameMove = CurrentFrameWorldPos - m_PrevFrameWorldPos;
+
+	m_PrevFrameCameraMove = Vector2(m_Camera->GetWorldPos().x, m_Camera->GetWorldPos().y);
+
+	CSceneMode* SceneMode = m_Scene->GetSceneMode();
+	
+	if (SceneMode->GetTypeID() == typeid(CWayToZakumScene).hash_code())
+		((CWayToZakumScene*)SceneMode)->SetPerspective();
+
 }
 
 CPlayer2D* CPlayer2D::Clone()
@@ -472,7 +503,7 @@ void CPlayer2D::MoveLeft(float DeltaTime)
 
 		std::vector<CColliderBox2D*>	vecCollider;
 
-		m_Body->FindMultipleCollisionComponent<CColliderBox2D, CTileObject>(vecCollider);
+		m_Body->FindMultipleCollisionComponentByObjType<CColliderBox2D, CTileObject>(vecCollider);
 
 		size_t Count = vecCollider.size();
 
@@ -487,6 +518,9 @@ void CPlayer2D::MoveLeft(float DeltaTime)
 				break;
 			}
 		}
+
+		Vector3 CamWorldPos = m_Camera->GetWorldPos();
+		m_PrevFrameCameraMove = Vector2(CamWorldPos.x, CamWorldPos.y);
 
 		//m_BodySprite->AddWorldPos(m_BodySprite->GetWorldAxis(AXIS_X) * -180.f * DeltaTime);
 		if(m_OnJump)
@@ -531,7 +565,7 @@ void CPlayer2D::MoveRight(float DeltaTime)
 
 		std::vector<CColliderBox2D*>	vecCollider;
 
-		m_Body->FindMultipleCollisionComponent<CColliderBox2D, CTileObject>(vecCollider);
+		m_Body->FindMultipleCollisionComponentByObjType<CColliderBox2D, CTileObject>(vecCollider);
 
 		size_t Count = vecCollider.size();
 
@@ -553,6 +587,9 @@ void CPlayer2D::MoveRight(float DeltaTime)
 				break;
 			}
 		}
+
+		Vector3 CamWorldPos = m_Camera->GetWorldPos();
+		m_PrevFrameCameraMove = Vector2(CamWorldPos.x, CamWorldPos.y);
 
 		if (m_OnJump)
 			m_RootComponent->AddWorldPos(Vector3(180.f * DeltaTime, 0.f, 0.f) * m_DirVector);
@@ -617,7 +654,7 @@ void CPlayer2D::Jump(float DeltaTime)
 		CColliderComponent* TileCollider = m_Body->FindPrevCollisionComponentByObjectType(typeid(CTileObject).hash_code());
 
 		std::vector<CColliderBox2D*> vecCollider;
-		m_Body->FindMultipleCollisionComponent<CColliderBox2D, CTileObject>(vecCollider);
+		m_Body->FindMultipleCollisionComponentByObjType<CColliderBox2D, CTileObject>(vecCollider);
 
 		size_t Count = vecCollider.size();
 
@@ -703,6 +740,8 @@ void CPlayer2D::SylphideLancer(float DeltaTime)
 	m_Scene->GetResource()->SoundPlay("SylphideLancerUse");
 
 	m_SylphideLancerMirror->ChangeAnimation("SylphideLancerMuzzle");
+
+	CClientManager::GetInst()->GetSkillQuickSlotWindow()->SetSylphideLancerProgressBarPercent(1.f);
 
 	Vector3 MirrorPos = m_SylphideLancerMirror->GetWorldPos();
 
@@ -890,7 +929,106 @@ void CPlayer2D::LightTransforming(float DeltaTime)
 
 	m_SkillBodyEffect->ChangeAnimation("LightTransformingLeft");
 
-	if (m_Dir == PlayerDir::Right)
+	if (m_Dir == PlayerDir::Up)
+	{
+		std::vector<CStaticMapObj*>		vecMapObj;
+		std::vector<CColliderBox2D*>	vecCollider;
+		std::vector<CColliderBox2D*>	vecAllCollider;
+
+		m_Scene->FindObjectByType<CStaticMapObj>(vecMapObj);
+
+		size_t Count = vecMapObj.size();
+		bool End = false;
+
+		for (size_t i = 0; i < Count; ++i)
+		{
+			if (vecMapObj[i]->IsFloor())
+				continue;
+
+			vecMapObj[i]->FindComponentFromType<CColliderBox2D>(vecCollider);
+
+			size_t Count2 = vecCollider.size();
+
+			for (size_t j = 0; j < Count2; ++j)
+			{
+				vecAllCollider.push_back(vecCollider[j]);
+			}
+
+			vecCollider.clear();
+		}
+
+		std::sort(vecAllCollider.begin(), vecAllCollider.end(), SortCollider);
+
+		Count = vecAllCollider.size();
+
+		for (size_t j = 0; j < Count; ++j)
+		{
+			Box2DInfo DestInfo = vecAllCollider[j]->GetInfo();
+			Box2DInfo PlayerInfo = m_Body->GetInfo();
+
+			if (DestInfo.Center.x - DestInfo.Length.x < PlayerInfo.Center.x && DestInfo.Center.x + DestInfo.Length.x > PlayerInfo.Center.x
+				&& DestInfo.Center.y - DestInfo.Length.y >= PlayerInfo.Center.y - PlayerInfo.Length.y
+				&& DestInfo.Center.y + DestInfo.Length.y <= PlayerInfo.Center.y - PlayerInfo.Length.y + 200.f)
+			{
+
+				float Diff = DestInfo.Center.y + DestInfo.Length.y - (PlayerInfo.Center.y - PlayerInfo.Length.y + m_Body->GetOffset().y);
+
+				m_RootComponent->AddWorldPos(0.f, Diff + 18.f, 0.f);
+				End = true;
+				break;
+			}
+		}
+
+		if (!End)
+		{
+			std::vector<CTileObject*>	vecTileObj;
+			vecCollider.clear();
+			vecAllCollider.clear();
+			m_Scene->FindObjectByType<CTileObject>(vecTileObj);
+
+			Count = vecTileObj.size();
+
+			for (size_t i = 0; i < Count; ++i)
+			{
+				if (vecTileObj[i]->IsBottomMostFloor())
+					continue;
+
+				vecTileObj[i]->FindComponentFromType<CColliderBox2D>(vecCollider);
+
+				size_t Count2 = vecCollider.size();
+
+				for (size_t j = 0; j < Count2; ++j)
+				{
+					vecAllCollider.push_back(vecCollider[j]);
+				}
+
+				vecCollider.clear();
+			}
+
+			std::sort(vecAllCollider.begin(), vecAllCollider.end(), SortCollider);
+
+			Count = vecAllCollider.size();
+
+			for (size_t j = 0; j < Count; ++j)
+			{
+				Box2DInfo DestInfo = vecAllCollider[j]->GetInfo();
+				Box2DInfo PlayerInfo = m_Body->GetInfo();
+
+				if (DestInfo.Center.x - DestInfo.Length.x < PlayerInfo.Center.x && DestInfo.Center.x + DestInfo.Length.x > PlayerInfo.Center.x
+					&& DestInfo.Center.y - DestInfo.Length.y >= PlayerInfo.Center.y - PlayerInfo.Length.y
+					&& DestInfo.Center.y + DestInfo.Length.y <= PlayerInfo.Center.y - PlayerInfo.Length.y + 200.f)
+				{
+
+					float Diff = DestInfo.Center.y + DestInfo.Length.y - (PlayerInfo.Center.y - PlayerInfo.Length.y + m_Body->GetOffset().y);
+
+					m_RootComponent->AddWorldPos(0.f, Diff + 18.f, 0.f);
+					break;
+				}
+			}
+		}
+	}
+
+	else if (m_Dir == PlayerDir::Right)
 		m_RootComponent->AddWorldPos(200.f, 0.f, 0.f);
 
 	else if (m_Dir == PlayerDir::Left)
@@ -1029,13 +1167,16 @@ void CPlayer2D::CollisionBeginCallback(const CollisionResult& Result)
 {
 	CGameObject* DestObj = Result.Dest->GetGameObject();
 
+	CSceneMode* Mode = m_Scene->GetSceneMode();
+
 	if (DestObj->GetTypeID() == typeid(CTileObject).hash_code())
 	{
 		CTileObject* TileObj = ((CTileObject*)DestObj);
 
 		std::vector<CColliderBox2D*> vecCollider;
 
-		m_Body->FindMultipleCollisionComponent<CColliderBox2D, CTileObject>(vecCollider);
+		m_Body->FindMultipleCollisionComponentByObjType<CColliderBox2D, CTileObject>(vecCollider);
+
 		CColliderBox2D* TileObjCollider = nullptr;
 		// 만약 원래 하나의 충돌체와 충돌중이었고, 같은 오브젝트 내에 또 다른 충돌체와 이제 막 충돌해서 두개의 충돌체와
 		// 충돌중일때, 원래 충돌하고 있던 충돌체
@@ -1267,6 +1408,11 @@ void CPlayer2D::CameraTrack()
 			m_CurrentStage = ((CRadishScene*)SceneMode)->GetStageObject();
 		}
 
+		else if (SceneMode->GetTypeID() == typeid(CZakumAltarScene).hash_code())
+		{
+			m_CurrentStage = ((CZakumAltarScene*)SceneMode)->GetStageObject();
+		}
+
 		if (m_CurrentStage)
 		{
 			Vector3 WorldSize = m_CurrentStage->GetWorldScale();
@@ -1282,12 +1428,16 @@ void CPlayer2D::CameraTrack()
 				float Pos = WorldSize.x - RS.Width * Ratio.x;
 				Pos -= RS.Width * Ratio.x;
 				m_Camera->SetWorldPos(Pos, CamWorldPos.y, CamWorldPos.z);
+
+				m_CurrentFrameCameraMove.x = 0.f;
 			}
 
 			if (PlayerWorldPos.x - RS.Width * Ratio.x <= 0.f)
 			{
 				Vector3 CamWorldPos = m_Camera->GetWorldPos();
 				m_Camera->SetWorldPos(0.f, CamWorldPos.y, CamWorldPos.z);
+
+				m_CurrentFrameCameraMove.x = 0.f;
 			}
 
 			if (PlayerWorldPos.y + RS.Height * (1 - Ratio.y) >= WorldSize.y)
@@ -1296,12 +1446,16 @@ void CPlayer2D::CameraTrack()
 				float Pos = WorldSize.y - RS.Height * Ratio.y;
 				Pos -= 1.f * RS.Height * Ratio.y;
 				m_Camera->SetWorldPos(CamWorldPos.x, Pos, CamWorldPos.z);
+
+				m_CurrentFrameCameraMove.y = 0.f;
 			}
 
 			if (PlayerWorldPos.y - RS.Height * Ratio.y <= 0.f)
 			{
 				Vector3 CamWorldPos = m_Camera->GetWorldPos();
 				m_Camera->SetWorldPos(CamWorldPos.x, 0.f, CamWorldPos.z);
+
+				m_CurrentFrameCameraMove.y = 0.f;
 			}
 		}
 
@@ -1449,7 +1603,8 @@ void CPlayer2D::GetEXP(int EXP)
 
 	if (m_PlayerInfo.EXP >= m_PlayerInfo.EXPMax)
 	{
-		LevelUp();
+		float DeltaTime = CEngine::GetInst()->GetDeltaTime();
+		LevelUp(DeltaTime);
 	}
 
 	CCharacterEXP* EXPWindow = CClientManager::GetInst()->GetEXPWindow();
@@ -1457,17 +1612,44 @@ void CPlayer2D::GetEXP(int EXP)
 	EXPWindow->SetEXP(m_PlayerInfo.EXP);
 }
 
-void CPlayer2D::LevelUp()
+void CPlayer2D::LevelUp(float DeltaTime)
 {
-	m_PlayerInfo.EXP = 0;
-	m_PlayerInfo.EXPMax = (int)(m_PlayerInfo.EXPMax * 1.2f);
-	m_PlayerInfo.Level += 1;
+	if (m_SkillBodyEffect->GetCurrentAnimation())
+	{
+		if (m_SkillBodyEffect->GetAnimationInstance()->CheckCurrentAnimation("PlayerLevelUpEffect"))
+		{
+			CAnimationSequence2DInstance* CurrentAnimInstance = m_SkillBodyEffect->GetAnimationInstance();
+
+			CurrentAnimInstance->SetCurrentAnimationFrame(0);
+			CurrentAnimInstance->SetCurrentAnimationTime(0.f);
+			CurrentAnimInstance->SetCurrentAnimationNotifyInitialize();
+
+			((CPlayerSkillBodyEffect*)m_SkillBodyEffect->GetAnimationInstance())->LevelUpEndEffect();
+		}
+	}
+
 	CCharacterStatusWindow* StatusWindow = CClientManager::GetInst()->GetCharacterStatusWindow();
 	CCharacterEXP* EXPWindow = CClientManager::GetInst()->GetEXPWindow();
 	CStatWindow* StatWindow = CClientManager::GetInst()->GetStatWindow();
 
+	m_PlayerInfo.HPMax = (int)(m_PlayerInfo.HPMax * 1.1f);
+	m_PlayerInfo.MPMax = (int)(m_PlayerInfo.MPMax * 1.1f);
+	m_PlayerInfo.HP = m_PlayerInfo.HPMax;
+	m_PlayerInfo.MP = m_PlayerInfo.MPMax;
+	StatusWindow->SetCurrentHP(m_PlayerInfo.HPMax);
+	StatusWindow->SetCurrentMP(m_PlayerInfo.MPMax);
+	StatusWindow->SetHPMax(m_PlayerInfo.HPMax);
+	StatusWindow->SetMPMax(m_PlayerInfo.MPMax);
+	StatusWindow->SetHPPercent(1.f);
+	StatusWindow->SetMPPercent(1.f);
+
+	m_PlayerInfo.EXP = 0;
+	m_PlayerInfo.EXPMax = (int)(m_PlayerInfo.EXPMax * 1.2f);
+	m_PlayerInfo.Level += 1;
+
 	StatusWindow->SetLevel(m_PlayerInfo.Level);
 	EXPWindow->SetEXPMax(m_PlayerInfo.EXPMax);
+	EXPWindow->SetEXP(0);
 	m_SkillBodyEffect->GetAnimationInstance()->ChangeAnimation("PlayerLevelUpEffect");
 	m_Scene->GetResource()->SoundPlay("LevelUp");
 
@@ -1477,6 +1659,11 @@ void CPlayer2D::LevelUp()
 	if (Window)
 	{
 		Window->AddAbilityPoint(5);
+
+		Window->SetHPMax(m_PlayerInfo.HPMax);
+		Window->SetMPMax(m_PlayerInfo.MPMax);
+		Window->SetHP(m_PlayerInfo.HP);
+		Window->SetMP(m_PlayerInfo.MP);
 	}
 
 	m_IsChanging = true;
@@ -1529,9 +1716,39 @@ void CPlayer2D::DeadRound()
 
 	//m_BodySprite->SetInheritRotZ(true);
 
-	AddWorldPos(0.f, 10.f, 0.f);
+	AddWorldPos(0.f, 20.f, 0.f);
 
 	//m_BodySprite->AddRelativePos(30.f, 0.f, 0.f);
+}
+
+void CPlayer2D::CameraShake(float DeltaTime)
+{
+	m_AccCameraShakeTime += DeltaTime;
+	m_AccCameraShakeSingleDirTime += DeltaTime;
+
+	if (m_AccCameraShakeTime > m_CameraShakeTime)
+	{
+		m_Camera->SetRelativePos(m_OriginRelativeCamPos);
+		m_OnCameraShake = false;
+		m_AccCameraShakeTime = 0.f;
+		m_AccCameraShakeSingleDirTime = 0.f;
+	}
+
+	else if (m_AccCameraShakeSingleDirTime > m_CameraShakeFrequency)
+	{
+		m_CameraShakeDir.x *= -1.f;
+		m_CameraShakeDir.y *= -1.f;
+		m_AccCameraShakeSingleDirTime = 0.f;
+	}
+
+	m_Camera->AddWorldPos(m_CameraShakeDir.x * 340.f * DeltaTime, m_CameraShakeDir.y * 340.f * DeltaTime, 0.f);
+
+}
+
+void CPlayer2D::SetCameraShake(bool Shake)
+{
+	m_OriginRelativeCamPos = m_Camera->GetRelativePos();
+	m_OnCameraShake = Shake;
 }
 
 
@@ -1773,6 +1990,18 @@ void CPlayer2D::GotoNextMap(float DeltaTime)
 				}
 			}
 		}
+	}
+}
+
+void CPlayer2D::GotoZakumAltar()
+{
+	if (m_Scene->GetSceneMode()->GetTypeID() == typeid(CWayToZakumScene).hash_code())
+	{
+		m_ListCollisionID.clear();
+
+		CWayToZakumScene* Scene = (CWayToZakumScene*)(GetScene()->GetSceneMode());
+		CRenderManager::GetInst()->SetStartFadeIn(true);
+		CSceneManager::GetInst()->SetFadeInEndCallback<CWayToZakumScene>(Scene, &CWayToZakumScene::CreateZakumAltarScene);
 	}
 }
 

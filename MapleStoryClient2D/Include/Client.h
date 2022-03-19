@@ -17,6 +17,8 @@
 #include "Object/RadishMonster.h"
 #include "Object/LowerClassBook.h"
 #include "Object/SingleHelixBlinkTree.h"
+#include "Object/NPCAdobis.h"
+#include "Object/ZakumBody.h"
 
 //struct MonsterInfo
 //{

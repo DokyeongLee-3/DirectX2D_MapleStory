@@ -41,7 +41,7 @@ CEngine::~CEngine()
 
 	//m_RandomBuffer->ResetShader(90, (int)Buffer_Shader_Type::Compute);
 
-	//SAFE_DELETE(m_GlobalCBuffer);
+	SAFE_DELETE(m_GlobalCBuffer);
 	//SAFE_DELETE(m_RandomBuffer);
 
 	CInput::DestroyInst();
@@ -121,12 +121,12 @@ bool CEngine::Init(HINSTANCE hInst, HWND hWnd,
 	if (!CRenderManager::GetInst()->Init())
 		return false;
 
-	//m_GlobalCBuffer = new CGlobalConstantBuffer;
+	/*m_GlobalCBuffer = new CGlobalConstantBuffer;
 
-	//if (!m_GlobalCBuffer->Init())
-	//	return false;
+	if (!m_GlobalCBuffer->Init())
+		return false;
 
-	//m_GlobalCBuffer->SetResolution(m_RS);
+	m_GlobalCBuffer->SetResolution(m_RS);*/
 
 	// 장면 관리자 초기화
 	if (!CSceneManager::GetInst()->Init())
@@ -134,23 +134,6 @@ bool CEngine::Init(HINSTANCE hInst, HWND hWnd,
 
 	srand((unsigned int)time(0));
 	rand();
-
-	//// 난수 전용 구조화버퍼 생성
-	//m_RandomBuffer = new CStructuredBuffer;
-
-	//m_RandomBuffer->Init("RandomBuffer", sizeof(float), 10000, 10, true);
-
-	//float	RandNumber[10000] = {};
-
-	//for (int i = 0; i < 10000; ++i)
-	//{
-	//	RandNumber[i] = rand() % 10001 / 10000.f;
-	//}
-
-	//m_RandomBuffer->UpdateBuffer(RandNumber, 10000);
-
-
-	//m_RandomBuffer->SetShader(90, (int)Buffer_Shader_Type::Compute);
 
 
 	// NoiseTexture

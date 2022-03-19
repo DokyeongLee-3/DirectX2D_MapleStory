@@ -7,7 +7,7 @@ CPlayerSkillInfo::CPlayerSkillInfo()
     SylphideLancer->Level = 20;
     SylphideLancer->CoolTime = 1.2f;
     SylphideLancer->Factor = 1.f;
-    SylphideLancer->MPRequire = 80;
+    SylphideLancer->MPRequire = 100;
 
     m_mapSkillInfo.insert(std::make_pair("SylphideLancer", SylphideLancer));
 
@@ -16,7 +16,7 @@ CPlayerSkillInfo::CPlayerSkillInfo()
     VoidPressure->Level = 20;
     VoidPressure->CoolTime = 1.8f;
     VoidPressure->Factor = 2.f;
-    VoidPressure->MPRequire = 80;
+    VoidPressure->MPRequire = 100;
 
     m_mapSkillInfo.insert(std::make_pair("VoidPressure", VoidPressure));
 
@@ -42,7 +42,7 @@ CPlayerSkillInfo::CPlayerSkillInfo()
     DeathSide->Level = 3;
     DeathSide->CoolTime = 8.f;
     DeathSide->Factor = 1.5f;
-    DeathSide->MPRequire = 150;
+    DeathSide->MPRequire = 180;
 
     m_mapSkillInfo.insert(std::make_pair("DeathSide", DeathSide));
 }

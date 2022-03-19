@@ -189,6 +189,8 @@ bool CWidgetWindow::CollisionMouse(const Vector2& MousePos)
 	auto	iter = m_WidgetList.rbegin();
 	auto	iterEnd = m_WidgetList.rend();
 
+	bool Collision = false;
+
 	for (; iter != iterEnd; ++iter)
 	{
 		if (!(*iter)->IsEnable())
@@ -201,7 +203,7 @@ bool CWidgetWindow::CollisionMouse(const Vector2& MousePos)
 			if ((*iter)->CollisionMouse(MousePos))
 			{
 				(*iter)->m_MouseHovered = true;
-				return true;
+				Collision = true;
 			}
 
 			else
@@ -216,7 +218,7 @@ bool CWidgetWindow::CollisionMouse(const Vector2& MousePos)
 		}
 	}
 
-	return false;
+	return Collision;
 }
 
 CWidgetWindow* CWidgetWindow::Clone()

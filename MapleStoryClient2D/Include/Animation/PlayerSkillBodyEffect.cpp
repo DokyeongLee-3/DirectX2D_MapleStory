@@ -31,7 +31,6 @@ bool CPlayerSkillBodyEffect::Init()
 	SetEndFunction<CPlayerSkillBodyEffect>("SylphideLancerBodyEffectLeft", this, &CPlayerSkillBodyEffect::EndSkillEffect);
 	SetEndFunction<CPlayerSkillBodyEffect>("LightTransformingLeft", this, &CPlayerSkillBodyEffect::EndSkillEffect);
 	
-	AddNotify<CPlayerSkillBodyEffect>("PlayerLevelUpEffect", "PlayerLevelUpEffect", 0, this, &CPlayerSkillBodyEffect::UpPos);
 	SetEndFunction<CPlayerSkillBodyEffect>("PlayerLevelUpEffect", this, &CPlayerSkillBodyEffect::LevelUpEndEffect);
 
 	return true;
@@ -54,10 +53,7 @@ void CPlayerSkillBodyEffect::LevelUpEndEffect()
 
 	SetCurrentAnimation(nullptr);
 	// 원래 위치로 복귀
-	m_Owner->SetRelativePos(0.f, 11.f, 0.f);
+	//m_Owner->SetRelativePos(0.f, 11.f, 0.f);
 }
 
-void CPlayerSkillBodyEffect::UpPos()
-{
-	m_Owner->AddWorldPos(0.f, 250.f, 0.f);
-}
+

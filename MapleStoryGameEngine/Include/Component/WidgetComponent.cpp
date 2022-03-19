@@ -5,6 +5,7 @@
 #include "../Scene/CameraManager.h"
 #include "../Device.h"
 #include "../Render/RenderManager.h"
+#include "../Input.h"
 
 CWidgetComponent::CWidgetComponent() :
 	m_SetAlphaBlendState(false)
@@ -87,8 +88,8 @@ void CWidgetComponent::PostUpdate(float DeltaTime)
 {
 	CSceneComponent::PostUpdate(DeltaTime);
 
-	if (CRenderManager::GetInst()->GetStartFadeIn())
-		return;
+	/*if (CRenderManager::GetInst()->GetStartFadeIn())
+		return;*/
 
 	if (m_WidgetWindow)
 	{
@@ -160,16 +161,26 @@ void CWidgetComponent::PostUpdate(float DeltaTime)
 
 void CWidgetComponent::PrevRender()
 {
-	if (CRenderManager::GetInst()->GetStartFadeIn())
-		return;
+	/*if (CRenderManager::GetInst()->GetStartFadeIn())
+		return;*/
+
+	if(m_WidgetWindow->IsMouseCollisionEnable())
+	{
+		Vector2 MousePos = CInput::GetInst()->GetMousePos();
+
+		if (m_WidgetWindow->CollisionMouse(MousePos))
+		{
+			int a = 3;
+		}
+	}
 
 	CSceneComponent::PrevRender();
 }
 
 void CWidgetComponent::Render()
 {
-	if (CRenderManager::GetInst()->GetStartFadeIn())
-		return;
+	/*if (CRenderManager::GetInst()->GetStartFadeIn())
+		return;*/
 
 	CSceneComponent::Render();
 

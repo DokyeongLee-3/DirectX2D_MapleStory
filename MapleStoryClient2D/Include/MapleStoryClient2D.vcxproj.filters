@@ -61,14 +61,20 @@
     <Filter Include="02. Object\05. MapObject\01. Lobby">
       <UniqueIdentifier>{0d994efc-f2a6-4301-8396-317fd1f7bf7a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. Object\05. MapObject\02. Zakum">
-      <UniqueIdentifier>{5ce0a072-d003-4d25-9b3f-9f51608998a3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02. Object\05. MapObject\03. Library2nd">
       <UniqueIdentifier>{e2904190-ea5a-4735-80f6-bd1f9632b914}</UniqueIdentifier>
     </Filter>
     <Filter Include="02. Object\06. TileMap">
       <UniqueIdentifier>{3b5610dd-474e-458e-bffa-058735a53aaf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\07. NPC">
+      <UniqueIdentifier>{6af69697-fd2d-4c14-9ae8-5cf8fec037c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\05. MapObject\04. ZakumAltar">
+      <UniqueIdentifier>{763648b8-df5b-4312-9e9e-30b16939fea3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\05. MapObject\02. WayToZakum">
+      <UniqueIdentifier>{5ce0a072-d003-4d25-9b3f-9f51608998a3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -169,7 +175,7 @@
       <Filter>01. SceneMode</Filter>
     </ClCompile>
     <ClCompile Include="Object\FlowingVolcano.cpp">
-      <Filter>02. Object\05. MapObject\02. Zakum</Filter>
+      <Filter>02. Object\05. MapObject\02. WayToZakum</Filter>
     </ClCompile>
     <ClCompile Include="Object\VoidPressure.cpp">
       <Filter>02. Object\03. Bullet</Filter>
@@ -266,6 +272,63 @@
     </ClCompile>
     <ClCompile Include="Widget\DyingNoticeWindow.cpp">
       <Filter>03. UI\02. InGame</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\NPCAdobis.cpp">
+      <Filter>02. Object\07. NPC</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\NPCName.cpp">
+      <Filter>03. UI\02. InGame</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\NPCDialog.cpp">
+      <Filter>03. UI\02. InGame</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\ZakumAltarScene.cpp">
+      <Filter>01. SceneMode</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\ZakumAltarFlowingVolcano.cpp">
+      <Filter>02. Object\05. MapObject\04. ZakumAltar</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\ZakumBody.cpp">
+      <Filter>02. Object\02. Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\ZakumBodyAnimation.cpp">
+      <Filter>05. Animation\02. Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\ZakumHandAnimation.cpp">
+      <Filter>05. Animation\02. Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\ZakumAttackWarningSpot.cpp">
+      <Filter>02. Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\ZakumDustEffect.cpp">
+      <Filter>02. Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\ZakumHandSmashLight.cpp">
+      <Filter>02. Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\ZakumFogEffect.cpp">
+      <Filter>02. Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\ZakumFlame.cpp">
+      <Filter>02. Object\02. Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\ZakumFlameAnimation.cpp">
+      <Filter>05. Animation\02. Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\ClapWarning.cpp">
+      <Filter>02. Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\ZakumClapLightEffect.cpp">
+      <Filter>02. Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\ZakumClapCircleShockWave.cpp">
+      <Filter>02. Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\ZakumClapSmallCircleShockWave.cpp">
+      <Filter>02. Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\ZakumClapPinkShockWave.cpp">
+      <Filter>02. Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -369,7 +432,7 @@
       <Filter>01. SceneMode</Filter>
     </ClInclude>
     <ClInclude Include="Object\FlowingVolcano.h">
-      <Filter>02. Object\05. MapObject\02. Zakum</Filter>
+      <Filter>02. Object\05. MapObject\02. WayToZakum</Filter>
     </ClInclude>
     <ClInclude Include="Object\VoidPressure.h">
       <Filter>02. Object\03. Bullet</Filter>
@@ -466,6 +529,63 @@
     </ClInclude>
     <ClInclude Include="Widget\DyingNoticeWindow.h">
       <Filter>03. UI\02. InGame</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\NPCAdobis.h">
+      <Filter>02. Object\07. NPC</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\NPCName.h">
+      <Filter>03. UI\02. InGame</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\NPCDialog.h">
+      <Filter>03. UI\02. InGame</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\ZakumAltarScene.h">
+      <Filter>01. SceneMode</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\ZakumAltarFlowingVolcano.h">
+      <Filter>02. Object\05. MapObject\04. ZakumAltar</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\ZakumBody.h">
+      <Filter>02. Object\02. Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation\ZakumBodyAnimation.h">
+      <Filter>05. Animation\02. Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation\ZakumHandAnimation.h">
+      <Filter>05. Animation\02. Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\ZakumAttackWarningSpot.h">
+      <Filter>02. Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\ZakumDustEffect.h">
+      <Filter>02. Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\ZakumHandSmashLight.h">
+      <Filter>02. Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\ZakumFogEffect.h">
+      <Filter>02. Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\ZakumFlame.h">
+      <Filter>02. Object\02. Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation\ZakumFlameAnimation.h">
+      <Filter>05. Animation\02. Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\ClapWarning.h">
+      <Filter>02. Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\ZakumClapLightEffect.h">
+      <Filter>02. Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\ZakumClapCircleShockWave.h">
+      <Filter>02. Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\ZakumClapSmallCircleShockWave.h">
+      <Filter>02. Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\ZakumClapPinkShockWave.h">
+      <Filter>02. Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

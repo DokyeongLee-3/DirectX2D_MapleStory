@@ -5,6 +5,9 @@
 class CPlayerSkillBodyEffect :
     public CAnimationSequence2DInstance
 {
+
+	friend class CPlayer2D;
+
 public:
 	CPlayerSkillBodyEffect();
 	CPlayerSkillBodyEffect(const CPlayerSkillBodyEffect& Anim);
@@ -18,6 +21,5 @@ public:
 private:
 	void EndSkillEffect();
 	void LevelUpEndEffect();
-	void UpPos();
 };
 

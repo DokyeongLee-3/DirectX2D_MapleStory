@@ -25,6 +25,7 @@ struct SkillInfo
 class CPlayerSkillInfo
 {
 	friend class CPlayer2D;
+    friend class CSkillQuickSlotWindow;
 
 private:
 	CPlayerSkillInfo();

@@ -51,12 +51,20 @@ bool CFontManager::Init()
 		(IUnknown**)&m_WriteFactory)))
 		return false;
 
+
 	// Engine Font Loading
 	CreateFontFile("Default", TEXT("NotoSansKR-Regular.otf"));
 
 	const TCHAR* FontFace = GetFontFaceName("Default");
 
 	LoadFont("Default", FontFace, 600, 20.f, TEXT("ko"));
+
+
+	CreateFontFile("Light", TEXT("NotoSerifKR-Light.otf"));
+
+	FontFace = GetFontFaceName("Light");
+
+	LoadFont("Light", FontFace, 600, 20.f, TEXT("ko"));
 
 	return true;
 }

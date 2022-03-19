@@ -96,6 +96,11 @@ void CMaterial::SetBaseColor(float r, float g, float b, float a)
 	m_BaseColor = Vector4(r, g, b, a);
 }
 
+Vector4 CMaterial::GetBaseColor() const
+{
+	return m_BaseColor;
+}
+
 void CMaterial::AddTexture(int Register, int ShaderType, const std::string& Name, CTexture* Texture)
 {
 	m_TextureInfo.push_back(MaterialTextureInfo());

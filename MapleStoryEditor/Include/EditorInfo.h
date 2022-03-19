@@ -23,7 +23,9 @@ enum class CreateObject_Type
 	TileMapObj,
 	Stage,
 	VerticalLampLight,
-	LopeTileMapObj
+	LopeTileMapObj,
+	NPCAdobis,
+	ZakumBody
 };
 
 enum class TileEdit_Mode

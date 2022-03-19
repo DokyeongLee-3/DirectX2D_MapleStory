@@ -129,6 +129,19 @@ public:
 	void Load(const char* FileName, const std::string& PathName = SCENE_PATH);
 	void LoadFullPath(const char* FullPath);
 
+public:
+	template<typename T>
+	void FindObjectByType(std::vector<T*>& vecObj)
+	{
+		auto	iter = m_ObjList.begin();
+		auto	iterEnd = m_ObjList.end();
+
+		for (; iter != iterEnd; ++iter)
+		{
+			if ((*iter)->GetTypeID() == typeid(T).hash_code())
+				vecObj.push_back((T*)((*iter).Get()));
+		}
+	}
 
 public:
 	template <typename T>

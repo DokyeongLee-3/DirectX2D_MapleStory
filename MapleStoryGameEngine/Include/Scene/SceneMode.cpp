@@ -54,7 +54,7 @@ bool CSceneMode::Init()
 void CSceneMode::Update(float DeltaTime)
 {
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	char FPSStr[256] = {};
 
 	float FPS = CEngine::GetInst()->GetFPS();
@@ -62,9 +62,9 @@ void CSceneMode::Update(float DeltaTime)
 	sprintf_s(FPSStr, "FPS : %f\n", FPS);
 
 	OutputDebugStringA(FPSStr);
-#else
-
-#endif	// _DEBUG
+//#else
+//
+//#endif	// _DEBUG
 
 }
 

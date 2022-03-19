@@ -79,6 +79,11 @@ void CSpriteComponent::SetBaseColor(float r, float g, float b, float a)
 	m_Material->SetBaseColor(r, g, b, a);
 }
 
+Vector4 CSpriteComponent::GetBaseColor() const
+{
+	return m_Material->GetBaseColor();
+}
+
 void CSpriteComponent::SetRenderState(CRenderState* State)
 {
 	m_Material->SetRenderState(State);
@@ -176,6 +181,9 @@ bool CSpriteComponent::Init()
 
 void CSpriteComponent::Update(float DeltaTime)
 {
+	if (!m_Enable)
+		return;
+
 	CSceneComponent::Update(DeltaTime);
 
 	if (!m_Animation || !m_Animation->GetCurrentAnimation() || m_Animation->GetCurrentAnimation()->GetAnimationSequence()->GetFrameCount() == 0)
@@ -198,16 +206,25 @@ void CSpriteComponent::Update(float DeltaTime)
 
 void CSpriteComponent::PostUpdate(float DeltaTime)
 {
+	if (!m_Enable)
+		return;
+
 	CSceneComponent::PostUpdate(DeltaTime);
 }
 
 void CSpriteComponent::PrevRender()
 {
+	if (!m_Enable)
+		return;
+
 	CSceneComponent::PrevRender();
 }
 
 void CSpriteComponent::Render()
 {
+	if (!m_Enable)
+		return;
+
 	CSceneComponent::Render();
 
 	if (m_Animation)
@@ -238,6 +255,9 @@ void CSpriteComponent::Render()
 
 void CSpriteComponent::PostRender()
 {
+	if (!m_Enable)
+		return;
+
 	CSceneComponent::PostRender();
 }
 
@@ -324,7 +344,8 @@ void CSpriteComponent::Flip()
 	else
 		m_Flip = false;
 
-	m_Animation->Flip();
+	if(m_Animation)
+		m_Animation->Flip();
 }
 
 

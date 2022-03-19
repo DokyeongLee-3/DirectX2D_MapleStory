@@ -84,6 +84,9 @@ bool COnionScene::Init()
 	m_Scene->GetViewport()->AddWindow(StatWindow);
 	m_Scene->GetViewport()->AddWindow(DyingNoticeWindow);
 
+	if (BossMatching->IsEnable())
+		BossMatching->Enable(false);
+
 	CreateAnimationSequence();
 	// Effect Hit들을 Scene의 m_mapPrototype에 만들어놓기
 	CreateEffectPrototype();
@@ -265,6 +268,8 @@ void COnionScene::LoadSound()
 	m_Scene->GetResource()->LoadSound("Effect", false, "LevelUp", "LevelUp.mp3");
 	m_Scene->GetResource()->LoadSound("Effect", false, "PickUpItem", "PickUpItem.mp3");
 	m_Scene->GetResource()->LoadSound("Effect", false, "Tombstone", "Tombstone.mp3");
+
+	m_Scene->GetResource()->LoadSound("UI", false, "TabClick", "TabClick.mp3");
 }
 
 void COnionScene::AddTileCollisionCallback()
@@ -339,7 +344,7 @@ void COnionScene::CreateWayToZakumScene()
 	WayToZakumScene->SetPlayerObject(m_PlayerObject);
 
 	// 다음 Scene에서의 위치를 Scene의 왼쪽에 위치하도록 잡아주기
-	m_PlayerObject->SetWorldPos(180.f, 200.f, 0.f);
+	m_PlayerObject->SetWorldPos(250.f, 200.f, 0.f);
 
 	m_LoadingThread = CThread::CreateThread<CLoadingThread>("WayToZakumSceneLoadingThread");
 	m_LoadingThread->SetLoadingScene(ThreadLoadingScene::WayToZakum);

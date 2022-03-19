@@ -20,8 +20,6 @@ private:
 	class CIMGUIText* m_ObjectLayer;
 	class CIMGUIButton* m_ObjectDeleteButton;
 	class CIMGUIButton* m_ComponentDeleteButton;
-	class CIMGUITextInput* m_ZOrder;
-	class CIMGUIButton* m_ZOrderChange;
 
 	class CIMGUIComboBox* m_ProfileCombo;
 	class CIMGUIButton* m_ProfileChangeButton;

@@ -49,7 +49,7 @@ void COnionMonster::Start()
 	m_Sprite->AddChild(m_DamageWidgetComponent);
 
 	m_DamageWidgetComponent->SetRelativePos(-20.f, 0.f, 0.f);
-
+	m_DamageWidgetComponent->SetLayerName("ScreenWidgetComponent");
 	//m_DamageWidgetComponent->SetWorldPos(WorldPos.x - 20.f, WorldPos.y, 0.f);
 
 

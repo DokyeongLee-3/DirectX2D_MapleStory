@@ -130,19 +130,6 @@ bool CObjectHierarchy::Init()
 	m_ObjectLayer = AddWidget<CIMGUIText>("ObjectLayer", 100.f, 30.f);
 
 
-	m_ZOrder = AddWidget<CIMGUITextInput>("ZOrder", 80.f, 30.f);
-	m_ZOrder->SetHideName(true);
-	m_ZOrder->SetText("");
-	m_ZOrder->SetSize(100.f, 20.f);
-	m_ZOrder->SetTextType(ImGuiText_Type::Int);
-
-	Line = AddWidget<CIMGUISameLine>("Line");
-
-	m_ZOrderChange = AddWidget<CIMGUIButton>("ZOrder Change", 120.f, 30.f);
-	m_ZOrderChange->SetClickCallback(this, &CObjectHierarchy::ZOrderChangeCallback);
-
-
-
 
 	m_ProfileCombo = AddWidget<CIMGUIComboBox>("Select Profile", 130.f, 30.f);
 	m_ProfileCombo->SetHideName(true);
@@ -349,7 +336,6 @@ void CObjectHierarchy::SelectComponent(int Index, const char* Item)
 	}
 
 	m_ObjectLayer->SetText(m_SelectComponent->GetLayerName().c_str());
-	m_ZOrder->SetValueInt(m_SelectComponent->GetZOrder());
 
 
 
@@ -389,7 +375,9 @@ void CObjectHierarchy::LayerChangeCallback()
 	if (!Obj)
 		return;
 
-	CComponent* Comp = Obj->GetRootComponent();
+	CObjectHierarchy* Window = (CObjectHierarchy*)CIMGUIManager::GetInst()->FindIMGUIWindow("ObjectHierarchy");
+
+	CComponent* Comp = Window->GetSelectComponent();
 
 	if (!Comp)
 		return;
@@ -467,32 +455,6 @@ void CObjectHierarchy::DeleteComponentButtonCallback()
 	m_ComponentListWidget->SetSelectIndex(-1);
 }
 
-void CObjectHierarchy::ZOrderChangeCallback()
-{
-	if (m_ObjectListWidget->GetSelectIndex() == -1)
-		return;
-
-	if (m_ComponentListWidget->GetSelectIndex() == -1)
-		return;
-
-	CGameObject* Obj = CSceneManager::GetInst()->GetScene()->FindObject(m_ObjectListWidget->GetSelectItem());
-
-	if (!Obj)
-		return;
-
-	CComponent* Comp = Obj->FindComponent(m_ComponentListWidget->GetSelectItem());
-
-	if (Comp)
-	{
-		if (Comp->GetTypeID() == typeid(CSceneComponent).hash_code() || Comp->GetTypeID() == typeid(CSpriteComponent).hash_code()
-			|| Comp->GetTypeID() == typeid(CTileMapComponent).hash_code() || Comp->GetTypeID() == typeid(CColliderBox2D).hash_code()
-			|| Comp->GetTypeID() == typeid(CColliderCircle).hash_code() || Comp->GetTypeID() == typeid(CColliderPixel).hash_code()
-			|| Comp->GetTypeID() == typeid(CDragCollider).hash_code())
-		{
-			((CSceneComponent*)Comp)->SetZOrder(m_ZOrder->GetValueInt());
-		}
-	}
-}
 
 void CObjectHierarchy::ProfileChangeCallback()
 {
@@ -521,7 +483,6 @@ void CObjectHierarchy::ClearHierarchyWindowInfo()
 {
 	m_ObjectLayer->SetText("");
 	//m_LayerCombo->SetSelectIndex(-1);
-	m_ZOrder->SetValueInt(0);
 	m_Profile->SetText("");
 	m_SelectComponent = nullptr;
 	m_ParentComponent->SetText("");

@@ -52,6 +52,7 @@ void CRadishMonster::Start()
 	m_Sprite->AddChild(m_DamageWidgetComponent);
 
 	m_DamageWidgetComponent->SetRelativePos(-20.f, 0.f, 0.f);
+	m_DamageWidgetComponent->SetLayerName("ScreenWidgetComponent");
 
 	CRadishMonsterAnimation* Instance = (CRadishMonsterAnimation*)m_Sprite->GetAnimationInstance();
 
@@ -321,7 +322,7 @@ void CRadishMonster::CollisionBeginCallback(const CollisionResult& Result)
 
 		std::vector<CColliderBox2D*> vecCollider;
 
-		m_Body->FindMultipleCollisionComponent<CColliderBox2D, CTileObject>(vecCollider);
+		m_Body->FindMultipleCollisionComponentByObjType<CColliderBox2D, CTileObject>(vecCollider);
 
 		// 만약 원래 하나의 충돌체와 충돌중이었고, 같은 오브젝트 내에 또 다른 충돌체와 이제 막 충돌해서 두개의 충돌체와
 		// 충돌중일때, 원래 충돌하고 있던 충돌체

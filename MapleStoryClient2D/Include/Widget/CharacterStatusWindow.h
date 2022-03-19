@@ -99,5 +99,15 @@ public:
 	{
 		m_CurrentMPNumber->SetNumber(MP);
 	}
+
+	void SetHPMax(int Max)
+	{
+		m_HPMaxNumber->SetNumber(Max);
+	}
+
+	void SetMPMax(int Max)
+	{
+		m_MPMaxNumber->SetNumber(Max);
+	}
 };
 

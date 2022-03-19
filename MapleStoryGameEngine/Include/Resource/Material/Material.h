@@ -125,6 +125,7 @@ public:
 public:
     void SetBaseColor(const Vector4& Color);
     void SetBaseColor(float r, float g, float b, float a);
+    Vector4 GetBaseColor()  const;
 
 public:
     // 이미 Load되어 있는 Texture를 m_TextureInfo로 가져오는 함수

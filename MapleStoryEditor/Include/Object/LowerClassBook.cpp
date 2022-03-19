@@ -45,6 +45,8 @@ bool CLowerClassBook::Init()
 	m_Sprite->SetRelativePos(500.f, 300.f, 0.f);
 	m_Sprite->SetPivot(0.5f, 0.5f, 0.f);
 
+	CInput::GetInst()->CreateKey("NextAnimation", 'N');
+	CInput::GetInst()->SetKeyCallback<CLowerClassBook>("NextAnimation", KeyState_Down, this, &CLowerClassBook::NextAnimation);
 
 	return true;
 }

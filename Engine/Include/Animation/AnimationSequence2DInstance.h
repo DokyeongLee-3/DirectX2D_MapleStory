@@ -108,6 +108,7 @@ public:
 		return m_CBuffer;
 	}
 
+
 public:
 	void AddAnimation(const std::string& SequenceName, const std::string& Name, bool Loop = true, float PlayTime = 1.f,
 		float PlayScale = 1.f, bool Reverse = false);
@@ -127,6 +128,11 @@ public:
 	// map에 저장된 애니메이션중 다음 애니메이션으로 현재 애니메이션을 바꾼다
 	void NextAnimation();
 	void SetCurrentAnimationFirstFrame();
+
+public:
+	void SetCurrentAnimationFrame(int Frame);
+	void SetCurrentAnimationTime(float Time);
+	void SetCurrentAnimationNotifyInitialize();
 
 public:
 	virtual void Start();

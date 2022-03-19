@@ -6,11 +6,15 @@
 #include "../Scene/SceneResource.h"
 #include "../Input.h"
 #include "../Resource/Shader/WidgetConstantBuffer.h"
+#include "../Engine.h"
 
 CImage::CImage() :
 	m_MoveXAllowed(false),
 	m_MoveYAllowed(false),
-	m_Clicked(false)
+	m_Clicked(false),
+	m_ClickCount(0),
+	m_FrameCount(0),
+	m_PrevFrameClick(false)
 {
 }
 
@@ -226,10 +230,20 @@ void CImage::PostUpdate(float DeltaTime)
 {
 	CWidget::PostUpdate(DeltaTime);
 
+	++m_FrameCount;
+
+	if (m_FrameCount > (int)CEngine::GetInst()->GetFPS())
+	{
+		m_FrameCount = 0;
+		m_ClickCount = 0;
+	}
+
 	if (m_CollisionMouseEnable && m_MouseHovered)
 	{
 		if (CInput::GetInst()->GetMouseLButtonClick())
 		{
+			++m_ClickCount;
+
 			Vector2 MouseMove = CInput::GetInst()->GetMouseMove();
 
 			if (m_MoveXAllowed)
@@ -238,13 +252,25 @@ void CImage::PostUpdate(float DeltaTime)
 			if (m_MoveYAllowed)
 				m_Pos.y += MouseMove.y;
 
-			if (m_ClickCallback && !m_Clicked)
+			if (m_ClickCallback && !m_Clicked && m_ClickCount == 1)
 			{
 				m_Clicked = true;
 				m_ClickCallback();
+				m_ClickCount = 0;
+			}
+
+			// 더블클릭 된 경우
+			else if (m_ClickCount > 1 && !m_PrevFrameClick && m_DoubleClickCallback)
+			{
+				m_FrameCount = 0;
+				m_ClickCount = 0;
+				m_Clicked = false;
+				m_DoubleClickCallback();
 			}
 		}
 	}
+
+	m_PrevFrameClick = CInput::GetInst()->GetMouseLButtonClick();
 
 	if (!m_Info.vecFrameData.empty())
 	{

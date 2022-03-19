@@ -63,13 +63,13 @@ bool CLobbyScene::Init()
 		CPlayer2D* Player = m_Scene->CreateGameObject<CPlayer2D>("Player");
 
 		SetPlayerObject(Player);
-
-		Player->SetWorldPos(400.f, 200.f, 0.f);
-
-		//Player->SetAllSceneComponentsLayer("MovingObjFront");
 		Player->GetRootComponent()->SetLayerName("MovingObjFront");
+
+		Player->SetWorldPos(400.f, 200.f, 610.f);
+
 		CSceneComponent* BodyEffect = (CSceneComponent*)Player->FindComponent("PlayerSkillBodyEffect");
-		BodyEffect->SetRelativePos(0.f, 11.f, -5.f);
+
+		BodyEffect->SetRelativePos(0.f, 11.f, -10.f);
 	}
 
 	CreateInGameWidgetWindow();
@@ -204,6 +204,8 @@ void CLobbyScene::LoadSound()
 
 	m_Scene->GetResource()->LoadSound("Effect", false, "LevelUp", "LevelUp.mp3");
 	m_Scene->GetResource()->LoadSound("Effect", false, "PickUpItem", "PickUpItem.mp3");
+
+	m_Scene->GetResource()->LoadSound("UI", false, "TabClick", "TabClick.mp3");
 }
 
 void CLobbyScene::AddTileCollisionCallback()
@@ -414,7 +416,7 @@ void CLobbyScene::CreateWayToZakumScene()
 
 	// 다음 Scene에서의 위치를 Scene의 왼쪽에 위치하도록 잡아주기
 	Vector3 WorldPos = m_PlayerObject->GetWorldPos();
-	m_PlayerObject->SetWorldPos(180.f, 200.f, WorldPos.z);
+	m_PlayerObject->SetWorldPos(250.f, 200.f, WorldPos.z);
 
 	m_LoadingThread = CThread::CreateThread<CLoadingThread>("WayToZakumSceneLoadingThread");
 	m_LoadingThread->SetLoadingScene(ThreadLoadingScene::WayToZakum);

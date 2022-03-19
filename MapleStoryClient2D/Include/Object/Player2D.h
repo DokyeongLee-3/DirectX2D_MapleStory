@@ -121,7 +121,25 @@ private:
 
     int         m_PrevSameTileObjColliderCount;
 
+    Vector2     m_PrevFrameCameraMove;
+    Vector2     m_CurrentFrameCameraMove;
+
+    bool        m_OnCameraShake;
+    float       m_CameraShakeFrequency;
+    float       m_CameraShakeTime;
+    float       m_AccCameraShakeTime;
+    float       m_AccCameraShakeSingleDirTime;
+    Vector3     m_OriginRelativeCamPos;
+    Vector2     m_CameraShakeDir;
+
 public:
+    class CPlayerSkillInfo* GetPlayerSkillInfo()   const;
+
+    Vector2 GetCurrentFrameCameraMove() const
+    {
+        return m_CurrentFrameCameraMove;
+    }
+
     void ClearListCollision()
     {
         m_ListCollisionID.clear();
@@ -145,6 +163,11 @@ public:
     void AddCollisionID(int ID)
     {
         m_ListCollisionID.push_back(ID);
+    }
+
+    bool IsCollisionIDEmpty()   const
+    {
+        return m_ListCollisionID.empty();
     }
 
     bool CheckCollisionID(int ID)
@@ -288,6 +311,7 @@ public:
 public:
     virtual void FlipAll(float DeltaTime);
     void GotoNextMap(float DeltaTime);
+    void GotoZakumAltar();
     void ProduceSecondSylphideLander(float DeltaTime);
     void EffectEnd(float DeltaTime);
     void ReturnIdle(float DeltaTime);
@@ -311,7 +335,7 @@ public:
 
 public:
     void GetEXP(int EXP);
-    void LevelUp();
+    void LevelUp(float DeltaTime);
     void UpSTR(int Count);
     void UpDEX(int Count);
     void UpINT(int Count);
@@ -320,5 +344,15 @@ public:
     void DeadRound();
    // void MovePointDown(float DeltaTime);
     //void PathResult(const std::list<Vector3>& PathList);
+
+public:
+    void SetCameraShake(bool Shake);
+    void CameraShake(float DeltaTime);
+
+public:
+    static bool SortCollider(CColliderBox2D* Src, CColliderBox2D* Dest)
+    {
+        return Src->GetInfo().Center.y < Dest->GetInfo().Center.y;
+    }
 };
 

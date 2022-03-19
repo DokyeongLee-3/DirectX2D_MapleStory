@@ -1,5 +1,8 @@
 
 #include "SkillQuickSlotWindow.h"
+#include "Scene/Scene.h"
+#include "../Object/Player2D.h"
+#include "../Object/PlayerSkillInfo.h"
 
 CSkillQuickSlotWindow::CSkillQuickSlotWindow()
 {
@@ -46,7 +49,32 @@ bool CSkillQuickSlotWindow::Init()
 	m_ExtendBar->SetMouseCollisionEnable(true);
 	m_ExtendBar->SetZOrder(5);
 
+	m_SylphideLancerProgressBar = CreateWidget<CProgressBar>("SylphideLancerProgressBar");
+	m_SylphideLancerProgressBar->SetTexture("SkillProgressBar", TEXT("Player/Skill/SkillProgressBar.png"));
+	m_SylphideLancerProgressBar->SetSize(32.f, 32.f);
+	m_SylphideLancerProgressBar->SetPos(142.f, 5.f);
+	m_SylphideLancerProgressBar->SetPercent(0.f);
+	m_SylphideLancerProgressBar->SetDir(ProgressBar_Dir::RightToLeft);
+	m_SylphideLancerProgressBar->SetOpacity(0.7f);
+	m_SylphideLancerProgressBar->SetZOrder(6);
 
+	m_VoidPressureProgressBar = CreateWidget<CProgressBar>("VoidPressureProgressBar");
+	m_VoidPressureProgressBar->SetTexture("SkillProgressBar", TEXT("Player/Skill/SkillProgressBar.png"));
+	m_VoidPressureProgressBar->SetSize(32.f, 32.f);
+	m_VoidPressureProgressBar->SetPos(177.f, 4.f);
+	m_VoidPressureProgressBar->SetPercent(0.f);
+	m_VoidPressureProgressBar->SetDir(ProgressBar_Dir::RightToLeft);
+	m_VoidPressureProgressBar->SetOpacity(0.7f);
+	m_VoidPressureProgressBar->SetZOrder(6);
+
+	m_DeathSideProgressBar = CreateWidget<CProgressBar>("DeathSideProgressBar");
+	m_DeathSideProgressBar->SetTexture("SkillProgressBar", TEXT("Player/Skill/SkillProgressBar.png"));
+	m_DeathSideProgressBar->SetSize(32.f, 32.f);
+	m_DeathSideProgressBar->SetPos(212.f, 4.f);
+	m_DeathSideProgressBar->SetPercent(0.f);
+	m_DeathSideProgressBar->SetDir(ProgressBar_Dir::RightToLeft);
+	m_DeathSideProgressBar->SetOpacity(0.7f);
+	m_DeathSideProgressBar->SetZOrder(6);
 
 	return true;
 }
@@ -59,6 +87,34 @@ void CSkillQuickSlotWindow::Update(float DeltaTime)
 void CSkillQuickSlotWindow::PostUpdate(float DeltaTime)
 {
 	CWidgetWindow::PostUpdate(DeltaTime);
+
+	CPlayer2D* Player = (CPlayer2D*)m_Viewport->GetScene()->GetPlayerObject();
+
+	CPlayerSkillInfo* PlayerSkillInfo = Player->GetPlayerSkillInfo();
+
+	SkillInfo* Info = PlayerSkillInfo->FindSkillInfo("SylphideLancer");
+
+	if (Info && Info->Active)
+	{
+		float Area = (Info->CoolTime - Info->AccTime) / Info->CoolTime;
+		m_SylphideLancerProgressBar->SetPercent(Area);
+	}
+
+	Info = PlayerSkillInfo->FindSkillInfo("VoidPressure");
+
+	if (Info && Info->Active)
+	{
+		float Area = (Info->CoolTime - Info->AccTime) / Info->CoolTime;
+		m_VoidPressureProgressBar->SetPercent(Area);
+	}
+
+	Info = PlayerSkillInfo->FindSkillInfo("DeathSide");
+
+	if (Info && Info->Active)
+	{
+		float Area = (Info->CoolTime - Info->AccTime) / Info->CoolTime;
+		m_DeathSideProgressBar->SetPercent(Area);
+	}
 }
 
 void CSkillQuickSlotWindow::Render()

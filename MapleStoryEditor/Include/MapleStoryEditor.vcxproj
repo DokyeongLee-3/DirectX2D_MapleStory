@@ -162,6 +162,9 @@
     <ClInclude Include="Animation\LowerClassBookAnimation.h" />
     <ClInclude Include="Animation\OnionMonsterAnimation.h" />
     <ClInclude Include="Animation\RadishMonsterAnimation.h" />
+    <ClInclude Include="Animation\ZakumBodyAnimation.h" />
+    <ClInclude Include="Animation\ZakumFlameAnimation.h" />
+    <ClInclude Include="Animation\ZakumHandAnimation.h" />
     <ClInclude Include="Component\DragCollider.h" />
     <ClInclude Include="EditorInfo.h" />
     <ClInclude Include="EditorManager.h" />
@@ -179,6 +182,7 @@
     <ClInclude Include="Object\LopeTileObject.h" />
     <ClInclude Include="Object\LowerClassBook.h" />
     <ClInclude Include="Object\Monster.h" />
+    <ClInclude Include="Object\NPCAdobis.h" />
     <ClInclude Include="Object\OnionMonster.h" />
     <ClInclude Include="Object\Pivot.h" />
     <ClInclude Include="Object\Player2D.h" />
@@ -191,6 +195,7 @@
     <ClInclude Include="Object\StaticMapObj.h" />
     <ClInclude Include="Object\TileObject.h" />
     <ClInclude Include="Object\VerticalLampLight.h" />
+    <ClInclude Include="Object\ZakumBody.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Scene\DefaultScene.h" />
     <ClInclude Include="Window\DetailWindow.h" />
@@ -203,6 +208,9 @@
     <ClCompile Include="Animation\LowerClassBookAnimation.cpp" />
     <ClCompile Include="Animation\OnionMonsterAnimation.cpp" />
     <ClCompile Include="Animation\RadishMonsterAnimation.cpp" />
+    <ClCompile Include="Animation\ZakumBodyAnimation.cpp" />
+    <ClCompile Include="Animation\ZakumFlameAnimation.cpp" />
+    <ClCompile Include="Animation\ZakumHandAnimation.cpp" />
     <ClCompile Include="Component\DragCollider.cpp" />
     <ClCompile Include="EditorManager.cpp" />
     <ClCompile Include="main.cpp" />
@@ -219,6 +227,7 @@
     <ClCompile Include="Object\LopeTileObject.cpp" />
     <ClCompile Include="Object\LowerClassBook.cpp" />
     <ClCompile Include="Object\Monster.cpp" />
+    <ClCompile Include="Object\NPCAdobis.cpp" />
     <ClCompile Include="Object\OnionMonster.cpp" />
     <ClCompile Include="Object\Pivot.cpp" />
     <ClCompile Include="Object\Player2D.cpp" />
@@ -231,6 +240,7 @@
     <ClCompile Include="Object\StaticMapObj.cpp" />
     <ClCompile Include="Object\TileObject.cpp" />
     <ClCompile Include="Object\VerticalLampLight.cpp" />
+    <ClCompile Include="Object\ZakumBody.cpp" />
     <ClCompile Include="Scene\DefaultScene.cpp" />
     <ClCompile Include="Window\DetailWindow.cpp" />
     <ClCompile Include="Window\EditorMenu.cpp" />

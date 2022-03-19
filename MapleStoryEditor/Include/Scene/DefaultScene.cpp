@@ -128,8 +128,22 @@ bool CDefaultScene::LoadAnimationSequence2D()
     m_Scene->GetResource()->LoadSequence2D("LowerClassBookAttackLeft.sqc");
     m_Scene->GetResource()->LoadSequence2D("LowerClassBookAttackOrb.sqc");
 
+    m_Scene->GetResource()->LoadSequence2D("ZakumNormalIdle.sqc");
+    m_Scene->GetResource()->LoadSequence2D("ZakumDestroyIdle.sqc");
+    m_Scene->GetResource()->LoadSequence2D("ZakumLeftHand.sqc");
+    m_Scene->GetResource()->LoadSequence2D("ZakumRightHand.sqc");
+    m_Scene->GetResource()->LoadSequence2D("ZakumLeftHandSmash.sqc");
+    m_Scene->GetResource()->LoadSequence2D("ZakumLeftHandSmash2.sqc");
+
+    m_Scene->GetResource()->LoadSequence2D("ZakumFlame.sqc");
+    m_Scene->GetResource()->LoadSequence2D("ZakumClapLeft.sqc");
+    m_Scene->GetResource()->LoadSequence2D("ZakumClapRight.sqc");
+    m_Scene->GetResource()->LoadSequence2D("ZakumClapCircleShockWave.sqc");
+
     m_Scene->GetResource()->LoadSequence2D("FloatingBill.sqc");
     m_Scene->GetResource()->LoadSequence2D("PlayerDead.sqc");
+
+    m_Scene->GetResource()->LoadSequence2D("NPCAdobisIdle.sqc");
 
     return true;
 }

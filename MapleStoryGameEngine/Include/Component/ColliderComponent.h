@@ -184,6 +184,19 @@ public:
         }
     }
 
+    template <typename T1, typename T2>
+    void FindMultipleCollisionComponentByObjType(std::vector<T1*>& vecComp)
+    {
+        auto iter = m_PrevCollisionList.begin();
+        auto iterEnd = m_PrevCollisionList.end();
+
+        for (; iter != iterEnd; ++iter)
+        {
+            if ((*iter)->GetTypeID() == typeid(T1).hash_code() && (*iter)->GetGameObject()->GetTypeID() == typeid(T2).hash_code())
+                vecComp.push_back((T1*)*iter);
+        }
+    }
+
 public:
     template <typename T>
     void AddCollisionCallback(Collision_State State, T* Obj, void(T::* Func)(const CollisionResult&))

@@ -18,9 +18,19 @@ private:
     CSharedPtr<CSpriteComponent>    m_Sprite;
   
     int                             m_CollisionID; // 플레이어가 여러 StaticMapObj와 충돌할때 충돌 처리시 구별을 위한 ID
-
+    bool                            m_IsFloor;
 
 public:
+    bool    IsFloor()   const
+    {
+        return m_IsFloor;
+    }
+
+    void SetIsFloor(bool IsFloor)
+    {
+        m_IsFloor = IsFloor;
+    }
+
     class CSpriteComponent* GetSpriteComponent()    const
     {
         return m_Sprite;

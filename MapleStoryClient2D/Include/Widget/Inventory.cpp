@@ -4,9 +4,12 @@
 #include "Input.h"
 #include "Widget/Image.h"
 #include "Input.h"
+#include "Scene/Scene.h"
+#include "Scene/SceneResource.h"
 
 CInventory::CInventory()    :
-    m_SlotSize(30.f, 30.f)
+    m_SlotSize(30.f, 30.f),
+    m_CurrentOpenTab(nullptr)
 {
 }
 
@@ -60,34 +63,44 @@ bool CInventory::Init()
     m_InventoryBackground->SetMouseCollisionEnable(false);
 
     m_EquipmentTab = CreateWidget<CImage>("EquipmentTab");
-    m_EquipmentTab->SetTexture("EquipmentTab", TEXT("UI/Inventory/EquipmentTabEnable.png"));
+    m_EquipmentTab->SetTexture("EquipmentTabEnable", TEXT("UI/Inventory/EquipmentTabEnable.png"));
+    m_EquipmentTab->SetClickCallback<CInventory>(this, &CInventory::ClickEquipTab);
     m_EquipmentTab->SetPos(10.f, 335.f);
     m_EquipmentTab->SetSize(29.f, 19.f);
     m_EquipmentTab->SetMouseCollisionEnable(true);
+    m_EquipmentTab->SetZOrder(2);
 
     m_ConsumeTab = CreateWidget<CImage>("ConsumeTab");
-    m_ConsumeTab->SetTexture("ConsumeTab", TEXT("UI/Inventory/ConsumeTabDisable.png"));
+    m_ConsumeTab->SetTexture("ConsumeTabDisable", TEXT("UI/Inventory/ConsumeTabDisable.png"));
+    m_ConsumeTab->SetClickCallback<CInventory>(this, &CInventory::ClickConsumeTab);
     m_ConsumeTab->SetPos(41.f, 335.f);
     m_ConsumeTab->SetSize(29.f, 17.f);
     m_ConsumeTab->SetMouseCollisionEnable(true);
+    m_ConsumeTab->SetZOrder(2);
 
     m_EtcTab = CreateWidget<CImage>("EtcTab");
-    m_EtcTab->SetTexture("EtcTab", TEXT("UI/Inventory/EtcTabDisable.png"));
+    m_EtcTab->SetTexture("EtcTabDisable", TEXT("UI/Inventory/EtcTabDisable.png"));
+    m_EtcTab->SetClickCallback<CInventory>(this, &CInventory::ClickEtcTab);
     m_EtcTab->SetPos(72.f, 335.f);
     m_EtcTab->SetSize(29.f, 17.f);
     m_EtcTab->SetMouseCollisionEnable(true);
+    m_EtcTab->SetZOrder(2);
 
     m_InstallTab = CreateWidget<CImage>("InstallTab");
-    m_InstallTab->SetTexture("InstallTab", TEXT("UI/Inventory/InstallTabDisable.png"));
+    m_InstallTab->SetTexture("InstallTabDisable", TEXT("UI/Inventory/InstallTabDisable.png"));
+    m_InstallTab->SetClickCallback<CInventory>(this, &CInventory::ClickInstallTab);
     m_InstallTab->SetPos(103.f, 335.f);
     m_InstallTab->SetSize(29.f, 17.f);
     m_InstallTab->SetMouseCollisionEnable(true);
+    m_InstallTab->SetZOrder(2);
 
     m_CashTab = CreateWidget<CImage>("CashTab");
-    m_CashTab->SetTexture("CashTab", TEXT("UI/Inventory/CashTabDisable.png"));
+    m_CashTab->SetTexture("CashTabDisable", TEXT("UI/Inventory/CashTabDisable.png"));
+    m_CashTab->SetClickCallback<CInventory>(this, &CInventory::ClickCashTab);
     m_CashTab->SetPos(134.f, 335.f);
     m_CashTab->SetSize(29.f, 17.f);
     m_CashTab->SetMouseCollisionEnable(true);
+    m_CashTab->SetZOrder(2);
 
     m_BlankCollider = CreateWidget<CImage>("BlankCollider");
     m_BlankCollider->SetTexture("BlankCollider", TEXT("UI/BlankCollider.png"));
@@ -128,6 +141,7 @@ bool CInventory::Init()
         SAFE_DELETE_ARRAY(vecFileName[i]);
     }
 
+    m_CurrentOpenTab = m_EquipmentTab;
 
     return true;
 }
@@ -200,6 +214,234 @@ void CInventory::AddMoney(int Money)
     CurrentMoney += Money;
 
     m_Money->SetNumber(CurrentMoney);
+}
+
+void CInventory::ClickEquipTab()
+{
+    m_EquipmentTab->SetTexture("EquipmentTabEnable", TEXT("UI/Inventory/EquipmentTabEnable.png"));
+    m_EquipmentTab->SetSize(29.f, 19.f);
+
+    m_CurrentOpenTab->SetSize(29.f, 17.f);
+    m_CurrentOpenTab->SetClicked(false);
+
+    m_Viewport->GetScene()->GetResource()->SoundPlay("TabClick");
+
+    if (m_CurrentOpenTab == m_CashTab)
+    {
+        m_CashTab->SetTexture("CashTabDisable", TEXT("UI/Inventory/CashTabDisable.png"));
+    }
+
+    else if (m_CurrentOpenTab == m_ConsumeTab)
+    {
+        m_ConsumeTab->SetTexture("ConsumeTabDisable", TEXT("UI/Inventory/ConsumeTabDisable.png"));
+    }
+
+    else if (m_CurrentOpenTab == m_DecorationTab)
+    {
+        m_DecorationTab->SetTexture("DecorationTabDisable", TEXT("UI/Inventory/Item.Tab.disabled.5.png"));
+    }
+
+    else if (m_CurrentOpenTab == m_EtcTab)
+    {
+        m_EtcTab->SetTexture("EtcTabDisable", TEXT("UI/Inventory/EtcTabDisable.png"));
+    }
+
+    else if (m_CurrentOpenTab == m_InstallTab)
+    {
+        m_InstallTab->SetTexture("InstallTabDisable", TEXT("UI/Inventory/InstallTabDisable.png"));
+    }
+
+    m_CurrentOpenTab = m_EquipmentTab;
+}
+
+void CInventory::ClickConsumeTab()
+{
+    m_ConsumeTab->SetTexture("ConsumeTabEnable", TEXT("UI/Inventory/Item.Tab.enabled.1.png"));
+    m_ConsumeTab->SetSize(29.f, 19.f);
+
+    m_CurrentOpenTab->SetSize(29.f, 17.f);
+    m_CurrentOpenTab->SetClicked(false);
+
+    m_Viewport->GetScene()->GetResource()->SoundPlay("TabClick");
+
+    if (m_CurrentOpenTab == m_CashTab)
+    {
+        m_CashTab->SetTexture("CashTabDisable", TEXT("UI/Inventory/CashTabDisable.png"));
+    }
+
+    else if (m_CurrentOpenTab == m_EquipmentTab)
+    {
+        m_EquipmentTab->SetTexture("EquipmentTabDisable", TEXT("UI/Inventory/EquipmentTabDisable.png"));
+    }
+
+    else if (m_CurrentOpenTab == m_DecorationTab)
+    {
+        m_DecorationTab->SetTexture("DecorationTabDisable", TEXT("UI/Inventory/Item.Tab.disabled.5.png"));
+    }
+
+    else if (m_CurrentOpenTab == m_EtcTab)
+    {
+        m_EtcTab->SetTexture("EtcTabDisable", TEXT("UI/Inventory/EtcTabDisable.png"));
+    }
+
+    else if (m_CurrentOpenTab == m_InstallTab)
+    {
+        m_InstallTab->SetTexture("InstallTabDisable", TEXT("UI/Inventory/InstallTabDisable.png"));
+    }
+
+    m_CurrentOpenTab = m_ConsumeTab;
+}
+
+void CInventory::ClickInstallTab()
+{
+    m_InstallTab->SetTexture("InstallTabEnable", TEXT("UI/Inventory/Item.Tab.enabled.3.png"));
+    m_InstallTab->SetSize(29.f, 19.f);
+
+    m_CurrentOpenTab->SetSize(29.f, 17.f);
+    m_CurrentOpenTab->SetClicked(false);
+
+    m_Viewport->GetScene()->GetResource()->SoundPlay("TabClick");
+
+    if (m_CurrentOpenTab == m_CashTab)
+    {
+        m_CashTab->SetTexture("CashTabDisable", TEXT("UI/Inventory/CashTabDisable.png"));
+    }
+
+    else if (m_CurrentOpenTab == m_EquipmentTab)
+    {
+        m_EquipmentTab->SetTexture("EquipmentTabDisable", TEXT("UI/Inventory/EquipmentTabDisable.png"));
+    }
+
+    else if (m_CurrentOpenTab == m_DecorationTab)
+    {
+        m_DecorationTab->SetTexture("DecorationTabDisable", TEXT("UI/Inventory/Item.Tab.disabled.5.png"));
+    }
+
+    else if (m_CurrentOpenTab == m_EtcTab)
+    {
+        m_EtcTab->SetTexture("EtcTabDisable", TEXT("UI/Inventory/EtcTabDisable.png"));
+    }
+
+    else if (m_CurrentOpenTab == m_ConsumeTab)
+    {
+        m_ConsumeTab->SetTexture("ConsumeTabDisable", TEXT("UI/Inventory/ConsumeTabDisable.png"));
+    }
+
+    m_CurrentOpenTab = m_InstallTab;
+}
+
+void CInventory::ClickCashTab()
+{
+    m_CashTab->SetTexture("CashTabEnable", TEXT("UI/Inventory/Item.Tab.enabled.4.png"));
+    m_CashTab->SetSize(29.f, 19.f);
+
+    m_CurrentOpenTab->SetSize(29.f, 17.f);
+    m_CurrentOpenTab->SetClicked(false);
+
+    m_Viewport->GetScene()->GetResource()->SoundPlay("TabClick");
+
+    if (m_CurrentOpenTab == m_InstallTab)
+    {
+        m_InstallTab->SetTexture("InstallTabDisable", TEXT("UI/Inventory/InstallTabDisable.png"));
+    }
+
+    else if (m_CurrentOpenTab == m_EquipmentTab)
+    {
+        m_EquipmentTab->SetTexture("EquipmentTabDisable", TEXT("UI/Inventory/EquipmentTabDisable.png"));
+    }
+
+    else if (m_CurrentOpenTab == m_DecorationTab)
+    {
+        m_DecorationTab->SetTexture("DecorationTabDisable", TEXT("UI/Inventory/Item.Tab.disabled.5.png"));
+    }
+
+    else if (m_CurrentOpenTab == m_EtcTab)
+    {
+        m_EtcTab->SetTexture("EtcTabDisable", TEXT("UI/Inventory/EtcTabDisable.png"));
+    }
+
+    else if (m_CurrentOpenTab == m_ConsumeTab)
+    {
+        m_ConsumeTab->SetTexture("ConsumeTabDisable", TEXT("UI/Inventory/ConsumeTabDisable.png"));
+    }
+
+    m_CurrentOpenTab = m_CashTab;
+}
+
+void CInventory::ClickDecorationTab()
+{
+    m_DecorationTab->SetTexture("DecorationTabEnable", TEXT("UI/Inventory/Item.Tab.enabled.5.png"));
+    m_DecorationTab->SetSize(29.f, 19.f);
+
+    m_CurrentOpenTab->SetSize(29.f, 17.f);
+    m_CurrentOpenTab->SetClicked(false);
+
+    m_Viewport->GetScene()->GetResource()->SoundPlay("TabClick");
+
+    if (m_CurrentOpenTab == m_InstallTab)
+    {
+        m_InstallTab->SetTexture("InstallTabDisable", TEXT("UI/Inventory/InstallTabDisable.png"));
+    }
+
+    else if (m_CurrentOpenTab == m_EquipmentTab)
+    {
+        m_EquipmentTab->SetTexture("EquipmentTabDisable", TEXT("UI/Inventory/EquipmentTabDisable.png"));
+    }
+
+    else if (m_CurrentOpenTab == m_CashTab)
+    {
+        m_CashTab->SetTexture("CashTabDisable", TEXT("UI/Inventory/CashTabDisable.png"));
+    }
+
+    else if (m_CurrentOpenTab == m_EtcTab)
+    {
+        m_EtcTab->SetTexture("EtcTabDisable", TEXT("UI/Inventory/EtcTabDisable.png"));
+    }
+
+    else if (m_CurrentOpenTab == m_ConsumeTab)
+    {
+        m_ConsumeTab->SetTexture("ConsumeTabDisable", TEXT("UI/Inventory/ConsumeTabDisable.png"));
+    }
+
+    m_CurrentOpenTab = m_DecorationTab;
+}
+
+void CInventory::ClickEtcTab()
+{
+    m_EtcTab->SetTexture("ETCTabEnable", TEXT("UI/Inventory/Item.Tab.enabled.2.png"));
+    m_EtcTab->SetSize(29.f, 19.f);
+    
+    m_CurrentOpenTab->SetSize(29.f, 17.f);
+    m_CurrentOpenTab->SetClicked(false);
+
+    m_Viewport->GetScene()->GetResource()->SoundPlay("TabClick");
+
+    if (m_CurrentOpenTab == m_InstallTab)
+    {
+        m_InstallTab->SetTexture("InstallTabDisable", TEXT("UI/Inventory/InstallTabDisable.png"));
+    }
+
+    else if (m_CurrentOpenTab == m_EquipmentTab)
+    {
+        m_EquipmentTab->SetTexture("EquipmentTabDisable", TEXT("UI/Inventory/EquipmentTabDisable.png"));
+    }
+
+    else if (m_CurrentOpenTab == m_CashTab)
+    {
+        m_CashTab->SetTexture("CashTabDisable", TEXT("UI/Inventory/CashTabDisable.png"));
+    }
+
+    else if (m_CurrentOpenTab == m_DecorationTab)
+    {
+        m_DecorationTab->SetTexture("DecorationTabDisable", TEXT("UI/Inventory/Item.Tab.disabled.5.png"));
+    }
+
+    else if (m_CurrentOpenTab == m_ConsumeTab)
+    {
+        m_ConsumeTab->SetTexture("ConsumeTabDisable", TEXT("UI/Inventory/ConsumeTabDisable.png"));
+    }
+
+    m_CurrentOpenTab = m_EtcTab;
 }
 
 

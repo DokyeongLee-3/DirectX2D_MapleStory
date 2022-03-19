@@ -187,20 +187,53 @@ void CTransform::InheritWorldScale(bool Current)
 // InheritRotation이랑 같은 내용
 void CTransform::InheritWorldRotation(bool Current)
 {
+
 	if (m_Parent)
 	{
-		if (m_InheritRotX)
+		/*if (m_InheritRotX)
 			m_WorldRot.x = m_RelativeRot.x + m_Parent->GetWorldRot().x;
 
 		if (m_InheritRotY)
 			m_WorldRot.y = m_RelativeRot.y + m_Parent->GetWorldRot().y;
 
 		if (m_InheritRotZ)
-			m_WorldRot.z = m_RelativeRot.z + m_Parent->GetWorldRot().z;
+			m_WorldRot.z = m_RelativeRot.z + m_Parent->GetWorldRot().z;*/
+
+			// 수정
+
+		if (Current)
+		{
+			// Current = true라는건 SetWorldRot이나 AddWorldRot을 호출한 주체가 되는 Component
+			// -> 이미 SetWorldRot이나 AddWorldRot에서 World Rotation 정보를 갱신했으므로 
+			// 자신의 World Rotation 정보가 바뀜으로써 부모와의 바뀐 Relative Rotation 정보만 갱신하면됨
+			m_RelativeRot.x = m_WorldRot.x - m_Parent->GetWorldRot().x;
+			m_RelativeRot.y = m_WorldRot.z - m_Parent->GetWorldRot().y;
+			m_RelativeRot.z = m_WorldRot.z - m_Parent->GetWorldRot().z;
+		}
+
+		else
+		{
+			// SetWorldRot이나 AddWorldRot을 호출한 주체가 되는 Component가 아니라 그 자식 Component중 하나는 여기로 들어옴
+			if (m_InheritRotX)
+				m_WorldRot.x = m_RelativeRot.x + m_Parent->GetWorldRot().x;
+			else
+				m_RelativeRot.x = m_WorldRot.x - m_Parent->GetWorldRot().x;
+
+			if (m_InheritRotY)
+				m_WorldRot.y = m_RelativeRot.y + m_Parent->GetWorldRot().y;
+			else
+				m_RelativeRot.y = m_WorldRot.z - m_Parent->GetWorldRot().y;
+
+			if (m_InheritRotZ)
+				m_WorldRot.z = m_RelativeRot.z + m_Parent->GetWorldRot().z;
+			else
+				m_RelativeRot.z = m_WorldRot.z - m_Parent->GetWorldRot().z;
+		}
 
 		if ((m_InheritRotX || m_InheritRotY || m_InheritRotZ) && !Current)
 			InheritParentRotationPos(false);
 	}
+	
 
 	Vector3	ConvertRot = m_RelativeRot.ConvertAngle();
 
@@ -290,7 +323,7 @@ void CTransform::InheritParentRotationWorldPos(bool Current)
 
 		for (size_t i = 0; i < Size; ++i)
 		{
-			m_vecChild[i]->InheritParentRotationPos(false);
+			m_vecChild[i]->InheritParentRotationWorldPos(false);
 		}
 	}
 
@@ -344,7 +377,7 @@ void CTransform::InheritParentRotationWorldPos(bool Current)
 
 		for (size_t i = 0; i < Size; ++i)
 		{
-			m_vecChild[i]->InheritParentRotationPos(false);
+			m_vecChild[i]->InheritParentRotationWorldPos(false);
 		}
 	}
 }

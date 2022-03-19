@@ -21,10 +21,10 @@ private:
 	int				m_ShowCursorCount;
 	Mouse_State		m_MouseState;
 	CSharedPtr<class CWidgetWindow>	m_MouseWidget[(int)Mouse_State::Max];
-	//class CGlobalConstantBuffer* m_GlobalCBuffer;
-	//float			m_GlobalAccTime;
-	//CSharedPtr<class CTexture>	m_GlobalNoiseTexture;
-	//class CStructuredBuffer* m_RandomBuffer;
+	class CGlobalConstantBuffer* m_GlobalCBuffer;
+	float			m_GlobalAccTime;
+	CSharedPtr<class CTexture>	m_GlobalNoiseTexture;
+	class CStructuredBuffer* m_RandomBuffer;
 
 	bool m_ClientMode;
 

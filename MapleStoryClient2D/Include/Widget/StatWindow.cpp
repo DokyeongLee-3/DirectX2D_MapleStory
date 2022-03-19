@@ -189,12 +189,13 @@ bool CStatWindow::Init()
 
 		m_AutoAllocate->SetClickCallback<CStatWindow>(this, &CStatWindow::AutoAllocateButton);
 
+
 		m_STRUp = CreateWidget<CButton>("UpSTRButton");
 		m_STRUp->SetZOrder(1);
 		m_STRUp->SetSize(12.f, 12.f);
 		m_STRUp->SetPos(137.f, 99.f);
 		m_STRUp->SetTexture(Button_State::Normal, "UPNormal", TEXT("UI/Status/Stat.main.BtHpUp.normal.0.png"));
-		m_STRUp->SetTexture(Button_State::MouseOn, "UPMouseOn", TEXT("Stat.main.BtHpUp.mouseOver.0.png"));
+		m_STRUp->SetTexture(Button_State::MouseOn, "UPMouseOn", TEXT("UI/Status/StatUpMouseOver.png"));
 		m_STRUp->SetTexture(Button_State::Click, "UPClick", TEXT("UI/Status/Stat.main.BtHpUp.pressed.0.png"));
 
 		m_STRUp->SetSound(Button_Sound_State::MouseOn, "UI", "ButtonMouseOn", "BtMouseOver.mp3");
@@ -205,9 +206,9 @@ bool CStatWindow::Init()
 		m_DEXUp = CreateWidget<CButton>("UpDEXButton");
 		m_DEXUp->SetZOrder(1);
 		m_DEXUp->SetSize(12.f, 12.f);
-		m_DEXUp->SetPos(137.f, 82.f);
+		m_DEXUp->SetPos(137.f, 81.f);
 		m_DEXUp->SetTexture(Button_State::Normal, "UPNormal", TEXT("UI/Status/Stat.main.BtHpUp.normal.0.png"));
-		m_DEXUp->SetTexture(Button_State::MouseOn, "UPMouseOn", TEXT("Stat.main.BtHpUp.mouseOver.0.png"));
+		m_DEXUp->SetTexture(Button_State::MouseOn, "UPMouseOn", TEXT("UI/Status/StatUpMouseOver.png"));
 		m_DEXUp->SetTexture(Button_State::Click, "UPClick", TEXT("UI/Status/Stat.main.BtHpUp.pressed.0.png"));
 
 		m_DEXUp->SetSound(Button_Sound_State::MouseOn, "UI", "ButtonMouseOn", "BtMouseOver.mp3");
@@ -218,9 +219,9 @@ bool CStatWindow::Init()
 		m_INTUp = CreateWidget<CButton>("UpINTButton");
 		m_INTUp->SetZOrder(1);
 		m_INTUp->SetSize(12.f, 12.f);
-		m_INTUp->SetPos(137.f, 65.f);
+		m_INTUp->SetPos(137.f, 63.f);
 		m_INTUp->SetTexture(Button_State::Normal, "UPNormal", TEXT("UI/Status/Stat.main.BtHpUp.normal.0.png"));
-		m_INTUp->SetTexture(Button_State::MouseOn, "UPMouseOn", TEXT("Stat.main.BtHpUp.mouseOver.0.png"));
+		m_INTUp->SetTexture(Button_State::MouseOn, "UPMouseOn", TEXT("UI/Status/StatUpMouseOver.png"));
 		m_INTUp->SetTexture(Button_State::Click, "UPClick", TEXT("UI/Status/Stat.main.BtHpUp.pressed.0.png"));
 
 		m_INTUp->SetSound(Button_Sound_State::MouseOn, "UI", "ButtonMouseOn", "BtMouseOver.mp3");
@@ -231,9 +232,9 @@ bool CStatWindow::Init()
 		m_LUKUp = CreateWidget<CButton>("UpLUKButton");
 		m_LUKUp->SetZOrder(1);
 		m_LUKUp->SetSize(12.f, 12.f);
-		m_LUKUp->SetPos(137.f, 48.f);
+		m_LUKUp->SetPos(137.f, 45.f);
 		m_LUKUp->SetTexture(Button_State::Normal, "UPNormal", TEXT("UI/Status/Stat.main.BtHpUp.normal.0.png"));
-		m_LUKUp->SetTexture(Button_State::MouseOn, "UPMouseOn", TEXT("Stat.main.BtHpUp.mouseOver.0.png"));
+		m_LUKUp->SetTexture(Button_State::MouseOn, "UPMouseOn", TEXT("UI/Status/StatUpMouseOver.png"));
 		m_LUKUp->SetTexture(Button_State::Click, "UPClick", TEXT("UI/Status/Stat.main.BtHpUp.pressed.0.png"));
 
 		m_LUKUp->SetSound(Button_Sound_State::MouseOn, "UI", "ButtonMouseOn", "BtMouseOver.mp3");

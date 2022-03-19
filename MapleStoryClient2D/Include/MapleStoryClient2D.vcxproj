@@ -166,6 +166,9 @@
     <ClCompile Include="Animation\SylphideLancerMirrorAnimation.cpp" />
     <ClCompile Include="Animation\VoidPressureAttackSphere.cpp" />
     <ClCompile Include="Animation\VoidPressureOrbAnimation.cpp" />
+    <ClCompile Include="Animation\ZakumBodyAnimation.cpp" />
+    <ClCompile Include="Animation\ZakumFlameAnimation.cpp" />
+    <ClCompile Include="Animation\ZakumHandAnimation.cpp" />
     <ClCompile Include="ClientManager.cpp" />
     <ClCompile Include="Component\DragCollider.cpp" />
     <ClCompile Include="main.cpp" />
@@ -173,6 +176,7 @@
     <ClCompile Include="Object\BlinkTree.cpp" />
     <ClCompile Include="Object\BulletCamera.cpp" />
     <ClCompile Include="Object\Butterfly.cpp" />
+    <ClCompile Include="Object\ClapWarning.cpp" />
     <ClCompile Include="Object\DeathSide.cpp" />
     <ClCompile Include="Object\DeathSideHitEffect.cpp" />
     <ClCompile Include="Object\DoubleHelixBlinkTree.cpp" />
@@ -183,6 +187,7 @@
     <ClCompile Include="Object\LopeTileObject.cpp" />
     <ClCompile Include="Object\LowerClassBook.cpp" />
     <ClCompile Include="Object\Monster.cpp" />
+    <ClCompile Include="Object\NPCAdobis.cpp" />
     <ClCompile Include="Object\OnionMonster.cpp" />
     <ClCompile Include="Object\Player2D.cpp" />
     <ClCompile Include="Object\PlayerAnimation2D.cpp" />
@@ -200,6 +205,17 @@
     <ClCompile Include="Object\VoidPressure.cpp" />
     <ClCompile Include="Object\VoidPressureHitEffect.cpp" />
     <ClCompile Include="Object\VoidPressureOrb.cpp" />
+    <ClCompile Include="Object\ZakumAltarFlowingVolcano.cpp" />
+    <ClCompile Include="Object\ZakumAttackWarningSpot.cpp" />
+    <ClCompile Include="Object\ZakumBody.cpp" />
+    <ClCompile Include="Object\ZakumClapCircleShockWave.cpp" />
+    <ClCompile Include="Object\ZakumClapLightEffect.cpp" />
+    <ClCompile Include="Object\ZakumClapPinkShockWave.cpp" />
+    <ClCompile Include="Object\ZakumClapSmallCircleShockWave.cpp" />
+    <ClCompile Include="Object\ZakumDustEffect.cpp" />
+    <ClCompile Include="Object\ZakumFlame.cpp" />
+    <ClCompile Include="Object\ZakumFogEffect.cpp" />
+    <ClCompile Include="Object\ZakumHandSmashLight.cpp" />
     <ClCompile Include="Scene\Library2ndScene.cpp" />
     <ClCompile Include="Scene\LoadingThread.cpp" />
     <ClCompile Include="Scene\LobbyScene.cpp" />
@@ -207,6 +223,7 @@
     <ClCompile Include="Scene\RadishScene.cpp" />
     <ClCompile Include="Scene\StartScene.cpp" />
     <ClCompile Include="Scene\WayToZakumScene.cpp" />
+    <ClCompile Include="Scene\ZakumAltarScene.cpp" />
     <ClCompile Include="Widget\BossMatching.cpp" />
     <ClCompile Include="Widget\CharacterEXP.cpp" />
     <ClCompile Include="Widget\CharacterSelectInfoWidget.cpp" />
@@ -218,6 +235,8 @@
     <ClCompile Include="Widget\MouseCatch.cpp" />
     <ClCompile Include="Widget\MouseClick.cpp" />
     <ClCompile Include="Widget\MouseNormal.cpp" />
+    <ClCompile Include="Widget\NPCDialog.cpp" />
+    <ClCompile Include="Widget\NPCName.cpp" />
     <ClCompile Include="Widget\PlayerDamageFont.cpp" />
     <ClCompile Include="Widget\SkillQuickSlotWindow.cpp" />
     <ClCompile Include="Widget\StartWidget.cpp" />
@@ -233,6 +252,9 @@
     <ClInclude Include="Animation\SylphideLancerMirrorAnimation.h" />
     <ClInclude Include="Animation\VoidPressureAttackSphere.h" />
     <ClInclude Include="Animation\VoidPressureOrbAnimation.h" />
+    <ClInclude Include="Animation\ZakumBodyAnimation.h" />
+    <ClInclude Include="Animation\ZakumFlameAnimation.h" />
+    <ClInclude Include="Animation\ZakumHandAnimation.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="ClientManager.h" />
     <ClInclude Include="Component\DragCollider.h" />
@@ -240,6 +262,7 @@
     <ClInclude Include="Object\BlinkTree.h" />
     <ClInclude Include="Object\BulletCamera.h" />
     <ClInclude Include="Object\Butterfly.h" />
+    <ClInclude Include="Object\ClapWarning.h" />
     <ClInclude Include="Object\DeathSide.h" />
     <ClInclude Include="Object\DeathSideHitEffect.h" />
     <ClInclude Include="Object\DoubleHelixBlinkTree.h" />
@@ -250,6 +273,7 @@
     <ClInclude Include="Object\LopeTileObject.h" />
     <ClInclude Include="Object\LowerClassBook.h" />
     <ClInclude Include="Object\Monster.h" />
+    <ClInclude Include="Object\NPCAdobis.h" />
     <ClInclude Include="Object\OnionMonster.h" />
     <ClInclude Include="Object\Player2D.h" />
     <ClInclude Include="Object\PlayerAnimation2D.h" />
@@ -267,6 +291,17 @@
     <ClInclude Include="Object\VoidPressure.h" />
     <ClInclude Include="Object\VoidPressureHitEffect.h" />
     <ClInclude Include="Object\VoidPressureOrb.h" />
+    <ClInclude Include="Object\ZakumAltarFlowingVolcano.h" />
+    <ClInclude Include="Object\ZakumAttackWarningSpot.h" />
+    <ClInclude Include="Object\ZakumBody.h" />
+    <ClInclude Include="Object\ZakumClapCircleShockWave.h" />
+    <ClInclude Include="Object\ZakumClapLightEffect.h" />
+    <ClInclude Include="Object\ZakumClapPinkShockWave.h" />
+    <ClInclude Include="Object\ZakumClapSmallCircleShockWave.h" />
+    <ClInclude Include="Object\ZakumDustEffect.h" />
+    <ClInclude Include="Object\ZakumFlame.h" />
+    <ClInclude Include="Object\ZakumFogEffect.h" />
+    <ClInclude Include="Object\ZakumHandSmashLight.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Scene\Library2ndScene.h" />
     <ClInclude Include="Scene\LoadingThread.h" />
@@ -275,6 +310,7 @@
     <ClInclude Include="Scene\RadishScene.h" />
     <ClInclude Include="Scene\StartScene.h" />
     <ClInclude Include="Scene\WayToZakumScene.h" />
+    <ClInclude Include="Scene\ZakumAltarScene.h" />
     <ClInclude Include="Widget\BossMatching.h" />
     <ClInclude Include="Widget\CharacterEXP.h" />
     <ClInclude Include="Widget\CharacterSelectInfoWidget.h" />
@@ -286,6 +322,8 @@
     <ClInclude Include="Widget\MouseCatch.h" />
     <ClInclude Include="Widget\MouseClick.h" />
     <ClInclude Include="Widget\MouseNormal.h" />
+    <ClInclude Include="Widget\NPCDialog.h" />
+    <ClInclude Include="Widget\NPCName.h" />
     <ClInclude Include="Widget\PlayerDamageFont.h" />
     <ClInclude Include="Widget\SkillQuickSlotWindow.h" />
     <ClInclude Include="Widget\StartWidget.h" />

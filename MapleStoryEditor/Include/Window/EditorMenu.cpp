@@ -68,6 +68,8 @@ bool CEditorMenu::Init()
 	m_ObjectCombo->AddItem("Stage");
 	m_ObjectCombo->AddItem("VerticalLampLight");
 	m_ObjectCombo->AddItem("LopeTileObj");
+	m_ObjectCombo->AddItem("NPCAdobis");
+	m_ObjectCombo->AddItem("ZakumBody");
 
 	CIMGUISameLine* Line = AddWidget<CIMGUISameLine>("Line");
 
@@ -208,6 +210,12 @@ void CEditorMenu::ObjectCreateButton()
 		break;
 	case CreateObject_Type::LopeTileMapObj:
 		CSceneManager::GetInst()->GetScene()->CreateGameObject<CLopeTileObject>(m_ObjectNameInput->GetTextMultibyte());
+		break;
+	case CreateObject_Type::NPCAdobis:
+		CSceneManager::GetInst()->GetScene()->CreateGameObject<CNPCAdobis>(m_ObjectNameInput->GetTextMultibyte());
+		break;
+	case CreateObject_Type::ZakumBody:
+		CSceneManager::GetInst()->GetScene()->CreateGameObject<CZakumBody>(m_ObjectNameInput->GetTextMultibyte());
 		break;
 	}
 

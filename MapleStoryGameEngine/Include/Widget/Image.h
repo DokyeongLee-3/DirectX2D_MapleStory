@@ -15,9 +15,14 @@ protected:
 protected:
 	WidgetImageInfo	m_Info;
 	std::function<void()>	m_ClickCallback;
+	std::function<void()>	m_DoubleClickCallback;
 	bool m_MoveXAllowed;
 	bool m_MoveYAllowed;
 	bool m_Clicked;
+	int m_ClickCount;
+	int m_FrameCount;
+	bool m_PrevFrameClick;
+	bool m_CurrentFrameClick;
 
 public:
 	void SetClicked(bool Clicked)
@@ -89,6 +94,12 @@ public:
 	virtual CImage* Clone();
 
 public:
+	template <typename T>
+	void SetDoubleClickCallback(T* Obj, void (T::* Func)())
+	{
+		m_DoubleClickCallback = std::bind(Func, Obj);
+	}
+
 	template <typename T>
 	void SetClickCallback(T* Obj, void (T::* Func)())
 	{

@@ -1,6 +1,7 @@
 
 #include "Library2ndScene.h"
 #include "LobbyScene.h"
+#include "WayToZakumScene.h"
 #include "Scene/Scene.h"
 #include "Scene/SceneResource.h"
 #include "Scene/SceneManager.h"
@@ -261,6 +262,8 @@ void CLibrary2ndScene::LoadSound()
 	m_Scene->GetResource()->LoadSound("Effect", false, "LevelUp", "LevelUp.mp3");
 	m_Scene->GetResource()->LoadSound("Effect", false, "PickUpItem", "PickUpItem.mp3");
 	m_Scene->GetResource()->LoadSound("Effect", false, "Tombstone", "Tombstone.mp3");
+
+	m_Scene->GetResource()->LoadSound("UI", false, "TabClick", "TabClick.mp3");
 }
 
 void CLibrary2ndScene::AddTileCollisionCallback()
@@ -326,6 +329,26 @@ void CLibrary2ndScene::CreateLobbyScene()
 	{
 		((CPlayer2D*)m_PlayerObject.Get())->ReturnAlive();
 	}
+
+	m_LoadingThread->Start();
+}
+
+void CLibrary2ndScene::CreateWayToZakumScene()
+{
+	m_Scene->GetResource()->SoundStop("FairyAcademyBGM");
+
+	CSceneManager::GetInst()->CreateNextScene(false);
+	CWayToZakumScene* WayToZakumScene = CSceneManager::GetInst()->CreateSceneModeEmpty<CWayToZakumScene>(false);
+
+	WayToZakumScene->SetPlayerObject(m_PlayerObject);
+
+
+	// 다음 Scene에서의 위치를 Scene의 왼쪽에 위치하도록 잡아주기
+	Vector3 WorldPos = m_PlayerObject->GetWorldPos();
+	m_PlayerObject->SetWorldPos(250.f, 200.f, WorldPos.z);
+
+	m_LoadingThread = CThread::CreateThread<CLoadingThread>("WayToZakumSceneLoadingThread");
+	m_LoadingThread->SetLoadingScene(ThreadLoadingScene::WayToZakum);
 
 	m_LoadingThread->Start();
 }

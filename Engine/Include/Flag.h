@@ -205,7 +205,8 @@ enum class ThreadLoadingScene
 	Onion,
 	Radish,
 	WayToZakum,
-	Library2nd
+	Library2nd,
+	ZakumAltar
 };
 
 
@@ -245,4 +246,20 @@ enum class Item_Category
 	Etc,
 	Money,
 	Max
+};
+
+enum class Zakum_State
+{
+	Idle,
+	UpHand,
+	Clap,
+	End
+};
+
+enum class Zakum_ArmState
+{
+	Idle,
+	UpHand,
+	Clap,
+	End
 };

@@ -8,6 +8,8 @@
 #include "../Scene/LobbyScene.h"
 #include "../Scene/WayToZakumScene.h"
 #include "../Scene/OnionScene.h"
+#include "../Scene/RadishScene.h"
+#include "../Scene/Library2ndScene.h"
 #include "Render/RenderManager.h"
 
 CBossMatching::CBossMatching()
@@ -96,6 +98,20 @@ void CBossMatching::CreateWayToZakumScene()
             COnionScene* Scene = (COnionScene*)SceneMode;
             CRenderManager::GetInst()->SetStartFadeIn(true);
             CSceneManager::GetInst()->SetFadeInEndCallback<COnionScene>(Scene, &COnionScene::CreateWayToZakumScene);
+        }
+
+        else if (m_Viewport->GetScene()->GetSceneMode()->GetTypeID() == typeid(CRadishScene).hash_code())
+        {
+            CRadishScene* Scene = (CRadishScene*)SceneMode;
+            CRenderManager::GetInst()->SetStartFadeIn(true);
+            CSceneManager::GetInst()->SetFadeInEndCallback<CRadishScene>(Scene, &CRadishScene::CreateWayToZakumScene);
+        }
+
+        else if (m_Viewport->GetScene()->GetSceneMode()->GetTypeID() == typeid(CLibrary2ndScene).hash_code())
+        {
+            CLibrary2ndScene* Scene = (CLibrary2ndScene*)SceneMode;
+            CRenderManager::GetInst()->SetStartFadeIn(true);
+            CSceneManager::GetInst()->SetFadeInEndCallback<CLibrary2ndScene>(Scene, &CLibrary2ndScene::CreateWayToZakumScene);
         }
     }
 }

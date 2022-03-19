@@ -55,6 +55,9 @@
     <Filter Include="06. Animation">
       <UniqueIdentifier>{b18f2c56-9784-4045-a401-175e7ee694aa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Object\04. MapObject\04. Zakum">
+      <UniqueIdentifier>{6fc8ff8c-378c-4201-b795-649d76ff06a7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scene\DefaultScene.cpp">
@@ -166,6 +169,21 @@
       <Filter>03. Object\03. Monster</Filter>
     </ClCompile>
     <ClCompile Include="Animation\RadishMonsterAnimation.cpp">
+      <Filter>06. Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\NPCAdobis.cpp">
+      <Filter>03. Object\04. MapObject\04. Zakum</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\ZakumBody.cpp">
+      <Filter>03. Object\03. Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\ZakumBodyAnimation.cpp">
+      <Filter>06. Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\ZakumHandAnimation.cpp">
+      <Filter>06. Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\ZakumFlameAnimation.cpp">
       <Filter>06. Animation</Filter>
     </ClCompile>
   </ItemGroup>
@@ -285,6 +303,21 @@
       <Filter>03. Object\03. Monster</Filter>
     </ClInclude>
     <ClInclude Include="Animation\RadishMonsterAnimation.h">
+      <Filter>06. Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\NPCAdobis.h">
+      <Filter>03. Object\04. MapObject\04. Zakum</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\ZakumBody.h">
+      <Filter>03. Object\03. Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation\ZakumBodyAnimation.h">
+      <Filter>06. Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation\ZakumHandAnimation.h">
+      <Filter>06. Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation\ZakumFlameAnimation.h">
       <Filter>06. Animation</Filter>
     </ClInclude>
   </ItemGroup>

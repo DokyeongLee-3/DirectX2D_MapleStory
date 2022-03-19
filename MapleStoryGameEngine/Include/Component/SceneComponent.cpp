@@ -408,9 +408,15 @@ void CSceneComponent::PrevRender()
 		Resolution RS = CDevice::GetInst()->GetResolution();
 		Vector3 CamPos = Camera->GetWorldPos();
 
+		if (WorldScale.x < 0.f)
+			WorldScale.x *= -1.f;
+
+		if (WorldScale.y < 0.f)
+			WorldScale.y *= -1.f;
 
 		Vector2 LB = Vector2(WorldPos.x - WorldScale.x * Pivot.x, WorldPos.y - WorldScale.y * Pivot.y);
 		Vector2 RT = Vector2(WorldPos.x + WorldScale.x, WorldPos.y + WorldScale.y);
+
 
 		if (LB.x > CamPos.x + (float)RS.Width || LB.y > CamPos.y + (float)RS.Height)
 		{
@@ -421,6 +427,7 @@ void CSceneComponent::PrevRender()
 		{
 			return;
 		}
+
 	}
 
 	if (m_Render)

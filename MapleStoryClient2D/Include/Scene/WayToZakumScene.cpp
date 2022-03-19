@@ -11,6 +11,7 @@
 #include "../Object/Player2D.h"
 #include "LoadingThread.h"
 #include "Render/RenderManager.h"
+#include "ZakumAltarScene.h"
 
 CWayToZakumScene::CWayToZakumScene()
 {
@@ -19,6 +20,8 @@ CWayToZakumScene::CWayToZakumScene()
 
 CWayToZakumScene::~CWayToZakumScene()
 {
+	SAFE_DELETE(m_LoadingThread);
+
 	CPlayer2D* Player = (CPlayer2D*)(m_Scene->GetPlayerObject());
 
 	if (Player)
@@ -55,16 +58,21 @@ bool CWayToZakumScene::Init()
 	CConfigurationWindow* ConfigurationWindow = CClientManager::GetInst()->GetConfigurationWindow();
 	CCharacterEXP* EXPWindow = CClientManager::GetInst()->GetCharacterEXPWindow();
 	CBossMatching* BossMatching = CClientManager::GetInst()->GetBossMatchingWindow();
+	CStatWindow* StatWindow = CClientManager::GetInst()->GetStatWindow();
+	CDyingNoticeWindow* DyingNoticeWindow = CClientManager::GetInst()->GetDyingNoticeWindow();
+
 	m_Scene->GetViewport()->AddWindow(StatusWindow);
 	m_Scene->GetViewport()->AddWindow(Inventory);
 	m_Scene->GetViewport()->AddWindow(SkillQuickSlot);
 	m_Scene->GetViewport()->AddWindow(ConfigurationWindow);
 	m_Scene->GetViewport()->AddWindow(EXPWindow);
 	m_Scene->GetViewport()->AddWindow(BossMatching);
+	m_Scene->GetViewport()->AddWindow(StatWindow);
+	m_Scene->GetViewport()->AddWindow(DyingNoticeWindow);
 
-	// 보스맵 들어와서도 보스매칭 UI가 켜져있으면 꺼준다
 	if (BossMatching->IsEnable())
 		BossMatching->Enable(false);
+
 
 	CreateAnimationSequence();
 	CreateMaterial();
@@ -87,6 +95,12 @@ bool CWayToZakumScene::Init()
 
 	// 맵 하단에 왼쪽으로 흐르는 용암
 	CFlowingVolcano* Volcano = m_Scene->CreateGameObject<CFlowingVolcano>("FlowingVolcano");
+
+	if (m_PlayerObject)
+	{
+		m_PlayerObject->SetGravity(true);
+		m_PlayerObject->SetTileCollisionEnable(false);
+	}
 
 	return true;
 }
@@ -123,6 +137,11 @@ void CWayToZakumScene::Update(float DeltaTime)
 			}
 		}
 	}
+}
+
+void CWayToZakumScene::PostUpdate(float DeltaTime)
+{
+	CSceneMode::PostUpdate(DeltaTime);
 }
 
 void CWayToZakumScene::CreateMaterial()
@@ -165,7 +184,7 @@ void CWayToZakumScene::CreateSkillAnimationSequence()
 
 void CWayToZakumScene::CreateMapAnimationSequence()
 {
-
+	m_Scene->GetResource()->LoadSequence2D("NPCAdobisIdle.sqc");
 }
 
 void CWayToZakumScene::LoadSound()
@@ -188,4 +207,52 @@ void CWayToZakumScene::LoadSound()
 	m_Scene->GetResource()->LoadSound("Effect", false, "DeathSideUse", "DeathSideUse.mp3");
 
 	m_Scene->GetResource()->LoadSound("Effect", false, "LevelUp", "LevelUp.mp3");
+
+	m_Scene->GetResource()->LoadSound("UI", false, "TabClick", "TabClick.mp3");
+}
+
+void CWayToZakumScene::SetPerspective()
+{
+	size_t Count = m_Scene->GetObjectCount();
+
+	for (size_t i = 0; i < Count; ++i)
+	{
+		CGameObject* Object = m_Scene->GetGameObject((int)i);
+		CPlayer2D* Player = (CPlayer2D*)m_Scene->GetPlayerObject();
+		Vector2 CameraMove = Player->GetCurrentFrameCameraMove();
+
+		std::string LayerName = Object->GetRootComponent()->GetLayerName();
+
+		if (LayerName.find("Stage") != std::string::npos)
+			Object->AddWorldPos(CameraMove.x / 2.f, 0.f, 0.f);
+		else if (LayerName.find("MapObjBackMost") != std::string::npos)
+			Object->AddWorldPos(CameraMove.x / 6.f, 0.f, 0.f);
+		else if (LayerName.find("MapObjBack") != std::string::npos)
+			Object->AddWorldPos(CameraMove.x / 13.f, 0.f, 0.f);
+		else if (LayerName.find("MapObjMiddle") != std::string::npos)
+			Object->AddWorldPos(CameraMove.x / 18.f, 0.f, 0.f);
+		else if (LayerName.find("MapObjFront") != std::string::npos)
+			Object->AddWorldPos(CameraMove.x / 28.f, 0.f, 0.f);
+	}
+
+}
+
+void CWayToZakumScene::CreateZakumAltarScene()
+{
+	m_Scene->GetResource()->SoundStop("WayToZakumBGM");
+
+	CSceneManager::GetInst()->CreateNextScene(false);
+	CZakumAltarScene* ZakumAltarScene = CSceneManager::GetInst()->CreateSceneModeEmpty<CZakumAltarScene>(false);
+
+	Vector3 PlayerPos = m_PlayerObject->GetWorldPos();
+
+	ZakumAltarScene->SetPlayerObject(m_PlayerObject);
+
+	// 다음 Scene에서의 위치를 Scene의 왼쪽에 위치하도록 잡아주기
+	m_PlayerObject->SetWorldPos(920.f, 220.f, PlayerPos.z);
+
+	m_LoadingThread = CThread::CreateThread<CLoadingThread>("ZakumAltarSceneLoadingThread");
+	m_LoadingThread->SetLoadingScene(ThreadLoadingScene::ZakumAltar);
+
+	m_LoadingThread->Start();
 }

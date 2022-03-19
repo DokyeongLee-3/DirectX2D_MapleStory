@@ -150,6 +150,11 @@ void CMovingTileMapComponent::SetOpacity(int Index, float Opacity)
 	m_vecMovingTile[Index]->SetOpacity(Opacity);
 }
 
+void CMovingTileMapComponent::SetTransparency(bool Transparency)
+{
+	m_Material->SetTransparency(Transparency);
+}
+
 void CMovingTileMapComponent::SetCount(int Count)
 {
 	m_Count = Count;
@@ -158,6 +163,24 @@ void CMovingTileMapComponent::SetCount(int Count)
 void CMovingTileMapComponent::SetSpeed(const Vector2& Speed)
 {
 	m_Speed = Speed;
+}
+
+void CMovingTileMapComponent::SetTilePos(const Vector2& Pos)
+{
+	for (int i = 0; i < m_Count; ++i)
+	{
+		m_vecMovingTile[i]->SetPos(Pos.x, Pos.y);
+	}
+}
+
+void CMovingTileMapComponent::SetTilePos(int Index, const Vector2& Pos)
+{
+	m_vecMovingTile[Index]->SetPos(Pos.x, Pos.y);
+}
+
+Vector2 CMovingTileMapComponent::GetTilePos(int Index)
+{
+	return m_vecMovingTile[Index]->GetPos();
 }
 
 void CMovingTileMapComponent::Start()

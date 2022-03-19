@@ -5,6 +5,7 @@
 #include "WayToZakumScene.h"
 #include "Library2ndScene.h"
 #include "RadishScene.h"
+#include "ZakumAltarScene.h"
 #include "Scene/SceneManager.h"
 
 CLoadingThread::CLoadingThread()
@@ -77,6 +78,17 @@ void CLoadingThread::Run()
 		RadishScene->SetLoadingFunction<CLoadingThread>(this, &CLoadingThread::AddMessage);
 
 		RadishScene->Init();
+
+		AddMessage(true, 1.f);
+	}
+
+	else if (m_LoadingScene == ThreadLoadingScene::ZakumAltar)
+	{
+		CZakumAltarScene* ZakumAltarScene = (CZakumAltarScene*)(CSceneManager::GetInst()->GetNextScene()->GetSceneMode());
+
+		ZakumAltarScene->SetLoadingFunction<CLoadingThread>(this, &CLoadingThread::AddMessage);
+
+		ZakumAltarScene->Init();
 
 		AddMessage(true, 1.f);
 	}

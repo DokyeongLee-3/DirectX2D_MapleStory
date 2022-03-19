@@ -44,7 +44,7 @@ bool CFlowingVolcano::Init()
 	//Anim->AddAnimation(TEXT("FlowingVolcano.sqc"), ANIMATION_PATH, "FlowingVolcano", true, 0.6f);
 
 	m_MovingTileMap->CreateMovingTile(m_Count, Vector2(88.f, 96.f));
-	m_MovingTileMap->SetRepeatPos(Vector2((m_Count - 1) * 88.f, 35.f));
+	m_MovingTileMap->SetRepeatPos(Vector2((m_Count - 1) * 88.f, 30.f));
 
 	CMaterial* Material = m_Scene->GetResource()->FindMaterial("Volcano");
 
@@ -68,6 +68,9 @@ bool CFlowingVolcano::Init()
 		{
 			m_MovingTileMap->SetFrame(i-1, Vector2(176.f, 0.f), Vector2(264.f, 96.f));
 		}
+
+		Vector2 TilePos = m_MovingTileMap->GetTilePos(i-1);
+		m_MovingTileMap->SetTilePos(i-1, Vector2(TilePos.x, 30.f));
 	}
 
 	return true;

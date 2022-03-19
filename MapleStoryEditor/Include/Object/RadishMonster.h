@@ -4,7 +4,6 @@
 #include "Component/SpriteComponent.h"
 #include "Component/ColliderBox2D.h"
 #include "Component/WidgetComponent.h"
-#include "Component/PaperBurnComponent.h"
 
 class CRadishMonster :
     public CMonster

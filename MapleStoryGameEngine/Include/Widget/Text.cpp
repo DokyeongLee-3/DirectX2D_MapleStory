@@ -78,6 +78,10 @@ void CText::SetFont(const std::string& Name)
 	m_FontKey = Name;
 	m_Font = CResourceManager::GetInst()->FindFont(m_FontKey);
 
+	const TCHAR* FontName = CResourceManager::GetInst()->GetFontFaceName(Name);
+
+	lstrcpy(m_FontName, FontName);
+
 	CreateTextLayout();
 }
 
@@ -273,11 +277,11 @@ bool CText::Init()
 
 	m_2DTarget = CDevice::GetInst()->Get2DRenderTarget();
 
-	const TCHAR* FontName = CResourceManager::GetInst()->GetFontFaceName("Default");
+	const TCHAR* FontName = CResourceManager::GetInst()->GetFontFaceName("Light");
 
 	lstrcpy(m_FontName, FontName);
 
-	m_FontKey = "Default";
+	m_FontKey = "Light";
 
 	m_Font = CResourceManager::GetInst()->FindFont(m_FontKey);
 

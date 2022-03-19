@@ -9,6 +9,7 @@
 #include "Scene/Library2ndScene.h"
 #include "Scene/StartScene.h"
 #include "Scene/RadishScene.h"
+#include "Scene/ZakumAltarScene.h"
 #include "Client.h"
 #include "Component/ColliderBox2D.h"
 #include "Component/ColliderCircle.h"
@@ -20,6 +21,8 @@
 #include "Animation/OnionMonsterAnimation.h"
 #include "Animation/LowerClassBookAnimation.h"
 #include "Animation/RadishMonsterAnimation.h"
+#include "Animation/ZakumBodyAnimation.h"
+#include "Animation/ZakumHandAnimation.h"
 #include "Input.h"
 #include "Widget/MouseNormal.h"
 #include "Widget/MouseClick.h"
@@ -276,8 +279,27 @@ CGameObject* CClientManager::CreateObject(CScene* Scene, size_t Type)
 				{
 					((CRadishScene*)(NextSceneMode))->SetStageObject(Obj);
 				}
+
+				else if (NextSceneMode->GetTypeID() == typeid(CZakumAltarScene).hash_code())
+				{
+					((CZakumAltarScene*)(NextSceneMode))->SetStageObject(Obj);
+				}
 			}
 		}
+
+		return Obj;
+	}
+
+	else if (Type == typeid(CNPCAdobis).hash_code())
+	{
+		CNPCAdobis* Obj = Scene->LoadGameObject<CNPCAdobis>();
+
+		return Obj;
+	}
+
+	else if (Type == typeid(CZakumBody).hash_code())
+	{
+		CZakumBody* Obj = Scene->LoadGameObject<CZakumBody>();
 
 		return Obj;
 	}
@@ -371,6 +393,16 @@ void CClientManager::CreateAnimInstance(CSpriteComponent* Sprite, size_t Type)
 	else if (Type == typeid(CRadishMonsterAnimation).hash_code())
 	{
 		Sprite->LoadAnimationInstance<CRadishMonsterAnimation>();
+	}
+
+	else if (Type == typeid(CZakumBodyAnimation).hash_code())
+	{
+		Sprite->LoadAnimationInstance<CZakumBodyAnimation>();
+	}
+
+	else if (Type == typeid(CZakumHandAnimation).hash_code())
+	{
+		Sprite->LoadAnimationInstance<CZakumHandAnimation>();
 	}
 }
 

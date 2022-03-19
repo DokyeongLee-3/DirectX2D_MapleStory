@@ -299,6 +299,31 @@ void CAnimationSequence2DInstance::SetCurrentAnimationFirstFrame()
 		m_CurrentAnimation->SetCurrentAnimationFirstFrame();
 }
 
+void CAnimationSequence2DInstance::SetCurrentAnimationFrame(int Frame)
+{
+	if (m_CurrentAnimation)
+		m_CurrentAnimation->m_Frame = Frame;
+}
+
+void CAnimationSequence2DInstance::SetCurrentAnimationTime(float Time)
+{
+	if (m_CurrentAnimation)
+		m_CurrentAnimation->m_Time = Time;
+}
+
+void CAnimationSequence2DInstance::SetCurrentAnimationNotifyInitialize()
+{
+	if (m_CurrentAnimation)
+	{
+		size_t	Size = m_CurrentAnimation->m_vecNotify.size();
+
+		for (size_t i = 0; i < Size; ++i)
+		{
+			m_CurrentAnimation->m_vecNotify[i]->Call = false;
+		}
+	}
+}
+
 
 void CAnimationSequence2DInstance::Start()
 {

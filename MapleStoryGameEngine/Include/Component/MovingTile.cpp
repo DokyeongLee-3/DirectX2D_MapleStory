@@ -1,6 +1,7 @@
 
 #include "MovingTile.h"
 #include "MovingTileMapComponent.h"
+#include "../Render/RenderManager.h"
 
 CMovingTile::CMovingTile()	:
 	m_Opacity(1.f),
@@ -48,7 +49,10 @@ void CMovingTile::Update(float DeltaTime)
 	Matrix	matScale, matTranslate;
 
 	matScale.Scaling(m_Size.x, m_Size.y, 1.f);
-	matTranslate.Translation(m_Pos);
+
+	float ZVal = CRenderManager::GetInst()->GetLayerUpperBoundZOrder("CoveringMapObj");
+
+	matTranslate.Translation(Vector3(m_Pos.x, m_Pos.y, ZVal - 4.f));
 
 	m_matWorld = matScale * matTranslate;
 }
