@@ -44,6 +44,26 @@ void CZakumBody::Start()
 
 bool CZakumBody::Init()
 {
+	m_Sprite = CreateComponent<CSpriteComponent>("ZakumBodySprite");
+	//m_LeftArm1 = CreateComponent<CSpriteComponent>("ZakumLeftArm1Sprite");
+	//m_RightArm1 = CreateComponent<CSpriteComponent>("ZakumRightArm1Sprite");
+
+	m_Body = CreateComponent<CColliderBox2D>("Body");
+
+	m_Sprite->AddChild(m_Body);
+	m_Sprite->SetPivot(0.5f, 0.5f, 0.f);
+	m_Sprite->SetWorldScale(300.f, 350.f, 1.f);
+
+	m_Sprite->SetTransparency(true);
+
+
+	m_Sprite->CreateAnimationInstance<CZakumBodyAnimation>();
+
+
+	/*m_Body->SetRelativeScale(100.f, 100.f, 1.f);
+	m_Body->SetRelativePos(500.f, 300.f, 0.f);
+	m_Body->SetPivot(0.5f, 0.5f, 0.f);*/
+
 	return true;
 }
 
@@ -96,7 +116,8 @@ void CZakumBody::Update(float DeltaTime)
 		m_Body = (CColliderBox2D*)FindComponent("Body");
 		m_Body->SetWorldScale(100.f, 120.f, 1.f);
 
-		m_Sprite->SetTransparency(true);
+		if(m_Sprite)
+			m_Sprite->SetTransparency(true);
 
 		m_LeftArm1Root->SetPivot(1.f, 0.f, 0.f);
 		m_LeftArm1Lower->SetPivot(1.f, 0.f, 0.f);

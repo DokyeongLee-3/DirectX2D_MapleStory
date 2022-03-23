@@ -2,6 +2,7 @@
 #include "Tomb.h"
 #include "TileObject.h"
 #include "Scene/Scene.h"
+#include "StaticMapObj.h"
 
 CTomb::CTomb()
 {
@@ -69,6 +70,18 @@ void CTomb::CollisionBeginCallback(const CollisionResult& Result)
 	CGameObject* DestObj = Result.Dest->GetGameObject();
 
 	if (DestObj->GetTypeID() == typeid(CTileObject).hash_code())
+	{
+		Vector3 DestPos = DestObj->GetWorldPos();
+		Vector3 PlayerPos = m_Scene->GetPlayerObject()->GetWorldPos();
+
+		if (DestPos.y <= PlayerPos.y)
+		{
+			m_Gravity = false;
+			m_GravityAccTime = 0.f;
+		}
+	}
+
+	else if (DestObj->GetTypeID() == typeid(CStaticMapObj).hash_code())
 	{
 		Vector3 DestPos = DestObj->GetWorldPos();
 		Vector3 PlayerPos = m_Scene->GetPlayerObject()->GetWorldPos();

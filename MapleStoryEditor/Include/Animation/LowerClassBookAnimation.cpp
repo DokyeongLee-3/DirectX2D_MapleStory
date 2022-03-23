@@ -36,6 +36,8 @@ bool CLowerClassBookAnimation::Init()
 	AddAnimation(TEXT("ZakumClapCircleShockWave.sqc"), ANIMATION_PATH, "ZakumClapCircleShockWave", true, 0.8f);
 	AddAnimation(TEXT("ZakumPinkShockWave.sqc"), ANIMATION_PATH, "ZakumPinkShockWave", true, 0.8f);
 
+	AddAnimation(TEXT("NPCAmonIdle.sqc"), ANIMATION_PATH, "NPCAmonIdle", true, 1.f);
+
 	return true;
 }
 

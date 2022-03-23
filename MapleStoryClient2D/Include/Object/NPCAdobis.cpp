@@ -2,7 +2,7 @@
 #include "NPCAdobis.h"
 #include "Animation/AnimationSequence2DInstance.h"
 #include "../Widget/NPCName.h"
-#include "../Widget/NPCDialog.h"
+#include "../Widget/AdobisDialog.h"
 
 CNPCAdobis::CNPCAdobis()
 {
@@ -37,7 +37,7 @@ void CNPCAdobis::Start()
 	m_NameWidget->SetRelativePos(-18.f, -47.f, 0.f);
 	m_NameWidget->SetLayerName("ScreenWidgetComponent");
 
-	m_Dialog = m_Scene->GetViewport()->CreateWidgetWindow<CNPCDialog>("AdobisDialog");
+	m_Dialog = m_Scene->GetViewport()->CreateWidgetWindow<CAdobisDialog>("AdobisDialog");
 	m_Dialog->Enable(false);
 }
 

@@ -5,6 +5,17 @@
 #include "Widget/Button.h"
 #include "Widget/Number.h"
 
+struct ItemState
+{
+	std::string Name;
+	Item_Category Category;
+	int Count;
+	int Row;
+	int Column;
+	CNumber* ItemCountWidget;
+	CImage* ItemIcon;
+};
+
 class CInventory :
     public CWidgetWindow
 {
@@ -17,7 +28,7 @@ protected:
 	virtual ~CInventory();
 
 private:
-	std::vector<std::string> m_vecInventoryItem;
+	std::vector<ItemState*> m_vecInventoryItem;
 
 	CSharedPtr<CImage>	m_InventoryBackground;
 
@@ -36,7 +47,7 @@ private:
 	Vector2 m_SlotSize;
 
 	CImage*				m_CurrentOpenTab;
-
+	Item_Category		m_CurrentOpenTabCatogory;
 
 public:
 	virtual void Start();
@@ -55,5 +66,7 @@ public:
 	void ClickCashTab();
 	void ClickDecorationTab();
 	void ClickEtcTab();
+	void AddItem(const TCHAR* FileName, const std::string& Name, Item_Category Category, const Vector2& IconSize, int Count, int Row, int Column);
+	void ConsumeItem(const std::string& Name, int ConsumeCount);
 };
 

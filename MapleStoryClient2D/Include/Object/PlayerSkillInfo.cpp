@@ -5,7 +5,7 @@ CPlayerSkillInfo::CPlayerSkillInfo()
 {
     SkillInfo* SylphideLancer = new SkillInfo;
     SylphideLancer->Level = 20;
-    SylphideLancer->CoolTime = 1.2f;
+    SylphideLancer->CoolTime = 1.f;
     SylphideLancer->Factor = 1.f;
     SylphideLancer->MPRequire = 100;
 
@@ -15,7 +15,7 @@ CPlayerSkillInfo::CPlayerSkillInfo()
     SkillInfo* VoidPressure = new SkillInfo;
     VoidPressure->Level = 20;
     VoidPressure->CoolTime = 1.8f;
-    VoidPressure->Factor = 2.f;
+    VoidPressure->Factor = 1.5f;
     VoidPressure->MPRequire = 100;
 
     m_mapSkillInfo.insert(std::make_pair("VoidPressure", VoidPressure));
@@ -23,7 +23,7 @@ CPlayerSkillInfo::CPlayerSkillInfo()
 
     SkillInfo* LightTransforming = new SkillInfo;
     LightTransforming->Level = 20;
-    LightTransforming->CoolTime = 1.1f;
+    LightTransforming->CoolTime = 1.f;
     LightTransforming->MPRequire = 10;
 
     m_mapSkillInfo.insert(std::make_pair("LightTransforming", LightTransforming));

@@ -53,6 +53,6 @@ public:
     virtual void SetTrackState();
     void GiveEXP();
     void Die();
-    void DropItem();
+    class CBill* DropBill();
 };
 

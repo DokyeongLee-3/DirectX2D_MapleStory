@@ -304,6 +304,13 @@ CGameObject* CClientManager::CreateObject(CScene* Scene, size_t Type)
 		return Obj;
 	}
 
+	else if (Type == typeid(CNPCAmon).hash_code())
+	{
+		CNPCAmon* Obj = Scene->LoadGameObject<CNPCAmon>();
+
+		return Obj;
+	}
+
 	return nullptr;
 }
 
@@ -440,7 +447,8 @@ void CClientManager::OnOffInventory(float DeltaTime)
 	CScene* Scene = CSceneManager::GetInst()->GetScene();
 
 	CSceneMode* Mode = Scene->GetSceneMode();
-	if (Mode->GetTypeID() == typeid(CStartScene).hash_code())
+	if (Mode->GetTypeID() == typeid(CStartScene).hash_code() || 
+		Mode->GetTypeID() == typeid(CZakumAltarScene).hash_code())
 		return;
 
 	if (Scene)
@@ -463,6 +471,8 @@ void CClientManager::OnOffInventory(float DeltaTime)
 
 				else
 				{
+					CSceneManager::GetInst()->GetScene()->GetResource()->SoundPlay("UIOpen");
+
 					Inventory->Enable(true);
 					int ZOrder = Viewport->GetTopmostWindowZOrder();
 					Inventory->SetZOrder(ZOrder + 1);
@@ -480,7 +490,8 @@ void CClientManager::OnOffConfiguration(float DeltaTime)
 	CScene* Scene = CSceneManager::GetInst()->GetScene();
 
 	CSceneMode* Mode = Scene->GetSceneMode();
-	if (Mode->GetTypeID() == typeid(CStartScene).hash_code())
+	if (Mode->GetTypeID() == typeid(CStartScene).hash_code() ||
+		Mode->GetTypeID() == typeid(CZakumAltarScene).hash_code())
 		return;
 
 	if (Scene)
@@ -503,6 +514,8 @@ void CClientManager::OnOffConfiguration(float DeltaTime)
 
 				else
 				{
+					CSceneManager::GetInst()->GetScene()->GetResource()->SoundPlay("UIOpen");
+
 					Configuaration->Enable(true);
 					int ZOrder = Viewport->GetTopmostWindowZOrder();
 					Configuaration->SetZOrder(ZOrder + 1);
@@ -517,7 +530,8 @@ void CClientManager::OnOffBossMatching(float DeltaTime)
 	CScene* Scene = CSceneManager::GetInst()->GetScene();
 
 	CSceneMode* Mode = Scene->GetSceneMode();
-	if (Mode->GetTypeID() == typeid(CStartScene).hash_code())
+	if (Mode->GetTypeID() == typeid(CStartScene).hash_code() ||
+		Mode->GetTypeID() == typeid(CZakumAltarScene).hash_code())
 		return;
 
 	if (Scene)
@@ -539,6 +553,8 @@ void CClientManager::OnOffBossMatching(float DeltaTime)
 
 				else
 				{
+					CSceneManager::GetInst()->GetScene()->GetResource()->SoundPlay("UIOpen");
+
 					BossMatching->Enable(true);
 					int ZOrder = Viewport->GetTopmostWindowZOrder();
 					BossMatching->SetZOrder(ZOrder + 1);
@@ -553,7 +569,8 @@ void CClientManager::OnOffStatWindow(float DeltaTime)
 	CScene* Scene = CSceneManager::GetInst()->GetScene();
 
 	CSceneMode* Mode = Scene->GetSceneMode();
-	if (Mode->GetTypeID() == typeid(CStartScene).hash_code())
+	if (Mode->GetTypeID() == typeid(CStartScene).hash_code() ||
+		Mode->GetTypeID() == typeid(CZakumAltarScene).hash_code())
 		return;
 
 	if (Scene)
@@ -589,6 +606,8 @@ void CClientManager::OnOffStatWindow(float DeltaTime)
 							StatWindow->SetMP(Info.MP);
 						}
 					}
+
+					CSceneManager::GetInst()->GetScene()->GetResource()->SoundPlay("UIOpen");
 
 					StatWindow->Enable(true);
 					int ZOrder = Viewport->GetTopmostWindowZOrder();

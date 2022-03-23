@@ -204,8 +204,10 @@ void CLobbyScene::LoadSound()
 
 	m_Scene->GetResource()->LoadSound("Effect", false, "LevelUp", "LevelUp.mp3");
 	m_Scene->GetResource()->LoadSound("Effect", false, "PickUpItem", "PickUpItem.mp3");
+	m_Scene->GetResource()->LoadSound("Effect", false, "DropItem", "DropItem.mp3");
 
 	m_Scene->GetResource()->LoadSound("UI", false, "TabClick", "TabClick.mp3");
+	m_Scene->GetResource()->LoadSound("UI", false, "UIOpen", "UIOpen.mp3");
 }
 
 void CLobbyScene::AddTileCollisionCallback()

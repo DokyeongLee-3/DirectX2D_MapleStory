@@ -64,7 +64,15 @@ bool CFontManager::Init()
 
 	FontFace = GetFontFaceName("Light");
 
-	LoadFont("Light", FontFace, 600, 20.f, TEXT("ko"));
+	LoadFont("Light", FontFace, DWRITE_FONT_WEIGHT_LIGHT, 20.f, TEXT("ko"));
+
+
+	CreateFontFile("Thin", TEXT("NotoSansKR-Thin.otf"));
+
+	FontFace = GetFontFaceName("Thin");
+
+	LoadFont("Thin", FontFace, DWRITE_FONT_WEIGHT_LIGHT, 20.f, TEXT("ko"));
+
 
 	return true;
 }

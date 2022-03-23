@@ -186,6 +186,9 @@
     <ClCompile Include="Animation\ZakumFlameAnimation.cpp">
       <Filter>06. Animation</Filter>
     </ClCompile>
+    <ClCompile Include="Object\NPCAmon.cpp">
+      <Filter>03. Object\04. MapObject\04. Zakum</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene\DefaultScene.h">
@@ -319,6 +322,9 @@
     </ClInclude>
     <ClInclude Include="Animation\ZakumFlameAnimation.h">
       <Filter>06. Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\NPCAmon.h">
+      <Filter>03. Object\04. MapObject\04. Zakum</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

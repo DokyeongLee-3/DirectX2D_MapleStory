@@ -49,7 +49,7 @@ void CZakumHandSmashLight::Update(float DeltaTime)
 
 	if (m_Active && CurrentOpacity - DeltaTime / 5.f <= 0.f)
 	{
-		m_SmashLightOwner->ReturnArm(m_OwnerArmID);
+		m_SmashLightOwner->SmashReturnArm(m_OwnerArmID);
 		Destroy();
 	}
 }

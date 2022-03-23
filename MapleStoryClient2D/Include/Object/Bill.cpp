@@ -2,6 +2,7 @@
 #include "Bill.h"
 #include "Animation/AnimationSequence2DInstance.h"
 #include "TileObject.h"
+#include "StaticMapObj.h"
 
 CBill::CBill()	:
 	m_JumpForce(350.f),
@@ -102,7 +103,8 @@ void CBill::CollisionBeginCallback(const CollisionResult& Result)
 {
 	CGameObject* Tile = Result.Dest->GetGameObject();
 
-	if (Tile->GetTypeID() == typeid(CTileObject).hash_code())
+	if (Tile->GetTypeID() == typeid(CTileObject).hash_code()
+		|| Tile->GetTypeID() == typeid(CStaticMapObj).hash_code())
 	{
 		CColliderBox2D* DestCollider = (CColliderBox2D*)Result.Dest;
 

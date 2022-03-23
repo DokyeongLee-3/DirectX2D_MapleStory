@@ -279,9 +279,6 @@
     <ClCompile Include="Widget\NPCName.cpp">
       <Filter>03. UI\02. InGame</Filter>
     </ClCompile>
-    <ClCompile Include="Widget\NPCDialog.cpp">
-      <Filter>03. UI\02. InGame</Filter>
-    </ClCompile>
     <ClCompile Include="Scene\ZakumAltarScene.cpp">
       <Filter>01. SceneMode</Filter>
     </ClCompile>
@@ -329,6 +326,18 @@
     </ClCompile>
     <ClCompile Include="Object\ZakumClapPinkShockWave.cpp">
       <Filter>02. Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\BossInfoWindow.cpp">
+      <Filter>03. UI\02. InGame</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\NPCAmon.cpp">
+      <Filter>02. Object\07. NPC</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\AdobisDialog.cpp">
+      <Filter>03. UI\02. InGame</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\AmonDialog.cpp">
+      <Filter>03. UI\02. InGame</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -536,9 +545,6 @@
     <ClInclude Include="Widget\NPCName.h">
       <Filter>03. UI\02. InGame</Filter>
     </ClInclude>
-    <ClInclude Include="Widget\NPCDialog.h">
-      <Filter>03. UI\02. InGame</Filter>
-    </ClInclude>
     <ClInclude Include="Scene\ZakumAltarScene.h">
       <Filter>01. SceneMode</Filter>
     </ClInclude>
@@ -586,6 +592,18 @@
     </ClInclude>
     <ClInclude Include="Object\ZakumClapPinkShockWave.h">
       <Filter>02. Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\BossInfoWindow.h">
+      <Filter>03. UI\02. InGame</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\NPCAmon.h">
+      <Filter>02. Object\07. NPC</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\AdobisDialog.h">
+      <Filter>03. UI\02. InGame</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\AmonDialog.h">
+      <Filter>03. UI\02. InGame</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

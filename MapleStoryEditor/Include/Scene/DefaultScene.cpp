@@ -145,6 +145,8 @@ bool CDefaultScene::LoadAnimationSequence2D()
 
     m_Scene->GetResource()->LoadSequence2D("NPCAdobisIdle.sqc");
 
+    m_Scene->GetResource()->LoadSequence2D("NPCAmonIdle.sqc");
+
     return true;
 }
 

@@ -47,16 +47,25 @@ bool CConfigurationWindow::Init()
     m_BGMSoundSlider = CreateWidget<CImage>("BGMSoundSlider");
     m_BGMSoundSlider->SetTexture("BGMSoundSlider", TEXT("UI/Configuration/OptionScroll.png"));
     m_BGMSoundSlider->SetSize(28.f, 11.f);
-
     m_BGMSoundSlider->SetPos(130.f, 333.f);
     m_BGMSoundSliderLeftMostXPos = 90.f;
     m_BGMSoundSliderRightMostXPos = 147.f;
     m_BGMSoundSlider->SetMoveXAllowed(true);
 
+    m_EffectSoundSlider = CreateWidget<CImage>("EffectSoundSlider");
+    m_EffectSoundSlider->SetTexture("EffectSoundSlider", TEXT("UI/Configuration/OptionScroll.png"));
+    m_EffectSoundSlider->SetSize(28.f, 11.f);
+    m_EffectSoundSlider->SetPos(130.f, 303.f);
+    m_EffectSoundSliderLeftMostXPos = 90.f;
+    m_EffectSoundSliderRightMostXPos = 147.f;
+    m_EffectSoundSlider->SetMoveXAllowed(true);
+
 
     float SliderXPos = m_BGMSoundSlider->GetWidgetPos().x;
     m_Viewport->GetScene()->GetResource()->SetVolume("BGM", (int)((SliderXPos - m_BGMSoundSliderLeftMostXPos) / (m_BGMSoundSliderRightMostXPos - m_BGMSoundSliderLeftMostXPos) * 100));
 
+    SliderXPos = m_EffectSoundSlider->GetWidgetPos().x;
+    m_Viewport->GetScene()->GetResource()->SetVolume("Effect", (int)((SliderXPos - m_EffectSoundSliderLeftMostXPos) / (m_EffectSoundSliderRightMostXPos - m_EffectSoundSliderLeftMostXPos) * 100));
     
     //CInput::GetInst()->CreateKey("MouseLButton", VK_LBUTTON);
     //CInput::GetInst()->SetKeyCallback("MouseLButton", KeyState_Down, this, &CEditorManager::MouseLButtonDown);
@@ -75,7 +84,10 @@ void CConfigurationWindow::PostUpdate(float DeltaTime)
     CWidgetWindow::PostUpdate(DeltaTime);
 
     float SliderXPos = m_BGMSoundSlider->GetWidgetPos().x;
-    m_Viewport->GetScene()->GetResource()->SetVolume("Master", (int)((SliderXPos - m_BGMSoundSliderLeftMostXPos) / (m_BGMSoundSliderRightMostXPos - m_BGMSoundSliderLeftMostXPos) * 100));
+    m_Viewport->GetScene()->GetResource()->SetVolume("BGM", (int)((SliderXPos - m_BGMSoundSliderLeftMostXPos) / (m_BGMSoundSliderRightMostXPos - m_BGMSoundSliderLeftMostXPos) * 100));
+
+    SliderXPos = m_EffectSoundSlider->GetWidgetPos().x;
+    m_Viewport->GetScene()->GetResource()->SetVolume("Effect", (int)((SliderXPos - m_EffectSoundSliderLeftMostXPos) / (m_EffectSoundSliderRightMostXPos - m_EffectSoundSliderLeftMostXPos) * 100));
 }
 
 void CConfigurationWindow::Render()
@@ -87,6 +99,12 @@ void CConfigurationWindow::Render()
 
     if (m_BGMSoundSlider->GetWidgetPos().x < m_BGMSoundSliderLeftMostXPos)
         m_BGMSoundSlider->SetPos(m_BGMSoundSliderLeftMostXPos, m_BGMSoundSlider->GetWidgetPos().y);
+
+    if (m_EffectSoundSlider->GetWidgetPos().x > m_EffectSoundSliderRightMostXPos)
+        m_EffectSoundSlider->SetPos(m_EffectSoundSliderRightMostXPos, m_EffectSoundSlider->GetWidgetPos().y);
+
+    if (m_EffectSoundSlider->GetWidgetPos().x < m_EffectSoundSliderLeftMostXPos)
+        m_EffectSoundSlider->SetPos(m_EffectSoundSliderLeftMostXPos, m_EffectSoundSlider->GetWidgetPos().y);
 }
 
 CConfigurationWindow* CConfigurationWindow::Clone()

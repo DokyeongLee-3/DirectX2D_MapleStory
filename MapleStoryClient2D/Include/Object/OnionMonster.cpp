@@ -162,7 +162,7 @@ void COnionMonster::SetDamage(float Damage, bool Critical)
 		m_Sprite->GetAnimationInstance()->ChangeAnimation("OnionDieLeft");
 		m_IsChanging = true;
 
-		DropItem();
+		DropBill();
 
 
 		CSceneMode* SceneMode = m_Scene->GetSceneMode();

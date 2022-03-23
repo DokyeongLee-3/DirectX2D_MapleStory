@@ -1,14 +1,20 @@
 
 #include "ZakumAltarScene.h"
+#include "WayToZakumScene.h"
 #include "Scene/Scene.h"
 #include "Scene/SceneResource.h"
 #include "Scene/SceneManager.h"
 #include "../Object/Player2D.h"
 #include "../Object/ZakumAltarFlowingVolcano.h"
+#include "../Object/SylphideLancerHitEffect.h"
+#include "../Object/VoidPressureHitEffect.h"
+#include "../Object/DeathSideHitEffect.h"
 #include "PathManager.h"
 #include "../ClientManager.h"
 #include "LoadingThread.h"
 #include "Render/RenderManager.h"
+#include "../Widget/BossInfoWindow.h"
+#include "../Object/NPCAmon.h"
 
 CZakumAltarScene::CZakumAltarScene()
 {
@@ -70,6 +76,7 @@ bool CZakumAltarScene::Init()
 	if (BossMatching->IsEnable())
 		BossMatching->Enable(false);
 
+	CBossInfoWindow* BossInfo = m_Scene->GetViewport()->CreateWidgetWindow<CBossInfoWindow>("BossInfoWindow");
 
 	CreateAnimationSequence();
 	CreateMaterial();
@@ -136,6 +143,9 @@ void CZakumAltarScene::Update(float DeltaTime)
 			}
 		}
 	}
+
+	//CNPCAmon* Amon = m_Scene->CreateObject<CNPCAmon>("NPCAMon");
+	//Amon->
 }
 
 void CZakumAltarScene::PostUpdate(float DeltaTime)
@@ -242,6 +252,14 @@ void CZakumAltarScene::CreateAnimationSequence()
 	CreateSkillAnimationSequence();
 	CreateMonsterAnimationSequence();
 	CreateMapAnimationSequence();
+	CreateEffectPrototype();
+}
+
+void CZakumAltarScene::CreateEffectPrototype()
+{
+	CSylphideLancerHitEffect* SylphideLancerHitEffect = m_Scene->CreatePrototype<CSylphideLancerHitEffect>("SylphideLancerHitEffect");
+	CVoidPressureHitEffect* VoidPressureHitEffect = m_Scene->CreatePrototype<CVoidPressureHitEffect>("VoidPressureHitEffect");
+	CDeathSideHitEffect* DeathSideHitEffect = m_Scene->CreatePrototype<CDeathSideHitEffect>("DeathSideHitEffect");
 }
 
 void CZakumAltarScene::CreatePlayerAnimationSequence()
@@ -268,6 +286,8 @@ void CZakumAltarScene::CreateMonsterAnimationSequence()
 	m_Scene->GetResource()->LoadSequence2D("ZakumClapLeft.sqc");
 	m_Scene->GetResource()->LoadSequence2D("ZakumClapRight.sqc");
 	m_Scene->GetResource()->LoadSequence2D("ZakumPinkShockWave.sqc");
+
+	m_Scene->GetResource()->LoadSequence2D("NPCAmonIdle.sqc");
 }
 
 void CZakumAltarScene::CreateSkillAnimationSequence()
@@ -319,8 +339,54 @@ void CZakumAltarScene::LoadSound()
 	m_Scene->GetResource()->LoadSound("Effect", false, "DeathSideUse", "DeathSideUse.mp3");
 
 	m_Scene->GetResource()->LoadSound("Effect", false, "LevelUp", "LevelUp.mp3");
+	m_Scene->GetResource()->LoadSound("Effect", false, "DropItem", "DropItem.mp3");
 
 	m_Scene->GetResource()->LoadSound("UI", false, "TabClick", "TabClick.mp3");
+}
+
+CColliderBox2D* CZakumAltarScene::FindZakumTarget(bool Right, const Vector3& MyPos, float DistXConstraint, float DistYConstraint)
+{
+	CZakumBody* Zakum = (CZakumBody*)m_Scene->FindObject("ZakumBody");
+
+	if (Zakum)
+	{
+		std::vector<CColliderBox2D*>	vecCollider;
+
+		Zakum->FindComponentFromType<CColliderBox2D>(vecCollider);
+		CColliderBox2D* ZakumBody = (CColliderBox2D*)Zakum->FindComponent("Body");
+
+		if (ZakumBody)
+			vecCollider.push_back(ZakumBody);
+
+		std::sort(vecCollider.begin(), vecCollider.end(), SortColliderByX);
+		size_t Count = vecCollider.size();
+
+		for (size_t i = 0; i < Count; ++i)
+		{
+			if (vecCollider[i]->GetName().find("DefenseCollider") != std::string::npos ||
+				vecCollider[i]->GetName() == "Body")
+			{
+				Vector3 TargetPos = vecCollider[i]->GetWorldPos();
+
+				if (Right && TargetPos.x < MyPos.x)
+					continue;
+
+				if (!Right && TargetPos.x > MyPos.x)
+					continue;
+
+
+				if (abs(TargetPos.x - MyPos.x) < DistXConstraint && abs(TargetPos.y - MyPos.y) < DistYConstraint)
+				{
+					if (!vecCollider[i]->IsEnable())
+						continue;
+
+					return vecCollider[i];
+				}
+			}
+		}
+	}
+
+	return nullptr;
 }
 
 void CZakumAltarScene::SetPerspective()
@@ -371,4 +437,26 @@ void CZakumAltarScene::AddFloorCollider()
 
 void CZakumAltarScene::CreateWayToZakumScene()
 {
+	m_Scene->GetResource()->SoundStop("ZakumAltarBGM");
+
+	CSceneManager::GetInst()->CreateNextScene(false);
+	CWayToZakumScene* WayToZakumScene = CSceneManager::GetInst()->CreateSceneModeEmpty<CWayToZakumScene>(false);
+
+	WayToZakumScene->SetPlayerObject(m_PlayerObject);
+
+	// 다음 Scene에서의 위치를 Scene의 왼쪽에 위치하도록 잡아주기
+	//Vector3 WorldPos = m_PlayerObject->GetWorldPos();
+	m_PlayerObject->SetWorldPos(250.f, 200.f, 610.f);
+
+	//SAFE_DELETE(m_LoadingThread);
+	m_LoadingThread = CThread::CreateThread<CLoadingThread>("WayToZakumSceneLoadingThread");
+	m_LoadingThread->SetLoadingScene(ThreadLoadingScene::WayToZakum);
+
+	if (((CPlayer2D*)m_PlayerObject.Get())->IsDead())
+	{
+		((CPlayer2D*)m_PlayerObject.Get())->ReturnAlive();
+	}
+
+	m_LoadingThread->Start();
+
 }

@@ -81,15 +81,17 @@ void CMonster::Die()
 	Destroy();
 }
 
-void CMonster::DropItem()
+CBill* CMonster::DropBill()
 {
+	m_Scene->GetResource()->SoundPlay("DropItem");
+
 	CBill* Bill = m_Scene->CreateGameObject<CBill>("Bill");
 
 	Vector3 Pos = GetWorldPos();
-	Vector3 Scale = GetWorldScale();
 
 	Bill->SetWorldPos(Pos.x, Pos.y + 10.f, Pos.z);
 	
+	return Bill;
 }
 
 void CMonster::SetDamage(float Damage, bool Critical)

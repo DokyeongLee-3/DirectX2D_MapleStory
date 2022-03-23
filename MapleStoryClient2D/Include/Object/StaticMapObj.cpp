@@ -150,6 +150,9 @@ void CStaticMapObj::CollisionEndCallback(const CollisionResult& Result)
 	{
 		CPlayer2D* Player = (CPlayer2D*)DestObj;
 
+		if (Player->IsDead())
+			return;
+
 		if (Player->CheckCollisionID(m_CollisionID))
 		{
 			DestObj->SetGravity(true);

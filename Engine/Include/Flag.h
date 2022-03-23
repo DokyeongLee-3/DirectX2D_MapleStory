@@ -231,6 +231,20 @@ enum class Nav_Node_Type
 	Close
 };
 
+enum class Zakum_State
+{
+	Idle,
+	UpHand,
+	Clap
+};
+
+enum class Zakum_ArmState
+{
+	Idle,
+	UpHand,
+	Clap
+};
+
 enum class Monster_State
 {
 	Idle,
@@ -243,23 +257,10 @@ enum class Item_Category
 {
 	Equipment,
 	Consume,
-	Etc,
 	Money,
+	Cash,
+	Decoration,
+	Install,
+	Etc,
 	Max
-};
-
-enum class Zakum_State
-{
-	Idle,
-	UpHand,
-	Clap,
-	End
-};
-
-enum class Zakum_ArmState
-{
-	Idle,
-	UpHand,
-	Clap,
-	End
 };

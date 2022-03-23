@@ -499,6 +499,13 @@ CGameObject* CEditorManager::CreateObject(CScene* Scene, size_t Type)
 		return Obj;
 	}
 
+	else if (Type == typeid(CNPCAmon).hash_code())
+	{
+		CNPCAmon* Obj = Scene->LoadGameObject<CNPCAmon>();
+
+		return Obj;
+	}
+
 	return nullptr;
 }
 

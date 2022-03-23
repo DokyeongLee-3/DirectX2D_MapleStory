@@ -2,6 +2,7 @@
 #include "NPCName.h"
 #include "Component/WidgetComponent.h"
 #include "../Object/NPCAdobis.h"
+#include "../Object/NPCAmon.h"
 
 CNPCName::CNPCName()
 {
@@ -37,6 +38,7 @@ bool CNPCName::Init()
 	m_NPCName->SetZOrder(1);
 	m_NPCName->SetAlignH(TEXT_ALIGN_H::Center);
 	m_NPCName->SetAlphaEnable(true);
+	m_NPCName->SetFont("Default");
 
 	m_DoubleClickFrame = CreateWidget<CImage>("BlackFrame");
 	m_DoubleClickFrame->SetPos(0.f, 10.f);
@@ -65,11 +67,24 @@ void CNPCName::Render()
 
 void CNPCName::OpenDialog()
 {
-	CNPCAdobis* Adobis = (CNPCAdobis*)m_OwnerComponent->GetGameObject();
-
-	if (Adobis)
+	if (m_OwnerComponent->GetGameObject()->GetTypeID() == typeid(CNPCAdobis).hash_code())
 	{
-		Adobis->CreateAdobisDialog();
+		CNPCAdobis* Adobis = (CNPCAdobis*)m_OwnerComponent->GetGameObject();
+
+		if (Adobis)
+		{
+			Adobis->CreateAdobisDialog();
+		}
+	}
+
+	else if (m_OwnerComponent->GetGameObject()->GetTypeID() == typeid(CNPCAmon).hash_code())
+	{
+		CNPCAmon* Amon = (CNPCAmon*)m_OwnerComponent->GetGameObject();
+
+		if (Amon)
+		{
+			Amon->CreateAmonDialog();
+		}
 	}
 }
 

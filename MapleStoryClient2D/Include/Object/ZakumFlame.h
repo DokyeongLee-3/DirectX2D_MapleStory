@@ -17,6 +17,9 @@ protected:
 private:
     CSharedPtr<CSpriteComponent>    m_Sprite;
     CSharedPtr<CColliderBox2D>      m_Body;
+    float                           m_CollisionFrequency;
+    float                           m_AccTime;
+    bool                            m_CollisionStart;
 
 public:
     CSpriteComponent* GetSpriteComponent()    const
@@ -29,15 +32,14 @@ public:
         return m_Body;
     }
 
-
-public:
-   
-
 public:
     virtual void Start();
     virtual bool Init();
     virtual void Update(float DeltaTime);
     virtual void PostUpdate(float DeltaTime);
     virtual CZakumFlame* Clone();
+
+public:
+    void CollisionBeginCallback(const CollisionResult& Result);
 };
 

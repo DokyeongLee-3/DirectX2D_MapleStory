@@ -183,6 +183,7 @@
     <ClInclude Include="Object\LowerClassBook.h" />
     <ClInclude Include="Object\Monster.h" />
     <ClInclude Include="Object\NPCAdobis.h" />
+    <ClInclude Include="Object\NPCAmon.h" />
     <ClInclude Include="Object\OnionMonster.h" />
     <ClInclude Include="Object\Pivot.h" />
     <ClInclude Include="Object\Player2D.h" />
@@ -228,6 +229,7 @@
     <ClCompile Include="Object\LowerClassBook.cpp" />
     <ClCompile Include="Object\Monster.cpp" />
     <ClCompile Include="Object\NPCAdobis.cpp" />
+    <ClCompile Include="Object\NPCAmon.cpp" />
     <ClCompile Include="Object\OnionMonster.cpp" />
     <ClCompile Include="Object\Pivot.cpp" />
     <ClCompile Include="Object\Player2D.cpp" />

@@ -19,7 +19,7 @@ private:
     CSharedPtr<CSpriteComponent>    m_Sprite;
     CSharedPtr<CColliderBox2D>      m_Body;
     CSharedPtr<CWidgetComponent>    m_NameWidget;
-    class CNPCDialog* m_Dialog;
+    class CAdobisDialog* m_Dialog;
 
 public:
     virtual void Start();

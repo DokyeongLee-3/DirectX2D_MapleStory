@@ -52,6 +52,9 @@ bool CBossMatching::Init()
     m_Button->SetPos(178.f, 13.f);
     m_Button->SetSize(74.f, 48.f);
 
+    m_Button->SetSound(Button_Sound_State::MouseOn, "UI", "ButtonMouseOn", "BtMouseOver.mp3");
+    m_Button->SetSound(Button_Sound_State::Click, "UI", "ButtonClick", "BtMouseClick.mp3");
+
     return true;
 }
 

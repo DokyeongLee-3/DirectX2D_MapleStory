@@ -90,6 +90,7 @@ bool CStartWidget::Init()
     m_PlayerName->SetAlignH(TEXT_ALIGN_H::Center);
     m_PlayerName->SetAlignV(TEXT_ALIGN_V::Middle);
     m_PlayerName->SetZOrder(2);
+    m_PlayerName->SetFont("Default");
 
     return true;
 }

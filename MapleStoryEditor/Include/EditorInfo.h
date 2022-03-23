@@ -25,7 +25,8 @@ enum class CreateObject_Type
 	VerticalLampLight,
 	LopeTileMapObj,
 	NPCAdobis,
-	ZakumBody
+	ZakumBody,
+	NPCAmon
 };
 
 enum class TileEdit_Mode

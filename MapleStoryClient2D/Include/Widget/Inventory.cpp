@@ -43,6 +43,12 @@ CInventory::CInventory(const CInventory& window) :
 
 CInventory::~CInventory()
 {
+    size_t Count = m_vecInventoryItem.size();
+
+    for (size_t i = 0 ; i < Count; ++i)
+    {
+        SAFE_DELETE(m_vecInventoryItem[i]);
+    }
 }
 
 void CInventory::Start()
@@ -142,6 +148,9 @@ bool CInventory::Init()
     }
 
     m_CurrentOpenTab = m_EquipmentTab;
+    m_CurrentOpenTabCatogory = Item_Category::Equipment;
+
+    AddItem(TEXT("UI/Inventory/02001527.info.icon.png"),"BroiledEels", Item_Category::Consume, Vector2(31.f, 17.f), 999, 0, 0);
 
     return true;
 }
@@ -149,6 +158,26 @@ bool CInventory::Init()
 void CInventory::Update(float DeltaTime)
 {
     CWidgetWindow::Update(DeltaTime);
+    size_t Count = m_vecInventoryItem.size();
+
+    for (size_t i = 0; i < Count; ++i)
+    {
+        int ItemCount = m_vecInventoryItem[i]->Count;
+
+        m_vecInventoryItem[i]->ItemCountWidget->SetNumber(ItemCount);
+
+        if (m_CurrentOpenTabCatogory != m_vecInventoryItem[i]->Category)
+        {
+            m_vecInventoryItem[i]->ItemIcon->Enable(false);
+            m_vecInventoryItem[i]->ItemCountWidget->Enable(false);
+        }
+
+        else
+        {
+            m_vecInventoryItem[i]->ItemIcon->Enable(true);
+            m_vecInventoryItem[i]->ItemCountWidget->Enable(true);
+        }
+    }
 }
 
 void CInventory::PostUpdate(float DeltaTime)
@@ -190,12 +219,82 @@ void CInventory::Render()
 {
     CWidgetWindow::Render();
 
-   
 }
 
 CInventory* CInventory::Clone()
 {
     return new CInventory(*this);
+}
+
+void CInventory::AddItem(const TCHAR* FileName, const std::string& Name, Item_Category Category, const Vector2& IconSize, int Count, int Row, int Column)
+{
+    ItemState* ITState = new ItemState;
+
+    ITState->Name = Name;
+    ITState->Count = Count;
+    ITState->Category = Category;
+    ITState->Row = Row;
+    ITState->Column = Column;
+
+    std::vector<TCHAR*> vecFileName;
+
+    for (int i = 0; i < 10; ++i)
+    {
+        TCHAR* FileName = new TCHAR[MAX_PATH];
+        memset(FileName, 0, sizeof(TCHAR) * MAX_PATH);
+
+        wsprintf(FileName, TEXT("UI/Inventory/InvenNumber%d.png"), i);
+
+        vecFileName.push_back(FileName);
+    }
+
+    // 슬롯과 슬롯의 가로 간격은 10, 세로 간격은 13
+    float OffsetX = 12.f;
+    float OffsetY = 13.f;
+
+
+	// 슬롯의 좌상단부터 시작
+	Vector2 SlotLeftTop = Vector2(m_Pos.x + 14.f, m_Pos.y + 325.f);
+	Vector2 NewSlotLeftTop = Vector2(SlotLeftTop.x + (m_SlotSize.x + OffsetX) * Column, SlotLeftTop.y + ((m_SlotSize.y + OffsetY) * -Row));
+
+    CImage* ItemIcon = CreateWidget<CImage>(Name);
+    ItemIcon->SetTexture(Name, FileName);
+    ItemIcon->SetPos(NewSlotLeftTop.x, NewSlotLeftTop.y - IconSize.y - 6.f);
+    ItemIcon->SetSize(IconSize.x, IconSize.y);
+    ItemIcon->SetMouseCollisionEnable(true);
+    ItemIcon->SetZOrder(2);
+    ITState->ItemIcon = ItemIcon;
+
+    CNumber* ItemNumber = CreateWidget<CNumber>("ItemNumber");
+    ItemNumber->SetTexture("ItemNumber", vecFileName);
+    ItemNumber->SetSize(7.f, 9.f);
+    ItemNumber->SetPos(NewSlotLeftTop.x + m_SlotSize.x / 2.f - 3.f, NewSlotLeftTop.y - m_SlotSize.y - 3.f);
+    ItemNumber->SetNumber(Count);
+    ItemNumber->SetZOrder(3);
+    ITState->ItemCountWidget = ItemNumber;
+
+    for (int i = 0; i < 10; ++i)
+    {
+        SAFE_DELETE_ARRAY(vecFileName[i]);
+    }
+
+    vecFileName.clear();
+
+    m_vecInventoryItem.push_back(ITState);
+}
+
+void CInventory::ConsumeItem(const std::string& Name, int ConsumeCount)
+{
+    size_t Count = m_vecInventoryItem.size();
+
+    for (size_t i = 0; i < Count; ++i)
+    {
+        if (m_vecInventoryItem[i]->Name == Name)
+        {
+            m_vecInventoryItem[i]->Count -= ConsumeCount;
+            return;
+        }
+    }
 }
 
 void CInventory::DragWindow()
@@ -252,6 +351,7 @@ void CInventory::ClickEquipTab()
     }
 
     m_CurrentOpenTab = m_EquipmentTab;
+    m_CurrentOpenTabCatogory = Item_Category::Equipment;
 }
 
 void CInventory::ClickConsumeTab()
@@ -290,6 +390,7 @@ void CInventory::ClickConsumeTab()
     }
 
     m_CurrentOpenTab = m_ConsumeTab;
+    m_CurrentOpenTabCatogory = Item_Category::Consume;
 }
 
 void CInventory::ClickInstallTab()
@@ -328,6 +429,7 @@ void CInventory::ClickInstallTab()
     }
 
     m_CurrentOpenTab = m_InstallTab;
+    m_CurrentOpenTabCatogory = Item_Category::Install;
 }
 
 void CInventory::ClickCashTab()
@@ -366,6 +468,7 @@ void CInventory::ClickCashTab()
     }
 
     m_CurrentOpenTab = m_CashTab;
+    m_CurrentOpenTabCatogory = Item_Category::Cash;
 }
 
 void CInventory::ClickDecorationTab()
@@ -404,6 +507,7 @@ void CInventory::ClickDecorationTab()
     }
 
     m_CurrentOpenTab = m_DecorationTab;
+    m_CurrentOpenTabCatogory = Item_Category::Decoration;
 }
 
 void CInventory::ClickEtcTab()
@@ -442,6 +546,8 @@ void CInventory::ClickEtcTab()
     }
 
     m_CurrentOpenTab = m_EtcTab;
+    m_CurrentOpenTabCatogory = Item_Category::Etc;
 }
+
 
 

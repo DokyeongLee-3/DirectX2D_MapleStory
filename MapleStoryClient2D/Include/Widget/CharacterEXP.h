@@ -18,9 +18,13 @@ protected:
 private:
 	CSharedPtr<CImage> m_EXPBackground;
 	CSharedPtr<CProgressBar> m_EXPBar;
-	CSharedPtr<CNumber> m_EXPMaxNumber;
+	//CSharedPtr<CNumber> m_EXPMaxNumber;
 	CSharedPtr<CNumber> m_EXPNumber;
-	CSharedPtr<CImage> m_EXPDelimiter;
+	//CSharedPtr<CImage> m_EXPDelimiter;
+	CSharedPtr<CImage> m_EXPLeftBracket;
+	CSharedPtr<CImage> m_EXPRightBracket;
+	CSharedPtr<CNumber>	m_EXPPercentNumber;
+	CSharedPtr<CImage>	m_EXPPercent;
 
 public:
 	virtual void Start();
@@ -32,9 +36,6 @@ public:
 
 public:
 	void SetEXP(int EXP);
-	void SetEXPMax(int Max)
-	{
-		m_EXPMaxNumber->SetNumber(Max);
-	}
+
 };
 

@@ -207,8 +207,10 @@ void CWayToZakumScene::LoadSound()
 	m_Scene->GetResource()->LoadSound("Effect", false, "DeathSideUse", "DeathSideUse.mp3");
 
 	m_Scene->GetResource()->LoadSound("Effect", false, "LevelUp", "LevelUp.mp3");
+	m_Scene->GetResource()->LoadSound("Effect", false, "DropItem", "DropItem.mp3");
 
 	m_Scene->GetResource()->LoadSound("UI", false, "TabClick", "TabClick.mp3");
+	m_Scene->GetResource()->LoadSound("UI", false, "UIOpen", "UIOpen.mp3");
 }
 
 void CWayToZakumScene::SetPerspective()
@@ -249,7 +251,7 @@ void CWayToZakumScene::CreateZakumAltarScene()
 	ZakumAltarScene->SetPlayerObject(m_PlayerObject);
 
 	// 다음 Scene에서의 위치를 Scene의 왼쪽에 위치하도록 잡아주기
-	m_PlayerObject->SetWorldPos(920.f, 220.f, PlayerPos.z);
+	m_PlayerObject->SetWorldPos(920.f, 220.f, 210.f);
 
 	m_LoadingThread = CThread::CreateThread<CLoadingThread>("ZakumAltarSceneLoadingThread");
 	m_LoadingThread->SetLoadingScene(ThreadLoadingScene::ZakumAltar);

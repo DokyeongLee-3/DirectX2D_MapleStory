@@ -70,6 +70,7 @@ bool CEditorMenu::Init()
 	m_ObjectCombo->AddItem("LopeTileObj");
 	m_ObjectCombo->AddItem("NPCAdobis");
 	m_ObjectCombo->AddItem("ZakumBody");
+	m_ObjectCombo->AddItem("NPCAmon");
 
 	CIMGUISameLine* Line = AddWidget<CIMGUISameLine>("Line");
 
@@ -216,6 +217,9 @@ void CEditorMenu::ObjectCreateButton()
 		break;
 	case CreateObject_Type::ZakumBody:
 		CSceneManager::GetInst()->GetScene()->CreateGameObject<CZakumBody>(m_ObjectNameInput->GetTextMultibyte());
+		break;
+	case CreateObject_Type::NPCAmon:
+		CSceneManager::GetInst()->GetScene()->CreateGameObject<CNPCAmon>(m_ObjectNameInput->GetTextMultibyte());
 		break;
 	}
 

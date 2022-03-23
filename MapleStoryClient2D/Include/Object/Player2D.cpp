@@ -57,8 +57,9 @@ CPlayer2D::CPlayer2D() :
 	m_IsChanging(false),
 	m_Dead(false),
 	m_PrevSameTileObjColliderCount(0),
-	m_OnCameraShake(false),
-	m_CameraShakeFrequency(0.1f),
+	m_OnXCameraShake(false),
+	m_OnYCameraShake(false),
+	m_CameraShakeFrequency(0.07f),
 	m_CameraShakeTime(1.f),
 	m_AccCameraShakeTime(0.f),
 	m_CameraShakeDir(0.f, 1.f),
@@ -302,7 +303,7 @@ void CPlayer2D::PostUpdate(float DeltaTime)
 	// 무조건 CGameObject::PostUpdate보다 먼저 해줘야한다
 	CameraTrack();
 
-	if (m_OnCameraShake)
+	if (m_OnXCameraShake || m_OnYCameraShake)
 	{
 		CameraShake(DeltaTime);
 	}
@@ -735,6 +736,60 @@ void CPlayer2D::SylphideLancer(float DeltaTime)
 			NearMonster = ((CLibrary2ndScene*)Mode)->FindLowerClassBook(Flip, GetWorldPos(), 400.f, 120.f);
 		else if (m_Scene->GetSceneMode()->GetTypeID() == typeid(CRadishScene).hash_code())
 			NearMonster = ((CRadishScene*)Mode)->FindRadishMonster(Flip, GetWorldPos(), 400.f, 120.f);
+		else if (m_Scene->GetSceneMode()->GetTypeID() == typeid(CZakumAltarScene).hash_code())
+		{
+			CColliderBox2D* TargetArm = ((CZakumAltarScene*)Mode)->FindZakumTarget(Flip, GetWorldPos(), 400.f, 250.f);
+
+			if (TargetArm && TargetArm->IsActive())
+			{
+				m_Scene->GetResource()->SoundPlay("SylphideLancerUse");
+
+				m_SylphideLancerMirror->ChangeAnimation("SylphideLancerMuzzle");
+
+				CClientManager::GetInst()->GetSkillQuickSlotWindow()->SetSylphideLancerProgressBarPercent(1.f);
+
+				Vector3 MirrorPos = m_SylphideLancerMirror->GetWorldPos();
+
+				for (int i = 0; i < 2; ++i)
+				{
+					CSylphideLancer* Lancer = m_Scene->CreateGameObject<CSylphideLancer>("SylphideLancer");
+					Vector3 TargetPos = TargetArm->GetWorldPos();
+
+					Lancer->SetAllSceneComponentsLayer("MovingObjFront");
+					Lancer->SetLancerID(i);
+					Lancer->SetWorldPos(MirrorPos.x, MirrorPos.y - 10.f + i * 30.f, TargetPos.z - 3.f);
+					Lancer->SetCollisionProfile("PlayerAttack");
+					Lancer->SetSpeed(-400.f);
+					Vector3 LancerPos = Lancer->GetWorldPos();
+
+					Vector3 MonsterWorldPos;
+
+					if (TargetArm)
+					{
+						MonsterWorldPos = TargetArm->GetWorldPos();
+						float Radian = atan((MonsterWorldPos.y - LancerPos.y) / (MonsterWorldPos.x - LancerPos.x));
+						float Degree = RadianToDegree(Radian);
+
+						Lancer->SetWorldRotation(0.f, 0.f, Degree);
+					}
+
+					else
+					{
+						Lancer->SetWorldRotation(GetWorldRot());
+					}
+
+					if (m_BodySprite->IsFlip())
+					{
+						Lancer->FlipAll(DeltaTime);
+						Lancer->SetSpeed(400.f);
+					}
+				}
+
+				SkillInfo->Active = true;
+
+				return;
+			}
+		}
 	}
 
 	m_Scene->GetResource()->SoundPlay("SylphideLancerUse");
@@ -1121,8 +1176,6 @@ void CPlayer2D::DeathSide(float DeltaTime)
 	Window->SetCurrentMP(m_PlayerInfo.MP);
 	Window->SetMPPercent((float)m_PlayerInfo.MP / m_PlayerInfo.MPMax);
 
-	// Scene의 m_ObjList에서 몬스터 찾아서 여기서 실피드랜서 방향 설정해주기
-
 	m_BodySprite->ChangeAnimation("HealLeft");
 
 	m_Scene->GetResource()->SoundPlay("DeathSideUse");
@@ -1130,9 +1183,12 @@ void CPlayer2D::DeathSide(float DeltaTime)
 
 	Vector3 WorldPos = GetRootComponent()->GetWorldPos();
 
+	if (m_Scene->GetSceneMode()->GetTypeID() == typeid(CZakumAltarScene).hash_code())
+		WorldPos.z = 215.f;
+
 	CDeathSide* DeathSide = m_Scene->CreateGameObject<CDeathSide>("DeathSide");
-	DeathSide->SetWorldPos(WorldPos.x, WorldPos.y, WorldPos.z - 10.f);
 	DeathSide->SetAllSceneComponentsLayer("MovingObjFront");
+	DeathSide->SetWorldPos(WorldPos.x, WorldPos.y, WorldPos.z - 10.f);
 	DeathSide->SetCollisionProfile("PlayerAttack");
 
 	m_BodySprite->SetFadeApply(false);
@@ -1422,7 +1478,7 @@ void CPlayer2D::CameraTrack()
 			Vector3 PlayerWorldPos = GetWorldPos();
 			float CenterPos = (WorldSize.x + (WorldSize.x - RS.Width)) / 2.f;
 
-			if (PlayerWorldPos.x + RS.Width * (1 - Ratio.x) >= WorldSize.x)
+			if (!m_OnXCameraShake && PlayerWorldPos.x + RS.Width * (1 - Ratio.x) >= WorldSize.x)
 			{
 				Vector3 CamWorldPos = m_Camera->GetWorldPos();
 				float Pos = WorldSize.x - RS.Width * Ratio.x;
@@ -1432,7 +1488,7 @@ void CPlayer2D::CameraTrack()
 				m_CurrentFrameCameraMove.x = 0.f;
 			}
 
-			if (PlayerWorldPos.x - RS.Width * Ratio.x <= 0.f)
+			if (!m_OnXCameraShake && PlayerWorldPos.x - RS.Width * Ratio.x <= 0.f)
 			{
 				Vector3 CamWorldPos = m_Camera->GetWorldPos();
 				m_Camera->SetWorldPos(0.f, CamWorldPos.y, CamWorldPos.z);
@@ -1440,7 +1496,7 @@ void CPlayer2D::CameraTrack()
 				m_CurrentFrameCameraMove.x = 0.f;
 			}
 
-			if (PlayerWorldPos.y + RS.Height * (1 - Ratio.y) >= WorldSize.y)
+			if (!m_OnYCameraShake && PlayerWorldPos.y + RS.Height * (1 - Ratio.y) >= WorldSize.y)
 			{
 				Vector3 CamWorldPos = m_Camera->GetWorldPos();
 				float Pos = WorldSize.y - RS.Height * Ratio.y;
@@ -1450,7 +1506,7 @@ void CPlayer2D::CameraTrack()
 				m_CurrentFrameCameraMove.y = 0.f;
 			}
 
-			if (PlayerWorldPos.y - RS.Height * Ratio.y <= 0.f)
+			if (!m_OnYCameraShake && PlayerWorldPos.y - RS.Height * Ratio.y <= 0.f)
 			{
 				Vector3 CamWorldPos = m_Camera->GetWorldPos();
 				m_Camera->SetWorldPos(CamWorldPos.x, 0.f, CamWorldPos.z);
@@ -1542,9 +1598,10 @@ void CPlayer2D::SetDamage(float Damage, bool Critical)
 
 	PushDamageFont(Damage);
 
-	if (m_PlayerInfo.HP < 0.f)
+	if (m_PlayerInfo.HP <= 0.f)
 	{
 		m_PlayerInfo.HP = 0;
+		m_Dead = true;
 		CClientManager::GetInst()->GetCharacterStatusWindow()->SetCurrentHP(0);
 		CClientManager::GetInst()->GetCharacterStatusWindow()->SetHPPercent(0);
 		Die();
@@ -1648,7 +1705,7 @@ void CPlayer2D::LevelUp(float DeltaTime)
 	m_PlayerInfo.Level += 1;
 
 	StatusWindow->SetLevel(m_PlayerInfo.Level);
-	EXPWindow->SetEXPMax(m_PlayerInfo.EXPMax);
+	//EXPWindow->SetEXPMax(m_PlayerInfo.EXPMax);
 	EXPWindow->SetEXP(0);
 	m_SkillBodyEffect->GetAnimationInstance()->ChangeAnimation("PlayerLevelUpEffect");
 	m_Scene->GetResource()->SoundPlay("LevelUp");
@@ -1729,7 +1786,8 @@ void CPlayer2D::CameraShake(float DeltaTime)
 	if (m_AccCameraShakeTime > m_CameraShakeTime)
 	{
 		m_Camera->SetRelativePos(m_OriginRelativeCamPos);
-		m_OnCameraShake = false;
+		m_OnXCameraShake = false;
+		m_OnYCameraShake = false;
 		m_AccCameraShakeTime = 0.f;
 		m_AccCameraShakeSingleDirTime = 0.f;
 	}
@@ -1741,14 +1799,20 @@ void CPlayer2D::CameraShake(float DeltaTime)
 		m_AccCameraShakeSingleDirTime = 0.f;
 	}
 
-	m_Camera->AddWorldPos(m_CameraShakeDir.x * 340.f * DeltaTime, m_CameraShakeDir.y * 340.f * DeltaTime, 0.f);
+	m_Camera->AddWorldPos(m_CameraShakeDir.x * 170.f * DeltaTime, m_CameraShakeDir.y * 170.f * DeltaTime, 0.f);
 
 }
 
-void CPlayer2D::SetCameraShake(bool Shake)
+void CPlayer2D::SetXCameraShake(bool Shake)
 {
 	m_OriginRelativeCamPos = m_Camera->GetRelativePos();
-	m_OnCameraShake = Shake;
+	m_OnXCameraShake = Shake;
+}
+
+void CPlayer2D::SetYCameraShake(bool Shake)
+{
+	m_OriginRelativeCamPos = m_Camera->GetRelativePos();
+	m_OnYCameraShake = Shake;
 }
 
 
@@ -2007,6 +2071,9 @@ void CPlayer2D::GotoZakumAltar()
 
 void CPlayer2D::ProduceSecondSylphideLander(float DeltaTime)
 {
+	if (m_Dead)
+		return;
+
 	m_SkillBodyEffect->ChangeAnimation("SylphideLancerBodyEffectLeft");
 	m_BodySprite->ChangeAnimation("IdleLeft");
 
@@ -2031,6 +2098,56 @@ void CPlayer2D::ProduceSecondSylphideLander(float DeltaTime)
 			NearMonster = ((CLibrary2ndScene*)Mode)->FindLowerClassBook(Flip, GetWorldPos(), 400.f, 60.f);
 		else if (m_Scene->GetSceneMode()->GetTypeID() == typeid(CRadishScene).hash_code())
 			NearMonster = ((CRadishScene*)Mode)->FindRadishMonster(Flip, GetWorldPos(), 400.f, 120.f);
+		else if (m_Scene->GetSceneMode()->GetTypeID() == typeid(CZakumAltarScene).hash_code())
+		{
+			CColliderBox2D* TargetArm = ((CZakumAltarScene*)Mode)->FindZakumTarget(Flip, GetWorldPos(), 400.f, 250.f);
+			if (TargetArm && TargetArm->IsActive())
+			{
+				CClientManager::GetInst()->GetSkillQuickSlotWindow()->SetSylphideLancerProgressBarPercent(1.f);
+
+				Vector3 MirrorPos = m_SylphideLancerMirror->GetWorldPos();
+
+				for (int i = 0; i < 2; ++i)
+				{
+					CSylphideLancer* Lancer = m_Scene->CreateGameObject<CSylphideLancer>("SylphideLancer");
+					Vector3 TargetPos = TargetArm->GetWorldPos();
+
+					Lancer->SetAllSceneComponentsLayer("MovingObjFront");
+					Lancer->SetLancerID(i + 2);
+					Lancer->SetWorldPos(MirrorPos.x, MirrorPos.y - 10.f + i * 30.f, TargetPos.z - 3.f);
+					Lancer->SetCollisionProfile("PlayerAttack");
+					Lancer->SetSpeed(-400.f);
+					Vector3 LancerPos = Lancer->GetWorldPos();
+
+					CSpriteComponent* Root = (CSpriteComponent*)Lancer->GetRootComponent();
+					Root->ChangeAnimation("SylphideLancerArrowPurple");
+
+					Vector3 MonsterWorldPos;
+
+					if (TargetArm)
+					{
+						MonsterWorldPos = TargetArm->GetWorldPos();
+						float Radian = atan((MonsterWorldPos.y - LancerPos.y) / (MonsterWorldPos.x - LancerPos.x));
+						float Degree = RadianToDegree(Radian);
+
+						Lancer->SetWorldRotation(0.f, 0.f, Degree);
+					}
+
+					else
+					{
+						Lancer->SetWorldRotation(GetWorldRot());
+					}
+
+					if (m_BodySprite->IsFlip())
+					{
+						Lancer->FlipAll(DeltaTime);
+						Lancer->SetSpeed(400.f);
+					}
+				}
+
+				return;
+			}
+		}
 	}
 
 
@@ -2129,6 +2246,15 @@ void CPlayer2D::ReturnAlive()
 		StatusWindow->SetMPPercent(1.f);
 		m_PlayerInfo.HP = m_PlayerInfo.HPMax;
 		m_PlayerInfo.MP = m_PlayerInfo.MPMax;
+	}
+
+	CSkillQuickSlotWindow* SkillQuickSlot = CClientManager::GetInst()->GetSkillQuickSlotWindow();
+
+	if (SkillQuickSlot)
+	{
+		SkillQuickSlot->SetSylphideLancerProgressBarPercent(0.f);
+		SkillQuickSlot->SetVoidPressureProgressBarPercent(0.f);
+		SkillQuickSlot->SetDeathSideProgressBarPercent(0.f);
 	}
 
 	// Tomb찾아서 Destroy해주기

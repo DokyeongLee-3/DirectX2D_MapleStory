@@ -48,5 +48,10 @@ CPlayerAnimation2D* CPlayerAnimation2D::Clone()
 
 void CPlayerAnimation2D::ReturnToIdle()
 {
+	CPlayer2D* Player = (CPlayer2D*)m_Owner->GetGameObject();
+
+	if (Player->IsDead())
+		return;
+
 	ChangeAnimation("IdleLeft");
 }

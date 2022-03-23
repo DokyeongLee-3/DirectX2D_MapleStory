@@ -6,6 +6,8 @@
 #include "Player2D.h"
 #include "VoidPressureHitEffect.h"
 #include "Monster.h"
+#include "ZakumBody.h"
+#include "../Scene/ZakumAltarScene.h"
 
 CVoidPressure::CVoidPressure() :
 	m_Distance(400.f),
@@ -133,6 +135,55 @@ void CVoidPressure::CollisionBeginCallback(const CollisionResult& result)
 
 	CGameObject* Dest = result.Dest->GetGameObject();
 	((CMonster*)Dest)->SetTrackState();
+
+	if (m_Scene->GetSceneMode()->GetTypeID() == typeid(CZakumAltarScene).hash_code()
+		&& Dest->GetTypeID() == typeid(CZakumBody).hash_code())
+	{
+		if (result.Dest->GetName().find("LeftArm1HandDefense") != std::string::npos)
+		{
+			((CZakumBody*)Dest)->SetCurrentCollisionID(0);
+		}
+
+		else if (result.Dest->GetName().find("LeftArm2HandDefense") != std::string::npos)
+		{
+			((CZakumBody*)Dest)->SetCurrentCollisionID(1);
+		}
+
+		else if (result.Dest->GetName().find("LeftArm3HandDefense") != std::string::npos)
+		{
+			((CZakumBody*)Dest)->SetCurrentCollisionID(2);
+		}
+
+		else if (result.Dest->GetName().find("LeftArm4HandDefense") != std::string::npos)
+		{
+			((CZakumBody*)Dest)->SetCurrentCollisionID(3);
+		}
+
+		else if (result.Dest->GetName().find("RightArm1HandDefense") != std::string::npos)
+		{
+			((CZakumBody*)Dest)->SetCurrentCollisionID(4);
+		}
+
+		else if (result.Dest->GetName().find("RightArm2HandDefense") != std::string::npos)
+		{
+			((CZakumBody*)Dest)->SetCurrentCollisionID(5);
+		}
+
+		else if (result.Dest->GetName().find("RightArm3HandDefense") != std::string::npos)
+		{
+			((CZakumBody*)Dest)->SetCurrentCollisionID(6);
+		}
+
+		else if (result.Dest->GetName().find("RightArm4HandDefense") != std::string::npos)
+		{
+			((CZakumBody*)Dest)->SetCurrentCollisionID(7);
+		}
+
+		else
+		{
+			((CZakumBody*)Dest)->SetCurrentCollisionID(-1);
+		}
+	}
 
 	Dest->SetDamage(Damage, IsCritical);
 

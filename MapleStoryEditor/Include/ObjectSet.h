@@ -22,4 +22,5 @@
 #include "Object/VerticalLampLight.h"
 #include "Object/LopeTileObject.h"
 #include "Object/NPCAdobis.h"
+#include "Object/NPCAmon.h"
 #include "Object/ZakumBody.h"

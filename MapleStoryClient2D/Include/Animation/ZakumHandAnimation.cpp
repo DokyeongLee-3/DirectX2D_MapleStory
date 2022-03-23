@@ -33,13 +33,19 @@ bool CZakumHandAnimation::Init()
 	AddAnimation(TEXT("ZakumClapLeft.sqc"), ANIMATION_PATH, "ZakumClapLeft", false, 0.25f);
 	AddAnimation(TEXT("ZakumClapRight.sqc"), ANIMATION_PATH, "ZakumClapRight", false, 0.33f);
 
+	AddAnimation(TEXT("ZakumClapReturnLeft.sqc"), ANIMATION_PATH, "ZakumClapReturnLeft", false, 0.2f);
+	AddAnimation(TEXT("ZakumClapReturnRight.sqc"), ANIMATION_PATH, "ZakumClapReturnRight", false, 0.2f);
+
 	CZakumBody* Zakum = (CZakumBody*)m_Owner->GetGameObject();
 
-	SetEndFunction<CZakumBody>("ZakumArmReturnLeft1", Zakum, &CZakumBody::ReturnArmOriginPos);
-	SetEndFunction<CZakumBody>("ZakumArmReturnLeft2", Zakum, &CZakumBody::ReturnArmOriginPos);
+	SetEndFunction<CZakumBody>("ZakumArmReturnLeft1", Zakum, &CZakumBody::SmashReturnArmOriginPos);
+	SetEndFunction<CZakumBody>("ZakumArmReturnLeft2", Zakum, &CZakumBody::SmashReturnArmOriginPos);
 
 	//SetEndFunction<CZakumBody>("ZakumClapLeft", Zakum, &CZakumBody::CreateClapEffect);
 	SetEndFunction<CZakumBody>("ZakumClapRight", Zakum, &CZakumBody::CreateClapEffect);
+
+	SetEndFunction<CZakumBody>("ZakumClapReturnLeft", Zakum, &CZakumBody::ClapReturnArmOriginPos);
+	SetEndFunction<CZakumBody>("ZakumClapReturnRight", Zakum, &CZakumBody::ClapReturnArmOriginPos);
 
 	return true;
 }

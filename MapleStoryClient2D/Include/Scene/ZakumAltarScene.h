@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Scene/SceneMode.h"
+#include "Component/ColliderBox2D.h"
 
 class CZakumAltarScene :
     public CSceneMode
@@ -39,7 +40,11 @@ private:
     void CreateMonsterAnimationSequence();
     void CreateSkillAnimationSequence();
     void CreateMapAnimationSequence();
+    void CreateEffectPrototype();
     void LoadSound();
+
+public:
+    CColliderBox2D* FindZakumTarget(bool Right, const Vector3& MyPos, float DistXConstraint, float DistYConstraint);
 
 public:
     void SetPerspective();
@@ -53,6 +58,11 @@ public:
     void SetLoadingFunction(T* Obj, void(T::* Func)(bool, float))
     {
         m_LoadingFunction = std::bind(Func, Obj, std::placeholders::_1, std::placeholders::_2);
+    }
+
+    static bool SortColliderByX(CColliderBox2D* Src, CColliderBox2D* Dest)
+    {
+        return Src->GetWorldPos().x < Dest->GetWorldPos().x;
     }
 };
 

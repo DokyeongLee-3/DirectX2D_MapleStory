@@ -8,6 +8,7 @@
 #include "../Scene/Library2ndScene.h"
 #include "../Scene/RadishScene.h"
 #include "../Scene/WayToZakumScene.h"
+#include "../Scene/ZakumAltarScene.h"
 
 CDyingNoticeWindow::CDyingNoticeWindow()
 {
@@ -51,6 +52,9 @@ bool CDyingNoticeWindow::Init()
 	m_ConfirmButton->SetSound(Button_Sound_State::Click, "UI", "ButtonClick", "BtMouseClick.mp3");
 
 	m_ConfirmButton->SetClickCallback<CDyingNoticeWindow>(this, &CDyingNoticeWindow::ConfirmButtonCallback);
+
+	m_ConfirmButton->SetSound(Button_Sound_State::MouseOn, "UI", "ButtonMouseOn", "BtMouseOver.mp3");
+	m_ConfirmButton->SetSound(Button_Sound_State::Click, "UI", "ButtonClick", "BtMouseClick.mp3");
 
 	return true;
 }
@@ -107,6 +111,15 @@ void CDyingNoticeWindow::ConfirmButtonCallback()
 			CLibrary2ndScene* SceneMode = (CLibrary2ndScene*)(Scene->GetSceneMode());
 			CRenderManager::GetInst()->SetStartFadeIn(true);
 			CSceneManager::GetInst()->SetFadeInEndCallback<CLibrary2ndScene>(SceneMode, &CLibrary2ndScene::CreateLobbyScene);
+		}
+
+		else if (Scene->GetSceneMode()->GetTypeID() == typeid(CZakumAltarScene).hash_code())
+		{
+			Player->ClearListCollision();
+
+			CZakumAltarScene* SceneMode = (CZakumAltarScene*)(Scene->GetSceneMode());
+			CRenderManager::GetInst()->SetStartFadeIn(true);
+			CSceneManager::GetInst()->SetFadeInEndCallback<CZakumAltarScene>(SceneMode, &CZakumAltarScene::CreateWayToZakumScene);
 		}
 	}
 }

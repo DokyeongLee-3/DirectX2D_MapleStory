@@ -124,7 +124,8 @@ private:
     Vector2     m_PrevFrameCameraMove;
     Vector2     m_CurrentFrameCameraMove;
 
-    bool        m_OnCameraShake;
+    bool        m_OnXCameraShake;
+    bool        m_OnYCameraShake;
     float       m_CameraShakeFrequency;
     float       m_CameraShakeTime;
     float       m_AccCameraShakeTime;
@@ -346,7 +347,8 @@ public:
     //void PathResult(const std::list<Vector3>& PathList);
 
 public:
-    void SetCameraShake(bool Shake);
+    void SetXCameraShake(bool Shake);
+    void SetYCameraShake(bool Shake);
     void CameraShake(float DeltaTime);
 
 public:

@@ -19,6 +19,7 @@
 #include "Object/SingleHelixBlinkTree.h"
 #include "Object/NPCAdobis.h"
 #include "Object/ZakumBody.h"
+#include "Object/NPCAmon.h"
 
 //struct MonsterInfo
 //{

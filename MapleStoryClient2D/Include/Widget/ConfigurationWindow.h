@@ -16,9 +16,12 @@ protected:
 private:
 	CSharedPtr<CImage> m_Configuration;
 	CSharedPtr<CImage>	m_BGMSoundSlider;
+	CSharedPtr<CImage>	m_EffectSoundSlider;
 
 	float m_BGMSoundSliderLeftMostXPos;
 	float m_BGMSoundSliderRightMostXPos;
+	float m_EffectSoundSliderLeftMostXPos;
+	float m_EffectSoundSliderRightMostXPos;
 
 public:
 	virtual void Start();

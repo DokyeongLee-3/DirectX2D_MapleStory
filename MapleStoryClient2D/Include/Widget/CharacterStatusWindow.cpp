@@ -95,6 +95,7 @@ bool CCharacterStatusWindow::Init()
     m_PlayerName->SetColor(1.f, 1.f, 1.f);
     m_PlayerName->SetAlignH(TEXT_ALIGN_H::Center);
     m_PlayerName->SetAlignV(TEXT_ALIGN_V::Middle);
+    m_PlayerName->SetFont("Default");
 
     m_HPBar = CreateWidget<CProgressBar>("PlayerHPBar");
     m_HPBar->SetTexture("PlayerHPBar", TEXT("UI/Status/HPBar.png"));

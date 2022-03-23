@@ -240,8 +240,8 @@ bool CRenderManager::Init()
 	Layer = new RenderLayer;
 	Layer->Name = "ScreenWidgetComponent";
 	Layer->LayerPriority = 10;
-	Layer->LayerZUpperLimit = 300;
-	Layer->LayerZUpperLimit = 399;
+	Layer->LayerZUpperLimit = 100;
+	Layer->LayerZUpperLimit = 199;
 
 	m_RenderLayerList.push_back(Layer);
 

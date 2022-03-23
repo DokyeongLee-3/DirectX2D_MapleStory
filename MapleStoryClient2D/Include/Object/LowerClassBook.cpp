@@ -191,7 +191,7 @@ void CLowerClassBook::SetDamage(float Damage, bool Critical)
 		m_Sprite->GetAnimationInstance()->ChangeAnimation("LowerClassBookDieLeft");
 		m_IsChanging = true;
 
-		DropItem();
+		DropBill();
 
 		CSceneMode* SceneMode = m_Scene->GetSceneMode();
 		if (SceneMode)

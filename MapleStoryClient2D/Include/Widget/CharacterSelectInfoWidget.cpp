@@ -95,6 +95,7 @@ bool CCharacterSelectInfoWidget::Init()
     m_Name->SetAlignH(TEXT_ALIGN_H::Center);
     m_Name->SetAlignV(TEXT_ALIGN_V::Middle);
     m_Name->SetAlphaEnable(true);
+    m_Name->SetFont("Default");
 
     m_Job = CreateWidget<CText>("CharacterJob");
     m_Job->SetText(Info.Job);
@@ -105,6 +106,7 @@ bool CCharacterSelectInfoWidget::Init()
     m_Job->SetAlignH(TEXT_ALIGN_H::Right);
     m_Job->SetAlignV(TEXT_ALIGN_V::Middle);
     m_Job->SetAlphaEnable(true);
+    m_Job->SetFont("Default");
 
     for (int i = 0; i < 10; ++i)
     {

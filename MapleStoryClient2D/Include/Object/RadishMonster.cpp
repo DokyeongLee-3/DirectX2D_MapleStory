@@ -171,7 +171,7 @@ void CRadishMonster::SetDamage(float Damage, bool Critical)
 		m_Sprite->GetAnimationInstance()->ChangeAnimation("RadishDieLeft");
 		m_IsChanging = true;
 
-		DropItem();
+		DropBill();
 
 		CSceneMode* SceneMode = m_Scene->GetSceneMode();
 		if (SceneMode)
