@@ -12,11 +12,13 @@ CLowerClassBook::CLowerClassBook()
 {
 	SetTypeID<CLowerClassBook>();
 
+	MonsterInfo Info = CClientManager::GetInst()->FindMonsterInfo("LowerClassBookMonster");
+
 	m_TileCollisionEnable = true;
-	m_MonsterInfo.HP = 7000;
-	m_MonsterInfo.HPMax = 7000;
-	m_MonsterInfo.Level = 50;
-	m_MonsterInfo.Attack = 10;
+	m_MonsterInfo.HP = Info.HP;
+	m_MonsterInfo.HPMax = Info.HPMax;
+	m_MonsterInfo.Level = Info.Level;
+	m_MonsterInfo.Attack = Info.Attack;
 
 
 	m_FiniteStateTimeTable[(int)Monster_State::Idle] = (float)(rand() % 5) + 1.f;
@@ -320,6 +322,7 @@ void CLowerClassBook::CollisionBeginCallback(const CollisionResult& Result)
 			return;
 
 		((CPlayer2D*)Object)->SetDamage((float)m_MonsterInfo.Attack, false);
+		((CPlayer2D*)Object)->SetOnHit(true);
 	}
 }
 

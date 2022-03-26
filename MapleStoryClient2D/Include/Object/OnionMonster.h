@@ -50,6 +50,7 @@ public:
     void ReturnIdle();
     void FiniteState(float DeltaTime);
     void PushDeadPosition(const Vector3& Pos);
+    class CItemOnion* DropItemOnion();
 
 public:
     void CollisionBeginCallback(const CollisionResult& Result);

@@ -4,6 +4,9 @@
 #include "../Scene/SceneManager.h"
 #include "../PathManager.h"
 #include "../Component/TileMapComponent.h"
+#include "../Component/ColliderBox2D.h"
+#include "../Component/ColliderCircle.h"
+#include "../Component/ColliderPixel.h"
 
 CGameObject::CGameObject()	:
 	m_Scene(nullptr),
@@ -46,7 +49,24 @@ CGameObject::CGameObject(const CGameObject& obj)
 
 CGameObject::~CGameObject()
 {
-	//m_SceneComponentList.clear();
+	auto iter = m_SceneComponentList.begin();
+	auto iterEnd = m_SceneComponentList.end();
+
+	for (; iter != iterEnd; ++iter)
+	{
+		if ((*iter)->GetTypeID() == typeid(CColliderComponent).hash_code()
+			|| (*iter)->GetTypeID() == typeid(CColliderBox2D).hash_code()
+			|| (*iter)->GetTypeID() == typeid(CColliderCircle).hash_code()
+			|| (*iter)->GetTypeID() == typeid(CColliderPixel).hash_code())
+		{
+			CSceneCollision* SceneColl = m_Scene->GetCollision();
+
+			if (SceneColl)
+			{
+				SceneColl->DeleteCollider((CColliderComponent*)(*iter));
+			}
+		}
+	}
 }
 
 void CGameObject::SetScene(CScene* Scene)

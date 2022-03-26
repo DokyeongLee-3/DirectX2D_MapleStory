@@ -65,6 +65,7 @@ bool CPathManager::Init()
     AddPath(SCENE_PATH, TEXT("Scene\\"));
     AddPath(SOUND_PATH, TEXT("Sound\\"));
     AddPath(PLAYER_TEXTURE_PATH, TEXT("Texture\\Player\\"));
+    AddPath(MONSTERINFO_PATH, TEXT("MonsterInfo\\"));
 
     return true;
 }

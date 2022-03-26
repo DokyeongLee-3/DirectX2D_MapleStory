@@ -60,7 +60,8 @@
 #define	ANIMATION_PATH			"Animation"
 #define	SCENE_PATH				"Scene"
 #define	SOUND_PATH				"Sound"
-#define	PLAYER_TEXTURE_PATH				"PlayerTexture"
+#define	PLAYER_TEXTURE_PATH		"PlayerTexture"
+#define MONSTERINFO_PATH		"MonsterInfo"
 
 #define SAFE_DELETE(p) if(p) { delete p; p = nullptr; }
 #define SAFE_DELETE_ARRAY(p) if(p) { delete[] p; p = nullptr;}
@@ -428,6 +429,7 @@ struct MovingTileInfo
 	float Opacity;
 	Vector3 Empty;
 };
+
 
 //struct NavWorkData
 //{

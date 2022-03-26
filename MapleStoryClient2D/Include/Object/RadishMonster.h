@@ -48,6 +48,7 @@ public:
     void ReturnIdle();
     void FiniteState(float DeltaTime);
     virtual void SetTrackState();
+    class CItemRadish* DropItemRadish();
 
 public:
     void CollisionBeginCallback(const CollisionResult& Result);

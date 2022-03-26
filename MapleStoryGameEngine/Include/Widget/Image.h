@@ -16,6 +16,8 @@ protected:
 	WidgetImageInfo	m_Info;
 	std::function<void()>	m_ClickCallback;
 	std::function<void()>	m_DoubleClickCallback;
+	std::function<void()>	m_HoverCallback;
+	std::function<void()>	m_HoverEndCallback;
 	bool m_MoveXAllowed;
 	bool m_MoveYAllowed;
 	bool m_Clicked;
@@ -23,6 +25,7 @@ protected:
 	int m_FrameCount;
 	bool m_PrevFrameClick;
 	bool m_CurrentFrameClick;
+	bool m_PrevHovered;
 
 public:
 	void SetClicked(bool Clicked)
@@ -111,5 +114,16 @@ public:
 		m_ClickCallback = std::bind(Func);
 	}
 
+	template <typename T>
+	void SetHoverCallback(T* Obj, void (T::* Func)())
+	{
+		m_HoverCallback = std::bind(Func, Obj);
+	}
+
+	template <typename T>
+	void SetHoverEndCallback(T* Obj, void (T::* Func)())
+	{
+		m_HoverEndCallback = std::bind(Func, Obj);
+	}
 };
 

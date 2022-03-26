@@ -37,6 +37,8 @@ private:
 	CSharedPtr<CButton> m_INTUp;
 	CSharedPtr<CButton> m_LUKUp;
 
+	CSharedPtr<CImage>	m_BlankCollider;
+
 public:
 	void SetHP(int Number);
 	void SetMP(int Number);
@@ -54,6 +56,7 @@ public:
 	virtual CStatWindow* Clone();
 
 public:
+	void DragWindow();
 	void AutoAllocateButton();
 	void UpSTRButton();
 	void UpDEXButton();

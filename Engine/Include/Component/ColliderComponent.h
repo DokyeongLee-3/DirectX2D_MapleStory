@@ -44,6 +44,7 @@ protected:
     CSharedPtr<class CShader> m_Shader;
     CColliderConstantBuffer* m_CBuffer;
 
+
 public:
     Collider_Type GetColliderType() const
     {

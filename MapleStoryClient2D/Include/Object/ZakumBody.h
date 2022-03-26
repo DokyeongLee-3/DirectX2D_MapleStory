@@ -3,34 +3,6 @@
 #include "Component/SpriteComponent.h"
 #include "Component/ColliderBox2D.h"
 
-struct ZakumInfo
-{
-    int BodyHP;
-    int BodyHPMax;
-    int LeftArm1HP;
-    int LeftArm2HP;
-    int LeftArm3HP;
-    int LeftArm4HP;
-    int RightArm1HP;
-    int RightArm2HP;
-    int RightArm3HP;
-    int RightArm4HP;
-
-    ZakumInfo() :
-        BodyHP(100000),
-        BodyHPMax(300000),
-        LeftArm1HP(30000),
-        LeftArm2HP(30000),
-        LeftArm3HP(30000),
-        LeftArm4HP(30000),
-        RightArm1HP(30000),
-        RightArm2HP(30000),
-        RightArm3HP(30000),
-        RightArm4HP(30000)
-    {
-    }
-};
-
 class CZakumBody :
     public CMonster
 {

@@ -17,6 +17,7 @@ protected:
 private:
 	CSharedPtr<CImage> m_Background;
 	CSharedPtr<CButton>	m_Button;
+	CSharedPtr<CImage>	m_BlankCollider;
 
 public:
 	virtual void Start();
@@ -28,5 +29,6 @@ public:
 
 public:
 	void CreateWayToZakumScene();
+	void DragWindow();
 };
 

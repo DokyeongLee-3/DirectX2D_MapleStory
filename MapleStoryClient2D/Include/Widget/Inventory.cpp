@@ -6,10 +6,22 @@
 #include "Input.h"
 #include "Scene/Scene.h"
 #include "Scene/SceneResource.h"
+#include "../Scene/WayToZakumScene.h"
+#include "../Scene/OnionScene.h"
+#include "../Scene/RadishScene.h"
+#include "../Scene/Library2ndScene.h"
+#include "../Object/Player2D.h"
+#include "Scene/SceneManager.h"
+#include "Render/RenderManager.h"
+#include "ToolTip.h"
 
 CInventory::CInventory()    :
     m_SlotSize(30.f, 30.f),
-    m_CurrentOpenTab(nullptr)
+    m_CurrentOpenTab(nullptr),
+    m_LastAddRow(0),
+    m_LastAddColumn(-1),
+    m_RowLimit(5),
+    m_ColumnLimit(3)
 {
 }
 
@@ -150,7 +162,24 @@ bool CInventory::Init()
     m_CurrentOpenTab = m_EquipmentTab;
     m_CurrentOpenTabCatogory = Item_Category::Equipment;
 
-    AddItem(TEXT("UI/Inventory/02001527.info.icon.png"),"BroiledEels", Item_Category::Consume, Vector2(31.f, 17.f), 999, 0, 0);
+    // 장어 구이
+    AddItem(TEXT("UI/Inventory/02001527.info.icon.png"), "BroiledEels", Item_Category::Consume, Vector2(31.f, 17.f), 999, 0, 0);
+
+    ItemState* ItState = FindItemState("BroiledEels");
+
+    ItState->ItemIcon->SetHoverCallback<CInventory>(this, &CInventory::ShowBroiledEelsToolTip);
+    ItState->ItemIcon->SetHoverEndCallback<CInventory>(this, &CInventory::HideBroiledEelsToolTip);
+
+    // 귀환 주문서
+    AddItem(TEXT("UI/Inventory/02030000.info.icon.png"), "ReturnScroll", Item_Category::Consume, Vector2(32.f, 30.f), 100, 0, 1);
+
+    ItState = FindItemState("ReturnScroll");
+
+    ItState->ItemIcon->SetHoverCallback<CInventory>(this, &CInventory::ShowReturnScrollToolTip);
+    ItState->ItemIcon->SetHoverEndCallback<CInventory>(this, &CInventory::HideReturnScrollToolTip);
+
+    CImage* Icon = ItState->ItemIcon;
+    Icon->SetDoubleClickCallback<CInventory>(this, &CInventory::ReturnScrollUse);
 
     return true;
 }
@@ -226,61 +255,90 @@ CInventory* CInventory::Clone()
     return new CInventory(*this);
 }
 
-void CInventory::AddItem(const TCHAR* FileName, const std::string& Name, Item_Category Category, const Vector2& IconSize, int Count, int Row, int Column)
+void CInventory::AddItem(const TCHAR* FileName, const std::string& Name, Item_Category Category, const Vector2& IconSize, 
+    int Count, int Row, int Column)
 {
-    ItemState* ITState = new ItemState;
+    ItemState* ITState = FindItemState(Name);
 
-    ITState->Name = Name;
-    ITState->Count = Count;
-    ITState->Category = Category;
-    ITState->Row = Row;
-    ITState->Column = Column;
+    if (ITState)
+        ITState->Count++;
 
-    std::vector<TCHAR*> vecFileName;
-
-    for (int i = 0; i < 10; ++i)
+    else
     {
-        TCHAR* FileName = new TCHAR[MAX_PATH];
-        memset(FileName, 0, sizeof(TCHAR) * MAX_PATH);
+        if (m_LastAddColumn == m_ColumnLimit)
+        {
+            ++m_LastAddRow;
+            m_LastAddColumn = 0;
+        }
 
-        wsprintf(FileName, TEXT("UI/Inventory/InvenNumber%d.png"), i);
+        else
+        {
+            ++m_LastAddColumn;
+        }
 
-        vecFileName.push_back(FileName);
+        ITState = new ItemState;
+
+        ITState->Name = Name;
+        ITState->Count = Count;
+        ITState->Category = Category;
+        ITState->Row = Row;
+        ITState->Column = Column;
+
+        std::vector<TCHAR*> vecFileName;
+
+        for (int i = 0; i < 10; ++i)
+        {
+            TCHAR* FileName = new TCHAR[MAX_PATH];
+            memset(FileName, 0, sizeof(TCHAR) * MAX_PATH);
+
+            wsprintf(FileName, TEXT("UI/Inventory/ItemNo.%d.png"), i);
+
+            vecFileName.push_back(FileName);
+        }
+
+        // 슬롯과 슬롯의 가로 간격은 10, 세로 간격은 13
+        float OffsetX = 12.f;
+        float OffsetY = 13.f;
+
+        // 슬롯의 좌상단부터 시작
+        Vector2 SlotLeftTop = Vector2(14.f, 325.f);
+        Vector2 NewSlotLeftTop = Vector2(SlotLeftTop.x + (m_SlotSize.x + OffsetX) * Column, SlotLeftTop.y + ((m_SlotSize.y + OffsetY) * -Row));
+
+        CImage* ItemIcon = CreateWidget<CImage>(Name);
+        ItemIcon->SetTexture(Name, FileName);
+        ItemIcon->SetPos(NewSlotLeftTop.x + 1.f, NewSlotLeftTop.y - IconSize.y - 4.f);
+        ItemIcon->SetSize(IconSize.x, IconSize.y);
+        ItemIcon->SetMouseCollisionEnable(true);
+        ItemIcon->SetZOrder(2);
+        ITState->ItemIcon = ItemIcon;
+
+        CNumber* ItemNumber = CreateWidget<CNumber>("ItemCountNumber");
+        ItemNumber->SetTexture("ItemCountNumber", vecFileName);
+        ItemNumber->SetNumber(Count);
+
+        int DigitCount = Count / 10;
+        int DigitCount2 = 0;
+
+        if (DigitCount >= 10)
+            DigitCount2 = 4;
+        else if (DigitCount2 >= 1)
+            DigitCount2 = 3;
+        else
+            DigitCount2 = 2;
+
+        ItemNumber->SetPos(NewSlotLeftTop.x + m_SlotSize.x - (DigitCount2 * 4.f), NewSlotLeftTop.y - m_SlotSize.y - 1.f);
+        ItemNumber->SetZOrder(5);
+        ITState->ItemCountWidget = ItemNumber;
+
+        for (int i = 0; i < 10; ++i)
+        {
+            SAFE_DELETE_ARRAY(vecFileName[i]);
+        }
+
+        vecFileName.clear();
+
+        m_vecInventoryItem.push_back(ITState);
     }
-
-    // 슬롯과 슬롯의 가로 간격은 10, 세로 간격은 13
-    float OffsetX = 12.f;
-    float OffsetY = 13.f;
-
-
-	// 슬롯의 좌상단부터 시작
-	Vector2 SlotLeftTop = Vector2(m_Pos.x + 14.f, m_Pos.y + 325.f);
-	Vector2 NewSlotLeftTop = Vector2(SlotLeftTop.x + (m_SlotSize.x + OffsetX) * Column, SlotLeftTop.y + ((m_SlotSize.y + OffsetY) * -Row));
-
-    CImage* ItemIcon = CreateWidget<CImage>(Name);
-    ItemIcon->SetTexture(Name, FileName);
-    ItemIcon->SetPos(NewSlotLeftTop.x, NewSlotLeftTop.y - IconSize.y - 6.f);
-    ItemIcon->SetSize(IconSize.x, IconSize.y);
-    ItemIcon->SetMouseCollisionEnable(true);
-    ItemIcon->SetZOrder(2);
-    ITState->ItemIcon = ItemIcon;
-
-    CNumber* ItemNumber = CreateWidget<CNumber>("ItemNumber");
-    ItemNumber->SetTexture("ItemNumber", vecFileName);
-    ItemNumber->SetSize(7.f, 9.f);
-    ItemNumber->SetPos(NewSlotLeftTop.x + m_SlotSize.x / 2.f - 3.f, NewSlotLeftTop.y - m_SlotSize.y - 3.f);
-    ItemNumber->SetNumber(Count);
-    ItemNumber->SetZOrder(3);
-    ITState->ItemCountWidget = ItemNumber;
-
-    for (int i = 0; i < 10; ++i)
-    {
-        SAFE_DELETE_ARRAY(vecFileName[i]);
-    }
-
-    vecFileName.clear();
-
-    m_vecInventoryItem.push_back(ITState);
 }
 
 void CInventory::ConsumeItem(const std::string& Name, int ConsumeCount)
@@ -292,7 +350,317 @@ void CInventory::ConsumeItem(const std::string& Name, int ConsumeCount)
         if (m_vecInventoryItem[i]->Name == Name)
         {
             m_vecInventoryItem[i]->Count -= ConsumeCount;
-            return;
+
+            if (m_vecInventoryItem[i]->Count == 0)
+            {
+                auto iter = m_vecInventoryItem.begin();
+
+                CImage* Image = m_vecInventoryItem[i]->ItemIcon;
+                CNumber* Number = m_vecInventoryItem[i]->ItemCountWidget;
+
+                Image->Destroy();
+                Number->Destroy();
+
+                std::advance(iter, i);
+
+                SAFE_DELETE(m_vecInventoryItem[i]);
+
+                m_vecInventoryItem.erase(iter);
+
+                return;
+            }
+        }
+    }
+}
+
+ItemState* CInventory::FindItemState(const std::string& Name)
+{
+    size_t Count = m_vecInventoryItem.size();
+
+    for (size_t i = 0; i < Count; ++i)
+    {
+        if (m_vecInventoryItem[i]->Name == Name)
+            return m_vecInventoryItem[i];
+    }
+
+    return nullptr;
+}
+
+void CInventory::ReturnScrollUse()
+{
+    CScene* CurrentScene = m_Viewport->GetScene();
+
+    if (!CurrentScene)
+        return;
+
+    CSceneMode* Mode = CurrentScene->GetSceneMode();
+
+    if (!Mode)
+        return;
+
+    CPlayer2D* Player = (CPlayer2D*)CurrentScene->GetPlayerObject();
+
+    if (!Player)
+        return;
+
+    if (Mode->GetTypeID() == typeid(CWayToZakumScene).hash_code())
+    {
+        Player->ClearListCollision();
+        CWayToZakumScene* CurrentMode = (CWayToZakumScene*)Mode;
+        CRenderManager::GetInst()->SetStartFadeIn(true);
+        CSceneManager::GetInst()->SetFadeInEndCallback<CWayToZakumScene>(CurrentMode, &CWayToZakumScene::CreateLobbyScene);
+        ConsumeItem("ReturnScroll", 1);
+    }
+
+    else if (Mode->GetTypeID() == typeid(COnionScene).hash_code())
+    {
+        Player->ClearListCollision();
+        COnionScene* CurrentMode = (COnionScene*)Mode;
+        CRenderManager::GetInst()->SetStartFadeIn(true);
+        CSceneManager::GetInst()->SetFadeInEndCallback<COnionScene>(CurrentMode, &COnionScene::CreateLobbyScene);
+        ConsumeItem("ReturnScroll", 1);
+    }
+
+    else if (Mode->GetTypeID() == typeid(CRadishScene).hash_code())
+    {
+        Player->ClearListCollision();
+        CRadishScene* CurrentMode = (CRadishScene*)Mode;
+        CRenderManager::GetInst()->SetStartFadeIn(true);
+        CSceneManager::GetInst()->SetFadeInEndCallback<CRadishScene>(CurrentMode, &CRadishScene::CreateLobbyScene);
+        ConsumeItem("ReturnScroll", 1);
+    }
+
+    else if (Mode->GetTypeID() == typeid(CLibrary2ndScene).hash_code())
+    {
+        Player->ClearListCollision();
+        CLibrary2ndScene* CurrentMode = (CLibrary2ndScene*)Mode;
+        CRenderManager::GetInst()->SetStartFadeIn(true);
+        CSceneManager::GetInst()->SetFadeInEndCallback<CLibrary2ndScene>(CurrentMode, &CLibrary2ndScene::CreateLobbyScene);
+        ConsumeItem("ReturnScroll", 1);
+    }
+
+    else
+        return;
+}
+
+void CInventory::ShowBroiledEelsToolTip()
+{
+    ItemState* ItState = FindItemState("BroiledEels");
+
+    CWidgetWindow* ToolTipWindow = ItState->HoverToolTipWindow;
+
+    if (ToolTipWindow)
+    {
+        ToolTipWindow->Enable(true);
+        ToolTipWindow->SetZOrder(m_ZOrder + 1);
+    }
+    
+    else
+    {
+        int ZOrder = ItState->ItemIcon->GetZOrder();
+        Vector2 IconPos = ItState->ItemIcon->GetWidgetPos();
+
+        CToolTip* BroiledEelsToolTipWindow = m_Viewport->CreateWidgetWindow<CToolTip>("BroiledEelsToolTipWindow");
+        BroiledEelsToolTipWindow->SetOwnerInventory(this);
+        BroiledEelsToolTipWindow->SetPos(IconPos.x + 240.f, IconPos.y);
+        BroiledEelsToolTipWindow->SetZOrder(m_ZOrder + 1);
+        BroiledEelsToolTipWindow->GetToolTipItemIcon()->SetTexture("BroiledEelsToolTipIcon", TEXT("UI/ToolTip/02001527.info.iconRaw.ToolTip.png"));
+        BroiledEelsToolTipWindow->GetToolTipItemIcon()->SetSize(54.f, 30.f);
+        BroiledEelsToolTipWindow->GetToolTipTitle()->SetText(TEXT("장어 구이"));
+        BroiledEelsToolTipWindow->GetToolTipTitle()->SetColor(1.f, 1.f, 1.f);
+        BroiledEelsToolTipWindow->GetToolTipTitle()->SetPos(150.f, 128.f);
+        BroiledEelsToolTipWindow->GetToolTipContents()->SetText(TEXT("잘 양념된 장어 구이이다.\nHP를 약 1000 회복시켜 준다."));
+        BroiledEelsToolTipWindow->GetToolTipContents()->SetColor(1.f, 1.f, 1.f);
+
+        BroiledEelsToolTipWindow->GetToolTipBack()->SetZOrder(ZOrder + 1);
+        BroiledEelsToolTipWindow->GetToolTipItemIconBack()->SetZOrder(ZOrder + 2);
+        BroiledEelsToolTipWindow->GetToolTipItemIcon()->SetZOrder(ZOrder + 3);
+        BroiledEelsToolTipWindow->GetToolTipTitle()->SetZOrder(ZOrder + 2);
+        BroiledEelsToolTipWindow->GetToolTipContents()->SetZOrder(ZOrder + 2);
+
+        ItState->HoverToolTipWindow = BroiledEelsToolTipWindow;
+    }
+}
+
+void CInventory::ShowReturnScrollToolTip()
+{
+    ItemState* ItState = FindItemState("ReturnScroll");
+
+    CWidgetWindow* ToolTipWindow = ItState->HoverToolTipWindow;
+
+    if (ToolTipWindow)
+    {
+        ToolTipWindow->Enable(true);
+        ToolTipWindow->SetZOrder(m_ZOrder + 1);
+    }
+
+    else
+    {
+        int ZOrder = ItState->ItemIcon->GetZOrder();
+        Vector2 IconPos = ItState->ItemIcon->GetWidgetPos();
+
+        CToolTip* ReturnScrollToolTipWindow = m_Viewport->CreateWidgetWindow<CToolTip>("ReturnScrollToolTipWindow");
+        ReturnScrollToolTipWindow->SetOwnerInventory(this);
+        ReturnScrollToolTipWindow->SetPos(IconPos.x + 240.f, IconPos.y);
+        ReturnScrollToolTipWindow->SetZOrder(m_ZOrder + 1);
+        ReturnScrollToolTipWindow->GetToolTipItemIcon()->SetTexture("ReturnScrollToolTipIcon", TEXT("UI/ToolTip/02030000.info.iconRaw.ToolTip.png"));
+        ReturnScrollToolTipWindow->GetToolTipItemIcon()->SetSize(52.f, 46.f); 
+        ReturnScrollToolTipWindow->GetToolTipItemIcon()->SetPos(53.f, 70.f);
+        ReturnScrollToolTipWindow->GetToolTipTitle()->SetText(TEXT("마을 귀환 주문서"));
+        ReturnScrollToolTipWindow->GetToolTipTitle()->SetColor(1.f, 1.f, 1.f);
+        ReturnScrollToolTipWindow->GetToolTipTitle()->SetPos(145.f, 128.f);
+        ReturnScrollToolTipWindow->GetToolTipContents()->SetText(TEXT("현재 위치에서 가장 가까운 마을로 귀환할 수 있는 주문서이다. 한번 사용하면 사라진다. 모든 마을 잡화 상점에서 구매할 수 있다."));
+        ReturnScrollToolTipWindow->GetToolTipContents()->SetColor(1.f, 1.f, 1.f);
+        ReturnScrollToolTipWindow->GetToolTipContents()->SetPos(130.f, 35.f);
+        ReturnScrollToolTipWindow->GetToolTipContents()->SetSize(150.f, 90.f);
+
+        ReturnScrollToolTipWindow->GetToolTipBack()->SetZOrder(ZOrder + 1);
+        ReturnScrollToolTipWindow->GetToolTipItemIconBack()->SetZOrder(ZOrder + 2);
+        ReturnScrollToolTipWindow->GetToolTipItemIcon()->SetZOrder(ZOrder + 3);
+        ReturnScrollToolTipWindow->GetToolTipTitle()->SetZOrder(ZOrder + 2);
+        ReturnScrollToolTipWindow->GetToolTipContents()->SetZOrder(ZOrder + 2);
+
+        ItState->HoverToolTipWindow = ReturnScrollToolTipWindow;
+    }
+}
+
+void CInventory::HideBroiledEelsToolTip()
+{
+    ItemState* ItState = FindItemState("BroiledEels");
+
+    CWidgetWindow* ToolTipWindow = ItState->HoverToolTipWindow;
+
+    if (ToolTipWindow)
+        ToolTipWindow->Enable(false);
+}
+
+void CInventory::HideReturnScrollToolTip()
+{
+    ItemState* ItState = FindItemState("ReturnScroll");
+
+    CWidgetWindow* ToolTipWindow = ItState->HoverToolTipWindow;
+
+    if (ToolTipWindow)
+        ToolTipWindow->Enable(false);
+}
+
+void CInventory::ShowItemOnionToolTip()
+{
+    ItemState* ItState = FindItemState("ItemOnion");
+
+    CWidgetWindow* ToolTipWindow = ItState->HoverToolTipWindow;
+
+    if (ToolTipWindow)
+    {
+        ToolTipWindow->Enable(true);
+        ToolTipWindow->SetZOrder(m_ZOrder + 1);
+    }
+
+    else
+    {
+        int ZOrder = ItState->ItemIcon->GetZOrder();
+        Vector2 IconPos = ItState->ItemIcon->GetWidgetPos();
+
+        CToolTip* ItemOnionToolTipWindow = m_Viewport->CreateWidgetWindow<CToolTip>("ItemOnionToolTipWindow");
+        ItemOnionToolTipWindow->SetOwnerInventory(this);
+        ItemOnionToolTipWindow->SetPos(IconPos.x + 240.f, IconPos.y);
+        ItemOnionToolTipWindow->SetZOrder(m_ZOrder + 1);
+        ItemOnionToolTipWindow->GetToolTipItemIcon()->SetTexture("ItemOnionToolTipIcon", TEXT("UI/ToolTip/04000996.info.icon.ToolTip.png"));
+        ItemOnionToolTipWindow->GetToolTipItemIcon()->SetSize(52.f, 46.f);
+        ItemOnionToolTipWindow->GetToolTipItemIcon()->SetPos(53.f, 70.f);
+        ItemOnionToolTipWindow->GetToolTipTitle()->SetText(TEXT("싱싱한 양파"));
+        ItemOnionToolTipWindow->GetToolTipTitle()->SetColor(1.f, 1.f, 1.f);
+        ItemOnionToolTipWindow->GetToolTipTitle()->SetPos(145.f, 128.f);
+        ItemOnionToolTipWindow->GetToolTipContents()->SetText(TEXT("[LV.35] 굉장히 싱싱한 양파.\n야채가 걸어다닐만큼 싱싱해 보인다는 건 바로 이런걸 말하는 게 아닐까."));
+        ItemOnionToolTipWindow->GetToolTipContents()->SetColor(1.f, 1.f, 1.f);
+        ItemOnionToolTipWindow->GetToolTipContents()->SetPos(130.f, 35.f);
+        ItemOnionToolTipWindow->GetToolTipContents()->SetSize(150.f, 90.f);
+
+        ItemOnionToolTipWindow->GetToolTipBack()->SetZOrder(ZOrder + 1);
+        ItemOnionToolTipWindow->GetToolTipItemIconBack()->SetZOrder(ZOrder + 2);
+        ItemOnionToolTipWindow->GetToolTipItemIcon()->SetZOrder(ZOrder + 3);
+        ItemOnionToolTipWindow->GetToolTipTitle()->SetZOrder(ZOrder + 2);
+        ItemOnionToolTipWindow->GetToolTipContents()->SetZOrder(ZOrder + 2);
+
+        ItState->HoverToolTipWindow = ItemOnionToolTipWindow;
+    }
+}
+
+void CInventory::ShowItemRadishToolTip()
+{
+    ItemState* ItState = FindItemState("ItemRadish");
+
+    CWidgetWindow* ToolTipWindow = ItState->HoverToolTipWindow;
+
+    if (ToolTipWindow)
+    {
+        ToolTipWindow->Enable(true);
+        ToolTipWindow->SetZOrder(m_ZOrder + 1);
+    }
+
+    else
+    {
+        int ZOrder = ItState->ItemIcon->GetZOrder();
+        Vector2 IconPos = ItState->ItemIcon->GetWidgetPos();
+
+        CToolTip* ItemRadishToolTipWindow = m_Viewport->CreateWidgetWindow<CToolTip>("ItemRadishToolTipWindow");
+        ItemRadishToolTipWindow->SetOwnerInventory(this);
+        ItemRadishToolTipWindow->SetPos(IconPos.x + 240.f, IconPos.y);
+        ItemRadishToolTipWindow->SetZOrder(m_ZOrder + 1);
+        ItemRadishToolTipWindow->GetToolTipItemIcon()->SetTexture("ItemRadishToolTipIcon", TEXT("UI/ToolTip/04000997.info.icon.ToolTip.png"));
+        ItemRadishToolTipWindow->GetToolTipItemIcon()->SetSize(52.f, 46.f);
+        ItemRadishToolTipWindow->GetToolTipItemIcon()->SetPos(53.f, 70.f);
+        ItemRadishToolTipWindow->GetToolTipTitle()->SetText(TEXT("순무의 싹"));
+        ItemRadishToolTipWindow->GetToolTipTitle()->SetColor(1.f, 1.f, 1.f);
+        ItemRadishToolTipWindow->GetToolTipTitle()->SetPos(145.f, 128.f);
+        ItemRadishToolTipWindow->GetToolTipContents()->SetText(TEXT("[LV.35] 굉장히 싱싱한 순무의 싹.\n야채가 걸어다닐만큼 싱싱해 보인다는 건 바로 이런걸 말하는 게 아닐까."));
+        ItemRadishToolTipWindow->GetToolTipContents()->SetColor(1.f, 1.f, 1.f);
+        ItemRadishToolTipWindow->GetToolTipContents()->SetPos(130.f, 35.f);
+        ItemRadishToolTipWindow->GetToolTipContents()->SetSize(155.f, 90.f);
+        ItemRadishToolTipWindow->GetToolTipItemIcon()->SetPos(57.f, 71.f);
+
+        ItemRadishToolTipWindow->GetToolTipBack()->SetZOrder(ZOrder + 1);
+        ItemRadishToolTipWindow->GetToolTipItemIconBack()->SetZOrder(ZOrder + 2);
+        ItemRadishToolTipWindow->GetToolTipItemIcon()->SetZOrder(ZOrder + 3);
+        ItemRadishToolTipWindow->GetToolTipTitle()->SetZOrder(ZOrder + 2);
+        ItemRadishToolTipWindow->GetToolTipContents()->SetZOrder(ZOrder + 2);
+
+        ItState->HoverToolTipWindow = ItemRadishToolTipWindow;
+    }
+}
+
+void CInventory::HideItemOnionToolTip()
+{
+    ItemState* ItState = FindItemState("ItemOnion");
+
+    CWidgetWindow* ToolTipWindow = ItState->HoverToolTipWindow;
+
+    if (ToolTipWindow)
+        ToolTipWindow->Enable(false);
+}
+
+void CInventory::HideItemRadishToolTip()
+{
+    ItemState* ItState = FindItemState("ItemRadish");
+
+    CWidgetWindow* ToolTipWindow = ItState->HoverToolTipWindow;
+
+    if (ToolTipWindow)
+        ToolTipWindow->Enable(false);
+}
+
+void CInventory::TurnOffAllToolTip()
+{
+    size_t Count = m_vecInventoryItem.size();
+
+    for (size_t i = 0; i < Count; ++i)
+    {
+        CWidgetWindow* HoverWindow = m_vecInventoryItem[i]->HoverToolTipWindow;
+
+        if (HoverWindow)
+        {
+            if (HoverWindow->IsEnable())
+                HoverWindow->Enable(false);
         }
     }
 }

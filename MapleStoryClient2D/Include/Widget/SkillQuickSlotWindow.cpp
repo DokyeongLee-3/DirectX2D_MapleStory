@@ -3,8 +3,11 @@
 #include "Scene/Scene.h"
 #include "../Object/Player2D.h"
 #include "../Object/PlayerSkillInfo.h"
+#include "Widget/Number.h"
 
-CSkillQuickSlotWindow::CSkillQuickSlotWindow()
+CSkillQuickSlotWindow::CSkillQuickSlotWindow()	:
+	m_Offset(5.f, 5.f),
+	m_SlotSize(30.f, 30.f)
 {
 }
 
@@ -18,6 +21,12 @@ CSkillQuickSlotWindow::CSkillQuickSlotWindow(const CSkillQuickSlotWindow& window
 
 CSkillQuickSlotWindow::~CSkillQuickSlotWindow()
 {
+	size_t Count = m_vecQuickSlotItem.size();
+
+	for (int i = 0; i < Count; ++i)
+	{
+		SAFE_DELETE(m_vecQuickSlotItem[i]);
+	}
 }
 
 void CSkillQuickSlotWindow::Start()
@@ -76,12 +85,22 @@ bool CSkillQuickSlotWindow::Init()
 	m_DeathSideProgressBar->SetOpacity(0.7f);
 	m_DeathSideProgressBar->SetZOrder(6);
 
+	RegisterItem("BroiledEels", "1", 1, 4, 999);
+
 	return true;
 }
 
 void CSkillQuickSlotWindow::Update(float DeltaTime)
 {
 	CWidgetWindow::Update(DeltaTime);
+
+	size_t Count = m_vecQuickSlotItem.size();
+
+	for (size_t i = 0; i < Count; ++i)
+	{
+		int ItemCount = m_vecQuickSlotItem[i]->Count;
+		m_vecQuickSlotItem[i]->ItemCountWidget->SetNumber(ItemCount);
+	}
 }
 
 void CSkillQuickSlotWindow::PostUpdate(float DeltaTime)
@@ -125,4 +144,74 @@ void CSkillQuickSlotWindow::Render()
 CSkillQuickSlotWindow* CSkillQuickSlotWindow::Clone()
 {
 	return new CSkillQuickSlotWindow(*this);
+}
+
+void CSkillQuickSlotWindow::RegisterItem(const std::string& Name, const std::string& RegisterKey, int Row, int Column, int Count)
+{
+	QuickSlotItemState* ItState = new QuickSlotItemState;
+
+	ItState->Count = Count;
+	ItState->Name = Name;
+	ItState->RegisterKey = RegisterKey;
+
+	std::vector<TCHAR*> vecFileName;
+
+	for (int i = 0; i < 10; ++i)
+	{
+		TCHAR* FileName = new TCHAR[MAX_PATH];
+		memset(FileName, 0, sizeof(TCHAR) * MAX_PATH);
+
+		wsprintf(FileName, TEXT("UI/Inventory/ItemNo.%d.png"), i);
+
+		vecFileName.push_back(FileName);
+	}
+
+	CNumber* QuickSlotItemNumber = CreateWidget<CNumber>("QuickSlotItemNumber");
+	QuickSlotItemNumber->SetTexture("QuickSlotItemNumber", vecFileName);
+	//ItemNumber->SetSize(7.f, 9.f);
+	QuickSlotItemNumber->SetPos(3.f + Column * m_SlotSize.x + Column * m_Offset.x + 3.f, 3.f + Row * m_SlotSize.y + Row * m_Offset.y + 1.f);
+	QuickSlotItemNumber->SetNumber(Count);
+	QuickSlotItemNumber->SetZOrder(7);
+
+	ItState->ItemCountWidget = QuickSlotItemNumber;
+
+
+	m_vecQuickSlotItem.push_back(ItState);
+
+	for (int i = 0; i < 10; ++i)
+	{
+		SAFE_DELETE_ARRAY(vecFileName[i]);
+	}
+
+	vecFileName.clear();
+
+}
+
+void CSkillQuickSlotWindow::ConsumeItem(const std::string& Name, int ConsumeCount)
+{
+	size_t Count = m_vecQuickSlotItem.size();
+
+	for (size_t i = 0; i < Count; ++i)
+	{
+		if (m_vecQuickSlotItem[i]->Name == Name)
+		{
+			m_vecQuickSlotItem[i]->Count = m_vecQuickSlotItem[i]->Count - ConsumeCount;
+			
+			if (m_vecQuickSlotItem[i]->Count < 0)
+				m_vecQuickSlotItem[i]->Count = 0;
+		}
+	}
+}
+
+QuickSlotItemState* CSkillQuickSlotWindow::FindRegisterItem(const std::string& RegisterKey)
+{
+	size_t Count = m_vecQuickSlotItem.size();
+
+	for (size_t i = 0; i < Count; ++i)
+	{
+		if (m_vecQuickSlotItem[i]->RegisterKey == RegisterKey)
+			return m_vecQuickSlotItem[i];
+	}
+
+	return nullptr;
 }

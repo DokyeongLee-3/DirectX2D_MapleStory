@@ -1,5 +1,6 @@
 
 #include "WayToZakumScene.h"
+#include "LobbyScene.h"
 #include "Scene/Scene.h"
 #include "Scene/SceneResource.h"
 #include "Scene/SceneManager.h"
@@ -43,6 +44,12 @@ void CWayToZakumScene::Start()
 	if (m_PlayerObject)
 	{
 		CWidgetWindow* Window = ((CPlayer2D*)m_PlayerObject.Get())->GetDamageWidgetComponent()->GetWidgetWindow();
+
+		Window->SetViewport(m_Scene->GetViewport());
+
+		Window->GetViewport()->SetScene(m_Scene);
+
+		Window = ((CPlayer2D*)m_PlayerObject.Get())->GetNameWidgetComponent()->GetWidgetWindow();
 
 		Window->SetViewport(m_Scene->GetViewport());
 
@@ -208,6 +215,7 @@ void CWayToZakumScene::LoadSound()
 
 	m_Scene->GetResource()->LoadSound("Effect", false, "LevelUp", "LevelUp.mp3");
 	m_Scene->GetResource()->LoadSound("Effect", false, "DropItem", "DropItem.mp3");
+	m_Scene->GetResource()->LoadSound("Effect", false, "EatItem", "ItemEat.mp3");
 
 	m_Scene->GetResource()->LoadSound("UI", false, "TabClick", "TabClick.mp3");
 	m_Scene->GetResource()->LoadSound("UI", false, "UIOpen", "UIOpen.mp3");
@@ -255,6 +263,32 @@ void CWayToZakumScene::CreateZakumAltarScene()
 
 	m_LoadingThread = CThread::CreateThread<CLoadingThread>("ZakumAltarSceneLoadingThread");
 	m_LoadingThread->SetLoadingScene(ThreadLoadingScene::ZakumAltar);
+
+	m_LoadingThread->Start();
+}
+
+void CWayToZakumScene::CreateLobbyScene()
+{
+	m_Scene->GetResource()->SoundStop("WayToZakumBGM");
+
+	CSceneManager::GetInst()->CreateNextScene(false);
+	CLobbyScene* LobbyScene = CSceneManager::GetInst()->CreateSceneModeEmpty<CLobbyScene>(false);
+
+	LobbyScene->SetPlayerObject(m_PlayerObject);
+
+	// 다음 Scene에서의 위치를 Scene의 왼쪽에 위치하도록 잡아주기
+	Vector3 WorldPos = m_PlayerObject->GetWorldPos();
+	m_PlayerObject->SetWorldPos(1750.f, 300.f, WorldPos.z);
+
+	//SAFE_DELETE(m_LoadingThread);
+	m_LoadingThread = CThread::CreateThread<CLoadingThread>("LobbySceneLoadingThread");
+	m_LoadingThread->SetLoadingScene(ThreadLoadingScene::Lobby);
+
+	if (((CPlayer2D*)m_PlayerObject.Get())->IsDead())
+	{
+		((CPlayer2D*)m_PlayerObject.Get())->ReturnAlive();
+	}
+
 
 	m_LoadingThread->Start();
 }

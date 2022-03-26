@@ -89,7 +89,7 @@ CBill* CMonster::DropBill()
 
 	Vector3 Pos = GetWorldPos();
 
-	Bill->SetWorldPos(Pos.x, Pos.y + 10.f, Pos.z);
+	Bill->SetWorldPos(Pos.x - 10.f, Pos.y + 10.f, Pos.z);
 	
 	return Bill;
 }

@@ -181,6 +181,8 @@
     <ClCompile Include="Object\DeathSideHitEffect.cpp" />
     <ClCompile Include="Object\DoubleHelixBlinkTree.cpp" />
     <ClCompile Include="Object\FlowingVolcano.cpp" />
+    <ClCompile Include="Object\ItemOnion.cpp" />
+    <ClCompile Include="Object\ItemRadish.cpp" />
     <ClCompile Include="Object\LampLight.cpp" />
     <ClCompile Include="Object\LobbyBigLamp.cpp" />
     <ClCompile Include="Object\LobbySmallLamp.cpp" />
@@ -241,9 +243,11 @@
     <ClCompile Include="Widget\MouseNormal.cpp" />
     <ClCompile Include="Widget\NPCName.cpp" />
     <ClCompile Include="Widget\PlayerDamageFont.cpp" />
+    <ClCompile Include="Widget\PlayerName.cpp" />
     <ClCompile Include="Widget\SkillQuickSlotWindow.cpp" />
     <ClCompile Include="Widget\StartWidget.cpp" />
     <ClCompile Include="Widget\StatWindow.cpp" />
+    <ClCompile Include="Widget\ToolTip.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation\DeathSideAnimation.h" />
@@ -270,6 +274,8 @@
     <ClInclude Include="Object\DeathSideHitEffect.h" />
     <ClInclude Include="Object\DoubleHelixBlinkTree.h" />
     <ClInclude Include="Object\FlowingVolcano.h" />
+    <ClInclude Include="Object\ItemOnion.h" />
+    <ClInclude Include="Object\ItemRadish.h" />
     <ClInclude Include="Object\LampLight.h" />
     <ClInclude Include="Object\LobbyBigLamp.h" />
     <ClInclude Include="Object\LobbySmallLamp.h" />
@@ -331,9 +337,11 @@
     <ClInclude Include="Widget\MouseNormal.h" />
     <ClInclude Include="Widget\NPCName.h" />
     <ClInclude Include="Widget\PlayerDamageFont.h" />
+    <ClInclude Include="Widget\PlayerName.h" />
     <ClInclude Include="Widget\SkillQuickSlotWindow.h" />
     <ClInclude Include="Widget\StartWidget.h" />
     <ClInclude Include="Widget\StatWindow.h" />
+    <ClInclude Include="Widget\ToolTip.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MapleStoryClient2D.rc" />

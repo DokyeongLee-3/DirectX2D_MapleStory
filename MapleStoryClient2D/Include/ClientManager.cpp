@@ -26,6 +26,12 @@
 #include "Input.h"
 #include "Widget/MouseNormal.h"
 #include "Widget/MouseClick.h"
+#include "Widget/ToolTip.h"
+#include "PathManager.h"
+
+#include <istream>
+#include <fstream>
+#include <sstream>
 
 DEFINITION_SINGLE(CClientManager)
 
@@ -85,6 +91,139 @@ bool CClientManager::Init(HINSTANCE hInst)
 	CMouseClick* MouseClick = CEngine::GetInst()->CreateMouse<CMouseClick>(Mouse_State::Click, "MouseClick");
 
 
+	const PathInfo* Info = CPathManager::GetInst()->FindPath("MonsterInfo");
+
+	TCHAR FullPath[MAX_PATH] = {};
+	wcscpy_s(FullPath, Info->Path);
+	wcscat_s(FullPath, TEXT("MonsterInfo.csv"));
+
+	std::ifstream file(FullPath);
+
+	if (file.fail())
+		return true;
+
+	std::string InfoStr;
+
+	int Count = 0;
+	while (std::getline(file, InfoStr))
+	{
+		++Count;
+
+		if (Count == 1)
+			continue;
+
+		std::string Delimiter = ",";
+		size_t FirstPos = 0;
+
+		std::stringstream sstream(InfoStr);
+		std::string SubStr;
+		std::vector<std::string>	vecStr;
+
+		while(std::getline(sstream, SubStr, ','))
+		{
+			vecStr.push_back(SubStr);
+		}
+
+		MonsterInfo MInfo = {};
+
+		if (vecStr[0] != "Zakum")
+		{
+			MInfo.Name = vecStr[0];
+
+			std::stringstream ss;
+
+			ss << vecStr[1];
+			ss >> MInfo.Level;
+
+			ss = std::stringstream();
+
+			ss << vecStr[2];
+			ss >> MInfo.HPMax;
+
+			ss = std::stringstream();
+
+			ss << vecStr[3];
+			ss >> MInfo.HP;
+
+			ss = std::stringstream();
+
+			ss << vecStr[4];
+			ss >> MInfo.Attack;
+
+			m_vecMonsterInfo.push_back(MInfo);
+		}
+
+		else
+		{
+			ZakumInfo ZInfo = {};
+
+			std::stringstream ss;
+
+			ss << vecStr[1];
+			ss >> ZInfo.Level;
+
+			ss = std::stringstream();
+
+			ss << vecStr[2];
+			ss >> ZInfo.BodyHPMax;
+
+			ss = std::stringstream();
+
+			ss << vecStr[3];
+			ss >> ZInfo.BodyHP;
+
+			ss = std::stringstream();
+
+			ss << vecStr[5];
+			ss >> ZInfo.LeftArm1HP;
+			ss = std::stringstream();
+
+			ss << vecStr[6];
+			ss >> ZInfo.LeftArm2HP;
+			ss = std::stringstream();
+
+			ss << vecStr[7];
+			ss >> ZInfo.LeftArm3HP;
+			ss = std::stringstream();
+
+			ss << vecStr[8];
+			ss >> ZInfo.LeftArm4HP;
+			ss = std::stringstream();
+
+			ss << vecStr[9];
+			ss >> ZInfo.RightArm1HP;
+			ss = std::stringstream();
+
+			ss << vecStr[10];
+			ss >> ZInfo.RightArm2HP;
+			ss = std::stringstream();
+
+			ss << vecStr[11];
+			ss >> ZInfo.RightArm3HP;
+			ss = std::stringstream();
+
+			ss << vecStr[12];
+			ss >> ZInfo.RightArm4HP;
+			ss = std::stringstream();
+
+			ss << vecStr[13];
+			ss >> ZInfo.ClapAttack;
+			ss = std::stringstream();
+
+			ss << vecStr[14];
+			ss >> ZInfo.SmashAttack;
+			ss = std::stringstream();
+
+			ss << vecStr[15];
+			ss >> ZInfo.FireAttack;
+
+			m_ZakumInfo = ZInfo;
+		}
+
+	}
+
+
+	file.close(); //파일 입출력 완료 후 닫아준다.
 
 	return true;
 }
@@ -433,7 +572,14 @@ void CClientManager::TurnOffWindow(float DeltaTime)
 			{
 				return;
 			}
-
+			
+			if (TopMostWindow->GetTypeID() == typeid(CToolTip).hash_code())
+			{
+				// 툴팁도 꺼주고, 툴팁을 나오게한 인벤토리도 꺼줘야함
+				((CToolTip*)TopMostWindow)->GetOwnerInventory()->Enable(false);
+				TopMostWindow->Enable(false);
+				return;
+			}
 			// 캐릭터 HP/MP UI, 경험치UI, 스킬 퀵슬롯 UI들은 전부 ZOrder가 1로 되어있으므로 1보다는 무조건 크게해야함
 			TopMostWindow->SetZOrder(2);
 			TopMostWindow->Enable(false);
@@ -467,6 +613,8 @@ void CClientManager::OnOffInventory(float DeltaTime)
 					Inventory->Enable(false);
 					// 캐릭터 HP/MP UI, 경험치UI, 스킬 퀵슬롯 UI들은 전부 ZOrder가 1로 되어있으므로 1보다는 무조건 크게해야함
 					Inventory->SetZOrder(2);
+
+					Inventory->TurnOffAllToolTip();
 				}
 
 				else
@@ -631,6 +779,21 @@ void CClientManager::NextMonsterState(Monster_State& State)
 	default:
 		State = Monster_State::Idle;
 	}
+}
+
+MonsterInfo CClientManager::FindMonsterInfo(const std::string& Name)
+{
+	size_t Count = m_vecMonsterInfo.size();
+
+	for (size_t i = 0; i < Count; ++i)
+	{
+		if (m_vecMonsterInfo[i].Name == Name)
+			return m_vecMonsterInfo[i];
+	}
+	
+	MonsterInfo DefaultInfo;
+
+	return DefaultInfo;
 }
 
 //bool CClientManager::IsCritical(int Factor)

@@ -50,7 +50,6 @@ CColliderComponent::~CColliderComponent()
 
 		// 나는 이제 제거되니 나랑 충돌됐던 대상에게 m_Result에 나를 설정해놓지 말라고한다
 		(*iter)->m_Result.Dest = nullptr;
-		
 	}
 }
 

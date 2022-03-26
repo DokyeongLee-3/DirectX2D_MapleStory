@@ -76,6 +76,9 @@
     <Filter Include="02. Object\05. MapObject\02. WayToZakum">
       <UniqueIdentifier>{5ce0a072-d003-4d25-9b3f-9f51608998a3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Object\08. DropItem">
+      <UniqueIdentifier>{d4054e55-79ba-4925-b78a-8fdfa730744d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -264,9 +267,6 @@
     <ClCompile Include="Widget\StatWindow.cpp">
       <Filter>03. UI\02. InGame</Filter>
     </ClCompile>
-    <ClCompile Include="Object\Bill.cpp">
-      <Filter>02. Object</Filter>
-    </ClCompile>
     <ClCompile Include="Object\Tomb.cpp">
       <Filter>02. Object</Filter>
     </ClCompile>
@@ -337,6 +337,21 @@
       <Filter>03. UI\02. InGame</Filter>
     </ClCompile>
     <ClCompile Include="Widget\AmonDialog.cpp">
+      <Filter>03. UI\02. InGame</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\Bill.cpp">
+      <Filter>02. Object\08. DropItem</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\ItemRadish.cpp">
+      <Filter>02. Object\08. DropItem</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\ItemOnion.cpp">
+      <Filter>02. Object\08. DropItem</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\PlayerName.cpp">
+      <Filter>03. UI\02. InGame</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\ToolTip.cpp">
       <Filter>03. UI\02. InGame</Filter>
     </ClCompile>
   </ItemGroup>
@@ -530,9 +545,6 @@
     <ClInclude Include="Widget\StatWindow.h">
       <Filter>03. UI\02. InGame</Filter>
     </ClInclude>
-    <ClInclude Include="Object\Bill.h">
-      <Filter>02. Object</Filter>
-    </ClInclude>
     <ClInclude Include="Object\Tomb.h">
       <Filter>02. Object</Filter>
     </ClInclude>
@@ -603,6 +615,21 @@
       <Filter>03. UI\02. InGame</Filter>
     </ClInclude>
     <ClInclude Include="Widget\AmonDialog.h">
+      <Filter>03. UI\02. InGame</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Bill.h">
+      <Filter>02. Object\08. DropItem</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\ItemRadish.h">
+      <Filter>02. Object\08. DropItem</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\ItemOnion.h">
+      <Filter>02. Object\08. DropItem</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\PlayerName.h">
+      <Filter>03. UI\02. InGame</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\ToolTip.h">
       <Filter>03. UI\02. InGame</Filter>
     </ClInclude>
   </ItemGroup>

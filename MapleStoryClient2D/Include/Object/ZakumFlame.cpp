@@ -6,7 +6,7 @@
 #include "Scene/SceneManager.h"
 
 CZakumFlame::CZakumFlame() :
-	m_CollisionFrequency(2.5f),
+	m_CollisionFrequency(1.8f),
 	m_AccTime(0.f),
 	m_CollisionStart(false)
 {
@@ -67,6 +67,9 @@ void CZakumFlame::Update(float DeltaTime)
 			m_CollisionStart = false;
 
 			CPlayer2D* Player = (CPlayer2D*)m_Scene->GetPlayerObject();
+
+			Player->SetFlameCollision(false);
+
 			CColliderBox2D* PlayerBody = Player->GetPlayerBody();
 
 			m_Body->DeletePrevCollision(PlayerBody);
@@ -91,7 +94,13 @@ void CZakumFlame::CollisionBeginCallback(const CollisionResult& Result)
 
 	if (DestObj->GetTypeID() == typeid(CPlayer2D).hash_code())
 	{
+		if (m_CollisionStart)
+			return;
+
 		CPlayer2D* Player = (CPlayer2D*)DestObj;
+
+		if (Player->IsFlameCollsion())
+			return;
 
 		// 플레이어가 죽은 상태거나 Scene전환중이면 충돌처리 X
 		if (Player->IsDead() || CSceneManager::GetInst()->GetNextScene())
@@ -100,7 +109,11 @@ void CZakumFlame::CollisionBeginCallback(const CollisionResult& Result)
 		if (m_Scene->GetSceneMode()->GetTypeID() != typeid(CZakumAltarScene).hash_code())
 			return;
 
-		Player->SetDamage(300.f);
+		int FlameDamage = CClientManager::GetInst()->GetZakumInfo().FireAttack;
+
+		Player->SetDamage((float)FlameDamage);
+		Player->SetFlameCollision(true);
 		m_CollisionStart = true;
+		m_AccTime = 0.f;
 	}
 }

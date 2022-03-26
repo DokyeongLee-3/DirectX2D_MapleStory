@@ -40,10 +40,10 @@ bool CNPCName::Init()
 	m_NPCName->SetAlphaEnable(true);
 	m_NPCName->SetFont("Default");
 
-	m_DoubleClickFrame = CreateWidget<CImage>("BlackFrame");
+	m_DoubleClickFrame = CreateWidget<CImage>("NPCBlankFrame");
 	m_DoubleClickFrame->SetPos(0.f, 10.f);
 	m_DoubleClickFrame->SetSize(40.f, 65.f);
-	m_DoubleClickFrame->SetTexture("BlackFrame", TEXT("NPC/BlankFrame.png"));
+	m_DoubleClickFrame->SetTexture("NPCBlankFrame", TEXT("NPC/BlankFrame.png"));
 	m_DoubleClickFrame->SetMouseCollisionEnable(true);
 	m_DoubleClickFrame->SetDoubleClickCallback<CNPCName>(this, &CNPCName::OpenDialog);
 

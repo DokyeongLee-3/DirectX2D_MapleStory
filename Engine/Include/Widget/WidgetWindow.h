@@ -151,5 +151,20 @@ public:
 
 		return Widget;
 	}
+
+	void DeleteWidget(const std::string& Name)
+	{
+		auto	iter = m_WidgetList.begin();
+		auto	iterEnd = m_WidgetList.end();
+
+		for (; iter != iterEnd; ++iter)
+		{
+			if ((*iter)->GetName() == Name)
+			{
+				m_WidgetList.erase(iter);
+				return;
+			}
+		}
+	}
 };
 

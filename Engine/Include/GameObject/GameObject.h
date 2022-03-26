@@ -46,7 +46,7 @@ protected:
 
 	Vector3     m_DirVector;
 	Vector3     m_DirRotation;
-	
+
 public:
 	void SetTileCollisionEnable(bool Enable)
 	{

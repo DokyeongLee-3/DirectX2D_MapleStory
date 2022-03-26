@@ -26,6 +26,21 @@ CSceneCollision::~CSceneCollision()
 	SAFE_DELETE(m_Section);
 }
 
+void CSceneCollision::DeleteCollider(CColliderComponent* Collider)
+{
+	auto iter = m_ColliderList.begin();
+	auto iterEnd = m_ColliderList.end();
+
+	for (; iter != iterEnd; ++iter)
+	{
+		if ((*iter) == Collider)
+		{
+			m_ColliderList.erase(iter);
+			return;
+		}
+	}
+}
+
 void CSceneCollision::Start()
 {
 }

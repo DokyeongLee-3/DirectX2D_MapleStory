@@ -77,6 +77,7 @@ private:
     CSharedPtr<CCameraComponent>    m_Camera;
 
     CSharedPtr<CWidgetComponent>    m_DamageWidgetComponent;
+    CSharedPtr<CWidgetComponent>    m_NameWidgetComponent;
 
     class CVoidPressure*            m_VoidPressure;
     class CVoidPressureOrb*         m_VoidPressureOrb;
@@ -132,6 +133,7 @@ private:
     float       m_AccCameraShakeSingleDirTime;
     Vector3     m_OriginRelativeCamPos;
     Vector2     m_CameraShakeDir;
+    bool        m_FlameCollision;
 
 public:
     class CPlayerSkillInfo* GetPlayerSkillInfo()   const;
@@ -221,6 +223,11 @@ public:
         return m_LopeJump;
     }
 
+    bool    IsFlameCollsion()   const
+    {
+        return m_FlameCollision;
+    }
+
     void SetLopeJump(bool LopeJump)
     {
         m_LopeJump = LopeJump;
@@ -256,6 +263,11 @@ public:
         m_Dir = Dir;
     }
 
+    void SetFlameCollision(bool FlameCollision)
+    {
+        m_FlameCollision = FlameCollision;
+    }
+
     CSpriteComponent* GetRootSpriteComponent()    const
     {
         return m_BodySprite;
@@ -278,9 +290,19 @@ public:
         return m_DamageWidgetComponent;
     }
 
+    CWidgetComponent* GetNameWidgetComponent()  const
+    {
+        return m_NameWidgetComponent;
+    }
+
     bool IsDead()   const
     {
         return m_Dead;
+    }
+
+    void SetOnHit(bool OnHit)
+    {
+        m_OnHit = OnHit;
     }
 
 public:
@@ -302,7 +324,7 @@ private:
     void VoidPressure(float DeltaTime);
     void LightTransforming(float DeltaTime);
     void DeathSide(float DeltaTime);
-
+    void UseNum1QuickSlotItem(float DeltaTime);
 
 
 public:

@@ -12,6 +12,7 @@
 
 struct MonsterInfo
 {
+	std::string Name;
 	int Level;
 	int HPMax;
 	int HP;
@@ -22,6 +23,42 @@ struct MonsterInfo
 		HPMax(100),
 		HP(100),
 		Attack(10)
+	{
+	}
+};
+
+struct ZakumInfo
+{
+	int Level;
+	int BodyHP;
+	int BodyHPMax;
+	int LeftArm1HP;
+	int LeftArm2HP;
+	int LeftArm3HP;
+	int LeftArm4HP;
+	int RightArm1HP;
+	int RightArm2HP;
+	int RightArm3HP;
+	int RightArm4HP;
+	int ClapAttack;
+	int SmashAttack;
+	int FireAttack;
+
+	ZakumInfo() :
+		Level(200),
+		BodyHP(300000),
+		BodyHPMax(300000),
+		LeftArm1HP(30000),
+		LeftArm2HP(30000),
+		LeftArm3HP(30000),
+		LeftArm4HP(30000),
+		RightArm1HP(30000),
+		RightArm2HP(30000),
+		RightArm3HP(30000),
+		RightArm4HP(30000),
+		ClapAttack(9999),
+		SmashAttack(100),
+		FireAttack(100)
 	{
 	}
 };
@@ -42,6 +79,9 @@ private:
 	CBossMatching*           m_BossMatchingWindow;
 	CStatWindow*			 m_StatWindow;
 	CDyingNoticeWindow*      m_DyingNoticeWindow;
+
+	std::vector<MonsterInfo> m_vecMonsterInfo;
+	ZakumInfo					m_ZakumInfo;
 
 public:
 	void SetStatWindow(CStatWindow* Window)
@@ -131,6 +171,11 @@ public:
 		return m_StatWindow;
 	}
 
+	const ZakumInfo&	GetZakumInfo()	const
+	{
+		return m_ZakumInfo;
+	}
+
 public:
 	void CreateSceneMode(class CScene* Scene, size_t Type);
 	class CGameObject* CreateObject(class CScene* Scene, size_t Type);
@@ -149,6 +194,7 @@ public:
 	//bool IsCritical(int Factor);
 
 	void NextMonsterState(Monster_State& State);
+	MonsterInfo FindMonsterInfo(const std::string& Name);
 
 	DECLARE_SINGLE(CClientManager)
 };

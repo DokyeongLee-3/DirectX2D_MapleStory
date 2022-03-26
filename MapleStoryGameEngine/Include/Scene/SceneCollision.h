@@ -53,6 +53,8 @@ public:
 		return m_MouseCollision;
 	}
 
+	void DeleteCollider(class CColliderComponent* Collider);
+
 public:
 	void Start();
 	bool Init();

@@ -56,6 +56,7 @@ public:
 
 public:
     void CreateZakumAltarScene();
+    void CreateLobbyScene();
 
 public:
     template <typename T>

@@ -50,6 +50,12 @@ void CZakumAltarScene::Start()
 		Window->SetViewport(m_Scene->GetViewport());
 
 		Window->GetViewport()->SetScene(m_Scene);
+
+		Window = ((CPlayer2D*)m_PlayerObject.Get())->GetNameWidgetComponent()->GetWidgetWindow();
+
+		Window->SetViewport(m_Scene->GetViewport());
+
+		Window->GetViewport()->SetScene(m_Scene);
 	}
 }
 
@@ -339,7 +345,9 @@ void CZakumAltarScene::LoadSound()
 	m_Scene->GetResource()->LoadSound("Effect", false, "DeathSideUse", "DeathSideUse.mp3");
 
 	m_Scene->GetResource()->LoadSound("Effect", false, "LevelUp", "LevelUp.mp3");
+	m_Scene->GetResource()->LoadSound("Effect", false, "Tombstone", "Tombstone.mp3");
 	m_Scene->GetResource()->LoadSound("Effect", false, "DropItem", "DropItem.mp3");
+	m_Scene->GetResource()->LoadSound("Effect", false, "EatItem", "ItemEat.mp3");
 
 	m_Scene->GetResource()->LoadSound("UI", false, "TabClick", "TabClick.mp3");
 }

@@ -1,5 +1,6 @@
 
 #include "BossMatching.h"
+#include "Input.h"
 #include "Widget/Image.h"
 #include "Scene/SceneManager.h"
 #include "Scene/Scene.h"
@@ -54,6 +55,14 @@ bool CBossMatching::Init()
 
     m_Button->SetSound(Button_Sound_State::MouseOn, "UI", "ButtonMouseOn", "BtMouseOver.mp3");
     m_Button->SetSound(Button_Sound_State::Click, "UI", "ButtonClick", "BtMouseClick.mp3");
+
+    m_BlankCollider = CreateWidget<CImage>("BlankCollider");
+    m_BlankCollider->SetTexture("BlankCollider", TEXT("UI/BlankCollider.png"));
+    m_BlankCollider->SetPos(10.f, 360.f);
+    m_BlankCollider->SetSize(245.f, 20.f);
+    m_BlankCollider->SetMouseCollisionEnable(true);
+    m_BlankCollider->SetClickCallback(this, &CBossMatching::DragWindow);
+    m_BlankCollider->SetZOrder(2);
 
     return true;
 }
@@ -117,4 +126,13 @@ void CBossMatching::CreateWayToZakumScene()
             CSceneManager::GetInst()->SetFadeInEndCallback<CLibrary2ndScene>(Scene, &CLibrary2ndScene::CreateWayToZakumScene);
         }
     }
+}
+
+void CBossMatching::DragWindow()
+{
+    Vector2 MouseMove = CInput::GetInst()->GetMouseMove();
+
+    m_Pos += MouseMove;
+
+    m_BlankCollider->SetClicked(false);
 }

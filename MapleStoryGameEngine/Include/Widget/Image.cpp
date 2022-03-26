@@ -14,7 +14,9 @@ CImage::CImage() :
 	m_Clicked(false),
 	m_ClickCount(0),
 	m_FrameCount(0),
-	m_PrevFrameClick(false)
+	m_PrevFrameClick(false),
+	m_HoverCallback(nullptr),
+	m_PrevHovered(false)
 {
 }
 
@@ -240,6 +242,12 @@ void CImage::PostUpdate(float DeltaTime)
 
 	if (m_CollisionMouseEnable && m_MouseHovered)
 	{
+		if (m_HoverCallback)
+		{
+			m_HoverCallback();
+			m_PrevHovered = true;
+		}
+
 		if (CInput::GetInst()->GetMouseLButtonClick())
 		{
 			++m_ClickCount;
@@ -268,6 +276,13 @@ void CImage::PostUpdate(float DeltaTime)
 				m_DoubleClickCallback();
 			}
 		}
+	}
+
+	// 마우스가 이제 hover되지 않고 벗어났을때
+	else if (m_PrevHovered && m_HoverEndCallback)
+	{
+		m_HoverEndCallback();
+		m_PrevHovered = false;
 	}
 
 	m_PrevFrameClick = CInput::GetInst()->GetMouseLButtonClick();

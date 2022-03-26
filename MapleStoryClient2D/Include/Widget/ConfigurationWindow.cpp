@@ -71,6 +71,14 @@ bool CConfigurationWindow::Init()
     //CInput::GetInst()->SetKeyCallback("MouseLButton", KeyState_Down, this, &CEditorManager::MouseLButtonDown);
     //CInput::GetInst()->SetKeyCallback("MouseLButton", KeyState_Push, this, &CConfigurationWindow::MoveSlider);
 
+    m_BlankCollider = CreateWidget<CImage>("BlankCollider");
+    m_BlankCollider->SetTexture("BlankCollider", TEXT("UI/BlankCollider.png"));
+    m_BlankCollider->SetPos(5.f, 420.f);
+    m_BlankCollider->SetSize(260.f, 50.f);
+    m_BlankCollider->SetMouseCollisionEnable(true);
+    m_BlankCollider->SetClickCallback(this, &CConfigurationWindow::DragWindow);
+    m_BlankCollider->SetZOrder(3);
+
     return true;
 }
 
@@ -110,6 +118,15 @@ void CConfigurationWindow::Render()
 CConfigurationWindow* CConfigurationWindow::Clone()
 {
     return new CConfigurationWindow(*this);
+}
+
+void CConfigurationWindow::DragWindow()
+{
+    Vector2 MouseMove = CInput::GetInst()->GetMouseMove();
+
+    m_Pos += MouseMove;
+
+    m_BlankCollider->SetClicked(false);
 }
 
 

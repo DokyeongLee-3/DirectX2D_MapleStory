@@ -17,6 +17,7 @@ private:
 	CSharedPtr<CImage> m_Configuration;
 	CSharedPtr<CImage>	m_BGMSoundSlider;
 	CSharedPtr<CImage>	m_EffectSoundSlider;
+	CSharedPtr<CImage>	m_BlankCollider;
 
 	float m_BGMSoundSliderLeftMostXPos;
 	float m_BGMSoundSliderRightMostXPos;
@@ -32,5 +33,6 @@ public:
 	virtual CConfigurationWindow* Clone();
 
 public:
+	void DragWindow();
 };
 

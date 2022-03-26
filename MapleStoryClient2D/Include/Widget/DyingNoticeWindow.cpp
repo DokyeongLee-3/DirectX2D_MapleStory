@@ -9,6 +9,7 @@
 #include "../Scene/RadishScene.h"
 #include "../Scene/WayToZakumScene.h"
 #include "../Scene/ZakumAltarScene.h"
+#include "Input.h"
 
 CDyingNoticeWindow::CDyingNoticeWindow()
 {
@@ -55,6 +56,14 @@ bool CDyingNoticeWindow::Init()
 
 	m_ConfirmButton->SetSound(Button_Sound_State::MouseOn, "UI", "ButtonMouseOn", "BtMouseOver.mp3");
 	m_ConfirmButton->SetSound(Button_Sound_State::Click, "UI", "ButtonClick", "BtMouseClick.mp3");
+
+	m_BlankCollider = CreateWidget<CImage>("BlankCollider");
+	m_BlankCollider->SetTexture("BlankCollider", TEXT("UI/BlankCollider.png"));
+	m_BlankCollider->SetPos(10.f, 55.f);
+	m_BlankCollider->SetSize(280.f, 60.f);
+	m_BlankCollider->SetMouseCollisionEnable(true);
+	m_BlankCollider->SetClickCallback(this, &CDyingNoticeWindow::DragWindow);
+	m_BlankCollider->SetZOrder(2);
 
 	return true;
 }
@@ -122,4 +131,13 @@ void CDyingNoticeWindow::ConfirmButtonCallback()
 			CSceneManager::GetInst()->SetFadeInEndCallback<CZakumAltarScene>(SceneMode, &CZakumAltarScene::CreateWayToZakumScene);
 		}
 	}
+}
+
+void CDyingNoticeWindow::DragWindow()
+{
+	Vector2 MouseMove = CInput::GetInst()->GetMouseMove();
+
+	m_Pos += MouseMove;
+
+	m_BlankCollider->SetClicked(false);
 }

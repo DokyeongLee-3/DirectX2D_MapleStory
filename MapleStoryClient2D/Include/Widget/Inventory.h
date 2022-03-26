@@ -5,17 +5,6 @@
 #include "Widget/Button.h"
 #include "Widget/Number.h"
 
-struct ItemState
-{
-	std::string Name;
-	Item_Category Category;
-	int Count;
-	int Row;
-	int Column;
-	CNumber* ItemCountWidget;
-	CImage* ItemIcon;
-};
-
 class CInventory :
     public CWidgetWindow
 {
@@ -48,6 +37,10 @@ private:
 
 	CImage*				m_CurrentOpenTab;
 	Item_Category		m_CurrentOpenTabCatogory;
+	int					m_LastAddRow;
+	int					m_LastAddColumn;
+	int					m_RowLimit;
+	int					m_ColumnLimit;
 
 public:
 	virtual void Start();
@@ -56,6 +49,27 @@ public:
 	virtual void PostUpdate(float DeltaTime);
 	virtual void Render();
 	virtual CInventory* Clone();
+
+public:
+	int GetLastAddRow()	const
+	{
+		return m_LastAddRow;
+	}
+
+	int GetLastAddColumn()	const
+	{
+		return m_LastAddColumn;
+	}
+
+	int GetRowLimit()	const
+	{
+		return m_RowLimit;
+	}
+
+	int GetColumnLimit()	const
+	{
+		return m_ColumnLimit;
+	}
 
 public:
 	void DragWindow();
@@ -68,5 +82,34 @@ public:
 	void ClickEtcTab();
 	void AddItem(const TCHAR* FileName, const std::string& Name, Item_Category Category, const Vector2& IconSize, int Count, int Row, int Column);
 	void ConsumeItem(const std::string& Name, int ConsumeCount);
+	ItemState* FindItemState(const std::string& Name);
+	void ReturnScrollUse();
+
+public:
+	int GetCategoryItemCount(Item_Category Category)
+	{
+		// 지금 추가되는 아이템과 같은 카테고리에 속한 인벤토리에 아이템 개수
+		int CategoryCount = 0;
+		size_t InvenCount = m_vecInventoryItem.size();
+
+		for (size_t i = 0; i < InvenCount; ++i)
+		{
+			if (m_vecInventoryItem[i]->Category == Category)
+				++CategoryCount;
+		}
+
+		return CategoryCount;
+	}
+
+public:
+	void ShowBroiledEelsToolTip();
+	void ShowReturnScrollToolTip();
+	void HideBroiledEelsToolTip();
+	void HideReturnScrollToolTip();
+	void ShowItemOnionToolTip();
+	void ShowItemRadishToolTip();
+	void HideItemOnionToolTip();
+	void HideItemRadishToolTip();
+	void TurnOffAllToolTip();
 };
 

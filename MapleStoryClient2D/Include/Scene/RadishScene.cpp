@@ -62,6 +62,12 @@ void CRadishScene::Start()
 		Window->SetViewport(m_Scene->GetViewport());
 
 		Window->GetViewport()->SetScene(m_Scene);
+
+		Window = ((CPlayer2D*)m_PlayerObject.Get())->GetNameWidgetComponent()->GetWidgetWindow();
+
+		Window->SetViewport(m_Scene->GetViewport());
+
+		Window->GetViewport()->SetScene(m_Scene);
 	}
 }
 
@@ -159,7 +165,7 @@ void CRadishScene::Update(float DeltaTime)
 		for (; iter != iterEnd; )
 		{
 			CRadishMonster* Radish = m_Scene->CreateGameObject<CRadishMonster>("Radish");
-			Radish->SetWorldPos((*iter));
+			Radish->SetWorldPos((*iter).x, (*iter).y + 10.f, (*iter).z);
 			Radish->GetRootComponent()->SetLayerName("MovingObjFront");
 			iter = m_DeadPos.erase(iter);
 			iterEnd = m_DeadPos.end();
@@ -269,6 +275,7 @@ void CRadishScene::LoadSound()
 	m_Scene->GetResource()->LoadSound("Effect", false, "PickUpItem", "PickUpItem.mp3");
 	m_Scene->GetResource()->LoadSound("Effect", false, "Tombstone", "Tombstone.mp3");
 	m_Scene->GetResource()->LoadSound("Effect", false, "DropItem", "DropItem.mp3");
+	m_Scene->GetResource()->LoadSound("Effect", false, "EatItem", "ItemEat.mp3");
 
 	m_Scene->GetResource()->LoadSound("UI", false, "TabClick", "TabClick.mp3");
 	m_Scene->GetResource()->LoadSound("UI", false, "UIOpen", "UIOpen.mp3");
@@ -375,7 +382,8 @@ void CRadishScene::CreateWayToZakumScene()
 	WayToZakumScene->SetPlayerObject(m_PlayerObject);
 
 	// 다음 Scene에서의 위치를 Scene의 왼쪽에 위치하도록 잡아주기
-	m_PlayerObject->SetWorldPos(250.f, 200.f, 0.f);
+	Vector3 WorldPos = m_PlayerObject->GetWorldPos();
+	m_PlayerObject->SetWorldPos(250.f, 200.f, WorldPos.z);
 
 	m_LoadingThread = CThread::CreateThread<CLoadingThread>("WayToZakumSceneLoadingThread");
 	m_LoadingThread->SetLoadingScene(ThreadLoadingScene::WayToZakum);
@@ -393,7 +401,8 @@ void CRadishScene::CreateLobbyScene()
 	LobbyScene->SetPlayerObject(m_PlayerObject);
 
 	// 다음 Scene에서의 위치를 Scene의 왼쪽에 위치하도록 잡아주기
-	m_PlayerObject->SetWorldPos(1750.f, 300.f, 0.f);
+	Vector3 WorldPos = m_PlayerObject->GetWorldPos();
+	m_PlayerObject->SetWorldPos(1750.f, 300.f, WorldPos.z);
 
 	//SAFE_DELETE(m_LoadingThread);
 	m_LoadingThread = CThread::CreateThread<CLoadingThread>("LobbySceneLoadingThread");

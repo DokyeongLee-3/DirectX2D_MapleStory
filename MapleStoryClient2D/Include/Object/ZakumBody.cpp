@@ -103,7 +103,9 @@ CZakumBody::CZakumBody() :
 	m_vecShakeRotSign[6] = -1.f;
 	m_vecShakeRotSign[7] = -1.f;
 
-	m_MonsterInfo.Level = 200;
+	m_ZakumInfo = CClientManager::GetInst()->GetZakumInfo();
+
+	m_MonsterInfo.Level = m_ZakumInfo.Level;
 }
 
 CZakumBody::CZakumBody(const CZakumBody& obj)	:
@@ -1579,13 +1581,13 @@ void CZakumBody::CollisionBeginCallback(const CollisionResult& Result)
 				PlayerInfo Info = ((CPlayer2D*)DestObj)->GetInfo();
 				int CurrentHP = Info.HP;
 
-				Player->SetDamage((float)CurrentHP);
+				Player->SetDamage((float)m_ZakumInfo.ClapAttack);
 			}
 
 			else
 			{
 				// 여러개의 손바닥이 내려칠때 하나의 손바닥에 충돌하고나면 그 턴에는 땅에 닿아있는 다른 손바닥 충돌체랑 충돌해도 충돌하면 안됨 
-				Player->SetDamage(500.f);
+				Player->SetDamage((float)m_ZakumInfo.SmashAttack);
 			}
 
 			m_LeftArm1HandAttackCollider->Enable(false);

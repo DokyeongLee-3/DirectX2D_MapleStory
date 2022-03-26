@@ -33,6 +33,7 @@ CSylphideLancer::CSylphideLancer(const CSylphideLancer& obj) :
 
 CSylphideLancer::~CSylphideLancer()
 {
+	int a = 3;
 }
 
 bool CSylphideLancer::Init()

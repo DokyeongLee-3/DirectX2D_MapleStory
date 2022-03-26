@@ -116,6 +116,7 @@ void CWidget::Render()
 	if (!m_RenderStart)
 		return;
 
+
 	Matrix	matScale, matRot, matTrans;
 
 	matScale.Scaling(m_Size.x, m_Size.y, 1.f);

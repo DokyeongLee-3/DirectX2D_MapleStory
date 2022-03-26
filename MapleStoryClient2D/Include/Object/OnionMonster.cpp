@@ -10,16 +10,19 @@
 #include "TileObject.h"
 #include "Component/TileMapComponent.h"
 #include "Render/RenderManager.h"
+#include "ItemOnion.h"
 
 COnionMonster::COnionMonster()
 {
 	SetTypeID<COnionMonster>();
 
+	MonsterInfo Info = CClientManager::GetInst()->FindMonsterInfo("OnionMonster");
+
 	m_TileCollisionEnable = true;
-	m_MonsterInfo.HP = 7000;
-	m_MonsterInfo.HPMax = 7000;
-	m_MonsterInfo.Level = 50;
-	m_MonsterInfo.Attack = 10;
+	m_MonsterInfo.HP = Info.HP;
+	m_MonsterInfo.HPMax = Info.HPMax;
+	m_MonsterInfo.Level = Info.Level;
+	m_MonsterInfo.Attack = Info.Attack;
 
 	m_FiniteStateTimeTable[(int)Monster_State::Idle] = (float)(rand() % 5) + 1.f;
 	m_FiniteStateTimeTable[(int)Monster_State::Move] = (float)(rand() % 4) + 1.f;
@@ -163,6 +166,7 @@ void COnionMonster::SetDamage(float Damage, bool Critical)
 		m_IsChanging = true;
 
 		DropBill();
+		DropItemOnion();
 
 
 		CSceneMode* SceneMode = m_Scene->GetSceneMode();
@@ -294,6 +298,18 @@ void COnionMonster::FiniteState(float DeltaTime)
 	}	
 }
 
+CItemOnion* COnionMonster::DropItemOnion()
+{
+
+	CItemOnion* ItemOnion = m_Scene->CreateGameObject<CItemOnion>("ItemOnion");
+
+	Vector3 Pos = GetWorldPos();
+
+	ItemOnion->SetWorldPos(Pos.x + 20.f, Pos.y + 10.f, Pos.z);
+
+	return ItemOnion;
+}
+
 
 void COnionMonster::CollisionBeginCallback(const CollisionResult& Result)
 {
@@ -305,6 +321,7 @@ void COnionMonster::CollisionBeginCallback(const CollisionResult& Result)
 			return;
 
 		((CPlayer2D*)Object)->SetDamage((float)m_MonsterInfo.Attack, false);
+		((CPlayer2D*)Object)->SetOnHit(true);
 	}
 }
 

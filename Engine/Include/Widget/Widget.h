@@ -44,6 +44,26 @@ struct WidgetImageInfo
 	}
 };
 
+struct ItemState
+{
+	std::string Name;
+	Item_Category Category;
+	int Count;
+	int Row;
+	int Column;
+	CSharedPtr<class CNumber> ItemCountWidget;
+	CSharedPtr<class CImage>  ItemIcon;
+	CSharedPtr<class CWidgetWindow>  HoverToolTipWindow;
+};
+
+struct QuickSlotItemState
+{
+	std::string Name;
+	std::string RegisterKey;
+	int Count;
+	CSharedPtr<class CNumber> ItemCountWidget;
+};
+
 // 위젯의 위치는 좌하단 기준
 class CWidget :
 	public CRef

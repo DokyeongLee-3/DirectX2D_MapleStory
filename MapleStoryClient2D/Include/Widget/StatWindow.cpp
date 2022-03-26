@@ -2,6 +2,7 @@
 #include "StatWindow.h"
 #include "../Object/Player2D.h"
 #include "Scene/Scene.h"
+#include "Input.h"
 
 CStatWindow::CStatWindow()
 {
@@ -86,6 +87,14 @@ bool CStatWindow::Init()
 	m_MPDelimiter->SetTexture("StatMPDelimiter", TEXT("UI/Status/StatDelimiter.png"));
 	m_MPDelimiter->SetPos(125.f, 167.f);
 	m_MPDelimiter->SetSize(6.f, 10.f);
+
+	m_BlankCollider = CreateWidget<CImage>("BlankCollider");
+	m_BlankCollider->SetTexture("BlankCollider", TEXT("UI/BlankCollider.png"));
+	m_BlankCollider->SetPos(10.f, 315.f);
+	m_BlankCollider->SetSize(200.f, 20.f);
+	m_BlankCollider->SetMouseCollisionEnable(true);
+	m_BlankCollider->SetClickCallback(this, &CStatWindow::DragWindow);
+	m_BlankCollider->SetZOrder(3);
 
 	
 	CPlayer2D* Player = (CPlayer2D*)m_Viewport->GetScene()->GetPlayerObject();
@@ -267,6 +276,15 @@ void CStatWindow::Render()
 CStatWindow* CStatWindow::Clone()
 {
 	return new CStatWindow(*this);
+}
+
+void CStatWindow::DragWindow()
+{
+	Vector2 MouseMove = CInput::GetInst()->GetMouseMove();
+
+	m_Pos += MouseMove;
+
+	m_BlankCollider->SetClicked(false);
 }
 
 void CStatWindow::AutoAllocateButton()

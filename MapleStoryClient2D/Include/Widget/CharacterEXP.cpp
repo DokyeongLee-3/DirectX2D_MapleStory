@@ -84,7 +84,7 @@ bool CCharacterEXP::Init()
     m_EXPPercent = CreateWidget<CImage>("EXPPercent");
     m_EXPPercent->SetTexture("EXPPercent", TEXT("UI/Status/number.percent.png"));
     m_EXPPercent->SetSize(7.f, 7.f);
-    m_EXPPercent->SetPos(737.f, 1.f);
+    m_EXPPercent->SetPos(738.f, 1.f);
 
     m_EXPPercentNumber = CreateWidget<CNumber>("EXPPercentNumber");
     m_EXPPercentNumber->SetTexture("EXPPercentNumber", vecFileName);

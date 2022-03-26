@@ -50,6 +50,12 @@ void CLobbyScene::Start()
 		Window->SetViewport(m_Scene->GetViewport());
 
 		Window->GetViewport()->SetScene(m_Scene);
+
+		Window = ((CPlayer2D*)m_PlayerObject.Get())->GetNameWidgetComponent()->GetWidgetWindow();
+
+		Window->SetViewport(m_Scene->GetViewport());
+
+		Window->GetViewport()->SetScene(m_Scene);
 	}
 }
 
@@ -64,6 +70,10 @@ bool CLobbyScene::Init()
 
 		SetPlayerObject(Player);
 		Player->GetRootComponent()->SetLayerName("MovingObjFront");
+		CWidgetComponent* DamageFontWidget = (CWidgetComponent*)Player->FindComponent("PlayerDamageFont");
+		DamageFontWidget->SetLayerName("ScreenWidgetComponent");
+		CWidgetComponent* PlayerNameWidget = (CWidgetComponent*)Player->FindComponent("PlayerNameWidgetComponent");
+		PlayerNameWidget->SetLayerName("ScreenWidgetComponent");
 
 		Player->SetWorldPos(400.f, 200.f, 610.f);
 
@@ -205,6 +215,7 @@ void CLobbyScene::LoadSound()
 	m_Scene->GetResource()->LoadSound("Effect", false, "LevelUp", "LevelUp.mp3");
 	m_Scene->GetResource()->LoadSound("Effect", false, "PickUpItem", "PickUpItem.mp3");
 	m_Scene->GetResource()->LoadSound("Effect", false, "DropItem", "DropItem.mp3");
+	m_Scene->GetResource()->LoadSound("Effect", false, "EatItem", "ItemEat.mp3");
 
 	m_Scene->GetResource()->LoadSound("UI", false, "TabClick", "TabClick.mp3");
 	m_Scene->GetResource()->LoadSound("UI", false, "UIOpen", "UIOpen.mp3");

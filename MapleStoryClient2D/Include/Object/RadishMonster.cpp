@@ -10,16 +10,19 @@
 #include "Player2D.h"
 #include "Component/TileMapComponent.h"
 #include "Render/RenderManager.h"
+#include "ItemRadish.h"
 
 CRadishMonster::CRadishMonster()
 {
 	SetTypeID<CRadishMonster>();
 
+	MonsterInfo Info = CClientManager::GetInst()->FindMonsterInfo("RadishMonster");
+
 	m_TileCollisionEnable = true;
-	m_MonsterInfo.HP = 7000;
-	m_MonsterInfo.HPMax = 7000;
-	m_MonsterInfo.Level = 50;
-	m_MonsterInfo.Attack = 10;
+	m_MonsterInfo.HP = Info.HP;
+	m_MonsterInfo.HPMax = Info.HPMax;
+	m_MonsterInfo.Level = Info.Level;
+	m_MonsterInfo.Attack = Info.Attack;
 
 	m_FiniteStateTimeTable[(int)Monster_State::Idle] = (float)(rand() % 5) + 1.f;
 	m_FiniteStateTimeTable[(int)Monster_State::Move] = (float)(rand() % 4) + 1.f;
@@ -172,6 +175,7 @@ void CRadishMonster::SetDamage(float Damage, bool Critical)
 		m_IsChanging = true;
 
 		DropBill();
+		DropItemRadish();
 
 		CSceneMode* SceneMode = m_Scene->GetSceneMode();
 		if (SceneMode)
@@ -301,6 +305,17 @@ void CRadishMonster::SetTrackState()
 	CMonster::SetTrackState();
 }
 
+CItemRadish* CRadishMonster::DropItemRadish()
+{
+	CItemRadish* ItemRadish = m_Scene->CreateGameObject<CItemRadish>("ItemRadish");
+
+	Vector3 Pos = GetWorldPos();
+
+	ItemRadish->SetWorldPos(Pos.x + 20.f, Pos.y + 10.f, Pos.z);
+
+	return ItemRadish;
+}
+
 void CRadishMonster::CollisionBeginCallback(const CollisionResult& Result)
 {
 	CGameObject* DestObject = Result.Dest->GetGameObject();
@@ -311,6 +326,7 @@ void CRadishMonster::CollisionBeginCallback(const CollisionResult& Result)
 			return;
 
 		((CPlayer2D*)DestObject)->SetDamage((float)m_MonsterInfo.Attack, false);
+		((CPlayer2D*)DestObject)->SetOnHit(true);
 	}
 
 	if (DestObject->GetTypeID() == typeid(CTileObject).hash_code())
@@ -358,6 +374,10 @@ void CRadishMonster::CollisionBeginCallback(const CollisionResult& Result)
 
 				matRot.Rotation(ColliderRot);
 
+				if (m_DirVector == Vector3(0.f, 0.f, 0.f))
+					m_DirVector = Vector3(1.f, 0.f, 0.f);
+
+
 				m_DirVector = m_DirVector.TransformCoord(matRot);
 			}
 
@@ -378,6 +398,9 @@ void CRadishMonster::CollisionBeginCallback(const CollisionResult& Result)
 				Matrix matRot;
 
 				matRot.Rotation(m_DirRotation);
+
+				if (m_DirVector == Vector3(0.f, 0.f, 0.f))
+					m_DirVector = Vector3(1.f, 0.f, 0.f);
 
 				m_DirVector = m_DirVector.TransformCoord(matRot);
 			}

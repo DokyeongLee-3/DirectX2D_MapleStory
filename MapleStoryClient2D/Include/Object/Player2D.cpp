@@ -26,11 +26,14 @@
 #include "DeathSide.h"
 #include "PlayerSkillInfo.h"
 #include "../Widget/PlayerDamageFont.h"
+#include "../Widget/PlayerName.h"
 #include "Engine.h"
 #include "../Client.h"
 #include "Component/ColliderComponent.h"
 #include "Bill.h"
 #include "Tomb.h"
+#include "ItemOnion.h"
+#include "ItemRadish.h"
 
 CPlayer2D::CPlayer2D() :
 	m_BodySprite(nullptr),
@@ -63,7 +66,8 @@ CPlayer2D::CPlayer2D() :
 	m_CameraShakeTime(1.f),
 	m_AccCameraShakeTime(0.f),
 	m_CameraShakeDir(0.f, 1.f),
-	m_AccCameraShakeSingleDirTime(0.f)
+	m_AccCameraShakeSingleDirTime(0.f),
+	m_FlameCollision(false)
 {
 	SetTypeID<CPlayer2D>();
 	m_PlayerSkillInfo = new CPlayerSkillInfo;
@@ -110,6 +114,7 @@ bool CPlayer2D::Init()
 	m_SkillBodyEffect = CreateComponent<CSpriteComponent>("PlayerSkillBodyEffect");
 	m_PlayerOrb = CreateComponent<CSpriteComponent>("PlayerOrb");
 	m_DamageWidgetComponent = CreateComponent<CWidgetComponent>("PlayerDamageFont");
+	m_NameWidgetComponent = CreateComponent<CWidgetComponent>("PlayerNameWidgetComponent");
 
 	m_Body = CreateComponent<CColliderBox2D>("PlayerBody");
 	m_Body->SetExtent(14.f, 35.f);
@@ -131,7 +136,7 @@ bool CPlayer2D::Init()
 	
 	m_BodySprite->AddChild(m_Body);
 	m_BodySprite->AddChild(m_Camera);
-
+	m_BodySprite->AddChild(m_NameWidgetComponent);
 
 	m_BodySprite->SetTransparency(true);
 	m_SylphideLancerMirror->SetTransparency(true);
@@ -168,6 +173,15 @@ bool CPlayer2D::Init()
 
 	CPlayerDamageFont* DamageFont = m_DamageWidgetComponent->CreateWidgetWindow<CPlayerDamageFont>("DamageFontWidget");
 
+	m_NameWidgetComponent->UseAlphaBlend(true);
+	m_NameWidgetComponent->SetRelativePos(-40.f, -50.f, 0.f);
+	m_NameWidgetComponent->SetLayerName("ScreenWidgetComponent");
+	m_NameWidgetComponent->UseAlphaBlend(true);
+	m_NameWidgetComponent->SetFadeApply(true);
+
+	CPlayerName* PlayerName = m_NameWidgetComponent->CreateWidgetWindow<CPlayerName>("PlayerNameWidget");
+
+
 	CInput::GetInst()->CreateKey("MoveUp", VK_UP);
 	CInput::GetInst()->CreateKey("MoveDown", VK_DOWN);
 	CInput::GetInst()->CreateKey("MoveLeft", VK_LEFT);
@@ -179,6 +193,7 @@ bool CPlayer2D::Init()
 	CInput::GetInst()->CreateKey("DeathSide", 'E');
 	CInput::GetInst()->CreateKey("PickItem", 'X');
 	CInput::GetInst()->CreateKey("LevelUp", 'L');
+	CInput::GetInst()->CreateKey("UseNum1QuickSlotItem", '1');
 	//CInput::GetInst()->CreateKey("Flip", 'F');
 
 	CInput::GetInst()->SetKeyCallback<CPlayer2D>("MoveUp", KeyState_Push, this, &CPlayer2D::MoveUp);
@@ -189,6 +204,7 @@ bool CPlayer2D::Init()
 	CInput::GetInst()->SetKeyCallback<CPlayer2D>("MoveRight", KeyState_Up, this, &CPlayer2D::ReturnIdle);
 	CInput::GetInst()->SetKeyCallback<CPlayer2D>("MoveUp", KeyState_Up, this, &CPlayer2D::RopeActionStop);
 	CInput::GetInst()->SetKeyCallback<CPlayer2D>("MoveDown", KeyState_Up, this, &CPlayer2D::RopeActionStop);
+	CInput::GetInst()->SetKeyCallback<CPlayer2D>("UseNum1QuickSlotItem", KeyState_Down, this, &CPlayer2D::UseNum1QuickSlotItem);
 
 	CInput::GetInst()->SetKeyCallback<CPlayer2D>("SylphideLancer", KeyState_Down, this, &CPlayer2D::SylphideLancer);
 	CInput::GetInst()->SetKeyCallback<CPlayer2D>("VoidPressure", KeyState_Push, this, &CPlayer2D::VoidPressure);
@@ -248,6 +264,7 @@ void CPlayer2D::Update(float DeltaTime)
 		AddWorldPos(0.f, DeltaTime * m_JumpForce, 0.f);
 	}
 
+	// m_OnHit를 true로 만드는건 몬스터들의 CollisionBegin에서만 가능하게하고, false는 시간되면 Player가 만든다
 	if (m_OnHit && !m_Dead)
 	{
 		m_OnHitAccTime += DeltaTime;
@@ -461,7 +478,7 @@ void CPlayer2D::MoveDown(float DeltaTime)
 			//  타일 밟고 있으면서 로프 최상단에서 처음 메달려서 내려갈때
 			if (TileCollision && MyInfo.Center.y > ComponentInfo.Center.y && abs(MyInfo.Center.x - ComponentInfo.Center.x) < 8.f)
 			{
-				SetWorldPos(Component->GetWorldPos().x, GetWorldPos().y, 0.f);
+				SetWorldPos(Component->GetWorldPos().x, GetWorldPos().y, GetWorldPos().z);
 
 				m_Gravity = false;
 				m_OnJump = false;
@@ -700,7 +717,7 @@ void CPlayer2D::Jump(float DeltaTime)
 
 void CPlayer2D::SylphideLancer(float DeltaTime)
 {
-	if (m_OnJump || m_IsChanging || m_Dead)
+	if (m_OnJump || m_IsChanging || m_Dead || m_OnLope)
 		return;
 
 	SkillInfo* SkillInfo = m_PlayerSkillInfo->FindSkillInfo("SylphideLancer");
@@ -839,7 +856,7 @@ void CPlayer2D::SylphideLancer(float DeltaTime)
 
 void CPlayer2D::VoidPressure(float DeltaTime)
 {
-	if (m_OnJump || m_IsChanging || m_Dead)
+	if (m_OnJump || m_IsChanging || m_Dead || m_OnLope)
 		return;
 
 	SkillInfo* SkillInfo = m_PlayerSkillInfo->FindSkillInfo("VoidPressure");
@@ -946,8 +963,8 @@ void CPlayer2D::VoidPressure(float DeltaTime)
 		else
 			VoidPosX -= 5.f;
 
-		m_VoidPressureOrb->SetWorldPos(VoidPosX, WorldPos.y - 39.f, 0.f);
-		m_VoidPressureOrb->SetOriginPos(VoidPosX, WorldPos.y - 39.f, 0.f);
+		m_VoidPressureOrb->SetWorldPos(VoidPosX, WorldPos.y - 39.f, WorldPos.z);
+		m_VoidPressureOrb->SetOriginPos(VoidPosX, WorldPos.y - 39.f, WorldPos.z);
 	}
 }
 
@@ -1156,7 +1173,7 @@ void CPlayer2D::LightTransforming(float DeltaTime)
 
 void CPlayer2D::DeathSide(float DeltaTime)
 {
-	if (m_OnJump || m_IsChanging || m_Dead)
+	if (m_OnJump || m_IsChanging || m_Dead || m_OnLope)
 		return;
 
 	if (CRenderManager::GetInst()->GetStartFadeOut())
@@ -1197,8 +1214,55 @@ void CPlayer2D::DeathSide(float DeltaTime)
 	SkillInfo->Active = true;
 }
 
+void CPlayer2D::UseNum1QuickSlotItem(float DeltaTime)
+{
+	CSkillQuickSlotWindow* Quick = CClientManager::GetInst()->GetSkillQuickSlotWindow();
+
+	if (!Quick)
+		return;
+
+	QuickSlotItemState* State = Quick->FindRegisterItem("1");
+
+	if (!State)
+		return;
+
+	std::string Name = State->Name;
+
+	if (State)
+		Quick->ConsumeItem(Name, 1);
+
+
+	CInventory* Inven = CClientManager::GetInst()->GetInventoryWindow();
+
+	if (!Inven)
+		return;
+
+	Inven->ConsumeItem(Name, 1);
+
+	m_Scene->GetResource()->SoundPlay("EatItem");
+
+	m_PlayerInfo.HP += 1000;
+
+	if (m_PlayerInfo.HP > m_PlayerInfo.HPMax)
+		m_PlayerInfo.HP = m_PlayerInfo.HPMax;
+
+	CCharacterStatusWindow* StatusWindow = CClientManager::GetInst()->GetCharacterStatusWindow();
+
+	if (StatusWindow)
+	{
+		StatusWindow->SetCurrentHP(m_PlayerInfo.HP);
+		int CurrentHP = StatusWindow->GetCurrentHP();
+		float Percent = ((float)m_PlayerInfo.HP) / m_PlayerInfo.HPMax;
+
+		StatusWindow->SetHPPercent(Percent);
+	}
+}
+
 void CPlayer2D::VoidPressureCancle(float DeltaTime)
 {
+	if (m_OnLope || m_Dead)
+		return;
+
 	m_Scene->GetResource()->SoundPlay("VoidPressureEnd");
 	m_BodySprite->ChangeAnimation("IdleLeft");
 
@@ -1376,7 +1440,16 @@ void CPlayer2D::CollisionBeginCallback(const CollisionResult& Result)
 		DestObj->GetTypeID() == typeid(CLowerClassBook).hash_code() ||
 		DestObj->GetTypeID() == typeid(CRadishMonster).hash_code())
 	{
-		if (m_OnHit || m_OnLope || m_Dead)
+		// 몬스터가 먼저 CollisionBegin을 호출할수도, Player가 CollisionBegin을 먼저 호출할 수도 있으니
+		// 두가지 경우 모두 생각해야함
+
+		if (m_OnLope || m_Dead)
+			return;
+
+		if (m_OnKnockBack)
+			return;
+
+		if (m_OnHit && m_OnHitAccTime > 0.f)
 			return;
 
 		Vector3 DestPos = DestObj->GetWorldPos();
@@ -1389,7 +1462,7 @@ void CPlayer2D::CollisionBeginCallback(const CollisionResult& Result)
 			m_OnKnockBackLeft = true;
 
 		m_OnKnockBack = true;
-		m_OnHit = true;
+
 
 		m_GravityAccTime = 0.f;
 		m_Gravity = true;
@@ -1585,6 +1658,7 @@ void CPlayer2D::KnockBack(float DeltaTime)
 
 void CPlayer2D::SetDamage(float Damage, bool Critical)
 {
+	// m_OnHit를 true로 만드는건 몬스터들의 CollisionBegin에서만 가능하게하고, false는 시간되면 Player가 만든다
 	if (m_OnHit)
 		return;
 
@@ -1640,6 +1714,100 @@ void CPlayer2D::PickItem(float DeltaTime)
 				m_PlayerInfo.Meso += Money;
 
 				Bill->GetByPlayer();
+			}
+		}
+	}
+
+	else if (m_Body->CheckPrevCollisionGameObjectType(typeid(CItemOnion).hash_code()))
+	{
+		CColliderComponent* ItemOnionCollider = m_Body->FindPrevCollisionComponentByObjectType(typeid(CItemOnion).hash_code());
+
+		if (ItemOnionCollider)
+		{
+
+			CItemOnion* ItemOnion = (CItemOnion*)ItemOnionCollider->GetGameObject();
+
+			if (!ItemOnion->GetEatByPlayer())
+			{
+				m_Scene->GetResource()->SoundPlay("PickUpItem");
+
+				CInventory* Inven = CClientManager::GetInst()->GetInventoryWindow();
+
+				int RowLimit = Inven->GetRowLimit();
+				int ColumnLimit = Inven->GetColumnLimit();
+
+				int NewAddRow = 0;
+				int NewAddColumn = 0;
+
+				int CategoryCount = Inven->GetCategoryItemCount(Item_Category::Etc);
+
+				NewAddRow = CategoryCount / (ColumnLimit + 1);
+
+				if (CategoryCount % (ColumnLimit + 1) == 0)
+				{
+					NewAddColumn = 0;
+				}
+
+				else
+				{
+					NewAddColumn = CategoryCount;
+				}
+
+
+				Inven->AddItem(TEXT("Item/04000996.info.icon.png"), "ItemOnion", Item_Category::Etc, Vector2(29.f, 30.f), 1, NewAddRow, NewAddColumn);
+
+				ItemState* State = Inven->FindItemState("ItemOnion");
+				State->ItemIcon->SetHoverCallback<CInventory>(Inven, &CInventory::ShowItemOnionToolTip);
+				State->ItemIcon->SetHoverEndCallback<CInventory>(Inven, &CInventory::HideItemOnionToolTip);
+
+				ItemOnion->GetByPlayer();
+			}
+		}
+	}
+
+	else if (m_Body->CheckPrevCollisionGameObjectType(typeid(CItemRadish).hash_code()))
+	{
+		CColliderComponent* ItemRadishCollider = m_Body->FindPrevCollisionComponentByObjectType(typeid(CItemRadish).hash_code());
+
+		if (ItemRadishCollider)
+		{
+
+			CItemRadish* ItemRadish = (CItemRadish*)ItemRadishCollider->GetGameObject();
+
+			if (!ItemRadish->GetEatByPlayer())
+			{
+				m_Scene->GetResource()->SoundPlay("PickUpItem");
+
+				CInventory* Inven = CClientManager::GetInst()->GetInventoryWindow();
+
+				int RowLimit = Inven->GetRowLimit();
+				int ColumnLimit = Inven->GetColumnLimit();
+
+				int NewAddRow = 0;
+				int NewAddColumn = 0;
+
+				int CategoryCount = Inven->GetCategoryItemCount(Item_Category::Etc);
+
+				NewAddRow = CategoryCount / (ColumnLimit + 1);
+
+				if (CategoryCount % (ColumnLimit + 1) == 0)
+				{
+					NewAddColumn = 0;
+				}
+
+				else
+				{
+					NewAddColumn = CategoryCount;
+				}
+
+
+				Inven->AddItem(TEXT("Item/04000997.info.icon.png"), "ItemRadish", Item_Category::Etc, Vector2(29.f, 30.f), 1, NewAddRow, NewAddColumn);
+
+				ItemState* State = Inven->FindItemState("ItemRadish");
+				State->ItemIcon->SetHoverCallback<CInventory>(Inven, &CInventory::ShowItemRadishToolTip);
+				State->ItemIcon->SetHoverEndCallback<CInventory>(Inven, &CInventory::HideItemRadishToolTip);
+
+				ItemRadish->GetByPlayer();
 			}
 		}
 	}
@@ -1869,7 +2037,6 @@ void CPlayer2D::FlipAll(float DeltaTime)
 	m_PlayerOrb->SetRelativePos(RelativePos);
 
 
-
 	if (m_VoidPressure)
 	{
 		CSpriteComponent* Root = (CSpriteComponent*)m_VoidPressure->GetRootComponent();
@@ -1881,8 +2048,8 @@ void CPlayer2D::FlipAll(float DeltaTime)
 
 		float VoidPosX = PlayerWorldPos.x - RelativePos.x * 2.f;
 
-		m_VoidPressure->SetWorldPos(VoidPosX, WorldPos.y, 0.f);
-		m_VoidPressure->SetOriginPos(VoidPosX, WorldPos.y, 0.f);
+		m_VoidPressure->SetWorldPos(VoidPosX, WorldPos.y, WorldPos.z);
+		m_VoidPressure->SetOriginPos(VoidPosX, WorldPos.y, WorldPos.z);
 	}
 
 	if (m_VoidPressureOrb)
@@ -1901,8 +2068,8 @@ void CPlayer2D::FlipAll(float DeltaTime)
 		else
 			VoidPosX -= 5.f;
 
-		m_VoidPressureOrb->SetWorldPos(VoidPosX, WorldPos.y - 39.f, 0.f);
-		m_VoidPressureOrb->SetOriginPos(VoidPosX, WorldPos.y - 39.f, 0.f);
+		m_VoidPressureOrb->SetWorldPos(VoidPosX, WorldPos.y - 39.f, WorldPos.z);
+		m_VoidPressureOrb->SetOriginPos(VoidPosX, WorldPos.y - 39.f, WorldPos.z);
 	}
 }
 
