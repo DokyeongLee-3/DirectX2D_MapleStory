@@ -412,9 +412,18 @@ void CEditorMenu::ComponentCreateButton()
 		if (!Obj->GetRootComponent())
 			Obj->SetRootComponent(Com);
 		else if (!SelectComponent && Obj->GetRootComponent() != Com)
+		{
 			Obj->GetRootComponent()->AddChild(Com);
+			Com->SetRelativePos(0.f, 0.f, 0.f);
+		}
 		else
+		{
 			SelectComponent->AddChild(Com);
+			Com->SetRelativePos(0.f, 0.f, 0.f);
+		}
+
+		Com->Start();
+
 		break;
 	}
 	case SceneComponent_Type::SceneComponent:

@@ -16,6 +16,7 @@ public:
     void SetColliderColor(const Vector4& Color);
     
 public:
+    virtual void Start();
     virtual void Render();
 
 public:

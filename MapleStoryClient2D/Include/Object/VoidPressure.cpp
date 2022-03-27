@@ -8,6 +8,7 @@
 #include "Monster.h"
 #include "ZakumBody.h"
 #include "../Scene/ZakumAltarScene.h"
+#include "PlayerSkillInfo.h"
 
 CVoidPressure::CVoidPressure() :
 	m_Distance(400.f),
@@ -120,7 +121,11 @@ void CVoidPressure::CollisionBeginCallback(const CollisionResult& result)
 {
 	m_Scene->GetResource()->SoundPlay("VoidPressureHit");
 
-	PlayerInfo Info = ((CPlayer2D*)m_Scene->GetSceneMode()->GetPlayerObject())->GetInfo();
+	CPlayer2D* Player = ((CPlayer2D*)m_Scene->GetSceneMode()->GetPlayerObject());
+	PlayerInfo Info = Player->GetInfo();
+
+	CPlayerSkillInfo* SkillInfo = Player->GetPlayerSkillInfo();
+	int SkillLv = SkillInfo->FindSkillInfo("VoidPressure")->Level;
 
 	int Factor = Info.INT * Info.Level;
 
@@ -128,7 +133,7 @@ void CVoidPressure::CollisionBeginCallback(const CollisionResult& result)
 
 	int random = (RamdomNumber % (Factor / 20 + 1)) - (Factor / 30);
 
-	float Damage = Factor / 10.f + random;
+	float Damage = Factor / 10.f + random + 10 * SkillLv;
 
 	// 크리티컬 데미지가 뜬 경우 -> 추가적으로 이펙트 달아주기
 	bool IsCritical = random > 0;

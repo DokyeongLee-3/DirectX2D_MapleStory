@@ -36,6 +36,7 @@ void CZakumBody::Start()
 	//m_RightArm1Upper->SetPivot(0.f, 0.f, 0.f);
 	//m_RightArm1Hand->SetPivot(0.f, 0.f, 0.f);
 
+	CMonster::Start();
 
 	CInput::GetInst()->CreateKey("NextAnimation", 'N');
 	CInput::GetInst()->SetKeyCallback<CZakumBody>("NextAnimation", KeyState_Down, this, &CZakumBody::NextAnimation);
@@ -119,7 +120,7 @@ void CZakumBody::Update(float DeltaTime)
 		if(m_Sprite)
 			m_Sprite->SetTransparency(true);
 
-		m_LeftArm1Root->SetPivot(1.f, 0.f, 0.f);
+	/*	m_LeftArm1Root->SetPivot(1.f, 0.f, 0.f);
 		m_LeftArm1Lower->SetPivot(1.f, 0.f, 0.f);
 		m_LeftArm1Upper->SetPivot(1.f, 0.f, 0.f);
 
@@ -212,7 +213,10 @@ void CZakumBody::Update(float DeltaTime)
 			m_RightArm3Hand->SetPivot(0.5f, 0.5f, 0.f);
 
 		if (m_RightArm4Hand)
-			m_RightArm4Hand->SetPivot(0.5f, 0.5f, 0.f);
+			m_RightArm4Hand->SetPivot(0.5f, 0.5f, 0.f);*/
+
+		// 여기까지
+
 
 		/*m_LeftArm1Lower->SetInheritRotZ(true);
 		m_LeftArm1Upper->SetInheritRotZ(true);

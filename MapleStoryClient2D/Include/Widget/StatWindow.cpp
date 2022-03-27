@@ -91,7 +91,7 @@ bool CStatWindow::Init()
 	m_BlankCollider = CreateWidget<CImage>("BlankCollider");
 	m_BlankCollider->SetTexture("BlankCollider", TEXT("UI/BlankCollider.png"));
 	m_BlankCollider->SetPos(10.f, 315.f);
-	m_BlankCollider->SetSize(200.f, 20.f);
+	m_BlankCollider->SetSize(200.f, 15.f);
 	m_BlankCollider->SetMouseCollisionEnable(true);
 	m_BlankCollider->SetClickCallback(this, &CStatWindow::DragWindow);
 	m_BlankCollider->SetZOrder(3);
@@ -280,6 +280,14 @@ CStatWindow* CStatWindow::Clone()
 
 void CStatWindow::DragWindow()
 {
+	int TopMost = m_Viewport->GetTopmostWindowZOrder();
+
+	if (TopMost >= m_ZOrder)
+	{
+		m_Viewport->DecrementAllWindowZOrder();
+		m_ZOrder = TopMost;
+	}
+
 	Vector2 MouseMove = CInput::GetInst()->GetMouseMove();
 
 	m_Pos += MouseMove;

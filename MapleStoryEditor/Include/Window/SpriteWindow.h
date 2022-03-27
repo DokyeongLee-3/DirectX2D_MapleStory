@@ -41,7 +41,7 @@ private:
 	class CIMGUIText* m_CurrentFrameText;
 
 
-	//class CAnimationLoadObject* m_EditorAnimationLoadObject;
+	class CIMGUIListBox* m_SelectObjectSequenceList;
 
 public:
 	CIMGUIRadioButton* GetRadioButton()	const
@@ -125,5 +125,10 @@ public:
 public:
 	void StyleCallback();
 	void MyShowStyleEditor(ImGuiStyle* ref = (ImGuiStyle*)0);
+
+public:
+	void AddSelectObjectSequenceList(const std::vector<std::string>& vecSequence);
+	void ClearSelectObjectSequenceList();
+	void ChangeSelectObjectAnimation(int Index, const char* Item);
 };
 

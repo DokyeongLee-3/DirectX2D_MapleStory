@@ -59,8 +59,8 @@ bool CDyingNoticeWindow::Init()
 
 	m_BlankCollider = CreateWidget<CImage>("BlankCollider");
 	m_BlankCollider->SetTexture("BlankCollider", TEXT("UI/BlankCollider.png"));
-	m_BlankCollider->SetPos(10.f, 55.f);
-	m_BlankCollider->SetSize(280.f, 60.f);
+	m_BlankCollider->SetPos(10.f, 120.f);
+	m_BlankCollider->SetSize(280.f, 10.f);
 	m_BlankCollider->SetMouseCollisionEnable(true);
 	m_BlankCollider->SetClickCallback(this, &CDyingNoticeWindow::DragWindow);
 	m_BlankCollider->SetZOrder(2);
@@ -135,6 +135,14 @@ void CDyingNoticeWindow::ConfirmButtonCallback()
 
 void CDyingNoticeWindow::DragWindow()
 {
+	int TopMost = m_Viewport->GetTopmostWindowZOrder();
+
+	if (TopMost >= m_ZOrder)
+	{
+		m_Viewport->DecrementAllWindowZOrder();
+		m_ZOrder = TopMost;
+	}
+
 	Vector2 MouseMove = CInput::GetInst()->GetMouseMove();
 
 	m_Pos += MouseMove;

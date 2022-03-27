@@ -64,6 +64,15 @@ struct QuickSlotItemState
 	CSharedPtr<class CNumber> ItemCountWidget;
 };
 
+struct SkillPointInfo
+{
+	CSharedPtr<class CImage> SkillBookImage;
+	CSharedPtr<class CImage> SkillIcon;
+	CSharedPtr<class CButton>	SkillLevelUpButton;
+	CSharedPtr<class CText> SkillName;
+	CSharedPtr<class CNumber> SkillLevel;
+};
+
 // 위젯의 위치는 좌하단 기준
 class CWidget :
 	public CRef

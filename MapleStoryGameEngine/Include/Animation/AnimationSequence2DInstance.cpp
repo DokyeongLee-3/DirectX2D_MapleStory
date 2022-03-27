@@ -299,6 +299,17 @@ void CAnimationSequence2DInstance::SetCurrentAnimationFirstFrame()
 		m_CurrentAnimation->SetCurrentAnimationFirstFrame();
 }
 
+void CAnimationSequence2DInstance::GetAllAnimationSequenceName(std::vector<std::string>& vecSequenceName)
+{
+	auto iter = m_mapAnimation.begin();
+	auto iterEnd = m_mapAnimation.end();
+
+	for (; iter != iterEnd; ++iter)
+	{
+		vecSequenceName.push_back(iter->first);
+	}
+}
+
 void CAnimationSequence2DInstance::SetCurrentAnimationFrame(int Frame)
 {
 	if (m_CurrentAnimation)

@@ -19,6 +19,7 @@ private:
     CSharedPtr<CSpriteComponent>    m_Sprite;
     CSharedPtr<CColliderBox2D>      m_Body;
 
+
 public:
     CSpriteComponent* GetSpriteComponent()    const
     {

@@ -82,5 +82,7 @@ private:
 
 public:
 	void ClearHierarchyWindowInfo();
+	void ChangeSelectObjectAnimationSequence(const std::string& SequenceName);
+	float GetSequencePlayeTime(const std::string& SequenceName);
 };
 

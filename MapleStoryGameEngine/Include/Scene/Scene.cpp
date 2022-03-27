@@ -36,6 +36,15 @@ CScene::~CScene()
 	SAFE_DELETE(m_CameraManager);
 	SAFE_DELETE(m_Collision);
 	SAFE_DELETE(m_Resource);
+
+	auto iter = m_ObjList.begin();
+	auto iterEnd = m_ObjList.end();
+
+	for (; iter != iterEnd; ++iter)
+	{
+		if ((*iter)->m_Scene == this)
+			(*iter)->m_Scene = nullptr;
+	}
 }
 
 void CScene::Start()

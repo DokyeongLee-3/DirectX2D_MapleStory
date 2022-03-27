@@ -80,6 +80,7 @@ bool COnionScene::Init()
 	CBossMatching* BossMatching = CClientManager::GetInst()->GetBossMatchingWindow();
 	CStatWindow* StatWindow = CClientManager::GetInst()->GetStatWindow();
 	CDyingNoticeWindow* DyingNoticeWindow = CClientManager::GetInst()->GetDyingNoticeWindow();
+	CSkillPointWindow* SkillPointWindow = CClientManager::GetInst()->GetSkillPointWindow();
 
 	m_Scene->GetViewport()->AddWindow(StatusWindow);
 	m_Scene->GetViewport()->AddWindow(Inventory);
@@ -89,6 +90,7 @@ bool COnionScene::Init()
 	m_Scene->GetViewport()->AddWindow(BossMatching);
 	m_Scene->GetViewport()->AddWindow(StatWindow);
 	m_Scene->GetViewport()->AddWindow(DyingNoticeWindow);
+	m_Scene->GetViewport()->AddWindow(SkillPointWindow);
 
 	if (BossMatching->IsEnable())
 		BossMatching->Enable(false);
@@ -372,7 +374,10 @@ void COnionScene::CreateLobbyScene()
 
 	// 다음 Scene에서의 위치를 Scene의 왼쪽에 위치하도록 잡아주기
 	Vector3 WorldPos = m_PlayerObject->GetWorldPos();
-	m_PlayerObject->SetWorldPos(1750.f, 300.f, WorldPos.z);
+	m_PlayerObject->SetWorldPos(1750.f, 320.f, WorldPos.z);
+	
+	if (!m_PlayerObject->IsGravity())
+		m_PlayerObject->SetGravity(true);
 
 	//SAFE_DELETE(m_LoadingThread);
 	m_LoadingThread = CThread::CreateThread<CLoadingThread>("LobbySceneLoadingThread");

@@ -174,7 +174,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Object\Bill.cpp" />
     <ClCompile Include="Object\BlinkTree.cpp" />
-    <ClCompile Include="Object\BulletCamera.cpp" />
     <ClCompile Include="Object\Butterfly.cpp" />
     <ClCompile Include="Object\ClapWarning.cpp" />
     <ClCompile Include="Object\DeathSide.cpp" />
@@ -244,6 +243,7 @@
     <ClCompile Include="Widget\NPCName.cpp" />
     <ClCompile Include="Widget\PlayerDamageFont.cpp" />
     <ClCompile Include="Widget\PlayerName.cpp" />
+    <ClCompile Include="Widget\SkillPointWindow.cpp" />
     <ClCompile Include="Widget\SkillQuickSlotWindow.cpp" />
     <ClCompile Include="Widget\StartWidget.cpp" />
     <ClCompile Include="Widget\StatWindow.cpp" />
@@ -267,7 +267,6 @@
     <ClInclude Include="Component\DragCollider.h" />
     <ClInclude Include="Object\Bill.h" />
     <ClInclude Include="Object\BlinkTree.h" />
-    <ClInclude Include="Object\BulletCamera.h" />
     <ClInclude Include="Object\Butterfly.h" />
     <ClInclude Include="Object\ClapWarning.h" />
     <ClInclude Include="Object\DeathSide.h" />
@@ -338,6 +337,7 @@
     <ClInclude Include="Widget\NPCName.h" />
     <ClInclude Include="Widget\PlayerDamageFont.h" />
     <ClInclude Include="Widget\PlayerName.h" />
+    <ClInclude Include="Widget\SkillPointWindow.h" />
     <ClInclude Include="Widget\SkillQuickSlotWindow.h" />
     <ClInclude Include="Widget\StartWidget.h" />
     <ClInclude Include="Widget\StatWindow.h" />

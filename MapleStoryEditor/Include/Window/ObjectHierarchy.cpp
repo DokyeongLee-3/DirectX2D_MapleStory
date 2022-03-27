@@ -232,28 +232,26 @@ void CObjectHierarchy::SelectObject(int Index, const char* Item)
 		m_ComponentListWidget->AddItem(vecNames[i].Name);
 	}
 	
-	/*if (Size > 0)
+	CSpriteWindow* SpriteWindow = (CSpriteWindow*)CIMGUIManager::GetInst()->FindIMGUIWindow("SpriteWindow");
+
+	if (SpriteWindow)
 	{
-		if (Root->GetTypeID() == typeid(CSpriteComponent).hash_code())
+		if (m_SelectObject->GetRootComponent()->GetTypeID() == typeid(CSpriteComponent).hash_code())
 		{
-			CSpriteComponent* Sprite = (CSpriteComponent*)(Root);
+			CSpriteComponent* RootComp = (CSpriteComponent*)m_SelectObject->GetRootComponent();
+			CAnimationSequence2DInstance* Instance = RootComp->GetAnimationInstance();
 
-			if (Sprite->GetAnimationInstance() && Sprite->GetCurrentAnimation() && Sprite->GetCurrentAnimation()->GetFrameCount() > 0)
+			if (Instance)
 			{
-				float PlayTime = Sprite->GetCurrentAnimation()->GetPlayTime();
-				CEditorManager::GetInst()->GetSpriteWindow()->SetPlayTime(PlayTime);
+				std::vector<std::string> vecSequeceName;
+
+				SpriteWindow->ClearSelectObjectSequenceList();
+				Instance->GetAllAnimationSequenceName(vecSequeceName);
+
+				SpriteWindow->AddSelectObjectSequenceList(vecSequeceName);
 			}
-
-			m_ObjectLayer->SetText(Object->GetRootComponent()->GetLayerName().c_str());
-			m_ZOrder->SetValueInt(Sprite->GetZOrder());
 		}
-
-		else if (Object->GetRootComponent()->GetTypeID() == typeid(CSceneComponent).hash_code())
-		{
-			CSceneComponent* Comp = (CSceneComponent*)(Object->GetRootComponent());
-			m_ZOrder->SetValueInt(Comp->GetZOrder());
-		}
-	}*/
+	}
 }
 
 void CObjectHierarchy::SelectComponent(int Index, const char* Item)
@@ -486,4 +484,35 @@ void CObjectHierarchy::ClearHierarchyWindowInfo()
 	m_Profile->SetText("");
 	m_SelectComponent = nullptr;
 	m_ParentComponent->SetText("");
+}
+
+void CObjectHierarchy::ChangeSelectObjectAnimationSequence(const std::string& SequenceName)
+{
+	if (m_SelectObject)
+	{
+		if (m_SelectObject->GetRootComponent()->GetTypeID() == typeid(CSpriteComponent).hash_code())
+		{
+			CSpriteComponent* Root = (CSpriteComponent*)m_SelectObject->GetRootComponent();
+
+			Root->ChangeAnimation(SequenceName);
+		}
+	}
+}
+
+float CObjectHierarchy::GetSequencePlayeTime(const std::string& SequenceName)
+{
+	if (m_SelectObject)
+	{
+		if (m_SelectObject->GetRootComponent()->GetTypeID() == typeid(CSpriteComponent).hash_code())
+		{
+			CSpriteComponent* Root = (CSpriteComponent*)m_SelectObject->GetRootComponent();
+
+			CAnimationSequence2DData* Data = Root->GetAnimationInstance()->FindAnimation(SequenceName);
+
+			if (Data)
+				return Data->GetPlayTime();
+		}
+	}
+
+	return 1.f;
 }

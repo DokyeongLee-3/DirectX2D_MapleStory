@@ -130,6 +130,14 @@ void CBossMatching::CreateWayToZakumScene()
 
 void CBossMatching::DragWindow()
 {
+    int TopMost = m_Viewport->GetTopmostWindowZOrder();
+
+    if (TopMost >= m_ZOrder)
+    {
+        m_Viewport->DecrementAllWindowZOrder();
+        m_ZOrder = TopMost;
+    }
+
     Vector2 MouseMove = CInput::GetInst()->GetMouseMove();
 
     m_Pos += MouseMove;

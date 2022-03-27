@@ -263,6 +263,16 @@ public:
         m_Dir = Dir;
     }
 
+    void SetOnLope(bool OnLope)
+    {
+        m_OnLope = OnLope;
+    }
+
+    bool IsOnLope() const
+    {
+        return m_OnLope;
+    }
+
     void SetFlameCollision(bool FlameCollision)
     {
         m_FlameCollision = FlameCollision;

@@ -31,6 +31,11 @@ protected:
 
 
 public:
+	Button_State	GetButtonState()	const
+	{
+		return m_State;
+	}
+
 	virtual void Enable(bool bEnable)
 	{
 		CWidget::Enable(bEnable);

@@ -263,7 +263,7 @@ bool CSpriteWindow::Init()
 
     m_SpriteFrame = AddWidget<CIMGUIImage>("SpriteFrame", 200.f, 200.f);
 
-    Line = AddWidget<CIMGUISameLine>("Line");
+    //Line = AddWidget<CIMGUISameLine>("Line");
 
 
     // SpriteComponent통해서 CreateAnimationInstance를 하면 Instance에 Scene이
@@ -281,6 +281,15 @@ bool CSpriteWindow::Init()
     m_AnimInstance->Stop();
 
     // m_EditorAnimationLoadObject = CSceneManager::GetInst()->GetScene()->CreateGameObject<CAnimationLoadObject>("AnimationLoadObject");
+
+    Label = AddWidget<CIMGUILabel>("Select Object Sequences", 350.f, 30.f);
+    Label->SetColor(80, 80, 80);
+    Label->SetAlign(0.5f, 0.f);
+
+    m_SelectObjectSequenceList = AddWidget<CIMGUIListBox>("SelectObjectSequenceList", 200.f, 300.f);
+    m_SelectObjectSequenceList->SetHideName(true);
+    m_SelectObjectSequenceList->SetPageItemCount(6);
+    m_SelectObjectSequenceList->SetSelectCallback<CSpriteWindow>(this, &CSpriteWindow::ChangeSelectObjectAnimation);
 
     return true;
 }
@@ -807,6 +816,36 @@ void CSpriteWindow::MyShowStyleEditor(ImGuiStyle* ref)
     ImGui::ShowStyleSelector("Colors##Selector");
     ImGui::ShowFontSelector("Fonts##Selector");
 
+}
+
+void CSpriteWindow::AddSelectObjectSequenceList(const std::vector<std::string>& vecSequence)
+{
+    size_t Count = vecSequence.size();
+
+    for (size_t i = 0; i < Count; ++i)
+    {
+        m_SelectObjectSequenceList->AddItem(vecSequence[i]);
+    }
+}
+
+void CSpriteWindow::ClearSelectObjectSequenceList()
+{
+    m_SelectObjectSequenceList->Clear();
+}
+
+void CSpriteWindow::ChangeSelectObjectAnimation(int Index, const char* Item)
+{
+    std::string SelectSequence = Item;
+
+    CObjectHierarchy* HierarchyWindow = (CObjectHierarchy*)CIMGUIManager::GetInst()->FindIMGUIWindow("ObjectHierarchy");
+
+    if (HierarchyWindow)
+    {
+        HierarchyWindow->ChangeSelectObjectAnimationSequence(SelectSequence);
+        float PlayTime = HierarchyWindow->GetSequencePlayeTime(SelectSequence);
+
+        m_AnimPlayTime->SetFloat(PlayTime);
+    }
 }
 
 

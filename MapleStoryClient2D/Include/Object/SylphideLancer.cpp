@@ -11,6 +11,7 @@
 #include "../Object/SylphideLancerHitEffect.h"
 #include "Monster.h"
 #include "ZakumBody.h"
+#include "PlayerSkillInfo.h"
 #include <time.h>
 
 CSylphideLancer::CSylphideLancer() :
@@ -119,7 +120,11 @@ void CSylphideLancer::CollisionBeginCallback(const CollisionResult& result)
 
 	if (Dest)
 	{
-		PlayerInfo Info = ((CPlayer2D*)m_Scene->GetSceneMode()->GetPlayerObject())->GetInfo();
+		CPlayer2D* Player = ((CPlayer2D*)m_Scene->GetSceneMode()->GetPlayerObject());
+		PlayerInfo Info = Player->GetInfo();
+
+		CPlayerSkillInfo* SkillInfo = Player->GetPlayerSkillInfo();
+		int SkillLv = SkillInfo->FindSkillInfo("SylphideLancer")->Level;
 
 		int Factor = (int)Info.INT * Info.Level;
 
@@ -127,7 +132,7 @@ void CSylphideLancer::CollisionBeginCallback(const CollisionResult& result)
 
 		int random = (RamdomNumber % (Factor / 20 + 1)) - (Factor / 30);
 
-		float Damage = Factor / 10.f + random;
+		float Damage = Factor / 10.f + random + SkillLv * 15;
 
 		// 크리티컬 데미지가 뜬 경우 -> 추가적으로 이펙트 달아주기
 		bool IsCritical = random > 0;

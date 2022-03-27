@@ -5,7 +5,8 @@
 #include "Bill.h"
 
 CMonster::CMonster()	:
-	m_IsChanging(false)
+	m_IsChanging(false),
+	m_TurnTime(0.f)
 {
 	m_MonsterState = Monster_State::Idle;
 }

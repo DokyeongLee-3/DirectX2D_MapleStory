@@ -32,6 +32,11 @@ void CDragCollider::SetColliderColor(const Vector4& Color)
 		m_CBuffer->SetColliderColor(Color);
 }
 
+void CDragCollider::Start()
+{
+	CColliderBox2D::Start();
+}
+
 void CDragCollider::Render()
 {
 	CColliderComponent::Render();

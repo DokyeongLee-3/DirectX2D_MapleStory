@@ -90,9 +90,6 @@
     <ClCompile Include="ClientManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Object\BulletCamera.cpp">
-      <Filter>02. Object\03. Bullet</Filter>
-    </ClCompile>
     <ClCompile Include="Object\Stage.cpp">
       <Filter>02. Object\04. Stage</Filter>
     </ClCompile>
@@ -354,6 +351,9 @@
     <ClCompile Include="Widget\ToolTip.cpp">
       <Filter>03. UI\02. InGame</Filter>
     </ClCompile>
+    <ClCompile Include="Widget\SkillPointWindow.cpp">
+      <Filter>03. UI\02. InGame</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -364,9 +364,6 @@
     </ClInclude>
     <ClInclude Include="ClientManager.h">
       <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\BulletCamera.h">
-      <Filter>02. Object\03. Bullet</Filter>
     </ClInclude>
     <ClInclude Include="Object\Stage.h">
       <Filter>02. Object\04. Stage</Filter>
@@ -630,6 +627,9 @@
       <Filter>03. UI\02. InGame</Filter>
     </ClInclude>
     <ClInclude Include="Widget\ToolTip.h">
+      <Filter>03. UI\02. InGame</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\SkillPointWindow.h">
       <Filter>03. UI\02. InGame</Filter>
     </ClInclude>
   </ItemGroup>

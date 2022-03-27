@@ -128,6 +128,7 @@ public:
 	// map에 저장된 애니메이션중 다음 애니메이션으로 현재 애니메이션을 바꾼다
 	void NextAnimation();
 	void SetCurrentAnimationFirstFrame();
+	void GetAllAnimationSequenceName(std::vector<std::string>& vecSequenceName);
 
 public:
 	void SetCurrentAnimationFrame(int Frame);

@@ -59,11 +59,14 @@ CGameObject::~CGameObject()
 			|| (*iter)->GetTypeID() == typeid(CColliderCircle).hash_code()
 			|| (*iter)->GetTypeID() == typeid(CColliderPixel).hash_code())
 		{
-			CSceneCollision* SceneColl = m_Scene->GetCollision();
-
-			if (SceneColl)
+			if (m_Scene)
 			{
-				SceneColl->DeleteCollider((CColliderComponent*)(*iter));
+				CSceneCollision* SceneColl = m_Scene->GetCollision();
+
+				if (SceneColl)
+				{
+					SceneColl->DeleteCollider((CColliderComponent*)(*iter));
+				}
 			}
 		}
 	}

@@ -395,6 +395,21 @@ void CLobbyScene::CreateInGameWidgetWindow()
 		CDyingNoticeWindow* DyingNoticeWindow = CClientManager::GetInst()->GetDyingNoticeWindow();
 		m_Scene->GetViewport()->AddWindow(DyingNoticeWindow);
 	}
+
+	if (!CClientManager::GetInst()->GetSkillPointWindow())
+	{
+		m_SkillPointWindow = m_Scene->GetViewport()->CreateWidgetWindow<CSkillPointWindow>("SkillPointWindow");
+		m_SkillPointWindow->SetZOrder(2);
+		m_SkillPointWindow->SetPos(520.f, 320.f);
+		m_SkillPointWindow->Enable(false);
+		CClientManager::GetInst()->SetSkillPointWindow(m_SkillPointWindow);
+	}
+
+	else
+	{
+		CSkillPointWindow* SkillPointWindow = CClientManager::GetInst()->GetSkillPointWindow();
+		m_Scene->GetViewport()->AddWindow(SkillPointWindow);
+	}
 }
 
 void CLobbyScene::CreateOnionScene()

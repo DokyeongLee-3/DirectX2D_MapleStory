@@ -14,6 +14,7 @@
 #include "Scene/SceneManager.h"
 #include "Render/RenderManager.h"
 #include "ToolTip.h"
+#include "Engine.h"
 
 CInventory::CInventory()    :
     m_SlotSize(30.f, 30.f),
@@ -122,7 +123,7 @@ bool CInventory::Init()
 
     m_BlankCollider = CreateWidget<CImage>("BlankCollider");
     m_BlankCollider->SetTexture("BlankCollider", TEXT("UI/BlankCollider.png"));
-    m_BlankCollider->SetPos(10.f, 360.f);
+    m_BlankCollider->SetPos(10.f, 355.f);
     m_BlankCollider->SetSize(180.f, 20.f);
     m_BlankCollider->SetMouseCollisionEnable(true);
     m_BlankCollider->SetClickCallback(this, &CInventory::DragWindow);
@@ -151,7 +152,7 @@ bool CInventory::Init()
 
     m_Money->SetTexture("Meso", vecFileName);
     m_Money->SetNumber(0);
-    m_Money->SetPos(132.f, 61.f);
+    m_Money->SetPos(120.f, 60.f);
     m_Money->SetSize(7.f, 9.f);
 
     for (int i = 0; i < 10; ++i)
@@ -403,8 +404,18 @@ void CInventory::ReturnScrollUse()
     if (!Player)
         return;
 
+    if(Player->IsOnLope())
+    {
+        Player->SetOnLope(false);
+    }        
+
+    float DeltaTime = CEngine::GetInst()->GetDeltaTime();
+
+    Player->ReturnIdle(DeltaTime);
+
     if (Mode->GetTypeID() == typeid(CWayToZakumScene).hash_code())
     {
+        //Player->GetScene()->GetResource()->SoundStop("WayToZakumBGM");
         Player->ClearListCollision();
         CWayToZakumScene* CurrentMode = (CWayToZakumScene*)Mode;
         CRenderManager::GetInst()->SetStartFadeIn(true);
@@ -414,6 +425,7 @@ void CInventory::ReturnScrollUse()
 
     else if (Mode->GetTypeID() == typeid(COnionScene).hash_code())
     {
+        //Player->GetScene()->GetResource()->SoundStop("OnionSceneBGM");
         Player->ClearListCollision();
         COnionScene* CurrentMode = (COnionScene*)Mode;
         CRenderManager::GetInst()->SetStartFadeIn(true);
@@ -423,6 +435,7 @@ void CInventory::ReturnScrollUse()
 
     else if (Mode->GetTypeID() == typeid(CRadishScene).hash_code())
     {
+        //Player->GetScene()->GetResource()->SoundStop("OnionSceneBGM");
         Player->ClearListCollision();
         CRadishScene* CurrentMode = (CRadishScene*)Mode;
         CRenderManager::GetInst()->SetStartFadeIn(true);
@@ -432,6 +445,7 @@ void CInventory::ReturnScrollUse()
 
     else if (Mode->GetTypeID() == typeid(CLibrary2ndScene).hash_code())
     {
+        //Player->GetScene()->GetResource()->SoundStop("FairyAcademyBGM");
         Player->ClearListCollision();
         CLibrary2ndScene* CurrentMode = (CLibrary2ndScene*)Mode;
         CRenderManager::GetInst()->SetStartFadeIn(true);
@@ -566,7 +580,7 @@ void CInventory::ShowItemOnionToolTip()
         ItemOnionToolTipWindow->SetPos(IconPos.x + 240.f, IconPos.y);
         ItemOnionToolTipWindow->SetZOrder(m_ZOrder + 1);
         ItemOnionToolTipWindow->GetToolTipItemIcon()->SetTexture("ItemOnionToolTipIcon", TEXT("UI/ToolTip/04000996.info.icon.ToolTip.png"));
-        ItemOnionToolTipWindow->GetToolTipItemIcon()->SetSize(52.f, 46.f);
+        ItemOnionToolTipWindow->GetToolTipItemIcon()->SetSize(50.f, 52.f);
         ItemOnionToolTipWindow->GetToolTipItemIcon()->SetPos(53.f, 70.f);
         ItemOnionToolTipWindow->GetToolTipTitle()->SetText(TEXT("½Ì½ÌÇÑ ¾çÆÄ"));
         ItemOnionToolTipWindow->GetToolTipTitle()->SetColor(1.f, 1.f, 1.f);
@@ -667,6 +681,14 @@ void CInventory::TurnOffAllToolTip()
 
 void CInventory::DragWindow()
 {
+    int TopMost = m_Viewport->GetTopmostWindowZOrder();
+
+    if (TopMost >= m_ZOrder)
+    {
+        m_Viewport->DecrementAllWindowZOrder();
+        m_ZOrder = TopMost;
+    }
+
     Vector2 MouseMove = CInput::GetInst()->GetMouseMove();
 
     m_Pos += MouseMove;

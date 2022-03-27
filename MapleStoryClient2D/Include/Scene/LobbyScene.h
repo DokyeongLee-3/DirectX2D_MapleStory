@@ -9,6 +9,7 @@
 #include "../Widget/BossMatching.h"
 #include "../Widget/StatWindow.h"
 #include "../Widget/DyingNoticeWindow.h"
+#include "../Widget/SkillPointWindow.h"
 
 class CLobbyScene :
     public CSceneMode
@@ -31,6 +32,7 @@ private:
     CSharedPtr<CBossMatching>           m_BossMatchingWindow;
     CSharedPtr<CStatWindow>             m_StatWindow;
     CSharedPtr<CDyingNoticeWindow>      m_DyingNoticeWindow;
+    CSharedPtr<CSkillPointWindow>       m_SkillPointWindow;
 
     std::function<void(bool, float)>    m_LoadingFunction;
     class CLoadingThread*               m_LoadingThread;

@@ -25,7 +25,7 @@ bool CLowerClassBookAnimation::Init()
 	AddAnimation(TEXT("LowerClassBookDieLeft.sqc"), ANIMATION_PATH, "LowerClassBookDieLeft", false, 1.5f);
 	AddAnimation(TEXT("LowerClassBookAttackLeft.sqc"), ANIMATION_PATH, "LowerClassBookAttackLeft", false, 2.f);
 
-	AddAnimation(TEXT("ZakumLeftHand.sqc"), ANIMATION_PATH, "ZakumLeftHand", true, 1.f);
+	/*AddAnimation(TEXT("ZakumLeftHand.sqc"), ANIMATION_PATH, "ZakumLeftHand", true, 1.f);
 	AddAnimation(TEXT("ZakumRightHand.sqc"), ANIMATION_PATH, "ZakumRightHand", true, 1.f);
 	AddAnimation(TEXT("ZakumLeftHandSmash.sqc"), ANIMATION_PATH, "ZakumLeftHandSmash", true, 1.f);
 	AddAnimation(TEXT("ZakumLeftHandSmash2.sqc"), ANIMATION_PATH, "ZakumLeftHandSmash2", true, 1.f);
@@ -36,7 +36,7 @@ bool CLowerClassBookAnimation::Init()
 	AddAnimation(TEXT("ZakumClapCircleShockWave.sqc"), ANIMATION_PATH, "ZakumClapCircleShockWave", true, 0.8f);
 	AddAnimation(TEXT("ZakumPinkShockWave.sqc"), ANIMATION_PATH, "ZakumPinkShockWave", true, 0.8f);
 
-	AddAnimation(TEXT("NPCAmonIdle.sqc"), ANIMATION_PATH, "NPCAmonIdle", true, 1.f);
+	AddAnimation(TEXT("NPCAmonIdle.sqc"), ANIMATION_PATH, "NPCAmonIdle", true, 1.f);*/
 
 	return true;
 }

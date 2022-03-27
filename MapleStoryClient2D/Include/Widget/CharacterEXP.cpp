@@ -50,7 +50,7 @@ bool CCharacterEXP::Init()
     m_EXPBar = CreateWidget<CProgressBar>("EXPProgrssBar");
     m_EXPBar->SetTexture("EXPProgrssBar", TEXT("UI/Status/EXPBarFull.png"));
     m_EXPBar->SetSize((float)RS.Width, 5.f);
-    m_EXPBar->SetPos(12.f, 1.f);
+    m_EXPBar->SetPos(12.f, 2.f);
     m_EXPBar->SetDir(ProgressBar_Dir::RightToLeft);
     m_EXPBar->SetPercent((float)Info.EXP / Info.EXPMax);
 

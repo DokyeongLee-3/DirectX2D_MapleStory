@@ -9,6 +9,7 @@
 #include "Widget/BossMatching.h"
 #include "Widget/StatWindow.h"
 #include "Widget/DyingNoticeWindow.h"
+#include "Widget/SkillPointWindow.h"
 
 struct MonsterInfo
 {
@@ -79,6 +80,7 @@ private:
 	CBossMatching*           m_BossMatchingWindow;
 	CStatWindow*			 m_StatWindow;
 	CDyingNoticeWindow*      m_DyingNoticeWindow;
+	CSkillPointWindow*		 m_SkillPointWindow;
 
 	std::vector<MonsterInfo> m_vecMonsterInfo;
 	ZakumInfo					m_ZakumInfo;
@@ -122,6 +124,11 @@ public:
 	void SetDyingNoticeWindow(CDyingNoticeWindow* Window)
 	{
 		m_DyingNoticeWindow = Window;
+	}
+
+	void SetSkillPointWindow(CSkillPointWindow* Window)
+	{
+		m_SkillPointWindow = Window;
 	}
 
 public:
@@ -171,6 +178,11 @@ public:
 		return m_StatWindow;
 	}
 
+	CSkillPointWindow* GetSkillPointWindow()	const
+	{
+		return m_SkillPointWindow;
+	}
+
 	const ZakumInfo&	GetZakumInfo()	const
 	{
 		return m_ZakumInfo;
@@ -189,6 +201,7 @@ public:
 	void OnOffConfiguration(float DeltaTime);
 	void OnOffBossMatching(float DeltaTime);
 	void OnOffStatWindow(float DeltaTime);
+	void OnOffSkillPointWindow(float DeltaTime);
 
 public:
 	//bool IsCritical(int Factor);

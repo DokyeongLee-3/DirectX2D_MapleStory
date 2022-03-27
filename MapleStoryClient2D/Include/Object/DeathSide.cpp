@@ -10,6 +10,7 @@
 #include "Monster.h"
 #include "ZakumBody.h"
 #include "../Scene/ZakumAltarScene.h"
+#include "PlayerSkillInfo.h"
 
 CDeathSide::CDeathSide()	:
 	m_HitCount(6)
@@ -78,7 +79,11 @@ void CDeathSide::CollisionBeginCallback(const CollisionResult& result)
 {
 	for (int i = 0; i < m_HitCount; ++i)
 	{
-		PlayerInfo Info = ((CPlayer2D*)m_Scene->GetSceneMode()->GetPlayerObject())->GetInfo();
+		CPlayer2D* Player = ((CPlayer2D*)m_Scene->GetSceneMode()->GetPlayerObject());
+		PlayerInfo Info = Player->GetInfo();
+
+		CPlayerSkillInfo* SkillInfo = Player->GetPlayerSkillInfo();
+		int SkillLv = SkillInfo->FindSkillInfo("DeathSide")->Level;
 
 		int Factor = (Info.INT + 2) * Info.Level;
 
@@ -86,7 +91,7 @@ void CDeathSide::CollisionBeginCallback(const CollisionResult& result)
 
 		int random = (RamdomNumber % (Factor / 20 + 1)) - (Factor / 30);
 
-		float Damage = Factor / 10.f + random;
+		float Damage = Factor / 10.f + random + SkillLv * 20;
 
 		// 크리티컬 데미지가 뜬 경우 -> 추가적으로 이펙트 달아주기
 		bool IsCritical = random > 0;

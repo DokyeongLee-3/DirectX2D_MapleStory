@@ -106,7 +106,45 @@ void CLowerClassBook::Update(float DeltaTime)
 		{
 			m_MonsterState = Monster_State::Move;
 			m_Sprite->Flip();
+
+			float TileCenterX = TileMapCom->GetWorldPos().x + TileMapCom->GetWorldScale().x / 2.f;
+			
+			if (m_TurnTime < 0.1f)
+			{
+				float BodyPosX = m_Body->GetWorldPos().x;
+				float TileCenterPosX = TileMapCom->GetWorldPos().x + TileMapCom->GetWorldScale().x / 2.f;
+
+				// 우측 EdgeTile에 끼었을때
+				if (BodyPosX > TileCenterPosX)
+				{
+					float Adjust = -1.f;
+
+					while (EdgeTileCheck(TileMapCom, m_Body->GetWorldPos(), m_Body->GetWorldScale()))
+					{
+						AddWorldPos(Adjust, 0.f, 0.f);
+						Adjust -= 3.f;
+					}
+				}
+
+				// 좌측 EdgeTile에 끼었을때
+				else
+				{
+					float Adjust = 1.f;
+
+					while (EdgeTileCheck(TileMapCom, m_Body->GetWorldPos(), m_Body->GetWorldScale()))
+					{
+						AddWorldPos(Adjust, 0.f, 0.f);
+						Adjust += 3.f;
+					}
+				}
+
+			}
+
+			m_TurnTime = 0.f;
 		}
+
+		else
+			m_TurnTime += DeltaTime;
 	}
 
 	CSpriteComponent* Root = (CSpriteComponent*)m_RootComponent.Get();
@@ -294,11 +332,15 @@ void CLowerClassBook::FiniteState(float DeltaTime)
 			// 오른쪽을 바라보고 있을때
 			if (m_Sprite->IsFlip())
 			{
+
+
 				AddWorldPos(100.f * DeltaTime, 0.f, 0.f);
 			}
 
 			else
 			{
+
+
 				AddWorldPos(-100.f * DeltaTime, 0.f, 0.f);
 			}
 		}

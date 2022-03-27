@@ -64,12 +64,14 @@ bool CClientManager::Init(HINSTANCE hInst)
 	CInput::GetInst()->CreateKey("Configuration", 'C');	
 	CInput::GetInst()->CreateKey("BossMatching", 'B');
 	CInput::GetInst()->CreateKey("Stat", 'S');
+	CInput::GetInst()->CreateKey("SkillPoint", 'P');
 	CInput::GetInst()->CreateKey("TurnOffUIWindow", VK_ESCAPE);
 
 	CInput::GetInst()->SetKeyCallback<CClientManager>("Inventory", KeyState_Down, this, &CClientManager::OnOffInventory);
 	CInput::GetInst()->SetKeyCallback<CClientManager>("Configuration", KeyState_Down, this, &CClientManager::OnOffConfiguration);
 	CInput::GetInst()->SetKeyCallback<CClientManager>("BossMatching", KeyState_Down, this, &CClientManager::OnOffBossMatching);
 	CInput::GetInst()->SetKeyCallback<CClientManager>("Stat", KeyState_Down, this, &CClientManager::OnOffStatWindow);
+	CInput::GetInst()->SetKeyCallback<CClientManager>("SkillPoint", KeyState_Down, this, &CClientManager::OnOffSkillPointWindow);
 	CInput::GetInst()->SetKeyCallback<CClientManager>("TurnOffUIWindow", Key_State::KeyState_Down, this, &CClientManager::TurnOffWindow);
 
 	//CInput::GetInst()->CreateKey("MovePoint", VK_RBUTTON);
@@ -760,6 +762,47 @@ void CClientManager::OnOffStatWindow(float DeltaTime)
 					StatWindow->Enable(true);
 					int ZOrder = Viewport->GetTopmostWindowZOrder();
 					StatWindow->SetZOrder(ZOrder + 1);
+				}
+			}
+		}
+	}
+}
+
+void CClientManager::OnOffSkillPointWindow(float DeltaTime)
+{
+	CScene* Scene = CSceneManager::GetInst()->GetScene();
+
+	CSceneMode* Mode = Scene->GetSceneMode();
+	if (Mode->GetTypeID() == typeid(CStartScene).hash_code() ||
+		Mode->GetTypeID() == typeid(CZakumAltarScene).hash_code())
+		return;
+
+	if (Scene)
+	{
+		CViewport* Viewport = Scene->GetViewport();
+		if (Viewport)
+		{
+			CSkillPointWindow* SkillPointWindow = (CSkillPointWindow*)Viewport->FindWidgetWindow<CSkillPointWindow>("SkillPointWindow");
+
+			if (SkillPointWindow)
+			{
+				bool IsEnable = SkillPointWindow->IsEnable();
+
+				if (IsEnable)
+				{
+					SkillPointWindow->Enable(false);
+					SkillPointWindow->SetZOrder(2);
+				}
+
+				else
+				{
+					CScene* Scene = CSceneManager::GetInst()->GetScene();
+
+					Scene->GetResource()->SoundPlay("UIOpen");
+
+					SkillPointWindow->Enable(true);
+					int ZOrder = Viewport->GetTopmostWindowZOrder();
+					SkillPointWindow->SetZOrder(ZOrder + 1);
 				}
 			}
 		}

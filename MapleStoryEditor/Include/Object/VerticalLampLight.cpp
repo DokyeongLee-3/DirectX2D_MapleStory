@@ -46,7 +46,7 @@ bool CVerticalLampLight::Init()
 	m_LeftSprite->CreateAnimationInstance<CAnimationSequence2DInstance>();
 
 	m_LeftSprite->SetWorldScale(100.f, 100.f, 1.f);
-	m_LeftSprite->SetRelativePos(500.f, 300.f, 0.f);
+	m_LeftSprite->SetRelativePos(-3.f, 0.f, 0.f);
 	m_LeftSprite->SetPivot(0.5f, 0.5f, 0.f);
 
 	m_RightSprite->SetTransparency(true);
@@ -54,11 +54,11 @@ bool CVerticalLampLight::Init()
 	m_RightSprite->CreateAnimationInstance<CAnimationSequence2DInstance>();
 
 	m_RightSprite->SetWorldScale(100.f, 100.f, 1.f);
-	m_RightSprite->SetRelativePos(500.f, 300.f, 0.f);
+	m_RightSprite->SetRelativePos(3.f, 0.f, 0.f);
 	m_RightSprite->SetPivot(0.5f, 0.5f, 0.f);
 
 	m_DragCollider->SetWorldScale(40.f, 70.f, 1.f);
-
+	m_DragCollider->SetRelativePos(0.f, 0.f, 0.f);
 
 	CAnimationSequence2DInstance* Anim = m_LeftSprite->GetAnimationInstance();
 

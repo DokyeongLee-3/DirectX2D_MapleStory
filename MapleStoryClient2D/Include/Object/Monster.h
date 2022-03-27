@@ -24,6 +24,7 @@ protected:
     Monster_State                   m_MonsterState;
     float                           m_AccTime;
     float                           m_FiniteStateTimeTable[(int)Monster_State::End];
+    float                           m_TurnTime;
 
 public:
     virtual void SetDamage(float Damage, bool Critical = false);

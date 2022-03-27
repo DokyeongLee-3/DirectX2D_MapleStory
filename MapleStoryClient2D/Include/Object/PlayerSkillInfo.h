@@ -26,6 +26,7 @@ class CPlayerSkillInfo
 {
 	friend class CPlayer2D;
     friend class CSkillQuickSlotWindow;
+    friend class CSkillPointWindow;
 
 private:
 	CPlayerSkillInfo();
@@ -38,7 +39,7 @@ private:
     virtual bool Init();
     virtual void Update(float DeltaTime);
 
-private:
+public:
     SkillInfo*   FindSkillInfo(const std::string& Name);
 };
 

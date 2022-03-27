@@ -20,6 +20,7 @@ CSceneManager::~CSceneManager()
 	DeleteCriticalSection(&m_Crt);
 
 	SAFE_DELETE(m_Scene);
+
 	SAFE_DELETE(m_NextScene);
 }
 

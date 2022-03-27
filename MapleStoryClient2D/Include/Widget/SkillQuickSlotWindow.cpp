@@ -9,6 +9,7 @@ CSkillQuickSlotWindow::CSkillQuickSlotWindow()	:
 	m_Offset(5.f, 5.f),
 	m_SlotSize(30.f, 30.f)
 {
+	SetTypeID<CSkillQuickSlotWindow>();
 }
 
 CSkillQuickSlotWindow::CSkillQuickSlotWindow(const CSkillQuickSlotWindow& window)	:

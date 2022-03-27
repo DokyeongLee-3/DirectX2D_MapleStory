@@ -73,8 +73,8 @@ bool CConfigurationWindow::Init()
 
     m_BlankCollider = CreateWidget<CImage>("BlankCollider");
     m_BlankCollider->SetTexture("BlankCollider", TEXT("UI/BlankCollider.png"));
-    m_BlankCollider->SetPos(5.f, 420.f);
-    m_BlankCollider->SetSize(260.f, 50.f);
+    m_BlankCollider->SetPos(5.f, 430.f);
+    m_BlankCollider->SetSize(260.f, 40.f);
     m_BlankCollider->SetMouseCollisionEnable(true);
     m_BlankCollider->SetClickCallback(this, &CConfigurationWindow::DragWindow);
     m_BlankCollider->SetZOrder(3);
@@ -122,6 +122,14 @@ CConfigurationWindow* CConfigurationWindow::Clone()
 
 void CConfigurationWindow::DragWindow()
 {
+    int TopMost = m_Viewport->GetTopmostWindowZOrder();
+
+    if (TopMost >= m_ZOrder)
+    {
+        m_Viewport->DecrementAllWindowZOrder();
+        m_ZOrder = TopMost;
+    }
+
     Vector2 MouseMove = CInput::GetInst()->GetMouseMove();
 
     m_Pos += MouseMove;

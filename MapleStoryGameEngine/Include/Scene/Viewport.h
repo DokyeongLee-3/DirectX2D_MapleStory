@@ -45,6 +45,7 @@ public:
 	CWidgetWindow* FindTopmostWindow();
 	void AddWindow(CWidgetWindow* Window);
 	int GetTopmostWindowZOrder();
+	void DecrementAllWindowZOrder();
 
 public:
 	template <typename T>

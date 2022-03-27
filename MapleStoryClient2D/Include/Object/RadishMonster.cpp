@@ -114,6 +114,41 @@ void CRadishMonster::Update(float DeltaTime)
 		{
 			m_MonsterState = Monster_State::Move;
 			m_Sprite->Flip();
+
+			float TileCenterX = TileMapCom->GetWorldPos().x + TileMapCom->GetWorldScale().x / 2.f;
+
+			if (m_TurnTime < 0.1f)
+			{
+				float BodyPosX = m_Body->GetWorldPos().x;
+				float TileCenterPosX = TileMapCom->GetWorldPos().x + TileMapCom->GetWorldScale().x / 2.f;
+
+				// ¿ìÃø EdgeTile¿¡ ³¢¾úÀ»¶§
+				if (BodyPosX > TileCenterPosX)
+				{
+					float Adjust = -1.f;
+
+					while (EdgeTileCheck(TileMapCom, m_Body->GetWorldPos(), m_Body->GetWorldScale()))
+					{
+						AddWorldPos(Adjust, 0.f, 0.f);
+						Adjust -= 3.f;
+					}
+				}
+
+				// ÁÂÃø EdgeTile¿¡ ³¢¾úÀ»¶§
+				else
+				{
+					float Adjust = 1.f;
+
+					while (EdgeTileCheck(TileMapCom, m_Body->GetWorldPos(), m_Body->GetWorldScale()))
+					{
+						AddWorldPos(Adjust, 0.f, 0.f);
+						Adjust += 3.f;
+					}
+				}
+
+			}
+
+			m_TurnTime = 0.f;
 		}
 	}
 

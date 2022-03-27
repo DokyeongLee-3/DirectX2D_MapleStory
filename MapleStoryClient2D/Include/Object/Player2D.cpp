@@ -17,7 +17,6 @@
 #include "../Animation/PlayerSkillBodyEffect.h"
 #include "../Animation/VoidPressureAttackSphere.h"
 #include "../Animation/PlayerOrb.h"
-#include "BulletCamera.h"
 #include "SylphideLancer.h"
 #include "Scene/SceneManager.h"
 #include "Render/RenderManager.h"
@@ -212,7 +211,7 @@ bool CPlayer2D::Init()
 	CInput::GetInst()->SetKeyCallback<CPlayer2D>("LightTransforming", KeyState_Down, this, &CPlayer2D::LightTransforming);
 	CInput::GetInst()->SetKeyCallback<CPlayer2D>("Jump", KeyState_Down, this, &CPlayer2D::Jump);
 	CInput::GetInst()->SetKeyCallback<CPlayer2D>("DeathSide", KeyState_Down, this, &CPlayer2D::DeathSide);
-	CInput::GetInst()->SetKeyCallback<CPlayer2D>("PickItem", KeyState_Down, this, &CPlayer2D::PickItem);
+	CInput::GetInst()->SetKeyCallback<CPlayer2D>("PickItem", KeyState_Push, this, &CPlayer2D::PickItem);
 	CInput::GetInst()->SetKeyCallback<CPlayer2D>("LevelUp", KeyState_Down, this, &CPlayer2D::LevelUp);
 	//CInput::GetInst()->SetKeyCallback<CPlayer2D>("Flip", KeyState_Down, this, &CPlayer2D::FlipAll);
 
@@ -392,6 +391,12 @@ void CPlayer2D::MoveUp(float DeltaTime)
 	if (m_Body->CheckPrevCollisionGameObjectType(typeid(CLopeTileObject).hash_code()))
 	{
 		CColliderBox2D* Component = (CColliderBox2D*)m_Body->FindPrevCollisionComponentByObjectType(typeid(CLopeTileObject).hash_code());
+
+		if (!m_OnLope && m_Dir == PlayerDir::Up && !m_Gravity)
+			return;
+
+		if (m_OnKnockBack)
+			return;
 
 		if (Component)
 		{
@@ -1340,6 +1345,9 @@ void CPlayer2D::CollisionBeginCallback(const CollisionResult& Result)
 			if ((m_OnJump || m_LopeJump) && MyInfo.Center.y - MyInfo.Length.y <= TileInfo.Center.y && TileObjCollider->GetWorldRot().z == 0.f)
 				return;
 
+			if (m_LopeJump && TileObjCollider->GetWorldRot().z != 0.f)
+				return;
+
 			// 왼쪽이나 오른쪽으로 이동하다가 타일과 충돌이 끝나서 떨어지려는데 그때 타일 옆부분이랑 충돌하면 무시
 			// 단, 오브젝트 내에 하나의 충돌체만 있는 경우에만 예외처리로 빼준다
 			if (Count == 1 && MyInfo.Center.y - MyInfo.Length.y < TileInfo.Center.y - TileInfo.Length.y)
@@ -1601,7 +1609,6 @@ void CPlayer2D::KnockBack(float DeltaTime)
 		if (m_OnJump)
 			m_OnJump = false;
 
-
 		// 왼쪽으로 튕겨나감
 		if (m_OnKnockBackLeft)
 		{
@@ -1618,6 +1625,9 @@ void CPlayer2D::KnockBack(float DeltaTime)
 				//Vector3 KnockBackDir = Vector3(0.f, 100.f * DeltaTime, 0.f) * m_DirVector;
 
 				//AddWorldPos(KnockBackDir);
+
+				m_OnKnockBack = false;
+				m_OnKnockBackAccTime = 0.f;
 			}
 		}
 
@@ -1638,7 +1648,8 @@ void CPlayer2D::KnockBack(float DeltaTime)
 
 				//AddWorldPos(KnockBackDir);
 
-				
+				m_OnKnockBack = false;
+				m_OnKnockBackAccTime = 0.f;
 			}
 		}
 
@@ -1856,6 +1867,7 @@ void CPlayer2D::LevelUp(float DeltaTime)
 	CCharacterStatusWindow* StatusWindow = CClientManager::GetInst()->GetCharacterStatusWindow();
 	CCharacterEXP* EXPWindow = CClientManager::GetInst()->GetEXPWindow();
 	CStatWindow* StatWindow = CClientManager::GetInst()->GetStatWindow();
+	CSkillPointWindow* SkillPointWindow = CClientManager::GetInst()->GetSkillPointWindow();
 
 	m_PlayerInfo.HPMax = (int)(m_PlayerInfo.HPMax * 1.1f);
 	m_PlayerInfo.MPMax = (int)(m_PlayerInfo.MPMax * 1.1f);
@@ -1889,6 +1901,12 @@ void CPlayer2D::LevelUp(float DeltaTime)
 		Window->SetMPMax(m_PlayerInfo.MPMax);
 		Window->SetHP(m_PlayerInfo.HP);
 		Window->SetMP(m_PlayerInfo.MP);
+	}
+
+	if (SkillPointWindow)
+	{
+		SkillPointWindow->AddEnableSkillPoint(3);
+		SkillPointWindow->ActivateAllLevelUpButton();
 	}
 
 	m_IsChanging = true;

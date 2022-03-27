@@ -201,3 +201,19 @@ int CViewport::GetTopmostWindowZOrder()
 
 	return (*iter)->GetZOrder();
 }
+
+void CViewport::DecrementAllWindowZOrder()
+{
+	auto	iter = m_WindowList.begin();
+	auto	iterEnd = m_WindowList.end();
+
+	for (; iter != iterEnd; ++iter)
+	{
+		int CurrentZOrder = (*iter)->GetZOrder();
+
+		if (CurrentZOrder > 0)
+		{
+			(*iter)->SetZOrder(CurrentZOrder - 1);
+		}
+	}
+}
