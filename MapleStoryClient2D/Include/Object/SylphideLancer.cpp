@@ -34,7 +34,6 @@ CSylphideLancer::CSylphideLancer(const CSylphideLancer& obj) :
 
 CSylphideLancer::~CSylphideLancer()
 {
-	int a = 3;
 }
 
 bool CSylphideLancer::Init()
@@ -80,7 +79,7 @@ void CSylphideLancer::Update(float DeltaTime)
 	// 첫번째 그룹에 2개의 랜서(ID가 각각 0, 1)중 1번 ID인 랜서가 150이상의 거리를 이동했을때
 	// 두번째 그룹에 2개의 랜서(ID가 각각 2, 3)을 추가적으로 플레이어가 생성하도록 해서 한번 스킬쓰면
 	// 총 4개의 창이 나가도록 한다
-	if (m_Distance > 150.f && m_LancerID == 1 && !m_ProduceLatterGroup)
+	if (m_Distance >= 150.f && m_LancerID == 1 && !m_ProduceLatterGroup)
 	{
 		CPlayer2D* Player = (CPlayer2D*)(m_Scene->GetSceneMode()->GetPlayerObject());
 		Player->ProduceSecondSylphideLander(DeltaTime);

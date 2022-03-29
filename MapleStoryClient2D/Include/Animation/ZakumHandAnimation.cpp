@@ -41,7 +41,7 @@ bool CZakumHandAnimation::Init()
 	SetEndFunction<CZakumBody>("ZakumArmReturnLeft1", Zakum, &CZakumBody::SmashReturnArmOriginPos);
 	SetEndFunction<CZakumBody>("ZakumArmReturnLeft2", Zakum, &CZakumBody::SmashReturnArmOriginPos);
 
-	//SetEndFunction<CZakumBody>("ZakumClapLeft", Zakum, &CZakumBody::CreateClapEffect);
+	SetEndFunction<CZakumBody>("ZakumClapLeft", Zakum, &CZakumBody::CreateClapEffect);
 	SetEndFunction<CZakumBody>("ZakumClapRight", Zakum, &CZakumBody::CreateClapEffect);
 
 	SetEndFunction<CZakumBody>("ZakumClapReturnLeft", Zakum, &CZakumBody::ClapReturnArmOriginPos);

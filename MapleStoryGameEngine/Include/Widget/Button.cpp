@@ -197,7 +197,9 @@ void CButton::Update(float DeltaTime)
 				if (m_ClickCallback)
 					m_ClickCallback();
 
-				m_State = Button_State::MouseOn;
+				if(m_State != Button_State::Disable)
+					m_State = Button_State::MouseOn;
+
 				m_ClickSound = false;
 			}
 

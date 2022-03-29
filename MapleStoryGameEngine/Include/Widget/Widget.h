@@ -66,7 +66,6 @@ struct QuickSlotItemState
 
 struct SkillPointInfo
 {
-	CSharedPtr<class CImage> SkillBookImage;
 	CSharedPtr<class CImage> SkillIcon;
 	CSharedPtr<class CButton>	SkillLevelUpButton;
 	CSharedPtr<class CText> SkillName;
@@ -127,6 +126,12 @@ public:
 	Vector2 GetWidgetPos()	const
 	{
 		return m_Pos;
+	}
+
+
+	Vector2 GetRenderPos()	const
+	{
+		return m_RenderPos;
 	}
 
 	Vector2 GetWidgetSize()	const

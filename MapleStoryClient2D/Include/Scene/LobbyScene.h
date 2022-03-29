@@ -37,6 +37,9 @@ private:
     std::function<void(bool, float)>    m_LoadingFunction;
     class CLoadingThread*               m_LoadingThread;
 
+    bool MyTest1;
+    bool MyTest2;
+
 public:
     CCharacterStatusWindow* GetCharacterStatusWindow()   const
     {

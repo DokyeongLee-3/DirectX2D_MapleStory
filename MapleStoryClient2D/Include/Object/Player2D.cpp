@@ -65,8 +65,7 @@ CPlayer2D::CPlayer2D() :
 	m_CameraShakeTime(1.f),
 	m_AccCameraShakeTime(0.f),
 	m_CameraShakeDir(0.f, 1.f),
-	m_AccCameraShakeSingleDirTime(0.f),
-	m_FlameCollision(false)
+	m_AccCameraShakeSingleDirTime(0.f)
 {
 	SetTypeID<CPlayer2D>();
 	m_PlayerSkillInfo = new CPlayerSkillInfo;
@@ -762,55 +761,63 @@ void CPlayer2D::SylphideLancer(float DeltaTime)
 		{
 			CColliderBox2D* TargetArm = ((CZakumAltarScene*)Mode)->FindZakumTarget(Flip, GetWorldPos(), 400.f, 250.f);
 
-			if (TargetArm && TargetArm->IsActive())
+			m_Scene->GetResource()->SoundPlay("SylphideLancerUse");
+
+			m_SylphideLancerMirror->ChangeAnimation("SylphideLancerMuzzle");
+
+			CClientManager::GetInst()->GetSkillQuickSlotWindow()->SetSylphideLancerProgressBarPercent(1.f);
+
+			Vector3 MirrorPos = m_SylphideLancerMirror->GetWorldPos();
+
+			for (int i = 0; i < 2; ++i)
 			{
-				m_Scene->GetResource()->SoundPlay("SylphideLancerUse");
+				CSylphideLancer* Lancer = m_Scene->CreateGameObject<CSylphideLancer>("SylphideLancer");
 
-				m_SylphideLancerMirror->ChangeAnimation("SylphideLancerMuzzle");
-
-				CClientManager::GetInst()->GetSkillQuickSlotWindow()->SetSylphideLancerProgressBarPercent(1.f);
-
-				Vector3 MirrorPos = m_SylphideLancerMirror->GetWorldPos();
-
-				for (int i = 0; i < 2; ++i)
+				if (!TargetArm || !TargetArm->IsActive())
 				{
-					CSylphideLancer* Lancer = m_Scene->CreateGameObject<CSylphideLancer>("SylphideLancer");
+					Lancer->SetAllSceneComponentsLayer("MovingObjFront");
+					Lancer->SetWorldRotation(GetWorldRot());
+					Lancer->SetWorldPos(MirrorPos.x, MirrorPos.y - 10.f + i * 30.f, 550.f);
+				}
+
+				else
+				{
+					Lancer->SetAllSceneComponentsLayer("MovingObjFront");
+
 					Vector3 TargetPos = TargetArm->GetWorldPos();
 
-					Lancer->SetAllSceneComponentsLayer("MovingObjFront");
-					Lancer->SetLancerID(i);
-					Lancer->SetWorldPos(MirrorPos.x, MirrorPos.y - 10.f + i * 30.f, TargetPos.z - 3.f);
-					Lancer->SetCollisionProfile("PlayerAttack");
-					Lancer->SetSpeed(-400.f);
+					if (TargetPos.z > 590.f)
+						Lancer->SetWorldPos(MirrorPos.x, MirrorPos.y - 10.f + i * 30.f, TargetPos.z - 40.f);
+
+					else
+						Lancer->SetWorldPos(MirrorPos.x, MirrorPos.y - 10.f + i * 30.f, TargetPos.z - 3.f);
+
 					Vector3 LancerPos = Lancer->GetWorldPos();
 
 					Vector3 MonsterWorldPos;
 
-					if (TargetArm)
-					{
-						MonsterWorldPos = TargetArm->GetWorldPos();
-						float Radian = atan((MonsterWorldPos.y - LancerPos.y) / (MonsterWorldPos.x - LancerPos.x));
-						float Degree = RadianToDegree(Radian);
+					MonsterWorldPos = TargetArm->GetWorldPos();
+					float Radian = atan((MonsterWorldPos.y - LancerPos.y) / (MonsterWorldPos.x - LancerPos.x));
+					float Degree = RadianToDegree(Radian);
 
-						Lancer->SetWorldRotation(0.f, 0.f, Degree);
-					}
-
-					else
-					{
-						Lancer->SetWorldRotation(GetWorldRot());
-					}
-
-					if (m_BodySprite->IsFlip())
-					{
-						Lancer->FlipAll(DeltaTime);
-						Lancer->SetSpeed(400.f);
-					}
+					Lancer->SetWorldRotation(0.f, 0.f, Degree);
 				}
 
-				SkillInfo->Active = true;
+				// 공통
+				Lancer->SetLancerID(i);
+				Lancer->SetCollisionProfile("PlayerAttack");
+				Lancer->SetSpeed(-400.f);
 
-				return;
+				if (m_BodySprite->IsFlip())
+				{
+					Lancer->FlipAll(DeltaTime);
+					Lancer->SetSpeed(400.f);
+				}
 			}
+
+			SkillInfo->Active = true;
+
+			return;
 		}
 	}
 
@@ -1293,6 +1300,16 @@ void CPlayer2D::CollisionBeginCallback(const CollisionResult& Result)
 	CGameObject* DestObj = Result.Dest->GetGameObject();
 
 	CSceneMode* Mode = m_Scene->GetSceneMode();
+
+	CScene* PreviousScene = CSceneManager::GetInst()->GetScene();
+	CScene* UpComingScene = CSceneManager::GetInst()->GetNextScene();
+
+	if (PreviousScene && UpComingScene)
+	{
+		// Scene전환중에 이전 Scene에 있는 Object라면 충돌처리 X
+		if (DestObj->GetScene() == PreviousScene && DestObj->GetScene() != UpComingScene)
+			return;
+	}
 
 	if (DestObj->GetTypeID() == typeid(CTileObject).hash_code())
 	{
@@ -2286,52 +2303,62 @@ void CPlayer2D::ProduceSecondSylphideLander(float DeltaTime)
 		else if (m_Scene->GetSceneMode()->GetTypeID() == typeid(CZakumAltarScene).hash_code())
 		{
 			CColliderBox2D* TargetArm = ((CZakumAltarScene*)Mode)->FindZakumTarget(Flip, GetWorldPos(), 400.f, 250.f);
-			if (TargetArm && TargetArm->IsActive())
+
+			CClientManager::GetInst()->GetSkillQuickSlotWindow()->SetSylphideLancerProgressBarPercent(1.f);
+
+			Vector3 MirrorPos = m_SylphideLancerMirror->GetWorldPos();
+
+			for (int i = 0; i < 2; ++i)
 			{
-				CClientManager::GetInst()->GetSkillQuickSlotWindow()->SetSylphideLancerProgressBarPercent(1.f);
+				CSylphideLancer* Lancer = m_Scene->CreateGameObject<CSylphideLancer>("SylphideLancer");
 
-				Vector3 MirrorPos = m_SylphideLancerMirror->GetWorldPos();
-
-				for (int i = 0; i < 2; ++i)
+				if (!TargetArm || !TargetArm->IsActive())
 				{
-					CSylphideLancer* Lancer = m_Scene->CreateGameObject<CSylphideLancer>("SylphideLancer");
+					Lancer->SetAllSceneComponentsLayer("MovingObjFront");
+					Lancer->SetWorldRotation(GetWorldRot());
+					Lancer->SetWorldPos(MirrorPos.x, MirrorPos.y - 10.f + i * 30.f, 550.f);
+				}
+
+				else
+				{
+					Lancer->SetAllSceneComponentsLayer("MovingObjFront");
+
 					Vector3 TargetPos = TargetArm->GetWorldPos();
 
-					Lancer->SetAllSceneComponentsLayer("MovingObjFront");
-					Lancer->SetLancerID(i + 2);
-					Lancer->SetWorldPos(MirrorPos.x, MirrorPos.y - 10.f + i * 30.f, TargetPos.z - 3.f);
-					Lancer->SetCollisionProfile("PlayerAttack");
-					Lancer->SetSpeed(-400.f);
-					Vector3 LancerPos = Lancer->GetWorldPos();
+					if (TargetPos.z > 590.f)
+						Lancer->SetWorldPos(MirrorPos.x, MirrorPos.y - 10.f + i * 30.f, TargetPos.z - 40.f);
+
+					else
+						Lancer->SetWorldPos(MirrorPos.x, MirrorPos.y - 10.f + i * 30.f, TargetPos.z - 3.f);
 
 					CSpriteComponent* Root = (CSpriteComponent*)Lancer->GetRootComponent();
 					Root->ChangeAnimation("SylphideLancerArrowPurple");
 
+					Vector3 LancerPos = Lancer->GetWorldPos();
+
 					Vector3 MonsterWorldPos;
 
-					if (TargetArm)
-					{
-						MonsterWorldPos = TargetArm->GetWorldPos();
-						float Radian = atan((MonsterWorldPos.y - LancerPos.y) / (MonsterWorldPos.x - LancerPos.x));
-						float Degree = RadianToDegree(Radian);
+					MonsterWorldPos = TargetArm->GetWorldPos();
+					float Radian = atan((MonsterWorldPos.y - LancerPos.y) / (MonsterWorldPos.x - LancerPos.x));
+					float Degree = RadianToDegree(Radian);
 
-						Lancer->SetWorldRotation(0.f, 0.f, Degree);
-					}
+					Lancer->SetWorldRotation(0.f, 0.f, Degree);
 
-					else
-					{
-						Lancer->SetWorldRotation(GetWorldRot());
-					}
-
-					if (m_BodySprite->IsFlip())
-					{
-						Lancer->FlipAll(DeltaTime);
-						Lancer->SetSpeed(400.f);
-					}
 				}
 
-				return;
+				// 공통
+				Lancer->SetLancerID(i + 2);
+				Lancer->SetCollisionProfile("PlayerAttack");
+				Lancer->SetSpeed(-400.f);
+
+				if (m_BodySprite->IsFlip())
+				{
+					Lancer->FlipAll(DeltaTime);
+					Lancer->SetSpeed(400.f);
+				}
 			}
+
+			return;
 		}
 	}
 

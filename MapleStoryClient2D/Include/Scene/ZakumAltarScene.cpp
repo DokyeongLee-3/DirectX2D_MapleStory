@@ -69,6 +69,7 @@ bool CZakumAltarScene::Init()
 	CBossMatching* BossMatching = CClientManager::GetInst()->GetBossMatchingWindow();
 	CStatWindow* StatWindow = CClientManager::GetInst()->GetStatWindow();
 	CDyingNoticeWindow* DyingNoticeWindow = CClientManager::GetInst()->GetDyingNoticeWindow();
+	CSkillPointWindow* SkillPointWindow = CClientManager::GetInst()->GetSkillPointWindow();
 
 	m_Scene->GetViewport()->AddWindow(StatusWindow);
 	m_Scene->GetViewport()->AddWindow(Inventory);
@@ -78,6 +79,7 @@ bool CZakumAltarScene::Init()
 	m_Scene->GetViewport()->AddWindow(BossMatching);
 	m_Scene->GetViewport()->AddWindow(StatWindow);
 	m_Scene->GetViewport()->AddWindow(DyingNoticeWindow);
+	m_Scene->GetViewport()->AddWindow(SkillPointWindow);
 
 	if (BossMatching->IsEnable())
 		BossMatching->Enable(false);

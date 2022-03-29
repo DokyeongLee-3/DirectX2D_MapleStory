@@ -43,7 +43,9 @@ void CClapWarning::Update(float DeltaTime)
 
 	if (!m_Active)
 	{
-		m_WarningPointOwner->ZakumClap();
+		if (m_WarningPointOwner && m_WarningPointOwner->IsActive())
+			m_WarningPointOwner->ZakumClap();
+
 		return;
 	}
 

@@ -21,7 +21,19 @@ private:
     float                           m_AccTime;
     bool                            m_CollisionStart;
 
+    int                             m_ID;
+
 public:
+    void SetID(int ID)
+    {
+        m_ID = ID;
+    }
+
+    int GetID() const
+    {
+        return m_ID;
+    }
+
     CSpriteComponent* GetSpriteComponent()    const
     {
         return m_Sprite;

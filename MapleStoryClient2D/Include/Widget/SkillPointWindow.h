@@ -25,7 +25,10 @@ private:
 
 	CSharedPtr<CNumber>	m_EnableSkillPoint;
 	CSharedPtr<CText>	m_Title;
-	CSharedPtr<CImage>	m_SkillBookImage;
+
+	CSharedPtr<CImage>	m_FirstGradeSkillBookImage;
+	CSharedPtr<CImage>	m_SecondGradeSkillBookImage;
+	CSharedPtr<CImage>	m_ThirdGradeSkillBookImage;
 	
 	std::vector<SkillPointInfo*>	m_vecFirstGradeSkillPointInfo;
 	std::vector<SkillPointInfo*>	m_vecSecondGradeSkillPointInfo;

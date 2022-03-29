@@ -133,7 +133,6 @@ private:
     float       m_AccCameraShakeSingleDirTime;
     Vector3     m_OriginRelativeCamPos;
     Vector2     m_CameraShakeDir;
-    bool        m_FlameCollision;
 
 public:
     class CPlayerSkillInfo* GetPlayerSkillInfo()   const;
@@ -223,11 +222,6 @@ public:
         return m_LopeJump;
     }
 
-    bool    IsFlameCollsion()   const
-    {
-        return m_FlameCollision;
-    }
-
     void SetLopeJump(bool LopeJump)
     {
         m_LopeJump = LopeJump;
@@ -271,11 +265,6 @@ public:
     bool IsOnLope() const
     {
         return m_OnLope;
-    }
-
-    void SetFlameCollision(bool FlameCollision)
-    {
-        m_FlameCollision = FlameCollision;
     }
 
     CSpriteComponent* GetRootSpriteComponent()    const

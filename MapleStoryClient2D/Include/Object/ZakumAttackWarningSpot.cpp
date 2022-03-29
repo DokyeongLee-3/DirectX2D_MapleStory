@@ -55,7 +55,8 @@ void CZakumAttackWarningSpot::Update(float DeltaTime)
 	// WarningSpot이 없어지면 팔이 내려치는 동작 실행
 	if (!m_Active)
 	{
-		m_WarningPointOwner->ArmSmash(m_ArmID);
+		if(m_WarningPointOwner && m_WarningPointOwner->IsActive())
+			m_WarningPointOwner->ArmSmash(m_ArmID);
 	}
 
 	m_AccTime += DeltaTime;

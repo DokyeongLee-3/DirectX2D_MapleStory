@@ -81,9 +81,9 @@ void CDamageFont::Update(float DeltaTime)
     for (; iter != iterEnd; ++iter)
     {
         Vector2 Pos = (*iter)->GetWidgetPos();
-        (*iter)->SetPos(Pos.x, Pos.y + 17.f * DeltaTime);
+        (*iter)->SetPos(Pos.x, Pos.y + 16.f * DeltaTime);
         float Opacity = (*iter)->GetOpacity();
-        (*iter)->SetOpacity(Opacity - DeltaTime / 1.5f);
+        (*iter)->SetOpacity(Opacity - DeltaTime / 1.4f);
     }
 
     auto Criticaliter = m_ListCriticalEffect.begin();
@@ -92,9 +92,9 @@ void CDamageFont::Update(float DeltaTime)
     for (; Criticaliter != CriticaliterEnd; ++Criticaliter)
     {
         Vector2 Pos = (*Criticaliter)->GetWidgetPos();
-        (*Criticaliter)->SetPos(Pos.x, Pos.y + 17.f * DeltaTime);
+        (*Criticaliter)->SetPos(Pos.x, Pos.y + 16.f * DeltaTime);
         float Opacity = (*Criticaliter)->GetOpacity();
-        (*Criticaliter)->SetOpacity(Opacity - DeltaTime / 1.5f);
+        (*Criticaliter)->SetOpacity(Opacity - DeltaTime / 1.4f);
     }
 
     CWidgetWindow::Update(DeltaTime);
@@ -115,7 +115,7 @@ void CDamageFont::PostUpdate(float DeltaTime)
         // 점점 위로 올라가면서 소멸하게하기
         for (; iter != iterEnd; ++iter)
         {
-            if ((*iter)->GetOpacity() <= 0.f)
+            if ((*iter)->GetOpacity() <= 0.1f)
             {
                 (*iter)->Destroy();
                 iter = m_ListDamage.erase(iter);
@@ -135,7 +135,7 @@ void CDamageFont::PostUpdate(float DeltaTime)
         // 점점 위로 올라가면서 소멸하게하기
         for (; iter != iterEnd; ++iter)
         {
-            if ((*iter)->GetOpacity() <= 0.f)
+            if ((*iter)->GetOpacity() <= 0.1f)
             {
                 (*iter)->Destroy();
                 iter = m_ListCriticalEffect.erase(iter);

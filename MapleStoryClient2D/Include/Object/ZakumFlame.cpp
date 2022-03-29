@@ -45,8 +45,8 @@ bool CZakumFlame::Init()
 	m_Sprite->SetRelativePos(500.f, 300.f, 0.f);
 	m_Sprite->SetPivot(0.5f, 0.5f, 0.f);
 
-	m_Body->SetRelativePos(0.f, -10.f, 0.f);
-	m_Body->SetWorldScale(270.f, 30.f, 1.f);
+	m_Body->SetRelativePos(130.f, -10.f, 0.f);
+	m_Body->SetWorldScale(1160.f, 30.f, 1.f);
 	m_Body->AddCollisionCallback<CZakumFlame>(Collision_State::Begin, this, &CZakumFlame::CollisionBeginCallback);
 
 	return true;
@@ -54,7 +54,6 @@ bool CZakumFlame::Init()
 
 void CZakumFlame::Update(float DeltaTime)
 {
-	
 	CMonster::Update(DeltaTime);
 
 	if (m_CollisionStart)
@@ -67,8 +66,6 @@ void CZakumFlame::Update(float DeltaTime)
 			m_CollisionStart = false;
 
 			CPlayer2D* Player = (CPlayer2D*)m_Scene->GetPlayerObject();
-
-			Player->SetFlameCollision(false);
 
 			CColliderBox2D* PlayerBody = Player->GetPlayerBody();
 
@@ -95,12 +92,11 @@ void CZakumFlame::CollisionBeginCallback(const CollisionResult& Result)
 	if (DestObj->GetTypeID() == typeid(CPlayer2D).hash_code())
 	{
 		if (m_CollisionStart)
+		{
 			return;
+		}
 
 		CPlayer2D* Player = (CPlayer2D*)DestObj;
-
-		if (Player->IsFlameCollsion())
-			return;
 
 		// 플레이어가 죽은 상태거나 Scene전환중이면 충돌처리 X
 		if (Player->IsDead() || CSceneManager::GetInst()->GetNextScene())
@@ -112,7 +108,7 @@ void CZakumFlame::CollisionBeginCallback(const CollisionResult& Result)
 		int FlameDamage = CClientManager::GetInst()->GetZakumInfo().FireAttack;
 
 		Player->SetDamage((float)FlameDamage);
-		Player->SetFlameCollision(true);
+
 		m_CollisionStart = true;
 		m_AccTime = 0.f;
 	}

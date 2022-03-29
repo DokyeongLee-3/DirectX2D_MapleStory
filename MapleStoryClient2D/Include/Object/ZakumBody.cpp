@@ -32,7 +32,9 @@ CZakumBody::CZakumBody() :
 	m_ClapCountLimit(2),
 	m_ClapArmNum(-1),
 	m_HandMeet(false),
-	m_AliveArmCount(8)
+	m_AliveArmCount(8),
+	m_ReturnClapPosComplete(false),
+	m_CreateClapEffectComplete(false)
 {
 	SetTypeID<CZakumBody>();
 
@@ -273,7 +275,7 @@ void CZakumBody::Start()
 	m_LeftArm1HandAttackCollider->Enable(false);
 	m_LeftArm1HandAttackCollider->SetWorldScale(60.f, 60.f, 1.f);
 	m_LeftArm1HandAttackCollider->SetCollisionProfile("MonsterAttack");
-	m_LeftArm1HandAttackCollider->SetRelativePos(0.f, -20.f, 0.f);
+	m_LeftArm1HandAttackCollider->SetRelativePos(0.f, -30.f, 0.f);
 	m_LeftArm1HandAttackCollider->AddCollisionCallback<CZakumBody>(Collision_State::Begin, this, &CZakumBody::CollisionBeginCallback);
 	m_LeftArm1HandAttackCollider->Start();
 
@@ -282,7 +284,7 @@ void CZakumBody::Start()
 	m_LeftArm2HandAttackCollider->Enable(false);
 	m_LeftArm2HandAttackCollider->SetWorldScale(60.f, 60.f, 1.f);
 	m_LeftArm2HandAttackCollider->SetCollisionProfile("MonsterAttack");
-	m_LeftArm2HandAttackCollider->SetRelativePos(0.f, -20.f, 0.f);
+	m_LeftArm2HandAttackCollider->SetRelativePos(0.f, -30.f, 0.f);
 	m_LeftArm2HandAttackCollider->AddCollisionCallback<CZakumBody>(Collision_State::Begin, this, &CZakumBody::CollisionBeginCallback);
 	m_LeftArm2HandAttackCollider->Start();
 
@@ -291,7 +293,7 @@ void CZakumBody::Start()
 	m_LeftArm3HandAttackCollider->Enable(false);
 	m_LeftArm3HandAttackCollider->SetWorldScale(60.f, 60.f, 1.f);
 	m_LeftArm3HandAttackCollider->SetCollisionProfile("MonsterAttack");
-	m_LeftArm3HandAttackCollider->SetRelativePos(0.f, -20.f, 0.f);
+	m_LeftArm3HandAttackCollider->SetRelativePos(0.f, -30.f, 0.f);
 	m_LeftArm3HandAttackCollider->AddCollisionCallback<CZakumBody>(Collision_State::Begin, this, &CZakumBody::CollisionBeginCallback);
 	m_LeftArm3HandAttackCollider->Start();
 
@@ -300,7 +302,7 @@ void CZakumBody::Start()
 	m_LeftArm4HandAttackCollider->Enable(false);
 	m_LeftArm4HandAttackCollider->SetWorldScale(60.f, 60.f, 1.f);
 	m_LeftArm4HandAttackCollider->SetCollisionProfile("MonsterAttack");
-	m_LeftArm4HandAttackCollider->SetRelativePos(0.f, -20.f, 0.f);
+	m_LeftArm4HandAttackCollider->SetRelativePos(0.f, -30.f, 0.f);
 	m_LeftArm4HandAttackCollider->AddCollisionCallback<CZakumBody>(Collision_State::Begin, this, &CZakumBody::CollisionBeginCallback);
 	m_LeftArm4HandAttackCollider->Start();
 
@@ -309,7 +311,7 @@ void CZakumBody::Start()
 	m_RightArm1HandAttackCollider->Enable(false);
 	m_RightArm1HandAttackCollider->SetWorldScale(60.f, 60.f, 1.f);
 	m_RightArm1HandAttackCollider->SetCollisionProfile("MonsterAttack");
-	m_RightArm1HandAttackCollider->SetRelativePos(0.f, -20.f, 0.f);
+	m_RightArm1HandAttackCollider->SetRelativePos(0.f, -30.f, 0.f);
 	m_RightArm1HandAttackCollider->AddCollisionCallback<CZakumBody>(Collision_State::Begin, this, &CZakumBody::CollisionBeginCallback);
 	m_RightArm1HandAttackCollider->Start();
 
@@ -318,7 +320,7 @@ void CZakumBody::Start()
 	m_RightArm2HandAttackCollider->Enable(false);
 	m_RightArm2HandAttackCollider->SetWorldScale(60.f, 60.f, 1.f);
 	m_RightArm2HandAttackCollider->SetCollisionProfile("MonsterAttack");
-	m_RightArm2HandAttackCollider->SetRelativePos(0.f, -20.f, 0.f);
+	m_RightArm2HandAttackCollider->SetRelativePos(0.f, -30.f, 0.f);
 	m_RightArm2HandAttackCollider->AddCollisionCallback<CZakumBody>(Collision_State::Begin, this, &CZakumBody::CollisionBeginCallback);
 	m_RightArm2HandAttackCollider->Start();
 
@@ -327,7 +329,7 @@ void CZakumBody::Start()
 	m_RightArm3HandAttackCollider->Enable(false);
 	m_RightArm3HandAttackCollider->SetWorldScale(60.f, 60.f, 1.f);
 	m_RightArm3HandAttackCollider->SetCollisionProfile("MonsterAttack");
-	m_RightArm3HandAttackCollider->SetRelativePos(0.f, -20.f, 0.f);
+	m_RightArm3HandAttackCollider->SetRelativePos(0.f, -30.f, 0.f);
 	m_RightArm3HandAttackCollider->AddCollisionCallback<CZakumBody>(Collision_State::Begin, this, &CZakumBody::CollisionBeginCallback);
 	m_RightArm3HandAttackCollider->Start();
 
@@ -336,7 +338,7 @@ void CZakumBody::Start()
 	m_RightArm4HandAttackCollider->Enable(false);
 	m_RightArm4HandAttackCollider->SetWorldScale(60.f, 60.f, 1.f);
 	m_RightArm4HandAttackCollider->SetCollisionProfile("MonsterAttack");
-	m_RightArm4HandAttackCollider->SetRelativePos(0.f, -20.f, 0.f);
+	m_RightArm4HandAttackCollider->SetRelativePos(0.f, -30.f, 0.f);
 	m_RightArm4HandAttackCollider->AddCollisionCallback<CZakumBody>(Collision_State::Begin, this, &CZakumBody::CollisionBeginCallback);
 	m_RightArm4HandAttackCollider->Start();
 
@@ -432,6 +434,7 @@ void CZakumBody::Start()
 	m_LeftArm1Hand->AddChild(m_LeftArm1HandDamageWidgetComponent);
 	m_LeftArm1HandDamageWidgetComponent->SetRelativePos(-10.f, 0.f, 0.f);
 	m_LeftArm1HandDamageWidgetComponent->SetLayerName("ScreenWidgetComponent");
+	m_LeftArm1HandDamageWidgetComponent->SetInheritRotZ(false);
 
 	m_LeftArm2HandDamageWidgetComponent = CreateComponent<CWidgetComponent>("LeftArm2DamageFont");
 	m_LeftArm2HandDamageWidgetComponent->UseAlphaBlend(true);
@@ -439,6 +442,7 @@ void CZakumBody::Start()
 	m_LeftArm2Hand->AddChild(m_LeftArm2HandDamageWidgetComponent);
 	m_LeftArm2HandDamageWidgetComponent->SetRelativePos(-10.f, 0.f, 0.f);
 	m_LeftArm2HandDamageWidgetComponent->SetLayerName("ScreenWidgetComponent");
+	m_LeftArm2HandDamageWidgetComponent->SetInheritRotZ(false);
 
 	m_LeftArm3HandDamageWidgetComponent = CreateComponent<CWidgetComponent>("LeftArm3DamageFont");
 	m_LeftArm3HandDamageWidgetComponent->UseAlphaBlend(true);
@@ -446,6 +450,7 @@ void CZakumBody::Start()
 	m_LeftArm3Hand->AddChild(m_LeftArm3HandDamageWidgetComponent);
 	m_LeftArm3HandDamageWidgetComponent->SetRelativePos(-10.f, 0.f, 0.f);
 	m_LeftArm3HandDamageWidgetComponent->SetLayerName("ScreenWidgetComponent");
+	m_LeftArm3HandDamageWidgetComponent->SetInheritRotZ(false);
 
 	m_LeftArm4HandDamageWidgetComponent = CreateComponent<CWidgetComponent>("LeftArm4DamageFont");
 	m_LeftArm4HandDamageWidgetComponent->UseAlphaBlend(true);
@@ -453,6 +458,7 @@ void CZakumBody::Start()
 	m_LeftArm4Hand->AddChild(m_LeftArm4HandDamageWidgetComponent);
 	m_LeftArm4HandDamageWidgetComponent->SetRelativePos(-10.f, 0.f, 0.f);
 	m_LeftArm4HandDamageWidgetComponent->SetLayerName("ScreenWidgetComponent");
+	m_LeftArm4HandDamageWidgetComponent->SetInheritRotZ(false);
 
 	m_RightArm1HandDamageWidgetComponent = CreateComponent<CWidgetComponent>("RightArm1DamageFont");
 	m_RightArm1HandDamageWidgetComponent->UseAlphaBlend(true);
@@ -460,6 +466,7 @@ void CZakumBody::Start()
 	m_RightArm1Hand->AddChild(m_RightArm1HandDamageWidgetComponent);
 	m_RightArm1HandDamageWidgetComponent->SetRelativePos(-10.f, 0.f, 0.f);
 	m_RightArm1HandDamageWidgetComponent->SetLayerName("ScreenWidgetComponent");
+	m_RightArm1HandDamageWidgetComponent->SetInheritRotZ(false);
 
 	m_RightArm2HandDamageWidgetComponent = CreateComponent<CWidgetComponent>("RightArm2DamageFont");
 	m_RightArm2HandDamageWidgetComponent->UseAlphaBlend(true);
@@ -467,6 +474,7 @@ void CZakumBody::Start()
 	m_RightArm2Hand->AddChild(m_RightArm2HandDamageWidgetComponent);
 	m_RightArm2HandDamageWidgetComponent->SetRelativePos(-10.f, 0.f, 0.f);
 	m_RightArm2HandDamageWidgetComponent->SetLayerName("ScreenWidgetComponent");
+	m_RightArm2HandDamageWidgetComponent->SetInheritRotZ(false);
 
 	m_RightArm3HandDamageWidgetComponent = CreateComponent<CWidgetComponent>("RightArm3DamageFont");
 	m_RightArm3HandDamageWidgetComponent->UseAlphaBlend(true);
@@ -474,6 +482,7 @@ void CZakumBody::Start()
 	m_RightArm3Hand->AddChild(m_RightArm3HandDamageWidgetComponent);
 	m_RightArm3HandDamageWidgetComponent->SetRelativePos(-10.f, 0.f, 0.f);
 	m_RightArm3HandDamageWidgetComponent->SetLayerName("ScreenWidgetComponent");
+	m_RightArm3HandDamageWidgetComponent->SetInheritRotZ(false);
 
 	m_RightArm4HandDamageWidgetComponent = CreateComponent<CWidgetComponent>("RightArm4DamageFont");
 	m_RightArm4HandDamageWidgetComponent->UseAlphaBlend(true);
@@ -481,6 +490,7 @@ void CZakumBody::Start()
 	m_RightArm4Hand->AddChild(m_RightArm4HandDamageWidgetComponent);
 	m_RightArm4HandDamageWidgetComponent->SetRelativePos(-10.f, 0.f, 0.f);
 	m_RightArm4HandDamageWidgetComponent->SetLayerName("ScreenWidgetComponent");
+	m_RightArm4HandDamageWidgetComponent->SetInheritRotZ(false);
 }			 
 
 bool CZakumBody::Init()
@@ -711,6 +721,8 @@ void CZakumBody::StretchArm(int ArmID, float DeltaTime)
 	if (m_HandMeet)
 		return;
 
+	CPlayer2D* Player = (CPlayer2D*)m_Scene->GetPlayerObject();
+
 	if (m_vecAccRotation[ArmID] >= m_vecClapRotUpperBound[ArmID])
 	{
 		switch (ArmID)
@@ -735,7 +747,10 @@ void CZakumBody::StretchArm(int ArmID, float DeltaTime)
 
 					if (Flame)
 						Flame->Destroy();
+
 				}
+
+				// 늘린 팔 위치 되돌려주기?
 			}
 			break;
 		case 1:
@@ -758,7 +773,11 @@ void CZakumBody::StretchArm(int ArmID, float DeltaTime)
 
 					if (Flame)
 						Flame->Destroy();
+
 				}
+
+				// 늘린 팔 위치 되돌려주기?
+
 			}
 			break;
 		case 2:
@@ -782,6 +801,9 @@ void CZakumBody::StretchArm(int ArmID, float DeltaTime)
 					if (Flame)
 						Flame->Destroy();
 				}
+
+				// 늘린 팔 위치 되돌려주기?
+
 			}
 			break;
 		}
@@ -1004,9 +1026,13 @@ void CZakumBody::PickAndStretchClapHand(float DeltaTime)
 		int AttackArmID = rand() % 3;
 		//int AttackArmID = 0;
 
-		if (AttackArmID == 0 && (!m_LeftArm1Root || !m_LeftArm1Root->IsActive() || !m_RightArm1Root || !m_RightArm1Root->IsActive()))
+		// 박수칠 팔이 하나도 없을 경우
+		if ((!m_LeftArm1Hand->IsActive() && !m_LeftArm2Hand->IsActive() && !m_LeftArm3Hand->IsActive())
+			|| (!m_RightArm1Hand->IsActive() && !m_RightArm2Hand->IsActive() && !m_RightArm3Hand->IsActive()))
 		{
 			m_ClapArmNum = -1;
+
+			CPlayer2D* Player = (CPlayer2D*)m_Scene->GetPlayerObject();
 
 			for (int i = 0; i < 4; ++i)
 			{
@@ -1017,50 +1043,29 @@ void CZakumBody::PickAndStretchClapHand(float DeltaTime)
 
 				if (Flame)
 					Flame->Destroy();
+
 			}
 
 			m_ZakumState = Zakum_State::Idle;
 			m_ClapCount = 0;
+			return;
+		}
+
+		if (AttackArmID == 0 && (!m_LeftArm1Root || !m_LeftArm1Root->IsActive() || !m_RightArm1Root || !m_RightArm1Root->IsActive()))
+		{
+			m_ClapArmNum = -1;
 			return;
 		}
 
 		else if (AttackArmID == 1 && (!m_LeftArm2Root || !m_LeftArm2Root->IsActive() || !m_RightArm2Root || !m_RightArm2Root->IsActive()))
 		{
 			m_ClapArmNum = -1;
-
-			for (int i = 0; i < 4; ++i)
-			{
-				char FlameName[256] = {};
-				sprintf_s(FlameName, "Flame%d", i);
-				std::string StrFlameName = FlameName;
-				CZakumFlame* Flame = (CZakumFlame*)m_Scene->FindObject(StrFlameName);
-
-				if (Flame)
-					Flame->Destroy();
-			}
-
-			m_ZakumState = Zakum_State::Idle;
-			m_ClapCount = 0;
 			return;
 		}
 
 		else if (AttackArmID == 2 && (!m_LeftArm3Root || !m_LeftArm3Root->IsActive() || !m_RightArm3Root || !m_RightArm3Root->IsActive()))
 		{
 			m_ClapArmNum = -1;
-
-			for (int i = 0; i < 4; ++i)
-			{
-				char FlameName[256] = {};
-				sprintf_s(FlameName, "Flame%d", i);
-				std::string StrFlameName = FlameName;
-				CZakumFlame* Flame = (CZakumFlame*)m_Scene->FindObject(StrFlameName);
-
-				if (Flame)
-					Flame->Destroy();
-			}
-
-			m_ZakumState = Zakum_State::Idle;
-			m_ClapCount = 0;
 			return;
 		}
 
@@ -1288,6 +1293,8 @@ void CZakumBody::ZakumClap()
 
 void CZakumBody::CreateClapEffect()
 {
+	// 왼쪽손이 ZakumClapLeft 시퀀스를 끝내고 이 함수를 EndFunction으로 호출할지 오른쪽손이 ZakumClapRight 시퀀스를 끝내고 이 함수를
+	// EndFunction으로 호출할지 모르지만, 둘중 하나가 호출했으면 나머지 하나는 호출하면 안되므로 m_HandMeet이 false일때만 ClapEffect를 만들어준다
 	if (!m_HandMeet)
 	{
 		m_HandMeet = true;
@@ -1372,6 +1379,19 @@ void CZakumBody::ClapReturnArm()
 			m_LeftArm1Hand->AddWorldPos(-150.f, 0.f, 0.f);
 			m_RightArm1Hand->AddWorldPos(150.f, 0.f, 0.f);
 		}
+
+		else if (!m_LeftArm1Hand || !m_LeftArm1Hand->IsActive())
+		{
+			m_RightArm1Hand->ChangeAnimation("ZakumClapReturnRight");
+			m_RightArm1Hand->AddWorldPos(150.f, 0.f, 0.f);
+		}
+
+		else if (!m_RightArm1Hand || !m_RightArm1Hand->IsActive())
+		{
+			m_LeftArm1Hand->ChangeAnimation("ZakumClapReturnLeft");
+			m_LeftArm1Hand->AddWorldPos(-150.f, 0.f, 0.f);
+		}
+
 		break;
 	case 1:
 		if (m_LeftArm2Hand && m_LeftArm2Hand->IsActive() && m_RightArm2Hand && m_RightArm2Hand->IsActive())
@@ -1381,6 +1401,19 @@ void CZakumBody::ClapReturnArm()
 			m_LeftArm2Hand->AddWorldPos(-150.f, 0.f, 0.f);
 			m_RightArm2Hand->AddWorldPos(150.f, 0.f, 0.f);
 		}
+
+		else if (!m_LeftArm2Hand || !m_LeftArm2Hand->IsActive())
+		{
+			m_RightArm2Hand->ChangeAnimation("ZakumClapReturnRight");
+			m_RightArm2Hand->AddWorldPos(150.f, 0.f, 0.f);
+		}
+
+		else if (!m_RightArm2Hand || !m_RightArm2Hand->IsActive())
+		{
+			m_LeftArm2Hand->ChangeAnimation("ZakumClapReturnLeft");
+			m_LeftArm2Hand->AddWorldPos(-150.f, 0.f, 0.f);
+		}
+
 		break;
 	case 2:
 		if (m_LeftArm3Hand && m_LeftArm3Hand->IsActive() && m_RightArm3Hand && m_RightArm3Hand->IsActive())
@@ -1390,144 +1423,158 @@ void CZakumBody::ClapReturnArm()
 			m_LeftArm3Hand->AddWorldPos(-150.f, 0.f, 0.f);
 			m_RightArm3Hand->AddWorldPos(150.f, 0.f, 0.f);
 		}
+
+		else if (!m_LeftArm3Hand || !m_LeftArm3Hand->IsActive())
+		{
+			m_RightArm3Hand->ChangeAnimation("ZakumClapReturnRight");
+			m_RightArm3Hand->AddWorldPos(150.f, 0.f, 0.f);
+		}
+
+		else if (!m_RightArm3Hand || !m_RightArm3Hand->IsActive())
+		{
+			m_LeftArm3Hand->ChangeAnimation("ZakumClapReturnLeft");
+			m_LeftArm3Hand->AddWorldPos(-150.f, 0.f, 0.f);
+		}
+
 		break;
 	}
 }
 
 void CZakumBody::ClapReturnArmOriginPos()
 {
+	// 왼쪽손이 ZakumClapReturnLeft 시퀀스를 끝내고 이 함수를 EndFunction으로 호출할지 오른쪽손이 ZakumClapReturnRight 시퀀스를 끝내고
+	// 이 함수를 EndFunction으로 호출할지 모르지만, 둘중 하나가 호출했으면 나머지 하나는 호출하면 안되므로 m_HandMeet = true일때만 아래 코드들을
+	// 실행하고, 이 함수 끝 부분에서는 m_HandMeet = false로 만들어서 왼손, 오른손 둘다 이 함수를 호출하지 않도록 하고 m_HandMeet은 
+	// CreateClapEffect함수에서 true로 만들어 줄 수 있다
+	if (!m_HandMeet)
+		return;
 
 	switch (m_ClapArmNum)
 	{
 	case 0:
-		if (m_LeftArm1Hand && (!m_RightArm1Hand || !m_RightArm1Hand->IsActive()))
+		if (m_LeftArm1Hand)
 		{
-			m_LeftArm1Hand->Destroy();
-			break;
+			m_LeftArm1Upper->SetWorldPos(m_vecPreviousUpperPos[0]);
+			m_LeftArm1Upper->SetWorldRotation(m_vecPreviousUpperRot[0]);
+			m_LeftArm1Hand->SetWorldPos(m_vecPreviousHandPos[0]);
+			m_LeftArm1Hand->SetWorldRotation(m_vecPreviousHandRot[0]);
+			m_LeftArm1Hand->ChangeAnimation("ZakumLeftHand");
+			m_LeftArm1Hand->GetCurrentAnimation()->SetCurrentAnimationFrame(0);
+			m_LeftArm1Hand->GetCurrentAnimation()->SetPlayScale(0.f);
+
+			m_LeftArm1Upper->SetRender(true);
+			m_LeftArm1Lower->SetRender(true);
+			m_vecArmState[0] = Zakum_ArmState::Idle;
+
+			m_LeftArm1HandAttackCollider->Enable(false);
+			m_LeftArm1HandAttackCollider->SetRelativePos(0.f, -30.f, 0.f);
+
 		}
 
-		if (m_RightArm1Hand && (!m_LeftArm1Hand || !m_LeftArm1Hand->IsActive()))
+		if (m_RightArm1Hand)
 		{
-			m_RightArm1Hand->Destroy();
-			break;
+			m_RightArm1Upper->SetWorldPos(m_vecPreviousUpperPos[4]);
+			m_RightArm1Upper->SetWorldRotation(m_vecPreviousUpperRot[4]);
+			m_RightArm1Hand->SetWorldPos(m_vecPreviousHandPos[4]);
+			m_RightArm1Hand->SetWorldRotation(m_vecPreviousHandRot[4]);
+			m_RightArm1Hand->ChangeAnimation("ZakumRightHand");
+			m_RightArm1Hand->GetCurrentAnimation()->SetCurrentAnimationFrame(0);
+			m_RightArm1Hand->GetCurrentAnimation()->SetPlayScale(0.f);
+
+			m_RightArm1Upper->SetRender(true);
+			m_RightArm1Lower->SetRender(true);
+			m_vecArmState[4] = Zakum_ArmState::Idle;
+
+			m_RightArm1HandAttackCollider->Enable(false);
+			m_RightArm1HandAttackCollider->SetRelativePos(0.f, -30.f, 0.f);
+
 		}
-		m_LeftArm1Upper->SetWorldPos(m_vecPreviousUpperPos[0]);
-		m_LeftArm1Upper->SetWorldRotation(m_vecPreviousUpperRot[0]);
-		m_LeftArm1Hand->SetWorldPos(m_vecPreviousHandPos[0]);
-		m_LeftArm1Hand->SetWorldRotation(m_vecPreviousHandRot[0]);
-
-		m_RightArm1Upper->SetWorldPos(m_vecPreviousUpperPos[4]);
-		m_RightArm1Upper->SetWorldRotation(m_vecPreviousUpperRot[4]);
-		m_RightArm1Hand->SetWorldPos(m_vecPreviousHandPos[4]);
-		m_RightArm1Hand->SetWorldRotation(m_vecPreviousHandRot[4]);
-
-		m_LeftArm1Hand->ChangeAnimation("ZakumLeftHand");
-		m_RightArm1Hand->ChangeAnimation("ZakumRightHand");
-
-		m_LeftArm1Hand->GetCurrentAnimation()->SetCurrentAnimationFrame(0);
-		m_RightArm1Hand->GetCurrentAnimation()->SetCurrentAnimationFrame(0);
-
-		m_LeftArm1Hand->GetCurrentAnimation()->SetPlayScale(0.f);
-		m_RightArm1Hand->GetCurrentAnimation()->SetPlayScale(0.f);
-
-		m_LeftArm1Upper->SetRender(true);
-		m_RightArm1Upper->SetRender(true);
-		m_LeftArm1Lower->SetRender(true);
-		m_RightArm1Lower->SetRender(true);
-
-		m_vecArmState[0] = Zakum_ArmState::Idle;
-		m_vecArmState[4] = Zakum_ArmState::Idle;
-
-		m_LeftArm1HandAttackCollider->Enable(false);
-		m_RightArm1HandAttackCollider->Enable(false);
 
 		break;
 	case 1:
-		if (m_LeftArm2Upper && (!m_RightArm2Upper || !m_RightArm2Upper->IsActive()))
+		if (m_LeftArm2Upper)
 		{
-			m_LeftArm2Upper->Destroy();
-			break;
+			m_LeftArm2Upper->SetWorldPos(m_vecPreviousUpperPos[1]);
+			m_LeftArm2Upper->SetWorldRotation(m_vecPreviousUpperRot[1]);
+			m_LeftArm2Hand->SetWorldPos(m_vecPreviousHandPos[1]);
+			m_LeftArm2Hand->SetWorldRotation(m_vecPreviousHandRot[1]);
+
+			m_LeftArm2Hand->ChangeAnimation("ZakumLeftHand");
+			m_LeftArm2Hand->GetCurrentAnimation()->SetCurrentAnimationFrame(1);
+			m_LeftArm2Hand->GetCurrentAnimation()->SetPlayScale(0.f);
+
+			m_LeftArm2Upper->SetRender(true);
+			m_LeftArm2Lower->SetRender(true);
+
+			m_vecArmState[1] = Zakum_ArmState::Idle;
+
+			m_LeftArm2HandAttackCollider->Enable(false);
+			m_LeftArm2HandAttackCollider->SetRelativePos(0.f, -30.f, 0.f);
 		}
 
-		if (m_RightArm2Upper && (!m_LeftArm2Upper || !m_LeftArm2Upper->IsActive()))
+		if (m_RightArm2Upper)
 		{
-			m_RightArm2Upper->Destroy();
-			break;
+			m_RightArm2Upper->SetWorldPos(m_vecPreviousUpperPos[5]);
+			m_RightArm2Upper->SetWorldRotation(m_vecPreviousUpperRot[5]);
+			m_RightArm2Hand->SetWorldPos(m_vecPreviousHandPos[5]);
+			m_RightArm2Hand->SetWorldRotation(m_vecPreviousHandRot[5]);
+
+			m_RightArm2Hand->ChangeAnimation("ZakumRightHand");
+
+			m_RightArm2Hand->GetCurrentAnimation()->SetCurrentAnimationFrame(1);
+
+			m_RightArm2Hand->GetCurrentAnimation()->SetPlayScale(0.f);
+
+			m_RightArm2Upper->SetRender(true);
+			m_RightArm2Lower->SetRender(true);
+
+
+			m_vecArmState[5] = Zakum_ArmState::Idle;
+
+			m_RightArm2HandAttackCollider->Enable(false);
+			m_RightArm2HandAttackCollider->SetRelativePos(0.f, -30.f, 0.f);
 		}
-
-		m_LeftArm2Upper->SetWorldPos(m_vecPreviousUpperPos[1]);
-		m_LeftArm2Upper->SetWorldRotation(m_vecPreviousUpperRot[1]);
-		m_LeftArm2Hand->SetWorldPos(m_vecPreviousHandPos[1]);
-		m_LeftArm2Hand->SetWorldRotation(m_vecPreviousHandRot[1]);
-
-		m_RightArm2Upper->SetWorldPos(m_vecPreviousUpperPos[5]);
-		m_RightArm2Upper->SetWorldRotation(m_vecPreviousUpperRot[5]);
-		m_RightArm2Hand->SetWorldPos(m_vecPreviousHandPos[5]);
-		m_RightArm2Hand->SetWorldRotation(m_vecPreviousHandRot[5]);
-
-		m_LeftArm2Hand->ChangeAnimation("ZakumLeftHand");
-		m_RightArm2Hand->ChangeAnimation("ZakumRightHand");
-
-		m_LeftArm2Hand->GetCurrentAnimation()->SetCurrentAnimationFrame(1);
-		m_RightArm2Hand->GetCurrentAnimation()->SetCurrentAnimationFrame(1);
-
-		m_LeftArm2Hand->GetCurrentAnimation()->SetPlayScale(0.f);
-		m_RightArm2Hand->GetCurrentAnimation()->SetPlayScale(0.f);
-
-		m_LeftArm2Upper->SetRender(true);
-		m_RightArm2Upper->SetRender(true);
-		m_LeftArm2Lower->SetRender(true);
-		m_RightArm2Lower->SetRender(true);
-
-		m_vecArmState[1] = Zakum_ArmState::Idle;
-		m_vecArmState[5] = Zakum_ArmState::Idle;
-
-		m_LeftArm2HandAttackCollider->Enable(false);
-		m_RightArm2HandAttackCollider->Enable(false);
 
 		break;
 	case 2:
-		if (m_LeftArm3Upper && (!m_RightArm3Upper || !m_RightArm3Upper->IsActive()))
+		if (m_LeftArm3Upper)
 		{
-			m_LeftArm3Upper->Destroy();
-			break;
+			m_LeftArm3Upper->SetWorldPos(m_vecPreviousUpperPos[2]);
+			m_LeftArm3Upper->SetWorldRotation(m_vecPreviousUpperRot[2]);
+			m_LeftArm3Hand->SetWorldPos(m_vecPreviousHandPos[2]);
+			m_LeftArm3Hand->SetWorldRotation(m_vecPreviousHandRot[2]);
+
+			m_LeftArm3Hand->ChangeAnimation("ZakumLeftHand");
+			m_LeftArm3Hand->GetCurrentAnimation()->SetCurrentAnimationFrame(2);
+			m_LeftArm3Hand->GetCurrentAnimation()->SetPlayScale(0.f);
+			m_LeftArm3Upper->SetRender(true);
+			m_LeftArm3Lower->SetRender(true);
+
+			m_vecArmState[2] = Zakum_ArmState::Idle;
+
+			m_LeftArm3HandAttackCollider->Enable(false);
+			m_LeftArm3HandAttackCollider->SetRelativePos(0.f, -30.f, 0.f);
 		}
 
-		if (m_RightArm3Upper && (!m_LeftArm3Upper || !m_LeftArm3Upper->IsActive()))
+		if (m_RightArm3Upper)
 		{
-			m_RightArm3Upper->Destroy();
-			break;
+			m_RightArm3Upper->SetWorldPos(m_vecPreviousUpperPos[6]);
+			m_RightArm3Upper->SetWorldRotation(m_vecPreviousUpperRot[6]);
+			m_RightArm3Hand->SetWorldPos(m_vecPreviousHandPos[6]);
+			m_RightArm3Hand->SetWorldRotation(m_vecPreviousHandRot[6]);
+
+			m_RightArm3Hand->ChangeAnimation("ZakumRightHand");
+			m_RightArm3Hand->GetCurrentAnimation()->SetCurrentAnimationFrame(2);
+			m_RightArm3Hand->GetCurrentAnimation()->SetPlayScale(0.f);
+
+			m_RightArm3Upper->SetRender(true);
+			m_RightArm3Lower->SetRender(true);
+
+			m_vecArmState[6] = Zakum_ArmState::Idle;
+
+			m_RightArm3HandAttackCollider->Enable(false);
+			m_RightArm3HandAttackCollider->SetRelativePos(0.f, -30.f, 0.f);
 		}
-
-		m_LeftArm3Upper->SetWorldPos(m_vecPreviousUpperPos[2]);
-		m_LeftArm3Upper->SetWorldRotation(m_vecPreviousUpperRot[2]);
-		m_LeftArm3Hand->SetWorldPos(m_vecPreviousHandPos[2]);
-		m_LeftArm3Hand->SetWorldRotation(m_vecPreviousHandRot[2]);
-
-		m_RightArm3Upper->SetWorldPos(m_vecPreviousUpperPos[6]);
-		m_RightArm3Upper->SetWorldRotation(m_vecPreviousUpperRot[6]);
-		m_RightArm3Hand->SetWorldPos(m_vecPreviousHandPos[6]);
-		m_RightArm3Hand->SetWorldRotation(m_vecPreviousHandRot[6]);
-
-		m_LeftArm3Hand->ChangeAnimation("ZakumLeftHand");
-		m_RightArm3Hand->ChangeAnimation("ZakumRightHand");
-
-		m_LeftArm3Hand->GetCurrentAnimation()->SetCurrentAnimationFrame(2);
-		m_RightArm3Hand->GetCurrentAnimation()->SetCurrentAnimationFrame(2);
-
-		m_LeftArm3Hand->GetCurrentAnimation()->SetPlayScale(0.f);
-		m_RightArm3Hand->GetCurrentAnimation()->SetPlayScale(0.f);
-
-		m_LeftArm3Upper->SetRender(true);
-		m_RightArm3Upper->SetRender(true);
-		m_LeftArm3Lower->SetRender(true);
-		m_RightArm3Lower->SetRender(true);
-
-		m_vecArmState[2] = Zakum_ArmState::Idle;
-		m_vecArmState[6] = Zakum_ArmState::Idle;
-
-		m_LeftArm3HandAttackCollider->Enable(false);
-		m_RightArm3HandAttackCollider->Enable(false);
 
 		break;
 	}
@@ -1537,9 +1584,12 @@ void CZakumBody::ClapReturnArmOriginPos()
 	m_ClapArmNum = -1;
 	m_AccTime = 0.f;
 	m_HandMeet = false;
+	m_ReturnClapPosComplete = true;
 
 	if (m_ClapCount == m_ClapCountLimit)
 	{
+		CPlayer2D* Player = (CPlayer2D*)m_Scene->GetPlayerObject();
+
 		for (int i = 0; i < 4; ++i)
 		{
 			char FlameName[256] = {};
@@ -1786,6 +1836,45 @@ void CZakumBody::SetDamage(float Damage, bool Critical)
 		{
 			Die();
 			
+			std::vector<CClapWarning*> vecClapWarning;
+			m_Scene->FindObjectByType<CClapWarning>(vecClapWarning);
+
+			size_t Count = vecClapWarning.size();
+
+			for (size_t i = 0; i < Count; ++i)
+			{
+				vecClapWarning[i]->SetWarningPointOwner(nullptr);
+			}
+
+			std::vector<CZakumAttackWarningSpot*> vecAttackWarning;
+			m_Scene->FindObjectByType<CZakumAttackWarningSpot>(vecAttackWarning);
+
+			Count = vecAttackWarning.size();
+
+			for (size_t i = 0; i < Count; ++i)
+			{
+				vecAttackWarning[i]->SetWarningPointOwner(nullptr);
+			}
+
+			std::vector<CZakumHandSmashLight*> vecHandSmashLight;
+			m_Scene->FindObjectByType<CZakumHandSmashLight>(vecHandSmashLight);
+
+			Count = vecHandSmashLight.size();
+
+			for (size_t i = 0; i < Count; ++i)
+			{
+				vecHandSmashLight[i]->SetSmashLightOwner(nullptr);
+			}
+
+			m_LeftArm1Hand = nullptr;
+			m_LeftArm2Hand = nullptr;
+			m_LeftArm3Hand = nullptr;
+			m_LeftArm4Hand = nullptr;
+			m_RightArm1Hand = nullptr;
+			m_RightArm2Hand = nullptr;
+			m_RightArm3Hand = nullptr;
+			m_RightArm4Hand = nullptr;
+
 			if (m_Body && !m_Body->IsEnable())
 				return;
 
@@ -1856,7 +1945,7 @@ void CZakumBody::ArmSmash(int ArmID)
 	switch (ArmID)
 	{
 	case 0:
-		if (!m_LeftArm1Root || !m_LeftArm1Root->IsActive())
+		if (!m_LeftArm1Hand || !m_LeftArm1Hand->IsActive())
 		{
 			m_ZakumState = Zakum_State::Idle;
 			m_AccTime = 0.f;
@@ -1866,7 +1955,7 @@ void CZakumBody::ArmSmash(int ArmID)
 		}
 		break;
 	case 1:
-		if (!m_LeftArm2Root || !m_LeftArm2Root->IsActive())
+		if (!m_LeftArm2Hand || !m_LeftArm2Hand->IsActive())
 		{
 			m_ZakumState = Zakum_State::Idle;
 			m_AccTime = 0.f;
@@ -1876,7 +1965,7 @@ void CZakumBody::ArmSmash(int ArmID)
 		}
 		break;
 	case 2:
-		if (!m_LeftArm3Root || !m_LeftArm3Root->IsActive())
+		if (!m_LeftArm3Hand || !m_LeftArm3Hand->IsActive())
 		{
 			m_ZakumState = Zakum_State::Idle;
 			m_AccTime = 0.f;
@@ -1886,7 +1975,7 @@ void CZakumBody::ArmSmash(int ArmID)
 		}
 		break;
 	case 3:
-		if (!m_LeftArm4Root || !m_LeftArm4Root->IsActive())
+		if (!m_LeftArm4Hand || !m_LeftArm4Hand->IsActive())
 		{
 			m_ZakumState = Zakum_State::Idle;
 			m_AccTime = 0.f;
@@ -1896,7 +1985,7 @@ void CZakumBody::ArmSmash(int ArmID)
 		}
 		break;
 	case 4:
-		if (!m_RightArm1Root || !m_RightArm1Root->IsActive())
+		if (!m_RightArm1Hand || !m_RightArm1Hand->IsActive())
 		{
 			m_ZakumState = Zakum_State::Idle;
 			m_AccTime = 0.f;
@@ -1906,7 +1995,7 @@ void CZakumBody::ArmSmash(int ArmID)
 		}
 		break;
 	case 5:
-		if (!m_RightArm2Root || !m_RightArm2Root->IsActive())
+		if (!m_RightArm2Hand || !m_RightArm2Hand->IsActive())
 		{
 			m_ZakumState = Zakum_State::Idle;
 			m_AccTime = 0.f;
@@ -1916,7 +2005,7 @@ void CZakumBody::ArmSmash(int ArmID)
 		}
 		break;
 	case 6:
-		if (!m_RightArm3Root || !m_RightArm3Root->IsActive())
+		if (!m_RightArm3Hand || !m_RightArm3Hand->IsActive())
 		{
 			m_ZakumState = Zakum_State::Idle;
 			m_AccTime = 0.f;
@@ -1926,7 +2015,7 @@ void CZakumBody::ArmSmash(int ArmID)
 		}
 		break;
 	case 7:
-		if (!m_RightArm4Root || !m_RightArm4Root->IsActive())
+		if (!m_RightArm4Hand || !m_RightArm4Hand->IsActive())
 		{
 			m_ZakumState = Zakum_State::Idle;
 			m_AccTime = 0.f;
@@ -1969,7 +2058,8 @@ void CZakumBody::ArmSmash(int ArmID)
 		Light->SetLightSpriteTexture("LeftLight2", TEXT("Monster/LeftHandSmashLightEffect2.png"));
 
 		m_LeftArm1HandAttackCollider->Enable(true);
-		m_LeftArm1HandAttackCollider->SetWorldScale(90.f, 40.f, 1.f);
+		m_LeftArm1HandAttackCollider->SetWorldScale(110.f, 40.f, 1.f);
+		m_LeftArm1HandAttackCollider->SetRelativePos(0.f, -30.f, 0.f);
 		break;
 	case 1:
 		m_LeftArm2Lower->SetRender(false);
@@ -1982,7 +2072,8 @@ void CZakumBody::ArmSmash(int ArmID)
 		Light->SetLightSpriteTexture("LeftLight2", TEXT("Monster/LeftHandSmashLightEffect2.png"));
 
 		m_LeftArm2HandAttackCollider->Enable(true);
-		m_LeftArm2HandAttackCollider->SetWorldScale(90.f, 40.f, 1.f);
+		m_LeftArm2HandAttackCollider->SetWorldScale(110.f, 40.f, 1.f);
+		m_LeftArm2HandAttackCollider->SetRelativePos(0.f, -30.f, 0.f);
 		break;
 	case 2:
 		m_LeftArm3Lower->SetRender(false);
@@ -1995,7 +2086,8 @@ void CZakumBody::ArmSmash(int ArmID)
 		Light->SetLightSpriteTexture("LeftLight1", TEXT("Monster/LeftHandSmashLightEffect1.png"));
 
 		m_LeftArm3HandAttackCollider->Enable(true);
-		m_LeftArm3HandAttackCollider->SetWorldScale(90.f, 40.f, 1.f);
+		m_LeftArm3HandAttackCollider->SetWorldScale(110.f, 40.f, 1.f);
+		m_LeftArm3HandAttackCollider->SetRelativePos(0.f, -30.f, 0.f);
 		break;
 	case 3:
 		m_LeftArm4Lower->SetRender(false);
@@ -2008,7 +2100,8 @@ void CZakumBody::ArmSmash(int ArmID)
 		Light->SetLightSpriteTexture("LeftLight1", TEXT("Monster/LeftHandSmashLightEffect1.png"));
 
 		m_LeftArm4HandAttackCollider->Enable(true);
-		m_LeftArm4HandAttackCollider->SetWorldScale(90.f, 40.f, 1.f);
+		m_LeftArm4HandAttackCollider->SetWorldScale(110.f, 40.f, 1.f);
+		m_LeftArm4HandAttackCollider->SetRelativePos(0.f, -30.f, 0.f);
 		break;
 	case 4:
 		m_RightArm1Lower->SetRender(false);
@@ -2021,7 +2114,8 @@ void CZakumBody::ArmSmash(int ArmID)
 
 		Light->SetLightSpriteTexture("RightLight1", TEXT("Monster/RightHandSmashLightEffect1.png"));
 		m_RightArm1HandAttackCollider->Enable(true);
-		m_RightArm1HandAttackCollider->SetWorldScale(90.f, 40.f, 1.f);
+		m_RightArm1HandAttackCollider->SetWorldScale(110.f, 40.f, 1.f);
+		m_RightArm1HandAttackCollider->SetRelativePos(0.f, -30.f, 0.f);
 
 		break;
 	case 5:
@@ -2036,7 +2130,8 @@ void CZakumBody::ArmSmash(int ArmID)
 		Light->SetLightSpriteTexture("RightLight1", TEXT("Monster/RightHandSmashLightEffect1.png"));
 
 		m_RightArm2HandAttackCollider->Enable(true);
-		m_RightArm2HandAttackCollider->SetWorldScale(90.f, 40.f, 1.f);
+		m_RightArm2HandAttackCollider->SetWorldScale(110.f, 40.f, 1.f);
+		m_RightArm2HandAttackCollider->SetRelativePos(0.f, -30.f, 0.f);
 		break;
 	case 6:
 		m_RightArm3Lower->SetRender(false);
@@ -2050,7 +2145,8 @@ void CZakumBody::ArmSmash(int ArmID)
 		Light->SetLightSpriteTexture("RightLight2", TEXT("Monster/RightHandSmashLightEffect2.png"));
 
 		m_RightArm3HandAttackCollider->Enable(true);
-		m_RightArm3HandAttackCollider->SetWorldScale(90.f, 40.f, 1.f);
+		m_RightArm3HandAttackCollider->SetWorldScale(110.f, 40.f, 1.f);
+		m_RightArm3HandAttackCollider->SetRelativePos(0.f, -30.f, 0.f);
 		break;
 	case 7:
 		m_RightArm4Lower->SetRender(false);
@@ -2063,7 +2159,8 @@ void CZakumBody::ArmSmash(int ArmID)
 
 		Light->SetLightSpriteTexture("RightLight2", TEXT("Monster/RightHandSmashLightEffect2.png"));
 		m_RightArm4HandAttackCollider->Enable(true);
-		m_RightArm4HandAttackCollider->SetWorldScale(90.f, 40.f, 1.f);
+		m_RightArm4HandAttackCollider->SetWorldScale(110.f, 40.f, 1.f);
+		m_RightArm4HandAttackCollider->SetRelativePos(0.f, -30.f, 0.f);
 		break;
 	}
 }
@@ -2146,6 +2243,7 @@ void CZakumBody::SmashReturnArmOriginPos()
 			m_LeftArm1Upper->SetRender(true);
 
 			m_LeftArm1HandAttackCollider->Enable(false);
+			m_LeftArm1HandAttackCollider->SetRelativePos(0.f, -30.f, 0.f);
 
 			break;
 		case 1:
@@ -2163,6 +2261,7 @@ void CZakumBody::SmashReturnArmOriginPos()
 			m_LeftArm2Upper->SetRender(true);
 			
 			m_LeftArm2HandAttackCollider->Enable(false);
+			m_LeftArm2HandAttackCollider->SetRelativePos(0.f, -30.f, 0.f);
 			break;
 		case 2:
 			m_LeftArm3Lower->SetWorldPos(m_vecPreviousLowerPos[2]);
@@ -2179,6 +2278,7 @@ void CZakumBody::SmashReturnArmOriginPos()
 			m_LeftArm3Upper->SetRender(true);
 
 			m_LeftArm3HandAttackCollider->Enable(false);
+			m_LeftArm3HandAttackCollider->SetRelativePos(0.f, -30.f, 0.f);
 			break;
 		case 3:
 			m_LeftArm4Lower->SetWorldPos(m_vecPreviousLowerPos[3]);
@@ -2195,6 +2295,7 @@ void CZakumBody::SmashReturnArmOriginPos()
 			m_LeftArm4Upper->SetRender(true);
 
 			m_LeftArm4HandAttackCollider->Enable(false);
+			m_LeftArm4HandAttackCollider->SetRelativePos(0.f, -30.f, 0.f);
 			break;
 		case 4:
 			m_RightArm1Lower->SetWorldPos(m_vecPreviousLowerPos[4]);
@@ -2212,6 +2313,7 @@ void CZakumBody::SmashReturnArmOriginPos()
 			m_RightArm1Upper->SetRender(true);
 
 			m_RightArm1HandAttackCollider->Enable(false);
+			m_RightArm1HandAttackCollider->SetRelativePos(0.f, -30.f, 0.f);
 			break;
 		case 5:
 			m_RightArm2Lower->SetWorldPos(m_vecPreviousLowerPos[5]);
@@ -2229,6 +2331,7 @@ void CZakumBody::SmashReturnArmOriginPos()
 			m_RightArm2Upper->SetRender(true);
 
 			m_RightArm2HandAttackCollider->Enable(false);
+			m_RightArm2HandAttackCollider->SetRelativePos(0.f, -30.f, 0.f);
 			break;
 		case 6:
 			m_RightArm3Lower->SetWorldPos(m_vecPreviousLowerPos[6]);
@@ -2246,6 +2349,7 @@ void CZakumBody::SmashReturnArmOriginPos()
 			m_RightArm3Upper->SetRender(true);
 
 			m_RightArm3HandAttackCollider->Enable(false);
+			m_RightArm3HandAttackCollider->SetRelativePos(0.f, -30.f, 0.f);
 			break;
 		case 7:
 			m_RightArm4Lower->SetWorldPos(m_vecPreviousLowerPos[7]);
@@ -2263,6 +2367,7 @@ void CZakumBody::SmashReturnArmOriginPos()
 			m_RightArm4Upper->SetRender(true);
 
 			m_RightArm4HandAttackCollider->Enable(false);
+			m_RightArm4HandAttackCollider->SetRelativePos(0.f, -30.f, 0.f);
 			break;
 		}
 	}
@@ -2281,7 +2386,12 @@ void CZakumBody::SmashReturnArmOriginPos()
 				sprintf_s(FlameName, "Flame%d", i);
 				std::string StrFlameName = FlameName;
 				CZakumFlame* Flame = m_Scene->CreateGameObject<CZakumFlame>(StrFlameName);
+
+				if (i != 1)
+					Flame->GetRootComponent()->DeleteChild("Body");
+
 				Flame->SetWorldPos(260.f + 276.f * i, 205.f, 220.f);
+				Flame->SetID(i);
 			}
 
 			m_SmashCount = 0;

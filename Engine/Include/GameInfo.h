@@ -430,6 +430,26 @@ struct MovingTileInfo
 	Vector3 Empty;
 };
 
+struct SkillInfo
+{
+	int Level;
+	float CoolTime;
+	float AccTime;
+	float Factor;
+	bool Active;
+	int MPRequire;
+
+	SkillInfo() :
+		Level(0),
+		CoolTime(0.f),
+		AccTime(0.f),
+		Factor(0.f),
+		Active(false),
+		MPRequire(0)
+	{
+	}
+};
+
 
 //struct NavWorkData
 //{

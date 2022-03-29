@@ -18,6 +18,9 @@ CLobbyScene::CLobbyScene()	:
 	m_LoadingThread(nullptr)
 {
 	SetTypeID<CLobbyScene>();
+
+	MyTest1 = false;
+	MyTest2 = false;
 }
 
 CLobbyScene::~CLobbyScene()
@@ -62,6 +65,7 @@ void CLobbyScene::Start()
 bool CLobbyScene::Init()
 {
 	CreateAnimationSequence();
+
 	LoadSound();
 
 	if (!m_PlayerObject)
@@ -100,7 +104,6 @@ bool CLobbyScene::Init()
 	m_Scene->LoadFullPath(FullPath);
 
 	AddTileCollisionCallback();
-
 
 	return true;
 }
@@ -146,7 +149,9 @@ void CLobbyScene::CreateMaterial()
 void CLobbyScene::CreateAnimationSequence()
 {
 	CreatePlayerAnimationSequence();
+
 	CreateSkillAnimationSequence();
+
 	CreateMapAnimationSequence();
 }
 

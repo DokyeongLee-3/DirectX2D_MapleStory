@@ -61,6 +61,28 @@ bool CSkillPointWindow::Init()
 		vecFileName.push_back(FileName);
 	}
 
+	m_FirstGradeSkillBookImage = CreateWidget<CImage>("FirstGradeSkillBookImage");
+	m_FirstGradeSkillBookImage->SetTexture("FirstGradeSkillBookImage", TEXT("UI/Skill/SkillBook1.png"));
+	m_FirstGradeSkillBookImage->SetSize(26.f, 30.f);
+	m_FirstGradeSkillBookImage->SetMouseCollisionEnable(false);
+	m_FirstGradeSkillBookImage->SetPos(15.f, 278.f);
+	m_FirstGradeSkillBookImage->SetZOrder(3);
+
+	m_SecondGradeSkillBookImage = CreateWidget<CImage>("SecondGradeSkillBookImage");
+	m_SecondGradeSkillBookImage->SetTexture("SecondGradeSkillBookImage", TEXT("UI/Skill/SkillBook2.png"));
+	m_SecondGradeSkillBookImage->SetSize(26.f, 29.f);
+	m_SecondGradeSkillBookImage->SetMouseCollisionEnable(false);
+	m_SecondGradeSkillBookImage->SetPos(15.f, 278.f);
+	m_SecondGradeSkillBookImage->Enable(false);
+	m_SecondGradeSkillBookImage->SetZOrder(3);
+
+	m_ThirdGradeSkillBookImage = CreateWidget<CImage>("ThirdGradeSkillBookImage");
+	m_ThirdGradeSkillBookImage->SetTexture("ThirdGradeSkillBookImage", TEXT("UI/Skill/SkillBook3.png"));
+	m_ThirdGradeSkillBookImage->SetSize(26.f, 30.f);
+	m_ThirdGradeSkillBookImage->SetMouseCollisionEnable(false);
+	m_ThirdGradeSkillBookImage->SetPos(15.f, 278.f);
+	m_ThirdGradeSkillBookImage->Enable(false);
+	m_ThirdGradeSkillBookImage->SetZOrder(3);
 
 	m_Title = CreateWidget<CText>("SkillPointWindowTitle");
 	m_Title->SetSize(250.f, 40.f);
@@ -431,6 +453,8 @@ void CSkillPointWindow::ClickFirstGradeSkillTab()
 	if (m_CurrentOpenTabNum == 1)
 		return;
 
+	m_FirstGradeSkillBookImage->Enable(true);
+
 	m_FirstGradeSkillTab->SetTexture("FirstGradeSkillTabEnable", TEXT("UI/Skill/Skill.main.Tab.enabled.1.png"));
 	m_FirstGradeSkillTab->SetSize(25.f, 20.f);
 	m_FirstGradeSkillTab->SetClicked(false);
@@ -444,6 +468,8 @@ void CSkillPointWindow::ClickFirstGradeSkillTab()
 		m_SecondGradeSkillTab->SetTexture("SecondGradeSkillTabDisable", TEXT("UI/Skill/Skill.main.Tab.disabled.2.png"));
 		m_SecondGradeSkillTab->SetSize(25.f, 18.f);
 		m_SecondGradeSkillTab->SetClicked(false);
+
+		m_SecondGradeSkillBookImage->Enable(false);
 
 		size_t Count = m_vecSecondGradeSkillPointInfo.size();
 
@@ -461,6 +487,8 @@ void CSkillPointWindow::ClickFirstGradeSkillTab()
 		m_ThirdGradeSkillTab->SetTexture("ThirdGradeSkillTabDisable", TEXT("UI/Skill/Skill.main.Tab.disabled.3.png"));
 		m_ThirdGradeSkillTab->SetSize(25.f, 18.f);
 		m_ThirdGradeSkillTab->SetClicked(false);
+
+		m_ThirdGradeSkillBookImage->Enable(false);
 
 		size_t Count = m_vecThirdGradeSkillPointInfo.size();
 
@@ -501,6 +529,8 @@ void CSkillPointWindow::ClickSecondGradeSkillTab()
 
 	m_Viewport->GetScene()->GetResource()->SoundPlay("TabClick");
 
+	m_SecondGradeSkillBookImage->Enable(true);
+
 	switch (m_CurrentOpenTabNum)
 	{
 	case 1:
@@ -508,6 +538,8 @@ void CSkillPointWindow::ClickSecondGradeSkillTab()
 		m_FirstGradeSkillTab->SetTexture("FirstGradeSkillTabDisable", TEXT("UI/Skill/Skill.main.Tab.disabled.1.png"));
 		m_FirstGradeSkillTab->SetSize(25.f, 18.f);
 		m_FirstGradeSkillTab->SetClicked(false);
+
+		m_FirstGradeSkillBookImage->Enable(false);
 
 		size_t Count = m_vecFirstGradeSkillPointInfo.size();
 
@@ -525,6 +557,8 @@ void CSkillPointWindow::ClickSecondGradeSkillTab()
 		m_ThirdGradeSkillTab->SetTexture("ThirdGradeSkillTabDisable", TEXT("UI/Skill/Skill.main.Tab.disabled.3.png"));
 		m_ThirdGradeSkillTab->SetSize(25.f, 18.f);
 		m_ThirdGradeSkillTab->SetClicked(false);
+
+		m_ThirdGradeSkillBookImage->Enable(false);
 
 		size_t Count = m_vecThirdGradeSkillPointInfo.size();
 
@@ -566,6 +600,8 @@ void CSkillPointWindow::ClickThirdGradeSkillTab()
 
 	m_Viewport->GetScene()->GetResource()->SoundPlay("TabClick");
 
+	m_ThirdGradeSkillBookImage->Enable(true);
+
 	switch (m_CurrentOpenTabNum)
 	{
 	case 1:
@@ -573,6 +609,8 @@ void CSkillPointWindow::ClickThirdGradeSkillTab()
 		m_FirstGradeSkillTab->SetTexture("FirstGradeSkillTabDisable", TEXT("UI/Skill/Skill.main.Tab.disabled.1.png"));
 		m_FirstGradeSkillTab->SetSize(25.f, 18.f);
 		m_FirstGradeSkillTab->SetClicked(false);
+
+		m_FirstGradeSkillBookImage->Enable(false);
 
 		size_t Count = m_vecFirstGradeSkillPointInfo.size();
 
@@ -590,6 +628,8 @@ void CSkillPointWindow::ClickThirdGradeSkillTab()
 		m_SecondGradeSkillTab->SetTexture("SecondGradeSkillTabDisable", TEXT("UI/Skill/Skill.main.Tab.disabled.2.png"));
 		m_SecondGradeSkillTab->SetSize(25.f, 18.f);
 		m_SecondGradeSkillTab->SetClicked(false);
+
+		m_SecondGradeSkillBookImage->Enable(false);
 
 		size_t Count = m_vecSecondGradeSkillPointInfo.size();
 
@@ -654,8 +694,17 @@ void CSkillPointWindow::LevelUpDeathSideSkill()
 
 			CPlayer2D* Player = (CPlayer2D*)Scene->GetPlayerObject();
 
-			int CurrentLevel = Player->GetPlayerSkillInfo()->FindSkillInfo("DeathSide")->Level;
-			Player->GetPlayerSkillInfo()->FindSkillInfo("DeathSide")->Level = CurrentLevel + 1;
+			SkillInfo* DeathSideSkillInfo = Player->GetPlayerSkillInfo()->FindSkillInfo("DeathSide");
+
+			if (DeathSideSkillInfo)
+			{
+				int CurrentLevel = DeathSideSkillInfo->Level;
+				DeathSideSkillInfo->Level = CurrentLevel + 1;
+
+				if (CurrentLevel + 1 == 20)
+					m_vecThirdGradeSkillPointInfo[i]->SkillLevelUpButton->ButtonEnable(false);
+
+			}
 			m_EnableSkillPoint->AddNumber(-1);
 		}
 	}

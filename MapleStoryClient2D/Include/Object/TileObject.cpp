@@ -6,6 +6,7 @@
 #include "Component/TileMapComponent.h"
 #include "LopeTileObject.h"
 #include "StaticMapObj.h"
+#include "Scene/SceneManager.h"
 
 CTileObject::CTileObject()	:
 	m_BottomMostFloor(false)
@@ -135,6 +136,19 @@ void CTileObject::CollisionEndCallback(const CollisionResult& Result)
 		return;
 
 	CGameObject* DestObj = Result.Dest->GetGameObject();
+
+	CScene* PreviousScene = CSceneManager::GetInst()->GetScene();
+	CScene* UpComingScene = CSceneManager::GetInst()->GetNextScene();
+
+	if (PreviousScene && UpComingScene)
+	{
+		// Scene전환중에 이전 Scene에 있는 Object라면 충돌처리 X
+		if (m_Scene == PreviousScene && m_Scene != UpComingScene)
+		{
+			DestObj->SetTileCollisionEnable(false);
+			return;
+		}
+	}
 
 	if (DestObj) 
 	{

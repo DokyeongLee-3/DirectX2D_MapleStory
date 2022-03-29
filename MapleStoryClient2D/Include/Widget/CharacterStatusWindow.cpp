@@ -125,7 +125,7 @@ bool CCharacterStatusWindow::Init()
 
     m_CurrentHPNumber = CreateWidget<CNumber>("PlayerHP");
     m_CurrentHPNumber->SetSize(7.f, 9.f);
-    m_CurrentHPNumber->SetPos(90.f, 31.f);
+    m_CurrentHPNumber->SetPos(88.f, 31.f);
     m_CurrentHPNumber->SetNumber(Info.HP);
 
     m_CurrentMPNumber = CreateWidget<CNumber>("PlayerMP");

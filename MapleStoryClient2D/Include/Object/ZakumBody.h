@@ -68,7 +68,7 @@ private:
     /*CSharedPtr<CColliderBox2D>    m_LeftArm1Collider;
     CSharedPtr<CColliderBox2D>    m_LeftArm2Collider;*/
 
-    CSharedPtr<CColliderBox2D>     m_Body;
+    CSharedPtr<CColliderBox2D>      m_Body;
     CSharedPtr<CColliderBox2D>      m_LeftArm1HandDefenseCollider;
     CSharedPtr<CColliderBox2D>      m_LeftArm2HandDefenseCollider;
     CSharedPtr<CColliderBox2D>      m_LeftArm3HandDefenseCollider;
@@ -118,6 +118,9 @@ private:
     ZakumInfo                       m_ZakumInfo;
     int                             m_AliveArmCount;
     int                             m_CurrentCollisionArmID;
+
+    bool m_ReturnClapPosComplete;
+    bool m_CreateClapEffectComplete;
 
 public:
     virtual void Start();

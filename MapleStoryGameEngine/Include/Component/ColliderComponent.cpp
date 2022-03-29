@@ -252,7 +252,6 @@ void CColliderComponent::Start()
 {
 	CSceneComponent::Start();
 
-	// CColliderComponent::Start이 두번 호출되고 있음
 	m_Scene->GetCollision()->AddCollider(this);
 }
 
@@ -291,12 +290,17 @@ void CColliderComponent::CheckCollision()
 
 void CColliderComponent::PrevRender()
 {
+#ifdef _DEBUG
 	CSceneComponent::PrevRender();
+
+#endif // _DEBUG
 }
 
 void CColliderComponent::Render()
 {
+#ifdef _DEBUG
 	CSceneComponent::Render();
+#endif // _DEBUG
 }
 
 void CColliderComponent::PostRender()
