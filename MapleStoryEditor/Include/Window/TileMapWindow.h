@@ -22,6 +22,8 @@ private:
 private:
 	class CIMGUIComboBox* m_TypeCombo;
 	class CIMGUIComboBox* m_TileEditCombo;
+	class CIMGUITextInput* m_TileLeftmost;
+	class CIMGUITextInput* m_TileTopmost;
 	class CIMGUITextInput* m_FrameStartX;
 	class CIMGUITextInput* m_FrameStartY;
 	class CIMGUITextInput* m_FrameEndX;
@@ -30,8 +32,12 @@ private:
 
 	class CIMGUIImage* m_TileImage;
 	class CIMGUIImage* m_TileSprite;
-	class CIMGUIButton* m_TileMaterialSelectButton;
+	//class CIMGUIButton* m_TileMaterialSelectButton;
 
+	//bool m_HoverTileRender;
+	//ImVec2 m_HoverTileStartPos;
+	//ImVec2 m_HoverTileEndPos;
+	//ImVec4 m_HoverTileColor;
 
 //private:
 //	class CIMGUIButton* m_TileMapSaveButton;
@@ -62,6 +68,8 @@ private:
 	void CreateTileEditControl();
 	void SelectTileMaterial();
 
+public:
+	void TileImageHoverCallback();
 
 //private:
 //	void TileMapSaveButton();

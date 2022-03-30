@@ -1,6 +1,7 @@
 #pragma once
 
 #include "IMGUIWidget.h"
+#include "Resource/Texture/Texture.h"
 
 class CIMGUIImage :
 	public CIMGUIWidget
@@ -19,7 +20,19 @@ protected:
 	ImVec4		m_Tint;
 	ImVec4		m_BorderColor;
 
+	std::function<void()> m_HoverCallback;
+
 public:
+	Vector2 GetImageSize()	const
+	{
+		Vector2 Size;
+
+		Size.x = (float)m_Texture->GetWidth();
+		Size.y = (float)m_Texture->GetHeight();
+
+		return Size;
+	}
+
 	void SetImageStart(float x, float y)
 	{
 		m_ImageStart = ImVec2(x, y);
@@ -44,7 +57,6 @@ public:
 		return ImageEnd;
 	}
 
-
 	void SetTint(unsigned char r, unsigned char g, unsigned char b)
 	{
 		m_Tint = ImVec4(r / 255.f, g / 255.f, b / 255.f, 1.f);
@@ -65,5 +77,12 @@ public:
 public:
 	virtual bool Init();
 	virtual void Render();
+
+public:
+	template <typename T>
+	void SetHoverCallback(T* Obj, void (T::* func)())
+	{
+		m_HoverCallback = std::bind(func, Obj);
+	}
 };
 

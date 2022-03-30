@@ -42,6 +42,11 @@ public:
 		m_Size = Size;
 	}
 
+	ImVec2 GetSize()	const
+	{
+		return m_Size;
+	}
+
 	void SetSize(const Vector2& Size)
 	{
 		m_Size.x = Size.x;

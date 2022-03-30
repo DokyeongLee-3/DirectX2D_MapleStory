@@ -92,7 +92,8 @@ bool CObjectHierarchy::Init()
 	Line->SetOffsetX(320.f);
 
 	CIMGUILabel* ParentLabel = AddWidget<CIMGUILabel>("Parent Component : ", 120.f, 30.f);
-	ParentLabel->SetColorFloat(0.0f, 0.0f, 150.f, 0.f);
+	//ParentLabel->SetColorFloat(0.0f, 0.0f, 150.f, 0.f);
+	ParentLabel->SetColor(0, 0, 150, 0);
 
 	Line = AddWidget<CIMGUISameLine>("Line", 300.f);
 
@@ -123,7 +124,8 @@ bool CObjectHierarchy::Init()
 	Line->SetOffsetX(320.f);
 
 	m_ObjectLayerLabel = AddWidget<CIMGUILabel>("Layer : ", 50.f, 30.f);
-	m_ObjectLayerLabel->SetColorFloat(0.0f, 0.0f, 150.f, 0.f);
+	//m_ObjectLayerLabel->SetColorFloat(0.0f, 0.0f, 150.f, 0.f);
+	m_ObjectLayerLabel->SetColor(0, 0, 150, 0);
 
 	Line = AddWidget<CIMGUISameLine>("Line");
 
@@ -149,7 +151,8 @@ bool CObjectHierarchy::Init()
 	Line->SetOffsetX(320.f);
 
 	CIMGUILabel* ProfileLabel = AddWidget<CIMGUILabel>("Collision Profile : ", 110.f, 30.f);
-	ProfileLabel->SetColorFloat(0.0f, 0.0f, 150.f, 0.f);
+	//ProfileLabel->SetColorFloat(0.0f, 0.0f, 150.f, 0.f);
+	ProfileLabel->SetColor(0, 0, 150, 0);
 
 	Line = AddWidget<CIMGUISameLine>("Line", 300.f);
 

@@ -18,8 +18,13 @@
 #include "IMGUIManager.h"
 #include "DetailWindow.h"
 #include "PathManager.h"
+#include "Resource/Texture/Texture.h"
 
 CTileMapWindow::CTileMapWindow()
+	//m_HoverTileRender(false),
+	//m_HoverTileStartPos(0.f, 0.f),
+	//m_HoverTileEndPos(0.f, 0.f),
+	//m_HoverTileColor(0.f, 0.f, 0.f, 0.f)
 {
 }
 
@@ -104,7 +109,9 @@ bool CTileMapWindow::Init()
 	Line = AddWidget<CIMGUISameLine>("Line");
 
 	Label = AddWidget<CIMGUILabel>("", 40.f, 30.f);
-	Label->SetColorFloat(0.0f, 0.0f, 0.0f, 0.f);
+
+	//Label->SetColorFloat(0.0f, 0.0f, 0.0f, 0.f);
+	Label->SetColor(0, 0, 0, 0);
 
 	Line = AddWidget<CIMGUISameLine>("Line");
 
@@ -116,18 +123,22 @@ bool CTileMapWindow::Init()
 
 	CreateTileEditControl();
 
-	m_TileImage = AddWidget<CIMGUIImage>("TileImage", 200.f, 200.f);
+	Label = AddWidget<CIMGUILabel>("", 750.f, 30.f);
+	Label->SetColor(0, 0, 0, 0);
+
+	m_TileImage = AddWidget<CIMGUIImage>("TileImage", 750.f, 750.f);
+	m_TileImage->SetHoverCallback<CTileMapWindow>(this, &CTileMapWindow::TileImageHoverCallback);
+
+	//Line = AddWidget<CIMGUISameLine>("Line");
+
+	/*m_TileSprite = AddWidget<CIMGUIImage>("TileSprite", 140.f, 140.f);
 
 	Line = AddWidget<CIMGUISameLine>("Line");
 
-	m_TileSprite = AddWidget<CIMGUIImage>("TileSprite", 200.f, 200.f);
+	Line->SetOffsetX(500.f);*/
 
-	Line = AddWidget<CIMGUISameLine>("Line");
-
-	Line->SetOffsetX(500.f);
-
-	m_TileMaterialSelectButton = AddWidget<CIMGUIButton>("Select Material", 150.f, 30.f);
-	m_TileMaterialSelectButton->SetClickCallback<CTileMapWindow>(this, &CTileMapWindow::SelectTileMaterial);
+	//m_TileMaterialSelectButton = AddWidget<CIMGUIButton>("Select Material", 150.f, 30.f);
+	//m_TileMaterialSelectButton->SetClickCallback<CTileMapWindow>(this, &CTileMapWindow::SelectTileMaterial);
 
 
 
@@ -148,6 +159,16 @@ bool CTileMapWindow::Init()
 void CTileMapWindow::Update(float DeltaTime)
 {
 	CIMGUIWindow::Update(DeltaTime);
+
+	//if (m_HoverTileRender)
+	//{
+	//	ImDrawList* draw_list = ImGui::GetWindowDrawList();
+	//	const ImU32 col = ImColor(m_HoverTileColor);
+
+	//	draw_list->AddRect(m_HoverTileStartPos, m_HoverTileEndPos, col, 0.f, ImDrawFlags_None, 1.f);
+	//}
+
+	Vector2 MousePos = CInput::GetInst()->GetMouseWorld2DPos();
 
 	if (CEditorManager::GetInst()->GetEditMode() == EditMode::TileMap && m_TileMap)
 	{
@@ -268,7 +289,7 @@ void CTileMapWindow::TileMapCreateButton()
 		Material->SetTexture(0, 0, (int)Buffer_Shader_Type::Pixel, "TileTexture", Texture);
 
 	m_TileImage->SetTexture(Texture);
-	m_TileSprite->SetTexture(Texture);
+	//m_TileSprite->SetTexture(Texture);
 
 }
 
@@ -286,9 +307,9 @@ void CTileMapWindow::DefaultFrameButton()
 
 	m_TileMap->SetTileDefaultFrame(StartX, StartY, EndX, EndY);
 
-	m_TileSprite->SetImageStart(StartX, StartY);
-	m_TileSprite->SetImageEnd(EndX, EndY);
-	m_TileSprite->SetSize(Vector2(EndX - StartX, EndY - StartY));
+	//m_TileSprite->SetImageStart(StartX, StartY);
+	//m_TileSprite->SetImageEnd(EndX, EndY);
+	//m_TileSprite->SetSize(Vector2(EndX - StartX, EndY - StartY));
 }
 
 void CTileMapWindow::CreateTileEditControl()
@@ -318,6 +339,32 @@ void CTileMapWindow::CreateTileEditControl()
 	m_TypeCombo->SetHideName(true);
 	m_TypeCombo->AddItem("Normal");
 	m_TypeCombo->AddItem("Edge");
+
+	//
+	Label = AddWidget<CIMGUILabel>("FrameLeftmost", 130.f, 30.f);
+
+	Label->SetColor(128, 128, 128);
+	Label->SetAlign(0.5f, 0.f);
+
+	Line = AddWidget<CIMGUISameLine>("Line");
+
+	m_TileLeftmost = AddWidget<CIMGUITextInput>("TileLeftmost", 100.f, 30.f);
+	m_TileLeftmost->SetHideName(true);
+	m_TileLeftmost->SetTextType(ImGuiText_Type::Float);
+
+	Line = AddWidget<CIMGUISameLine>("Line");
+
+	Label = AddWidget<CIMGUILabel>("TileTopmost", 130.f, 30.f);
+
+	Label->SetColor(128, 128, 128);
+	Label->SetAlign(0.5f, 0.f);
+
+	Line = AddWidget<CIMGUISameLine>("Line");
+
+	m_TileTopmost = AddWidget<CIMGUITextInput>("TileTopmost", 100.f, 30.f);
+	m_TileTopmost->SetHideName(true);
+	m_TileTopmost->SetTextType(ImGuiText_Type::Float);
+	//
 
 	Label = AddWidget<CIMGUILabel>("FrameStartX", 130.f, 30.f);
 
@@ -421,8 +468,88 @@ void CTileMapWindow::SelectTileMaterial()
 		else
 			Material->SetTexture(0, 0, (int)Buffer_Shader_Type::Pixel, "TileTexture", Texture);
 
-		m_TileSprite->SetTexture(Texture);
+		//m_TileSprite->SetTexture(Texture);
 	}
+}
+
+void CTileMapWindow::TileImageHoverCallback()
+{
+	// 커서의 화면좌표
+	ImVec2 MousePos = ImGui::GetMousePos();
+
+	// 이미지의 좌상단 화면좌표
+	ImVec2 RectMin = ImGui::GetItemRectMin();
+	// 이미지의 우하단 화면좌표
+	ImVec2 RectMax = ImGui::GetItemRectMax();
+
+	Vector2 TextureSize = m_TileImage->GetImageSize();
+	Vector2 Scale = Vector2(TextureSize.x / m_TileImage->GetSize().x, TextureSize.y / m_TileImage->GetSize().y);
+
+	float TileStartX = 0.f;
+	float TileStartY = 0.f;
+
+	TileStartX = m_TileLeftmost->GetValueFloat();
+	TileStartY = m_TileTopmost->GetValueFloat();
+
+	ImVec2 InImGuiImageCursorPos = { 0.f, 0.f };
+	InImGuiImageCursorPos.x = MousePos.x - RectMin.x;
+	InImGuiImageCursorPos.y = MousePos.y - RectMin.y;
+
+	if (InImGuiImageCursorPos.x * Scale.x < TileStartX || InImGuiImageCursorPos.y * Scale.y < TileStartY)
+		return;
+
+	Vector2 TexUV = Vector2(InImGuiImageCursorPos.x * Scale.x, InImGuiImageCursorPos.y * Scale.y);
+
+	float SizeX = m_SizeX->GetValueFloat();
+	float SizeY = m_SizeY->GetValueFloat();
+
+	if (SizeX == 0.f || SizeY == 0.f)
+		return;
+
+	int IndexX = (int)((TexUV.x - TileStartX) / SizeX);
+	int IndexY = (int)((TexUV.y - TileStartY) / SizeY);
+
+	if (CInput::GetInst()->GetMouseLButtonClick())
+	{
+		m_FrameStartX->SetValueFloat(TileStartX + IndexX * SizeX);
+		m_FrameStartY->SetValueFloat(TileStartY + IndexY * SizeY);
+		m_FrameEndX->SetValueFloat(TileStartX + ((IndexX + 1) * SizeX - 1));
+		m_FrameEndY->SetValueFloat(TileStartY + (IndexY + 1) * SizeY - 1);
+	}
+
+
+	// 클릭한 부분의 ImGui::Image상에서 타일 표시해주기
+	ImDrawList* draw_list = ImGui::GetWindowDrawList();
+	ImVec4 colf = ImVec4(1.0f, 1.0f, 0.4f, 1.0f);
+	const ImU32 col = ImColor(colf);
+
+	int InImguiTileSizeX = (int)(SizeX / Scale.x);
+	int InImguiTileSizeY = (int)(SizeY / Scale.y);
+
+	int InImguiTileStartPosX = (int)(TileStartX / Scale.x);
+	int InImguiTileStartPosY = (int)(TileStartY / Scale.y);
+
+	if (InImguiTileSizeX == 0 || InImguiTileSizeY == 0)
+		return;
+
+	/*if (InImGuiImageCursorPos.x < InImguiStartPosX || InImGuiImageCursorPos.y < InImguiStartPosY)
+		return;*/
+
+	int InImguiTileIndexX = (int)((InImGuiImageCursorPos.x - InImguiTileStartPosX) / InImguiTileSizeX);
+	int InImguiTileIndexY = (int)((InImGuiImageCursorPos.y - InImguiTileStartPosY) / InImguiTileSizeY);
+
+	ImVec2 GuideRectStartPos = ImVec2(RectMin.x + InImguiTileStartPosX + InImguiTileIndexX * InImguiTileSizeX, RectMin.y + InImguiTileStartPosY + InImguiTileIndexY * InImguiTileSizeY);
+	ImVec2 GuideRectEndPos = ImVec2(RectMin.x + InImguiTileStartPosX + ((InImguiTileIndexX + 1) * InImguiTileSizeX) - 1.f, RectMin.y + InImguiTileStartPosY + ((InImguiTileIndexY + 1) * InImguiTileSizeY) - 1.f);
+
+	draw_list->AddRect(GuideRectStartPos, GuideRectEndPos, col, 0.f, ImDrawFlags_None, 1.f);
+
+	//if (CInput::GetInst()->GetMouseLButtonClick())
+	//{
+	//	m_HoverTileRender = true;
+	//	m_HoverTileStartPos = ImVec2(RectMin.x + InImguiTileIndexX * InImguiTileSizeX, RectMin.y + InImguiTileIndexY * InImguiTileSizeY);
+	//	m_HoverTileEndPos = ImVec2(RectMin.x + ((InImguiTileIndexX + 1) * InImguiTileSizeX) - 1.f, RectMin.y + ((InImguiTileIndexY + 1) * InImguiTileSizeY) - 1.f);
+	//	m_HoverTileColor = ImVec4(1.0f, 1.0f, 0.4f, 1.0f);
+	//}
 }
 
 //void CTileMapWindow::TileMapSaveButton()

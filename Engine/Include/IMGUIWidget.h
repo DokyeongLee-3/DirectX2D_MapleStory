@@ -42,6 +42,11 @@ public:
 		m_Size = Size;
 	}
 
+	ImVec2 GetSize()	const
+	{
+		return m_Size;
+	}
+
 	void SetSize(const Vector2& Size)
 	{
 		m_Size.x = Size.x;
@@ -61,15 +66,6 @@ public:
 		m_Color.Value.y = g / 255.f;
 		m_Color.Value.z = b / 255.f;
 		m_Color.Value.w = a / 255.f;
-	}
-
-	void SetColorFloat(float r, float g, float b,
-		float a = 1.f)
-	{
-		m_Color.Value.x = r;
-		m_Color.Value.y = g;
-		m_Color.Value.z = b;
-		m_Color.Value.w = a;
 	}
 
 public:

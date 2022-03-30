@@ -96,7 +96,8 @@ bool CSpriteWindow::Init()
 
     
     CIMGUILabel* Label = AddWidget<CIMGUILabel>("", 600.f, 50.f);
-    Label->SetColorFloat(0.0f, 0.0f, 0.0f, 0.f);
+    //Label->SetColorFloat(0.0f, 0.0f, 0.0f, 0.f);
+    Label->SetColor(0.0f, 0.0f, 0.0f, 0.f);
 
     CIMGUIButton* Button = AddWidget<CIMGUIButton>("Load a Texture");
 
@@ -114,7 +115,8 @@ bool CSpriteWindow::Init()
 
     Label = AddWidget<CIMGUILabel>("Animation Sequence", 150.f, 30.f);
 
-    Label->SetColorFloat(0.28f, 0.28f, 0.28f, 0.8f);
+    //Label->SetColorFloat(0.28f, 0.28f, 0.28f, 0.8f);
+    Label->SetColor(0.28f, 0.28f, 0.28f, 0.8f);
     Label->SetAlign(0.5f, 0.f);
 
     Line = AddWidget<CIMGUISameLine>("Line");
@@ -127,7 +129,8 @@ bool CSpriteWindow::Init()
 
     Label = AddWidget<CIMGUILabel>("Frames for Sequence", 150.f, 30.f);
 
-    Label->SetColorFloat(0.28f, 0.28f, 0.28f, 0.8f);
+    //Label->SetColorFloat(0.28f, 0.28f, 0.28f, 0.8f);
+    Label->SetColor(0.28f, 0.28f, 0.28f, 0.8f);
     Label->SetAlign(0.5f, 0.f);
 
     Line = AddWidget<CIMGUISameLine>("Line");
@@ -228,10 +231,12 @@ bool CSpriteWindow::Init()
     Line = AddWidget<CIMGUISameLine>("Line");
 
     Label = AddWidget<CIMGUILabel>("", 100.f, 30.f);
-    Label->SetColorFloat(0.0f, 0.0f, 0.0f, 0.f);
+    //Label->SetColorFloat(0.0f, 0.0f, 0.0f, 0.f);
+    Label->SetColor(0.0f, 0.0f, 0.0f, 0.f);
 
     Label = AddWidget<CIMGUILabel>("CenterXPos", 50.f, 20.f);
-    Label->SetColorFloat(0.0f, 0.0f, 150.f, 0.f);
+    //Label->SetColorFloat(0.0f, 0.0f, 150.f, 0.f);
+    Label->SetColor(0.0f, 0.0f, 150.f, 0.f);
 
     Line = AddWidget<CIMGUISameLine>("Line");
 
@@ -240,7 +245,8 @@ bool CSpriteWindow::Init()
     Line = AddWidget<CIMGUISameLine>("Line");
 
     Label = AddWidget<CIMGUILabel>("CenterYPos", 50.f, 20.f);
-    Label->SetColorFloat(0.0f, 0.0f, 150.f, 0.f);
+    //Label->SetColorFloat(0.0f, 0.0f, 150.f, 0.f);
+    Label->SetColor(0.0f, 0.0f, 150.f, 0.f);
 
     Line = AddWidget<CIMGUISameLine>("Line");
 
@@ -249,7 +255,8 @@ bool CSpriteWindow::Init()
     Line = AddWidget<CIMGUISameLine>("Line");
 
     Label = AddWidget<CIMGUILabel>("CurrentFrame", 90.f, 20.f);
-    Label->SetColorFloat(0.0f, 0.0f, 150.f, 0.f);
+    //Label->SetColorFloat(0.0f, 0.0f, 150.f, 0.f);
+    Label->SetColor(0, 0, 150, 0);
 
     Line = AddWidget<CIMGUISameLine>("Line");
 
