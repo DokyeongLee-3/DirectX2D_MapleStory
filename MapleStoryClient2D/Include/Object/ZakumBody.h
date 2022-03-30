@@ -106,6 +106,7 @@ private:
     std::vector<Vector3>            m_vecPreviousUpperPos;
     std::vector<Vector3>            m_vecPreviousUpperRot;
     std::vector<Vector3>            m_vecAttackWarningPos;
+    std::vector<float>              m_vecAccClapStretchRot;
     std::vector<float>              m_vecClapRotUpperBound;
 
     int m_SmashCount;

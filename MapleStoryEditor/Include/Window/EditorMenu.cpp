@@ -45,7 +45,7 @@ bool CEditorMenu::Init()
 {
 	CIMGUIWindow::Init();
 
-	m_ObjectCombo = AddWidget<CIMGUIComboBox>("ObjectCombo", 100.f, 30.f);
+	m_ObjectCombo = AddWidget<CIMGUIComboBox>("Select Object", 120.f, 26.f);
 
 	m_ObjectCombo->SetHideName(true);
 	m_ObjectCombo->AddItem("GameObject");
@@ -74,17 +74,24 @@ bool CEditorMenu::Init()
 
 	CIMGUISameLine* Line = AddWidget<CIMGUISameLine>("Line");
 
-	m_ObjectNameInput = AddWidget<CIMGUITextInput>("ObjectName", 100.f, 30.f);
+	m_ObjectNameInput = AddWidget<CIMGUITextInput>("ObjectName", 100.f, 26.f);
+	m_ObjectNameInput->SetHideName(true);
 
 	Line = AddWidget<CIMGUISameLine>("Line");
 
-	m_ObjectCreateButton = AddWidget<CIMGUIButton>("CreateObject", 100.f, 30.f);
+	m_ObjectCreateButton = AddWidget<CIMGUIButton>("Create Object", 120.f, 26.f);
 
 	m_ObjectCreateButton->SetClickCallback(this, &CEditorMenu::ObjectCreateButton);
 
+	Line = AddWidget<CIMGUISameLine>("Line");
+
+	CIMGUIButton* SelectMapObjTexture = AddWidget<CIMGUIButton>("Select Object Texture", 150.f, 26.f);
+
+	SelectMapObjTexture->SetClickCallback(this, &CEditorMenu::SelectObjTexture);
+
 
 	// Component
-	m_ComponentCombo = AddWidget<CIMGUIComboBox>("ComponentCombo", 100.f, 30.f);
+	m_ComponentCombo = AddWidget<CIMGUIComboBox>("Select Component", 120.f, 26.f);
 
 	m_ComponentCombo->SetHideName(true);
 	m_ComponentCombo->AddItem("SpriteComponent");
@@ -101,33 +108,25 @@ bool CEditorMenu::Init()
 
 	Line = AddWidget<CIMGUISameLine>("Line");
 
-	m_ComponentNameInput = AddWidget<CIMGUITextInput>("ComponentName", 100.f, 30.f);
+	m_ComponentNameInput = AddWidget<CIMGUITextInput>("Component Name", 100.f, 26.f);
+	m_ComponentNameInput->SetHideName(true);
 
 	Line = AddWidget<CIMGUISameLine>("Line");
 
-	m_ComponentCreateButton = AddWidget<CIMGUIButton>("CreateComponent", 100.f, 30.f);
+	m_ComponentCreateButton = AddWidget<CIMGUIButton>("Create Component", 120.f, 26.f);
 
 	m_ComponentCreateButton->SetClickCallback(this, &CEditorMenu::ComponentCreateButton);
 
 
-	CIMGUIButton* SaveSceneButton = AddWidget<CIMGUIButton>("SaveSceneButton", 120.f, 30.f);
+	//CIMGUIButton* SaveSceneButton = AddWidget<CIMGUIButton>("SaveSceneButton", 120.f, 30.f);
 
-	SaveSceneButton->SetClickCallback(this, &CEditorMenu::SaveScene);
+	//SaveSceneButton->SetClickCallback(this, &CEditorMenu::SaveScene);
 
-	Line = AddWidget<CIMGUISameLine>("Line");
+	//Line = AddWidget<CIMGUISameLine>("Line");
 
-	CIMGUIButton* LoadSceneButton = AddWidget<CIMGUIButton>("LoadSceneButton", 120.f, 30.f);
+	//CIMGUIButton* LoadSceneButton = AddWidget<CIMGUIButton>("LoadSceneButton", 120.f, 30.f);
 
-	LoadSceneButton->SetClickCallback(this, &CEditorMenu::LoadScene);
-
-
-
-	CIMGUIButton* SelectMapObjTexture = AddWidget<CIMGUIButton>("Select Object Texture", 150.f, 30.f);
-
-	SelectMapObjTexture->SetClickCallback(this, &CEditorMenu::SelectObjTexture);
-
-
-
+	//LoadSceneButton->SetClickCallback(this, &CEditorMenu::LoadScene);
 
 	return true;
 }
@@ -135,6 +134,8 @@ bool CEditorMenu::Init()
 void CEditorMenu::Update(float DeltaTime)
 {
 	CIMGUIWindow::Update(DeltaTime);
+
+	MyShowMenuFile();
 }
 
 void CEditorMenu::ObjectCreateButton()
@@ -566,3 +567,29 @@ void CEditorMenu::SelectObjTexture()
 }
 
 
+void CEditorMenu::MyShowMenuFile()
+{
+	bool ShowAppMenuBar = false;
+
+	if (ImGui::BeginMainMenuBar())
+	{
+		if (ImGui::BeginMenu("File"))
+		{
+			if (ImGui::MenuItem("Load Scene File"))
+			{
+				LoadScene();
+			}
+
+			if (ImGui::MenuItem("Save Scene File"))
+			{
+				SaveScene();
+			}
+
+			ImGui::EndMenu();
+		}
+
+		ImGui::EndMainMenuBar();
+	}
+
+
+}

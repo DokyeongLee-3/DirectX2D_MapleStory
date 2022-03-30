@@ -77,7 +77,6 @@ private:
 	void LayerChangeCallback();
 	void DeleteObjectButtonCallback();
 	void DeleteComponentButtonCallback();
-	void ZOrderChangeCallback();
 	void ProfileChangeCallback();
 
 public:

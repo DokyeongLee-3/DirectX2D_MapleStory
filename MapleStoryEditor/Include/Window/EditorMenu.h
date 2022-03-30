@@ -29,5 +29,8 @@ public:
 	void SaveScene();
 	void LoadScene();
 	void SelectObjTexture();
+
+public:
+	void MyShowMenuFile();
 };
 

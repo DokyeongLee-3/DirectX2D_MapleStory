@@ -86,24 +86,26 @@ CZakumBody::CZakumBody() :
 	m_vecClapRotUpperBound[2] = 27.f;
 
 	m_vecShakeRotBound[0] = 8.f;
-	m_vecShakeRotBound[1] = 7.f;
-	m_vecShakeRotBound[2] = 6.f;
-	m_vecShakeRotBound[3] = 3.f;
+	m_vecShakeRotBound[1] = 3.f;
+	m_vecShakeRotBound[2] = 5.f;
+	m_vecShakeRotBound[3] = 2.f;
 
-	m_vecShakeRotBound[4] = 9.f;
-	m_vecShakeRotBound[5] = 6.f;
+	m_vecShakeRotBound[4] = 8.f;
+	m_vecShakeRotBound[5] = 3.f;
 	m_vecShakeRotBound[6] = 6.f;
 	m_vecShakeRotBound[7] = 2.f;
 
-	m_vecShakeRotSign[0] = 1.f;
+	m_vecShakeRotSign[0] = -1.f;
 	m_vecShakeRotSign[1] = -1.f;
 	m_vecShakeRotSign[2] = -1.f;
 	m_vecShakeRotSign[3] = 1.f;
 
-	m_vecShakeRotSign[4] = -1.f;
+	m_vecShakeRotSign[4] = 1.f;
 	m_vecShakeRotSign[5] = 1.f;
 	m_vecShakeRotSign[6] = -1.f;
 	m_vecShakeRotSign[7] = -1.f;
+
+	m_vecAccClapStretchRot.resize(3);
 
 	m_ZakumInfo = CClientManager::GetInst()->GetZakumInfo();
 
@@ -723,7 +725,7 @@ void CZakumBody::StretchArm(int ArmID, float DeltaTime)
 
 	CPlayer2D* Player = (CPlayer2D*)m_Scene->GetPlayerObject();
 
-	if (m_vecAccRotation[ArmID] >= m_vecClapRotUpperBound[ArmID])
+	if (m_vecAccClapStretchRot[ArmID] >= m_vecClapRotUpperBound[ArmID])
 	{
 		switch (ArmID)
 		{
@@ -811,7 +813,7 @@ void CZakumBody::StretchArm(int ArmID, float DeltaTime)
 	}
 
 	float RotAmount = 7.f * DeltaTime;
-	m_vecAccRotation[ArmID] += RotAmount;
+	m_vecAccClapStretchRot[ArmID] += RotAmount;
 
 	switch (ArmID)
 	{
@@ -1392,6 +1394,9 @@ void CZakumBody::ClapReturnArm()
 			m_LeftArm1Hand->AddWorldPos(-150.f, 0.f, 0.f);
 		}
 
+		else
+			int a = 3;
+
 		break;
 	case 1:
 		if (m_LeftArm2Hand && m_LeftArm2Hand->IsActive() && m_RightArm2Hand && m_RightArm2Hand->IsActive())
@@ -1414,6 +1419,10 @@ void CZakumBody::ClapReturnArm()
 			m_LeftArm2Hand->AddWorldPos(-150.f, 0.f, 0.f);
 		}
 
+		else
+			int a = 3;
+
+
 		break;
 	case 2:
 		if (m_LeftArm3Hand && m_LeftArm3Hand->IsActive() && m_RightArm3Hand && m_RightArm3Hand->IsActive())
@@ -1435,6 +1444,10 @@ void CZakumBody::ClapReturnArm()
 			m_LeftArm3Hand->ChangeAnimation("ZakumClapReturnLeft");
 			m_LeftArm3Hand->AddWorldPos(-150.f, 0.f, 0.f);
 		}
+
+
+		else
+			int a = 3;
 
 		break;
 	}
@@ -1580,7 +1593,7 @@ void CZakumBody::ClapReturnArmOriginPos()
 	}
 
 	++m_ClapCount;
-	m_vecAccRotation[m_ClapArmNum] = 0.f;
+	m_vecAccClapStretchRot[m_ClapArmNum] = 0.f;
 	m_ClapArmNum = -1;
 	m_AccTime = 0.f;
 	m_HandMeet = false;
@@ -1657,6 +1670,9 @@ void CZakumBody::SetDamage(float Damage, bool Critical)
 	switch (m_CurrentCollisionArmID)
 	{
 	case 0:
+		if (!m_LeftArm1Root || !m_LeftArm1Root->IsActive())
+			return;
+
 		m_ZakumInfo.LeftArm1HP -= (int)Damage;
 		if (m_ZakumInfo.LeftArm1HP <= 0)
 		{
@@ -1678,6 +1694,9 @@ void CZakumBody::SetDamage(float Damage, bool Critical)
 		}
 		break;
 	case 1:
+		if (!m_LeftArm2Root || !m_LeftArm2Root->IsActive())
+			return;
+
 		m_ZakumInfo.LeftArm2HP -= (int)Damage;
 		if (m_ZakumInfo.LeftArm2HP <= 0)
 		{
@@ -1699,6 +1718,9 @@ void CZakumBody::SetDamage(float Damage, bool Critical)
 		}
 		break;
 	case 2:
+		if (!m_LeftArm3Root || !m_LeftArm3Root->IsActive())
+			return;
+
 		m_ZakumInfo.LeftArm3HP -= (int)Damage;
 		if (m_ZakumInfo.LeftArm3HP <= 0)
 		{
@@ -1720,6 +1742,9 @@ void CZakumBody::SetDamage(float Damage, bool Critical)
 		}
 		break;
 	case 3:
+		if (!m_LeftArm4Root || !m_LeftArm4Root->IsActive())
+			return;
+
 		m_ZakumInfo.LeftArm4HP -= (int)Damage;
 		if (m_ZakumInfo.LeftArm4HP <= 0)
 		{
@@ -1741,6 +1766,9 @@ void CZakumBody::SetDamage(float Damage, bool Critical)
 		}
 		break;
 	case 4:
+		if (!m_RightArm1Root || !m_RightArm1Root->IsActive())
+			return;
+
 		m_ZakumInfo.RightArm1HP -= (int)Damage;
 		if (m_ZakumInfo.RightArm1HP <= 0)
 		{
@@ -1762,6 +1790,9 @@ void CZakumBody::SetDamage(float Damage, bool Critical)
 		}
 		break;
 	case 5:
+		if (!m_RightArm2Root || !m_RightArm2Root->IsActive())
+			return;
+
 		m_ZakumInfo.RightArm2HP -= (int)Damage;
 		if (m_ZakumInfo.RightArm2HP <= 0)
 		{
@@ -1783,6 +1814,9 @@ void CZakumBody::SetDamage(float Damage, bool Critical)
 		}
 		break;
 	case 6:
+		if (!m_RightArm3Root || !m_RightArm3Root->IsActive())
+			return;
+
 		m_ZakumInfo.RightArm3HP -= (int)Damage;
 		if (m_ZakumInfo.RightArm3HP <= 0)
 		{
@@ -1804,6 +1838,9 @@ void CZakumBody::SetDamage(float Damage, bool Critical)
 		}
 		break;
 	case 7:
+		if (!m_RightArm4Root || !m_RightArm4Root->IsActive())
+			return;
+
 		m_ZakumInfo.RightArm4HP -= (int)Damage;
 		if (m_ZakumInfo.RightArm4HP <= 0)
 		{
@@ -2396,9 +2433,9 @@ void CZakumBody::SmashReturnArmOriginPos()
 
 			m_SmashCount = 0;
 			m_ZakumState = Zakum_State::Clap;
-			m_vecAccRotation.clear();
+			//m_vecAccRotation.clear();
 			m_vecAccUpHandRot.clear();
-			m_vecAccRotation.resize(8);
+			//m_vecAccRotation.resize(8);
 			m_vecAccUpHandRot.resize(8);
 		}
 	}

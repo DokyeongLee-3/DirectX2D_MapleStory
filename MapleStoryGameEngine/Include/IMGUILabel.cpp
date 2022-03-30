@@ -29,4 +29,20 @@ void CIMGUILabel::Render()
     // 위에서 PushStyleColor로 3개 넣어줬으므로 PopStyleColor 인자로 3
     ImGui::PopStyleColor(3);
     ImGui::PopStyleVar();
+
+    if (m_Name == "TileMapInfo")
+    {
+        ImVec2 RectMin = ImGui::GetItemRectMin();
+        ImVec2 LabelSize = m_Size;
+
+
+        ImDrawList* draw_list = ImGui::GetWindowDrawList();
+
+        static ImVec4 colf = ImVec4(0.3f, 0.3f, 0.3f, 0.9f);
+        const ImU32 col = ImColor(colf);
+
+        draw_list->AddLine(ImVec2(RectMin.x + LabelSize.x + 6.f, RectMin.y), ImVec2(RectMin.x + LabelSize.x + 6.f, RectMin.y + 225.f), col, 1.6f);
+        
+
+    }
 }

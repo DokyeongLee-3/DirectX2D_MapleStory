@@ -62,7 +62,7 @@ bool CObjectHierarchy::Init()
 {
 	CIMGUIWindow::Init();
 
-	m_ObjectListWidget = AddWidget<CIMGUIListBox>("ObjectList", 300.f, 500.f);
+	m_ObjectListWidget = AddWidget<CIMGUIListBox>("ObjectList", 220.f, 400.f);
 
 	m_ObjectListWidget->SetHideName(true);
 	m_ObjectListWidget->SetPageItemCount(15);
@@ -70,26 +70,26 @@ bool CObjectHierarchy::Init()
 
 	CIMGUISameLine* Line = AddWidget<CIMGUISameLine>("Line");
 
-	m_ComponentListWidget = AddWidget<CIMGUIListBox>("ComponentList", 300.f, 500.f);
+	m_ComponentListWidget = AddWidget<CIMGUIListBox>("ComponentList", 220.f, 400.f);
 
 	m_ComponentListWidget->SetHideName(true);
 	m_ComponentListWidget->SetPageItemCount(15);
 	m_ComponentListWidget->SetSelectCallback(this, &CObjectHierarchy::SelectComponent);
 
 
-	m_ObjectDeleteButton = AddWidget<CIMGUIButton>("Delete Object", 120.f, 30.f);
+	m_ObjectDeleteButton = AddWidget<CIMGUIButton>("Delete Object", 100.f, 30.f);
 
 	m_ObjectDeleteButton->SetClickCallback(this, &CObjectHierarchy::DeleteObjectButtonCallback);
 
 	Line = AddWidget<CIMGUISameLine>("Line");
-	Line->SetOffsetX(140.f);
+	//Line->SetOffsetX(120.f);
 
-	m_ComponentDeleteButton = AddWidget<CIMGUIButton>("Delete Component", 120.f, 30.f);
+	m_ComponentDeleteButton = AddWidget<CIMGUIButton>("Delete Component", 110.f, 30.f);
 
 	m_ComponentDeleteButton->SetClickCallback(this, &CObjectHierarchy::DeleteComponentButtonCallback);
 
 	Line = AddWidget<CIMGUISameLine>("Line");
-	Line->SetOffsetX(320.f);
+	Line->SetOffsetX(230.f);
 
 	CIMGUILabel* ParentLabel = AddWidget<CIMGUILabel>("Parent Component : ", 120.f, 30.f);
 	//ParentLabel->SetColorFloat(0.0f, 0.0f, 150.f, 0.f);
@@ -102,7 +102,7 @@ bool CObjectHierarchy::Init()
 
 
 	// Layer
-	m_LayerCombo = AddWidget<CIMGUIComboBox>("Select Layer", 130.f, 30.f);
+	m_LayerCombo = AddWidget<CIMGUIComboBox>("Select Layer", 100.f, 30.f);
 
 	m_LayerCombo->SetHideName(true);
 	//m_LayerCombo->AddItem("Default");
@@ -121,7 +121,7 @@ bool CObjectHierarchy::Init()
 	m_LayerChangeButton->SetClickCallback<CObjectHierarchy>(this, &CObjectHierarchy::LayerChangeCallback);
 
 	Line = AddWidget<CIMGUISameLine>("Line", 300.f);
-	Line->SetOffsetX(320.f);
+	Line->SetOffsetX(230.f);
 
 	m_ObjectLayerLabel = AddWidget<CIMGUILabel>("Layer : ", 50.f, 30.f);
 	//m_ObjectLayerLabel->SetColorFloat(0.0f, 0.0f, 150.f, 0.f);
@@ -133,7 +133,7 @@ bool CObjectHierarchy::Init()
 
 
 
-	m_ProfileCombo = AddWidget<CIMGUIComboBox>("Select Profile", 130.f, 30.f);
+	m_ProfileCombo = AddWidget<CIMGUIComboBox>("Select Profile", 100.f, 30.f);
 	m_ProfileCombo->SetHideName(true);
 	m_ProfileCombo->AddItem("Object");
 	m_ProfileCombo->AddItem("Player");
@@ -148,7 +148,7 @@ bool CObjectHierarchy::Init()
 	m_ProfileChangeButton->SetClickCallback<CObjectHierarchy>(this, &CObjectHierarchy::ProfileChangeCallback);
 
 	Line = AddWidget<CIMGUISameLine>("Line", 300.f);
-	Line->SetOffsetX(320.f);
+	Line->SetOffsetX(230.f);
 
 	CIMGUILabel* ProfileLabel = AddWidget<CIMGUILabel>("Collision Profile : ", 110.f, 30.f);
 	//ProfileLabel->SetColorFloat(0.0f, 0.0f, 150.f, 0.f);
@@ -234,10 +234,8 @@ void CObjectHierarchy::SelectObject(int Index, const char* Item)
 	{
 		m_ComponentListWidget->AddItem(vecNames[i].Name);
 	}
-	
-	CSpriteWindow* SpriteWindow = (CSpriteWindow*)CIMGUIManager::GetInst()->FindIMGUIWindow("SpriteWindow");
 
-	if (SpriteWindow)
+	if (DetailWindow)
 	{
 		if (m_SelectObject->GetRootComponent()->GetTypeID() == typeid(CSpriteComponent).hash_code())
 		{
@@ -248,11 +246,14 @@ void CObjectHierarchy::SelectObject(int Index, const char* Item)
 			{
 				std::vector<std::string> vecSequeceName;
 
-				SpriteWindow->ClearSelectObjectSequenceList();
+				DetailWindow->ClearSelectObjectSequenceList();
 				Instance->GetAllAnimationSequenceName(vecSequeceName);
 
-				SpriteWindow->AddSelectObjectSequenceList(vecSequeceName);
+				DetailWindow->AddSelectObjectSequenceList(vecSequeceName);
 			}
+
+			else
+				DetailWindow->ClearSelectObjectSequenceList();
 		}
 	}
 }

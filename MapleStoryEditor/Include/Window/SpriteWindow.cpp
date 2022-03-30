@@ -51,6 +51,11 @@ CSpriteWindow::~CSpriteWindow()
     SAFE_DELETE(m_AnimInstance);
 }
 
+float CSpriteWindow::GetAnimPlayTime() const
+{
+    return m_AnimPlayTime->GetValueFloat();
+}
+
 void CSpriteWindow::SetPlayTime(float PlayTime)
 {
     m_AnimPlayTime->SetValueFloat(PlayTime);
@@ -95,9 +100,9 @@ bool CSpriteWindow::Init()
     m_RadioButton->CallRadioButtonCallback((int)EditMode::Scene);
 
     
-    CIMGUILabel* Label = AddWidget<CIMGUILabel>("", 600.f, 50.f);
+    CIMGUILabel* Label = AddWidget<CIMGUILabel>("", 600.f, 20.f);
     //Label->SetColorFloat(0.0f, 0.0f, 0.0f, 0.f);
-    Label->SetColor(0.0f, 0.0f, 0.0f, 0.f);
+    Label->SetColor(0, 0, 0, 0);
 
     CIMGUIButton* Button = AddWidget<CIMGUIButton>("Load a Texture");
 
@@ -116,7 +121,7 @@ bool CSpriteWindow::Init()
     Label = AddWidget<CIMGUILabel>("Animation Sequence", 150.f, 30.f);
 
     //Label->SetColorFloat(0.28f, 0.28f, 0.28f, 0.8f);
-    Label->SetColor(0.28f, 0.28f, 0.28f, 0.8f);
+    Label->SetColor(71, 71, 71, 204);
     Label->SetAlign(0.5f, 0.f);
 
     Line = AddWidget<CIMGUISameLine>("Line");
@@ -130,7 +135,7 @@ bool CSpriteWindow::Init()
     Label = AddWidget<CIMGUILabel>("Frames for Sequence", 150.f, 30.f);
 
     //Label->SetColorFloat(0.28f, 0.28f, 0.28f, 0.8f);
-    Label->SetColor(0.28f, 0.28f, 0.28f, 0.8f);
+    Label->SetColor(71, 71, 71, 204);
     Label->SetAlign(0.5f, 0.f);
 
     Line = AddWidget<CIMGUISameLine>("Line");
@@ -232,11 +237,11 @@ bool CSpriteWindow::Init()
 
     Label = AddWidget<CIMGUILabel>("", 100.f, 30.f);
     //Label->SetColorFloat(0.0f, 0.0f, 0.0f, 0.f);
-    Label->SetColor(0.0f, 0.0f, 0.0f, 0.f);
+    Label->SetColor(0, 0, 0, 0);
 
     Label = AddWidget<CIMGUILabel>("CenterXPos", 50.f, 20.f);
     //Label->SetColorFloat(0.0f, 0.0f, 150.f, 0.f);
-    Label->SetColor(0.0f, 0.0f, 150.f, 0.f);
+    Label->SetColor(0, 0, 150, 0);
 
     Line = AddWidget<CIMGUISameLine>("Line");
 
@@ -246,7 +251,7 @@ bool CSpriteWindow::Init()
 
     Label = AddWidget<CIMGUILabel>("CenterYPos", 50.f, 20.f);
     //Label->SetColorFloat(0.0f, 0.0f, 150.f, 0.f);
-    Label->SetColor(0.0f, 0.0f, 150.f, 0.f);
+    Label->SetColor(0, 0, 150, 0);
 
     Line = AddWidget<CIMGUISameLine>("Line");
 
@@ -288,15 +293,6 @@ bool CSpriteWindow::Init()
     m_AnimInstance->Stop();
 
     // m_EditorAnimationLoadObject = CSceneManager::GetInst()->GetScene()->CreateGameObject<CAnimationLoadObject>("AnimationLoadObject");
-
-    Label = AddWidget<CIMGUILabel>("Select Object Sequences", 350.f, 30.f);
-    Label->SetColor(80, 80, 80);
-    Label->SetAlign(0.5f, 0.f);
-
-    m_SelectObjectSequenceList = AddWidget<CIMGUIListBox>("SelectObjectSequenceList", 200.f, 300.f);
-    m_SelectObjectSequenceList->SetHideName(true);
-    m_SelectObjectSequenceList->SetPageItemCount(6);
-    m_SelectObjectSequenceList->SetSelectCallback<CSpriteWindow>(this, &CSpriteWindow::ChangeSelectObjectAnimation);
 
     return true;
 }
@@ -823,36 +819,6 @@ void CSpriteWindow::MyShowStyleEditor(ImGuiStyle* ref)
     ImGui::ShowStyleSelector("Colors##Selector");
     ImGui::ShowFontSelector("Fonts##Selector");
 
-}
-
-void CSpriteWindow::AddSelectObjectSequenceList(const std::vector<std::string>& vecSequence)
-{
-    size_t Count = vecSequence.size();
-
-    for (size_t i = 0; i < Count; ++i)
-    {
-        m_SelectObjectSequenceList->AddItem(vecSequence[i]);
-    }
-}
-
-void CSpriteWindow::ClearSelectObjectSequenceList()
-{
-    m_SelectObjectSequenceList->Clear();
-}
-
-void CSpriteWindow::ChangeSelectObjectAnimation(int Index, const char* Item)
-{
-    std::string SelectSequence = Item;
-
-    CObjectHierarchy* HierarchyWindow = (CObjectHierarchy*)CIMGUIManager::GetInst()->FindIMGUIWindow("ObjectHierarchy");
-
-    if (HierarchyWindow)
-    {
-        HierarchyWindow->ChangeSelectObjectAnimationSequence(SelectSequence);
-        float PlayTime = HierarchyWindow->GetSequencePlayeTime(SelectSequence);
-
-        m_AnimPlayTime->SetFloat(PlayTime);
-    }
 }
 
 

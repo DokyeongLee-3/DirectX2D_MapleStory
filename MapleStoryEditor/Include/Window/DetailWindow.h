@@ -24,6 +24,10 @@ private:
 
 	class CIMGUIButton* m_FlipButton;
 
+
+	class CIMGUIListBox* m_SelectObjectSequenceList;
+
+
 public:
 	virtual bool Init();
 	virtual void Update(float DeltaTime);
@@ -99,5 +103,10 @@ private:
 
 public:
 	void ClearDetailWindowInfo();
+
+public:
+	void AddSelectObjectSequenceList(const std::vector<std::string>& vecSequence);
+	void ClearSelectObjectSequenceList();
+	void ChangeSelectObjectAnimation(int Index, const char* Item);
 };
 
