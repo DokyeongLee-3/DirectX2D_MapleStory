@@ -8,6 +8,7 @@ struct Node
 	std::vector<Node*> vecChild;
 	std::string Name;
 	std::string	NameUTF8;
+	bool	CallbackCall;
 
 	// 트리안에 위젯(ex. 리스트박스)들을 갖고 있을 수도 있음
 	std::function<void()> Callback;
@@ -15,8 +16,15 @@ struct Node
 
 
 	Node() :
-		Parent(nullptr)
+		Parent(nullptr),
+		CallbackCall(true)
 	{
+	}
+
+	template <typename T>
+	void AddWidget(T* Widget)
+	{
+		vecWidget.push_back(Widget);
 	}
 };
 

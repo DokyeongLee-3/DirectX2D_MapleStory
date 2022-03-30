@@ -24,6 +24,8 @@
 #include "../Object/Pivot.h"
 #include "../Object/DragObject.h"
 #include "ObjectHierarchy.h"
+#include "IMGUIRadioButton.h"
+#include "IMGUITree.h"
 
 #include <sstream>
 
@@ -70,34 +72,35 @@ bool CSpriteWindow::Init()
 {
     CIMGUIWindow::Init();
 
-    CIMGUITree* Tree = AddWidget<CIMGUITree>("Tree");
-    Node* NewNode = Tree->AddChildNode("", "Configuration");
+    m_SceneEditRadioButton = AddWidget<CIMGUIRadioButton>("SceneEditButton", 50.f, 40.f);
+    CIMGUISameLine* Line = AddWidget<CIMGUISameLine>("Line");
+    m_SpriteEditRadioButton = AddWidget<CIMGUIRadioButton>("SpriteEditButton", 50.f, 40.f);
+    Line = AddWidget<CIMGUISameLine>("Line");
+    m_MapEditRadioButton = AddWidget<CIMGUIRadioButton>("MapEditButton", 50.f, 40.f);
 
-    NewNode = Tree->AddChildNode("Configuration", "Style");
-    NewNode->Callback = std::bind(&CSpriteWindow::StyleCallback, this);
+    m_SceneEditRadioButton->AddText<CSpriteWindow>("Scene Edit Mode", this, &CSpriteWindow::ObjectArrangeButton);
+    m_SceneEditRadioButton->AddActive(true);
 
+    m_SpriteEditRadioButton->AddText<CSpriteWindow>("Sprite Edit Mode", this, &CSpriteWindow::SpriteEditButton);
+    m_SpriteEditRadioButton->AddActive(true);
 
-
-    NewNode = Tree->AddChildNode("Configuration", "EditMode");
-
-    m_RadioButton = Tree->AddNodeWidget<CIMGUIRadioButton>("EditMode", 100.f, 100.f);
-    m_RadioButton->AddText<CSpriteWindow>("Scene Edit Mode", this, &CSpriteWindow::ObjectArrangeButton);
-    m_RadioButton->AddText<CSpriteWindow>("Sprite Edit Mode", this, &CSpriteWindow::SpriteEditButton);
-    m_RadioButton->AddText<CSpriteWindow>("Map Edit Mode", this, &CSpriteWindow::MapEditButton);
-
-    for (int i = 0; i < (int)EditMode::End; ++i)
-    {
-        if (i == 0)
-        {
-            m_RadioButton->AddActive(true);
-            continue;
-        }
-
-        m_RadioButton->AddActive(false);
-    }
+    m_MapEditRadioButton->AddText<CSpriteWindow>("Map Edit Mode", this, &CSpriteWindow::MapEditButton);
+    m_MapEditRadioButton->AddActive(true);
 
     // 일단 맨처음은 Scene Edit Mode로 설정해놨으니 처음 초기화에선 Radio Button중 Scene Edit Mode 선택했을때 콜백을 호출해준다
-    m_RadioButton->CallRadioButtonCallback((int)EditMode::Scene);
+    ObjectArrangeButton();
+
+
+
+    //m_Tree = AddWidget<CIMGUITree>("Tree");
+    //Node* NewNode = Tree->AddChildNode("", "Configuration");
+
+    //NewNode = Tree->AddChildNode("Configuration", "Style");
+    //NewNode->Callback = std::bind(&CSpriteWindow::StyleCallback, this);
+
+    //Node* NewNode = m_Tree->AddChildNode("", "EditMode");
+    //NewNode->Callback = std::bind(&CSpriteWindow::EditModeCallback, this);
+
 
     
     CIMGUILabel* Label = AddWidget<CIMGUILabel>("", 600.f, 20.f);
@@ -110,7 +113,7 @@ bool CSpriteWindow::Init()
 
     Button->SetClickCallback<CSpriteWindow>(this, &CSpriteWindow::LoadTextureButton);
 
-    CIMGUISameLine* Line = AddWidget<CIMGUISameLine>("Line");
+    Line = AddWidget<CIMGUISameLine>("Line");
 
     m_LoadFileName = AddWidget<CIMGUITextInput>("LoadFileName");
     m_LoadFileName->SetHideName(true);
@@ -389,16 +392,9 @@ void CSpriteWindow::LoadTextureButton()
 
 void CSpriteWindow::SpriteEditButton()
 {
-    for (int i = 0; i < (int)EditMode::End; ++i)
-    {
-        if (i == (int)EditMode::Sprite)
-        {
-            m_RadioButton->SetActive(i, true);
-            continue;
-        }
-
-        m_RadioButton->SetActive(i, false);
-    }
+    m_SpriteEditRadioButton->SetActive(true);
+    m_SceneEditRadioButton->SetActive(false);
+    m_MapEditRadioButton->SetActive(false);
 
     CEditorManager::GetInst()->SetEditMode(EditMode::Sprite);
 
@@ -410,16 +406,9 @@ void CSpriteWindow::SpriteEditButton()
 
 void CSpriteWindow::MapEditButton()
 {
-    for (int i = 0; i < (int)EditMode::End; ++i)
-    {
-        if (i == (int)EditMode::TileMap)
-        {
-            m_RadioButton->SetActive(i, true);
-            continue;
-        }
-
-        m_RadioButton->SetActive(i, false);
-    }
+    m_SpriteEditRadioButton->SetActive(false);
+    m_SceneEditRadioButton->SetActive(false);
+    m_MapEditRadioButton->SetActive(true);
 
     CEditorManager::GetInst()->SetEditMode(EditMode::TileMap);
 }
@@ -427,16 +416,9 @@ void CSpriteWindow::MapEditButton()
 
 void CSpriteWindow::ObjectArrangeButton()
 {
-    for (int i = 0; i < (int)EditMode::End; ++i)
-    {
-        if (i == (int)EditMode::Scene)
-        {
-            m_RadioButton->SetActive(i, true);
-            continue;
-        }
-
-        m_RadioButton->SetActive(i, false);
-    }
+    m_SpriteEditRadioButton->SetActive(false);
+    m_SceneEditRadioButton->SetActive(true);
+    m_MapEditRadioButton->SetActive(false);
 
     CEditorManager::GetInst()->SetEditMode(EditMode::Scene);
 }
@@ -820,7 +802,6 @@ void CSpriteWindow::MyShowStyleEditor(ImGuiStyle* ref)
     ImGui::ShowFontSelector("Fonts##Selector");
 
 }
-
 
 void CSpriteWindow::DeleteSequenceButton()
 {

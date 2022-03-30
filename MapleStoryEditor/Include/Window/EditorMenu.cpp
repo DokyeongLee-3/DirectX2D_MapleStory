@@ -588,6 +588,51 @@ void CEditorMenu::MyShowMenuFile()
 			ImGui::EndMenu();
 		}
 
+		if (ImGui::BeginMenu("Configuration"))
+		{
+			if (ImGui::BeginMenu("Font"))
+			{
+				if (ImGui::MenuItem("Default"))
+				{
+					CIMGUIManager::GetInst()->SetCurrentFont("Default");
+				}
+
+				if (ImGui::MenuItem("Bold"))
+				{
+					CIMGUIManager::GetInst()->SetCurrentFont("DefaultBold");
+				}
+
+				if (ImGui::MenuItem("Black"))
+				{
+					CIMGUIManager::GetInst()->SetCurrentFont("DefaultBlack");
+				}
+
+				ImGui::EndMenu();
+			}
+
+			if (ImGui::BeginMenu("Style"))
+			{
+				if (ImGui::MenuItem("Dark"))
+				{
+					ImGui::StyleColorsDark();
+				}
+
+				if (ImGui::MenuItem("Light"))
+				{
+					ImGui::StyleColorsLight();
+				}
+
+				if (ImGui::MenuItem("Classic"))
+				{
+					ImGui::StyleColorsClassic();
+				}
+
+				ImGui::EndMenu();
+			}
+
+			ImGui::EndMenu();
+		}
+
 		ImGui::EndMainMenuBar();
 	}
 

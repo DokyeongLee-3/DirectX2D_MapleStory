@@ -14,7 +14,10 @@ private:
 	class CIMGUIImage* m_Sprite;
 	class CIMGUIImage* m_SpriteFrame;
 	class CIMGUITextInput* m_LoadFileName;
-	class CIMGUIRadioButton* m_RadioButton;
+
+	class CIMGUIRadioButton* m_SpriteEditRadioButton;
+	class CIMGUIRadioButton* m_SceneEditRadioButton;
+	class CIMGUIRadioButton* m_MapEditRadioButton;
 
 	// 애니메이션들의 시퀀스들을 갖고 있는 리스트
 	class CIMGUIListBox* m_AnimationList;
@@ -42,9 +45,9 @@ private:
 
 
 public:
-	CIMGUIRadioButton* GetRadioButton()	const
+	CIMGUIRadioButton* GetTileMapEditRadioButton()	const
 	{
-		return m_RadioButton;
+		return m_MapEditRadioButton;
 	}
 
 	class CIMGUIText* GetCurrentFrameText()	const
@@ -125,5 +128,6 @@ public:
 public:
 	void StyleCallback();
 	void MyShowStyleEditor(ImGuiStyle* ref = (ImGuiStyle*)0);
+
 };
 
