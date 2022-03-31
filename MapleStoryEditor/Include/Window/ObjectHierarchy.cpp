@@ -481,6 +481,16 @@ void CObjectHierarchy::ProfileChangeCallback()
 	}
 }
 
+void CObjectHierarchy::ClearObjectList()
+{
+	m_ObjectListWidget->Clear();
+}
+
+void CObjectHierarchy::ClearComponentList()
+{
+	m_ComponentListWidget->Clear();
+}
+
 void CObjectHierarchy::ClearHierarchyWindowInfo()
 {
 	m_ObjectLayer->SetText("");

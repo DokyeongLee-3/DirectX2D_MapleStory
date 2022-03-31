@@ -80,6 +80,8 @@ private:
 	void ProfileChangeCallback();
 
 public:
+	void ClearObjectList();
+	void ClearComponentList();
 	void ClearHierarchyWindowInfo();
 	void ChangeSelectObjectAnimationSequence(const std::string& SequenceName);
 	float GetSequencePlayeTime(const std::string& SequenceName);

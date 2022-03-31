@@ -18,9 +18,6 @@ CLobbyScene::CLobbyScene()	:
 	m_LoadingThread(nullptr)
 {
 	SetTypeID<CLobbyScene>();
-
-	MyTest1 = false;
-	MyTest2 = false;
 }
 
 CLobbyScene::~CLobbyScene()

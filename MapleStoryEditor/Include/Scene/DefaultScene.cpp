@@ -19,6 +19,8 @@ CDefaultScene::CDefaultScene()  :
     m_StageObject(nullptr)
 {
     SetTypeID<CDefaultScene>();
+
+    //SAFE_DELETE(m_LoadingThread);
 }
 
 CDefaultScene::~CDefaultScene()

@@ -478,10 +478,13 @@ void CDetailWindow::FlipComponent()
 	{
 		CSceneComponent* SelectComp = Window->GetSelectComponent();
 
-		if (SelectComp->GetTypeID() != typeid(CSpriteComponent).hash_code())
-			return;
+		if (SelectComp)
+		{
+			if (SelectComp->GetTypeID() != typeid(CSpriteComponent).hash_code())
+				return;
 
-		((CSpriteComponent*)SelectComp)->Flip();
+			((CSpriteComponent*)SelectComp)->Flip();
+		}
 	}
 }
 

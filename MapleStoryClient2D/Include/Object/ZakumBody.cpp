@@ -2207,7 +2207,7 @@ void CZakumBody::SmashReturnArm(int ArmID)
 	switch (ArmID)
 	{
 	case 0:
-		if(m_LeftArm1Hand && m_LeftArm1Hand->IsActive())
+		if (m_LeftArm1Hand && m_LeftArm1Hand->IsActive())
 			m_LeftArm1Hand->ChangeAnimation("ZakumArmReturnLeft1");
 		break;
 	case 1:
@@ -2244,7 +2244,6 @@ void CZakumBody::SmashReturnArm(int ArmID)
 		break;
 	}
 
-	
 }
 
 void CZakumBody::SmashReturnArmOriginPos()

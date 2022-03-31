@@ -15,6 +15,9 @@ public:
     class CStage* m_StageObject;
     class CCameraComponent* m_CameraComponent;
 
+    /*std::function<void(bool, float)>    m_LoadingFunction;
+    class CLoadingThread* m_LoadingThread;*/
+
 public:
     class CStage* GetStageObject()    const
     {

@@ -32,6 +32,8 @@
 #include "SpriteWindow.h"
 #include "Component/ColliderCircle.h"
 #include "../ObjectSet.h"
+#include "DetailWindow.h"
+
 
 CEditorMenu::CEditorMenu()
 {
@@ -575,6 +577,21 @@ void CEditorMenu::MyShowMenuFile()
 		{
 			if (ImGui::MenuItem("Load Scene File"))
 			{
+				CObjectHierarchy* HierarchyWindow = (CObjectHierarchy*)CIMGUIManager::GetInst()->FindIMGUIWindow("ObjectHierarchy");
+				CDetailWindow* DatailWindow = (CDetailWindow*)CIMGUIManager::GetInst()->FindIMGUIWindow("DetailWindow");
+
+				if (HierarchyWindow)
+				{
+					HierarchyWindow->ClearHierarchyWindowInfo();
+					HierarchyWindow->ClearComponentList();
+					HierarchyWindow->ClearObjectList();
+					HierarchyWindow->GetObjectList()->SetSelectIndex(-1);
+					HierarchyWindow->GetComponentList()->SetSelectIndex(-1);
+					HierarchyWindow->GetSelectObject()->SetScene(nullptr);
+
+					DatailWindow->ClearSelectObjectSequenceList();
+				}
+
 				LoadScene();
 			}
 
