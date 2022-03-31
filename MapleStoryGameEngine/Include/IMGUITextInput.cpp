@@ -40,9 +40,9 @@ void CIMGUITextInput::Render()
 		switch (m_TextType)
 		{
 		case ImGuiText_Type::String:
-			if (strlen(m_HintText) > 0)
+			if (strlen(m_HintTextUTF8) > 0)
 			{
-				Input = ImGui::InputTextWithHint(m_Name.c_str(), m_HintText, m_Text, 1024, m_Flag);
+				Input = ImGui::InputTextWithHint(m_Name.c_str(), m_HintTextUTF8, m_Text, 1024, m_Flag);
 			}
 
 			else

@@ -90,19 +90,6 @@ bool CSpriteWindow::Init()
     // 일단 맨처음은 Scene Edit Mode로 설정해놨으니 처음 초기화에선 Radio Button중 Scene Edit Mode 선택했을때 콜백을 호출해준다
     ObjectArrangeButton();
 
-
-
-    //m_Tree = AddWidget<CIMGUITree>("Tree");
-    //Node* NewNode = Tree->AddChildNode("", "Configuration");
-
-    //NewNode = Tree->AddChildNode("Configuration", "Style");
-    //NewNode->Callback = std::bind(&CSpriteWindow::StyleCallback, this);
-
-    //Node* NewNode = m_Tree->AddChildNode("", "EditMode");
-    //NewNode->Callback = std::bind(&CSpriteWindow::EditModeCallback, this);
-
-
-    
     CIMGUILabel* Label = AddWidget<CIMGUILabel>("", 600.f, 20.f);
     //Label->SetColorFloat(0.0f, 0.0f, 0.0f, 0.f);
     Label->SetColor(0, 0, 0, 0);
@@ -121,96 +108,92 @@ bool CSpriteWindow::Init()
     m_LoadFileName->SetSize(200.f, 20.f);
     m_LoadFileName->ReadOnly(true);
 
-    Label = AddWidget<CIMGUILabel>("Animation Sequence", 150.f, 30.f);
+    Label = AddWidget<CIMGUILabel>("Animation Sequence", 170.f, 30.f);
 
     //Label->SetColorFloat(0.28f, 0.28f, 0.28f, 0.8f);
     Label->SetColor(71, 71, 71, 204);
     Label->SetAlign(0.5f, 0.f);
 
     Line = AddWidget<CIMGUISameLine>("Line");
+    Line->SetOffsetX(185.f);
 
-    m_AnimName = AddWidget<CIMGUITextInput>("AnimNameInput", 80.f, 30.f);
-    m_AnimName->SetHideName(true);
-
-    Line = AddWidget<CIMGUISameLine>("Line");
-    Line->SetOffsetX(420.f);
-
-    Label = AddWidget<CIMGUILabel>("Frames for Sequence", 150.f, 30.f);
+    Label = AddWidget<CIMGUILabel>("Frames", 100.f, 30.f);
 
     //Label->SetColorFloat(0.28f, 0.28f, 0.28f, 0.8f);
     Label->SetColor(71, 71, 71, 204);
     Label->SetAlign(0.5f, 0.f);
 
-    Line = AddWidget<CIMGUISameLine>("Line");
-
-    m_AnimFrameName = AddWidget<CIMGUITextInput>("AnimFrameNameInput", 80.f, 30.f);
-    m_AnimFrameName->SetHideName(true);
-
-    m_AnimationList = AddWidget<CIMGUIListBox>("AnimationList", 150.f, 300.f);
+    m_AnimationList = AddWidget<CIMGUIListBox>("AnimationList", 170.f, 300.f);
     m_AnimationList->SetHideName(true);
     m_AnimationList->SetPageItemCount(6);
     m_AnimationList->SetSelectCallback<CSpriteWindow>(this, &CSpriteWindow::SelectAnimation);
 
     Line = AddWidget<CIMGUISameLine>("Line");
 
-    Button = AddWidget<CIMGUIButton>("Add", 50.f, 40.f);
-    Button->SetClickCallback<CSpriteWindow>(this, &CSpriteWindow::AddAnimationButton);
-
-    Line = AddWidget<CIMGUISameLine>("Line");
-
-    Button = AddWidget<CIMGUIButton>("Save", 50.f, 40.f);
-
-    Button->SetClickCallback<CSpriteWindow>(this, &CSpriteWindow::SaveSequence);
-
-    Line = AddWidget<CIMGUISameLine>("Line");
-
-    Button = AddWidget<CIMGUIButton>("Load", 50.f, 40.f);
-
-    Button->SetClickCallback<CSpriteWindow>(this, &CSpriteWindow::LoadSequence);
-
-    Line = AddWidget<CIMGUISameLine>("Line");
-
-    Button = AddWidget<CIMGUIButton>("Delete", 50.f, 40.f);
-
-    Button->SetClickCallback<CSpriteWindow>(this, &CSpriteWindow::DeleteSequenceButton);
-
-    Line = AddWidget<CIMGUISameLine>("Line");
-    Line->SetOffsetX(420.f);
-
-    m_AnimationFrameList = AddWidget<CIMGUIListBox>("AnimationFrameList", 150.f, 300.f);
+    m_AnimationFrameList = AddWidget<CIMGUIListBox>("AnimationFrameList", 100.f, 220.f);
     m_AnimationFrameList->SetHideName(true);
     m_AnimationFrameList->SetPageItemCount(6);
     m_AnimationFrameList->SetSelectCallback<CSpriteWindow>(this, &CSpriteWindow::SelectAnimationFrame);
 
     Line = AddWidget<CIMGUISameLine>("Line");
 
-    Button = AddWidget<CIMGUIButton>("Add##", 50.f, 40.f);
+    m_SpriteFrame = AddWidget<CIMGUIImage>("SpriteFrame", 115.f, 115.f);
+
+    m_AnimName = AddWidget<CIMGUITextInput>("AnimNameInput", 130.f, 30.f);
+    m_AnimName->SetHideName(true);
+    m_AnimName->SetHintText("Enter Sequence Name");
+
+    Button = AddWidget<CIMGUIButton>("Add", 35.f, 30.f);
+    Button->SetClickCallback<CSpriteWindow>(this, &CSpriteWindow::AddAnimationButton);
+
+    Line = AddWidget<CIMGUISameLine>("Line");
+
+    Button = AddWidget<CIMGUIButton>("Erase", 35.f, 30.f);
+
+    Button->SetClickCallback<CSpriteWindow>(this, &CSpriteWindow::DeleteSequenceButton);
+
+    Line = AddWidget<CIMGUISameLine>("Line");
+
+    Button = AddWidget<CIMGUIButton>("Load", 35.f, 30.f);
+
+    Button->SetClickCallback<CSpriteWindow>(this, &CSpriteWindow::LoadSequence);
+
+    Line = AddWidget<CIMGUISameLine>("Line");
+
+    Button = AddWidget<CIMGUIButton>("Save", 35.f, 30.f);
+
+    Button->SetClickCallback<CSpriteWindow>(this, &CSpriteWindow::SaveSequence);
+
+    Line = AddWidget<CIMGUISameLine>("Line");
+    Line->SetOffsetX(190.f);
+
+    Button = AddWidget<CIMGUIButton>("Add##", 35.f, 30.f);
 
     Button->SetClickCallback<CSpriteWindow>(this, &CSpriteWindow::AddAnimationFrameButton);
 
     Line = AddWidget<CIMGUISameLine>("Line");
 
-    Button = AddWidget<CIMGUIButton>("Delete##", 50.f, 40.f);
+    Button = AddWidget<CIMGUIButton>("Erase##", 35.f, 30.f);
 
     Button->SetClickCallback<CSpriteWindow>(this, &CSpriteWindow::DeleteFrameButton);
 
 
 
 
-    m_FrameStartPosX = AddWidget<CIMGUITextInput>("FrameStartPosX", 120.f, 120.f);
+    m_FrameStartPosX = AddWidget<CIMGUITextInput>("FrameStartPosX", 100.f, 100.f);
     m_FrameStartPosX->SetFloat(0.f);
     m_FrameStartPosX->SetTextType(ImGuiText_Type::Float);
     m_FrameStartPosX->SetCallback<CSpriteWindow>(this, &CSpriteWindow::AdjustFrameDataStartX);
 
     Line = AddWidget<CIMGUISameLine>("Line");
 
-    m_FrameStartPosY = AddWidget<CIMGUITextInput>("FrameStartPosY", 120.f, 120.f);
+    m_FrameStartPosY = AddWidget<CIMGUITextInput>("FrameStartPosY", 100.f, 100.f);
     m_FrameStartPosY->SetFloat(0.f);
     m_FrameStartPosY->SetTextType(ImGuiText_Type::Float);
     m_FrameStartPosY->SetCallback<CSpriteWindow>(this, &CSpriteWindow::AdjustFrameDataStartY);
     //FrameStartPos->ReadOnly(true);
 
-    m_FrameEndPosX = AddWidget<CIMGUITextInput>("FrameEndPosX", 120.f, 120.f);
+    m_FrameEndPosX = AddWidget<CIMGUITextInput>("FrameEndPosX", 100.f, 100.f);
     m_FrameEndPosX->SetFloat(100);
     m_FrameEndPosX->SetTextType(ImGuiText_Type::Float);
     m_FrameEndPosX->SetCallback<CSpriteWindow>(this, &CSpriteWindow::AdjustFrameDataEndX);
@@ -218,7 +201,7 @@ bool CSpriteWindow::Init()
     Line = AddWidget<CIMGUISameLine>("Line");
     Line->SetSpacing(16.f);
 
-    m_FrameEndPosY = AddWidget<CIMGUITextInput>("FrameEndPosY", 120.f, 120.f);
+    m_FrameEndPosY = AddWidget<CIMGUITextInput>("FrameEndPosY", 100.f, 100.f);
     m_FrameEndPosY->SetFloat(100);
     m_FrameEndPosY->SetTextType(ImGuiText_Type::Float);
     m_FrameEndPosY->SetCallback<CSpriteWindow>(this, &CSpriteWindow::AdjustFrameDataEndY);
@@ -271,12 +254,9 @@ bool CSpriteWindow::Init()
     m_CurrentFrameText = AddWidget<CIMGUIText>("CurrentFrame");
 
 
+    //Line = AddWidget<CIMGUISameLine>("Line");
 
-    m_Sprite = AddWidget<CIMGUIImage>("SpriteOrigin", 200.f, 200.f);
-
-    Line = AddWidget<CIMGUISameLine>("Line");
-
-    m_SpriteFrame = AddWidget<CIMGUIImage>("SpriteFrame", 200.f, 200.f);
+    //m_SpriteFrame = AddWidget<CIMGUIImage>("SpriteFrame", 200.f, 200.f);
 
     //Line = AddWidget<CIMGUISameLine>("Line");
 

@@ -83,12 +83,6 @@ bool CEditorMenu::Init()
 
 	m_ObjectCreateButton->SetClickCallback(this, &CEditorMenu::ObjectCreateButton);
 
-	Line = AddWidget<CIMGUISameLine>("Line");
-
-	CIMGUIButton* SelectMapObjTexture = AddWidget<CIMGUIButton>("Select Object Texture", 150.f, 26.f);
-
-	SelectMapObjTexture->SetClickCallback(this, &CEditorMenu::SelectObjTexture);
-
 
 	// Component
 	m_ComponentCombo = AddWidget<CIMGUIComboBox>("Select Component", 120.f, 26.f);
@@ -117,6 +111,10 @@ bool CEditorMenu::Init()
 
 	m_ComponentCreateButton->SetClickCallback(this, &CEditorMenu::ComponentCreateButton);
 
+
+	CIMGUIButton* SelectMapObjTexture = AddWidget<CIMGUIButton>("Select Object Texture", 150.f, 26.f);
+
+	SelectMapObjTexture->SetClickCallback(this, &CEditorMenu::SelectObjTexture);
 
 	//CIMGUIButton* SaveSceneButton = AddWidget<CIMGUIButton>("SaveSceneButton", 120.f, 30.f);
 
