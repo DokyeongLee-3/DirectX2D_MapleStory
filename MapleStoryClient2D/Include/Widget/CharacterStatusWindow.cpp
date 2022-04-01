@@ -162,7 +162,7 @@ bool CCharacterStatusWindow::Init()
 
     m_HPDelimiter = CreateWidget<CImage>("HPDelimiter");
     m_HPDelimiter->SetTexture("HPDelimiter", TEXT("UI/Status/HPMPDelimiter.png"));
-    m_HPDelimiter->SetPos((m_HPMaxNumber->GetWidgetPos().x + m_CurrentHPNumber->GetWidgetPos().x + m_CurrentHPNumber->GetWidgetSize().x * CurrentHPDigit) / 2.f - 3.f, 
+    m_HPDelimiter->SetPos((m_HPMaxNumber->GetWidgetPos().x + m_CurrentHPNumber->GetWidgetPos().x + m_CurrentHPNumber->GetWidgetSize().x * CurrentHPDigit) / 2.f - 1.f, 
         m_HPMaxNumber->GetWidgetPos().y);
     m_HPDelimiter->SetSize(6.f, 10.f);
 

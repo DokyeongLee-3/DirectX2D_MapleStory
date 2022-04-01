@@ -16,10 +16,10 @@
 
 CSylphideLancer::CSylphideLancer() :
 	m_Distance(0.f),
-	m_Speed(350.f),
+	m_Speed(380.f),
 	m_Body(nullptr),
 	m_LancerID(-1),
-	m_ProduceLatterGroup(false)
+	m_ProduceLatterGroupCheck(false)
 {
 	SetTypeID<CSylphideLancer>();
 }
@@ -76,19 +76,25 @@ void CSylphideLancer::Update(float DeltaTime)
 	m_Distance += AbsoluteSpeed * DeltaTime;
 
 
-	// 첫번째 그룹에 2개의 랜서(ID가 각각 0, 1)중 1번 ID인 랜서가 150이상의 거리를 이동했을때
+	CPlayer2D* Player = (CPlayer2D*)(m_Scene->GetSceneMode()->GetPlayerObject());
+	bool IsProduceLatterGroup = Player->IsProduceLatterGroup();
+
+	// 첫번째 그룹에 2개의 랜서가 150이상의 거리를 이동했을때
 	// 두번째 그룹에 2개의 랜서(ID가 각각 2, 3)을 추가적으로 플레이어가 생성하도록 해서 한번 스킬쓰면
 	// 총 4개의 창이 나가도록 한다
-	if (m_Distance >= 150.f && m_LancerID == 1 && !m_ProduceLatterGroup)
+	if (m_Distance >= 150.f && m_Distance < 380.f && !IsProduceLatterGroup && m_LancerID < 2 && !m_ProduceLatterGroupCheck)
 	{
-		CPlayer2D* Player = (CPlayer2D*)(m_Scene->GetSceneMode()->GetPlayerObject());
 		Player->ProduceSecondSylphideLander(DeltaTime);
-		m_ProduceLatterGroup = true;
+
+		Player->SetProduceLatterGroup(true);
+
+		m_ProduceLatterGroupCheck = true;
 	}
 
 	if (m_Distance >= 500.f)
 	{
 		m_Distance = 0.f;
+
 		Destroy();
 	}
 }
@@ -208,13 +214,17 @@ void CSylphideLancer::CollisionBeginCallback(const CollisionResult& result)
 				"SylphideLancerHitEffect", "SylphideLancerHitEffect",
 				HitEffectPos);
 
-			// 실피드랜서 첫번째 그룹이 150보다 적게 날아가서 충돌해서 소멸해도 두번째 그룹을 이어서 발사하도록한다
-			if (m_Distance < 150.f)
+			if (!Player->IsProduceLatterGroup())
 			{
-				CPlayer2D* Player = (CPlayer2D*)(m_Scene->GetSceneMode()->GetPlayerObject());
 				Player->ProduceSecondSylphideLander(CEngine::GetInst()->GetDeltaTime());
-				m_ProduceLatterGroup = true;
+				Player->SetProduceLatterGroup(true);
 			}
+		}
+
+		if (m_LancerID == 1 && !Player->IsProduceLatterGroup())
+		{
+			Player->ProduceSecondSylphideLander(CEngine::GetInst()->GetDeltaTime());
+			Player->SetProduceLatterGroup(true);
 		}
 
 		// 두번째 그룹이 충돌

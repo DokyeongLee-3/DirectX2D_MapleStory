@@ -65,7 +65,8 @@ CPlayer2D::CPlayer2D() :
 	m_CameraShakeTime(1.f),
 	m_AccCameraShakeTime(0.f),
 	m_CameraShakeDir(0.f, 1.f),
-	m_AccCameraShakeSingleDirTime(0.f)
+	m_AccCameraShakeSingleDirTime(0.f),
+	m_ProduceLatterGroup(false)
 {
 	SetTypeID<CPlayer2D>();
 	m_PlayerSkillInfo = new CPlayerSkillInfo;
@@ -734,6 +735,8 @@ void CPlayer2D::SylphideLancer(float DeltaTime)
 
 	// Scene의 m_ObjList에서 몬스터 찾아서 여기서 실피드랜서 방향 설정해주기
 
+	m_ProduceLatterGroup = false;
+	
 	m_BodySprite->ChangeAnimation("HealLeft");
 	m_PlayerInfo.MP -= SkillInfo->MPRequire;
 
@@ -2274,6 +2277,9 @@ void CPlayer2D::GotoZakumAltar()
 void CPlayer2D::ProduceSecondSylphideLander(float DeltaTime)
 {
 	if (m_Dead)
+		return;
+
+	if (m_ProduceLatterGroup)
 		return;
 
 	m_SkillBodyEffect->ChangeAnimation("SylphideLancerBodyEffectLeft");

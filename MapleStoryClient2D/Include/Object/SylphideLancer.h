@@ -19,7 +19,7 @@ private:
     float   m_Distance;
     float   m_Speed;
     int     m_LancerID;
-    bool    m_ProduceLatterGroup;
+    bool    m_ProduceLatterGroupCheck;
 
 public:
     void SetLancerID(int ID)

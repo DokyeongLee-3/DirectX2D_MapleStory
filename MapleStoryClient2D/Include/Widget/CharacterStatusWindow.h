@@ -51,10 +51,16 @@ public:
 		//	return;
 
 		if (Percent < m_HPBar->GetPercent())
+		{
 			m_HPBar->SetOnDecreasing(true);
+			m_HPBar->SetOnIncreasing(false);
+		}
 
 		else
+		{
 			m_HPBar->SetOnIncreasing(true);
+			m_HPBar->SetOnDecreasing(false);
+		}
 
 		m_HPBar->SetSlowPercent(Percent);
 	}
@@ -67,10 +73,16 @@ public:
 	void SetMPPercent(float Percent)
 	{
 		if (Percent < m_MPBar->GetPercent())
+		{
 			m_MPBar->SetOnDecreasing(true);
+			m_HPBar->SetOnIncreasing(false);
+		}
 
 		else
+		{
 			m_MPBar->SetOnIncreasing(true);
+			m_MPBar->SetOnDecreasing(false);
+		}
 
 		m_MPBar->SetSlowPercent(Percent);
 	}

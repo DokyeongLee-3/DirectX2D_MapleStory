@@ -134,8 +134,20 @@ private:
     Vector3     m_OriginRelativeCamPos;
     Vector2     m_CameraShakeDir;
 
+    bool m_ProduceLatterGroup;
+
 public:
     class CPlayerSkillInfo* GetPlayerSkillInfo()   const;
+
+    bool IsProduceLatterGroup() const
+    {
+        return m_ProduceLatterGroup;
+    }
+
+    void SetProduceLatterGroup(bool Produce)
+    {
+        m_ProduceLatterGroup = Produce;
+    }
 
     Vector2 GetCurrentFrameCameraMove() const
     {

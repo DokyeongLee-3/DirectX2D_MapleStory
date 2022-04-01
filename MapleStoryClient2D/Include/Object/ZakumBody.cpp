@@ -749,7 +749,6 @@ void CZakumBody::StretchArm(int ArmID, float DeltaTime)
 
 					if (Flame)
 						Flame->Destroy();
-
 				}
 
 				// 늘린 팔 위치 되돌려주기?
@@ -1901,6 +1900,17 @@ void CZakumBody::SetDamage(float Damage, bool Critical)
 			for (size_t i = 0; i < Count; ++i)
 			{
 				vecHandSmashLight[i]->SetSmashLightOwner(nullptr);
+			}
+
+			for (int i = 0; i < 4; ++i)
+			{
+				char FlameName[256] = {};
+				sprintf_s(FlameName, "Flame%d", i);
+				std::string StrFlameName = FlameName;
+				CZakumFlame* Flame = (CZakumFlame*)m_Scene->FindObject(StrFlameName);
+
+				if (Flame)
+					Flame->Destroy();
 			}
 
 			m_LeftArm1Hand = nullptr;

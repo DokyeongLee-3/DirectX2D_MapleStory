@@ -147,7 +147,7 @@ void CProgressBar::Update(float DeltaTime)
 		m_StartMouseOn = false;
 	}
 
-	if (m_OnDecreasing)
+	if (m_OnDecreasing && !m_OnIncreasing)
 	{
 		float Goal = m_Percent;
 		float Current = m_ProgressCBuffer->GetPercent();
@@ -166,7 +166,7 @@ void CProgressBar::Update(float DeltaTime)
 		m_ProgressCBuffer->UpdateCBuffer();
 	}
 
-	else if (m_OnIncreasing)
+	if (m_OnIncreasing && !m_OnDecreasing)
 	{
 		float Goal = m_Percent;
 		float Current = m_ProgressCBuffer->GetPercent();

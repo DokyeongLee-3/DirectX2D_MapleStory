@@ -166,6 +166,9 @@ void CParticleComponent::PostUpdate(float DeltaTime)
 	// 필요한 그룹의 수는 1개이다. 하지만 64개 미만이라면 64를 나눌 경우 0이 나오므로 여기에 1을 더해주어야 한다.
 	// 100개일 경우 그룹은 2개가 생성된다. 이때 스레드는 128개가 되므로 100개를 제외한 나머지 28개는 처리가 안되게
 	// 막아주면 되는것이다.
+	// 즉, UpdateShader의 [numthread(64,1,1)]로 인해 64개의 쓰레드 '그룹'이 형성될 것이고, 여기서 Excute(x,y,z)를 해줬으면
+	// Thread는 x*y*z 개가 생성 될 것이다(당연히 UpdateShader에선 ThreadID가 0 ~ x*y*z - 1까지 주어질 것)
+	// 결국 x*y*z개의 쓰레드가 64개의 그룹내에 자동적으로 분배될 것이다.
 	int	GroupCount = m_Particle->GetSpawnCountMax();
 	m_UpdateShader->Excute(GroupCount, 1, 1);
 
