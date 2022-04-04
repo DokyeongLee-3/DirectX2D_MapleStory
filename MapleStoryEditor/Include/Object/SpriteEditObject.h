@@ -6,6 +6,7 @@ class CSpriteEditObject :
     public CGameObject
 {
     friend class CScene;
+    friend class CSpriteWindow;
 
 protected:
     CSpriteEditObject();

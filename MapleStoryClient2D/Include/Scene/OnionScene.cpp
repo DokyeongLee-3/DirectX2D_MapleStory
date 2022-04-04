@@ -122,6 +122,14 @@ bool COnionScene::Init()
 
 	m_Scene->GetResource()->SoundPlay("OnionSceneBGM");
 
+	if (CSceneManager::GetInst()->GetNextScene())
+	{
+		CScene* NextScene = CSceneManager::GetInst()->GetNextScene();
+		CViewport* NewViewport = NextScene->GetViewport();
+
+		CClientManager::GetInst()->GetInventoryWindow()->ToolTipWindowSceneChange(NextScene, NewViewport);
+	}
+
 	return true;
 }
 

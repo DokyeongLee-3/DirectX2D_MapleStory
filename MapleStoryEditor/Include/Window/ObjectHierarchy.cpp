@@ -465,6 +465,9 @@ void CObjectHierarchy::ProfileChangeCallback()
 	if (!m_SelectObject)
 		return;
 
+	if (m_ComponentListWidget->GetSelectIndex() == -1)
+		return;
+
 	std::string Component = m_ComponentListWidget->GetSelectItem();
 
 	CComponent* Comp = m_SelectObject->FindComponent(Component);

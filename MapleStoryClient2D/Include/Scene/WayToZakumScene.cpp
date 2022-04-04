@@ -111,6 +111,14 @@ bool CWayToZakumScene::Init()
 		m_PlayerObject->SetTileCollisionEnable(false);
 	}
 
+	if (CSceneManager::GetInst()->GetNextScene())
+	{
+		CScene* NextScene = CSceneManager::GetInst()->GetNextScene();
+		CViewport* NewViewport = NextScene->GetViewport();
+
+		CClientManager::GetInst()->GetInventoryWindow()->ToolTipWindowSceneChange(NextScene, NewViewport);
+	}
+
 	return true;
 }
 
@@ -238,11 +246,11 @@ void CWayToZakumScene::SetPerspective()
 		if (LayerName.find("Stage") != std::string::npos)
 			Object->AddWorldPos(CameraMove.x / 2.f, 0.f, 0.f);
 		else if (LayerName.find("MapObjBackMost") != std::string::npos)
-			Object->AddWorldPos(CameraMove.x / 6.f, 0.f, 0.f);
+			Object->AddWorldPos(CameraMove.x / 5.f, 0.f, 0.f);
 		else if (LayerName.find("MapObjBack") != std::string::npos)
-			Object->AddWorldPos(CameraMove.x / 13.f, 0.f, 0.f);
+			Object->AddWorldPos(CameraMove.x / 14.f, 0.f, 0.f);
 		else if (LayerName.find("MapObjMiddle") != std::string::npos)
-			Object->AddWorldPos(CameraMove.x / 18.f, 0.f, 0.f);
+			Object->AddWorldPos(CameraMove.x / 20.f, 0.f, 0.f);
 		else if (LayerName.find("MapObjFront") != std::string::npos)
 			Object->AddWorldPos(CameraMove.x / 28.f, 0.f, 0.f);
 	}

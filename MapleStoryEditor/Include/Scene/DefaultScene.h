@@ -26,6 +26,8 @@ public:
 
     void SetStageObject(class CStage* Stage);
 
+    class CGameObject* GetCameraObject()    const;
+
 private:
     bool LoadAnimationSequence2D();
     bool CreateMaterial();

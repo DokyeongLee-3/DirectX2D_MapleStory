@@ -64,6 +64,19 @@ public:
 	}
 
 	template <typename T>
+	void FindWidgetWindowByType(std::vector<T*>& vecWidgetWindow)
+	{
+		auto	iter = m_WindowList.begin();
+		auto	iterEnd = m_WindowList.end();
+
+		for (; iter != iterEnd; ++iter)
+		{
+			if ((*iter)->GetTypeID() == typeid(T).hash_code())
+				vecWidgetWindow.push_back((T*)(*iter).Get());
+		}
+	}
+
+	template <typename T>
 	T* CreateWidgetWindow(const std::string& Name)
 	{
 		T* Window = new T;

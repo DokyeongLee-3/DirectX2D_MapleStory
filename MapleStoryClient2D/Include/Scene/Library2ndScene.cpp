@@ -116,6 +116,14 @@ bool CLibrary2ndScene::Init()
 		m_PlayerObject->SetTileCollisionEnable(false);
 	}
 
+	if (CSceneManager::GetInst()->GetNextScene())
+	{
+		CScene* NextScene = CSceneManager::GetInst()->GetNextScene();
+		CViewport* NewViewport = NextScene->GetViewport();
+
+		CClientManager::GetInst()->GetInventoryWindow()->ToolTipWindowSceneChange(NextScene, NewViewport);
+	}
+
 	return true;
 }
 

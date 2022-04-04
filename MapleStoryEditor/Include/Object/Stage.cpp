@@ -21,6 +21,8 @@ CStage::~CStage()
 void CStage::Start()
 {
 	CGameObject::Start();
+
+	//m_Sprite->SetLayerName("Stage");
 }
 
 bool CStage::Init()

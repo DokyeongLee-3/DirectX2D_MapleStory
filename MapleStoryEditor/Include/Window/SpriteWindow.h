@@ -10,8 +10,7 @@ public:
 	virtual ~CSpriteWindow();
 
 private:
-	// 에디터 창에 나오는 이미지에 대한 IMGUIImage
-	class CIMGUIImage* m_Sprite;
+	// 드래그한 영역을 나타내주는 Image
 	class CIMGUIImage* m_SpriteFrame;
 	class CIMGUITextInput* m_LoadFileName;
 

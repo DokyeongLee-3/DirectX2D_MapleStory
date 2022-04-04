@@ -46,6 +46,8 @@ bool CRadishMonster::Init()
 
 	m_Body->SetRelativePos(0.f, -5.f, 0.f);
 
+	m_Sprite->SetLayerName("MovingObjFront");
+
 	return true;
 }
 

@@ -127,7 +127,7 @@ bool CInventory::Init()
     m_BlankCollider->SetSize(180.f, 20.f);
     m_BlankCollider->SetMouseCollisionEnable(true);
     m_BlankCollider->SetClickCallback(this, &CInventory::DragWindow);
-    m_BlankCollider->SetZOrder(2);
+    m_BlankCollider->SetZOrder(5);
 
     m_MesoImage = CreateWidget<CButton>("MesoButton");
     m_MesoImage->SetTexture(Button_State::Normal, "MesoNormal", TEXT("UI/Inventory/meso.png"));
@@ -411,7 +411,7 @@ void CInventory::ReturnScrollUse()
 
     float DeltaTime = CEngine::GetInst()->GetDeltaTime();
 
-    Player->ReturnIdle(DeltaTime);
+    //Player->ReturnIdle(DeltaTime);
 
     if (Mode->GetTypeID() == typeid(CWayToZakumScene).hash_code())
     {
@@ -457,6 +457,20 @@ void CInventory::ReturnScrollUse()
         return;
 }
 
+void CInventory::ToolTipWindowSceneChange(class CScene* Scene, class CViewport* Viewport)
+{
+    size_t Count = m_vecInventoryItem.size();
+
+    for (size_t i = 0; i < Count; ++i)
+    {
+        if (m_vecInventoryItem[i]->HoverToolTipWindow)
+        {
+            m_vecInventoryItem[i]->HoverToolTipWindow->SetViewport(Viewport);
+            m_vecInventoryItem[i]->HoverToolTipWindow->GetViewport()->SetScene(Scene);
+        }
+    }
+}
+
 void CInventory::ShowBroiledEelsToolTip()
 {
     ItemState* ItState = FindItemState("BroiledEels");
@@ -465,6 +479,14 @@ void CInventory::ShowBroiledEelsToolTip()
 
     if (ToolTipWindow)
     {
+        CScene* CurrentScene = CSceneManager::GetInst()->GetScene();
+        CViewport* CurrentViewport = CurrentScene->GetViewport();
+
+        ToolTipWindowSceneChange(CurrentScene, CurrentViewport);
+
+        if (!CurrentViewport->FindWidgetWindow<CToolTip>(ToolTipWindow->GetName()))
+            CurrentViewport->AddWindow(ToolTipWindow);
+
         ToolTipWindow->Enable(true);
         ToolTipWindow->SetZOrder(m_ZOrder + 1);
     }
@@ -473,10 +495,12 @@ void CInventory::ShowBroiledEelsToolTip()
     {
         int ZOrder = ItState->ItemIcon->GetZOrder();
         Vector2 IconPos = ItState->ItemIcon->GetWidgetPos();
+        Vector2 IconRenderPos = ItState->ItemIcon->GetRenderPos();
 
         CToolTip* BroiledEelsToolTipWindow = m_Viewport->CreateWidgetWindow<CToolTip>("BroiledEelsToolTipWindow");
         BroiledEelsToolTipWindow->SetOwnerInventory(this);
-        BroiledEelsToolTipWindow->SetPos(IconPos.x + 240.f, IconPos.y);
+        //BroiledEelsToolTipWindow->SetPos(IconPos.x + 240.f, IconPos.y);
+        BroiledEelsToolTipWindow->SetPos(IconRenderPos.x - 10.f, IconRenderPos.y - 140.f);
         BroiledEelsToolTipWindow->SetZOrder(m_ZOrder + 1);
         BroiledEelsToolTipWindow->GetToolTipItemIcon()->SetTexture("BroiledEelsToolTipIcon", TEXT("UI/ToolTip/02001527.info.iconRaw.ToolTip.png"));
         BroiledEelsToolTipWindow->GetToolTipItemIcon()->SetSize(54.f, 30.f);
@@ -504,6 +528,14 @@ void CInventory::ShowReturnScrollToolTip()
 
     if (ToolTipWindow)
     {
+        CScene* CurrentScene = CSceneManager::GetInst()->GetScene();
+        CViewport* CurrentViewport = CurrentScene->GetViewport();
+
+        ToolTipWindowSceneChange(CurrentScene, CurrentViewport);
+
+        if (!CurrentViewport->FindWidgetWindow<CToolTip>(ToolTipWindow->GetName()))
+            CurrentViewport->AddWindow(ToolTipWindow);
+
         ToolTipWindow->Enable(true);
         ToolTipWindow->SetZOrder(m_ZOrder + 1);
     }
@@ -512,10 +544,12 @@ void CInventory::ShowReturnScrollToolTip()
     {
         int ZOrder = ItState->ItemIcon->GetZOrder();
         Vector2 IconPos = ItState->ItemIcon->GetWidgetPos();
+        Vector2 IconRenderPos = ItState->ItemIcon->GetRenderPos();
 
         CToolTip* ReturnScrollToolTipWindow = m_Viewport->CreateWidgetWindow<CToolTip>("ReturnScrollToolTipWindow");
         ReturnScrollToolTipWindow->SetOwnerInventory(this);
-        ReturnScrollToolTipWindow->SetPos(IconPos.x + 240.f, IconPos.y);
+        //ReturnScrollToolTipWindow->SetPos(IconPos.x + 240.f, IconPos.y + 15.f);
+        ReturnScrollToolTipWindow->SetPos(IconRenderPos.x - 10.f, IconRenderPos.y - 140.f);
         ReturnScrollToolTipWindow->SetZOrder(m_ZOrder + 1);
         ReturnScrollToolTipWindow->GetToolTipItemIcon()->SetTexture("ReturnScrollToolTipIcon", TEXT("UI/ToolTip/02030000.info.iconRaw.ToolTip.png"));
         ReturnScrollToolTipWindow->GetToolTipItemIcon()->SetSize(52.f, 46.f); 
@@ -566,6 +600,17 @@ void CInventory::ShowItemOnionToolTip()
 
     if (ToolTipWindow)
     {
+
+
+        CScene* CurrentScene = CSceneManager::GetInst()->GetScene();
+        CViewport* CurrentViewport = CurrentScene->GetViewport();
+
+        ToolTipWindowSceneChange(CurrentScene, CurrentViewport);
+
+        if (!CurrentViewport->FindWidgetWindow<CToolTip>(ToolTipWindow->GetName()))
+            CurrentViewport->AddWindow(ToolTipWindow);
+
+        //ToolTipWindow->SetPos(IconRenderPos.x - IconSize.x / 2.f, IconRenderPos.y - IconSize.y / 2.f);
         ToolTipWindow->Enable(true);
         ToolTipWindow->SetZOrder(m_ZOrder + 1);
     }
@@ -574,10 +619,12 @@ void CInventory::ShowItemOnionToolTip()
     {
         int ZOrder = ItState->ItemIcon->GetZOrder();
         Vector2 IconPos = ItState->ItemIcon->GetWidgetPos();
+        Vector2 IconRenderPos = ItState->ItemIcon->GetRenderPos();
 
         CToolTip* ItemOnionToolTipWindow = m_Viewport->CreateWidgetWindow<CToolTip>("ItemOnionToolTipWindow");
         ItemOnionToolTipWindow->SetOwnerInventory(this);
-        ItemOnionToolTipWindow->SetPos(IconPos.x + 240.f, IconPos.y);
+        //ItemOnionToolTipWindow->SetPos(IconPos.x + 240.f, IconPos.y);
+        ItemOnionToolTipWindow->SetPos(IconRenderPos.x - 10.f, IconRenderPos.y - 140.f);
         ItemOnionToolTipWindow->SetZOrder(m_ZOrder + 1);
         ItemOnionToolTipWindow->GetToolTipItemIcon()->SetTexture("ItemOnionToolTipIcon", TEXT("UI/ToolTip/04000996.info.icon.ToolTip.png"));
         ItemOnionToolTipWindow->GetToolTipItemIcon()->SetSize(50.f, 52.f);
@@ -608,6 +655,14 @@ void CInventory::ShowItemRadishToolTip()
 
     if (ToolTipWindow)
     {
+        CScene* CurrentScene = CSceneManager::GetInst()->GetScene();
+        CViewport* CurrentViewport = CurrentScene->GetViewport();
+
+        ToolTipWindowSceneChange(CurrentScene, CurrentViewport);
+
+        if (!CurrentViewport->FindWidgetWindow<CToolTip>(ToolTipWindow->GetName()))
+            CurrentViewport->AddWindow(ToolTipWindow);
+
         ToolTipWindow->Enable(true);
         ToolTipWindow->SetZOrder(m_ZOrder + 1);
     }
@@ -616,10 +671,12 @@ void CInventory::ShowItemRadishToolTip()
     {
         int ZOrder = ItState->ItemIcon->GetZOrder();
         Vector2 IconPos = ItState->ItemIcon->GetWidgetPos();
+        Vector2 IconRenderPos = ItState->ItemIcon->GetRenderPos();
 
         CToolTip* ItemRadishToolTipWindow = m_Viewport->CreateWidgetWindow<CToolTip>("ItemRadishToolTipWindow");
         ItemRadishToolTipWindow->SetOwnerInventory(this);
-        ItemRadishToolTipWindow->SetPos(IconPos.x + 240.f, IconPos.y);
+        //ItemRadishToolTipWindow->SetPos(IconPos.x + 240.f, IconPos.y);
+        ItemRadishToolTipWindow->SetPos(IconRenderPos.x - 10.f, IconRenderPos.y - 140.f);
         ItemRadishToolTipWindow->SetZOrder(m_ZOrder + 1);
         ItemRadishToolTipWindow->GetToolTipItemIcon()->SetTexture("ItemRadishToolTipIcon", TEXT("UI/ToolTip/04000997.info.icon.ToolTip.png"));
         ItemRadishToolTipWindow->GetToolTipItemIcon()->SetSize(52.f, 46.f);
@@ -694,6 +751,20 @@ void CInventory::DragWindow()
     m_Pos += MouseMove;
 
     m_BlankCollider->SetClicked(false);
+
+    std::vector<CToolTip*> vecToolTip;
+
+    m_Viewport->FindWidgetWindowByType<CToolTip>(vecToolTip);
+
+    size_t Count = vecToolTip.size();
+
+    for (size_t i = 0; i < Count; ++i)
+    {
+        Vector2 Pos = vecToolTip[i]->GetWindowPos();
+
+        vecToolTip[i]->SetPos(Pos + MouseMove);
+    }
+
 }
 
 void CInventory::AddMoney(int Money)

@@ -84,6 +84,7 @@ public:
 	void ConsumeItem(const std::string& Name, int ConsumeCount);
 	ItemState* FindItemState(const std::string& Name);
 	void ReturnScrollUse();
+	void ToolTipWindowSceneChange(class CScene* Scene, class CViewport* Viewport);
 
 public:
 	int GetCategoryItemCount(Item_Category Category)

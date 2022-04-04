@@ -78,6 +78,11 @@ void CDefaultScene::SetStageObject(CStage* Stage)
     m_StageObject = Stage;
 }
 
+CGameObject* CDefaultScene::GetCameraObject() const
+{
+    return m_CameraObject;
+}
+
 bool CDefaultScene::LoadAnimationSequence2D()
 {
 

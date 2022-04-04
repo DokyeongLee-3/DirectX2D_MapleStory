@@ -120,6 +120,21 @@ public:
 		return *iter;
 	}
 
+	void EraseObject(CGameObject* Obj)
+	{
+		auto	iter = m_ObjList.begin();
+		auto	iterEnd = m_ObjList.end();
+
+		for (; iter != iterEnd; ++iter)
+		{
+			if ((*iter) == Obj)
+			{
+				m_ObjList.erase(iter);
+				return;
+			}
+		}
+	}
+
 public:
 	void Start();
 	void Update(float DeltaTime);

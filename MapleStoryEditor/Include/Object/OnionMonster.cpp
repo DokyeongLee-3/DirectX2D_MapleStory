@@ -44,6 +44,7 @@ bool COnionMonster::Init()
 	m_Sprite->SetRelativePos(500.f, 300.f, 0.f);
 	m_Sprite->SetPivot(0.5f, 0.5f, 0.f);
 
+	m_Sprite->SetLayerName("MovingObjFront");
 
 	return true;
 }

@@ -122,6 +122,14 @@ bool CRadishScene::Init()
 
 	m_Scene->GetResource()->SoundPlay("OnionSceneBGM");
 
+	if (CSceneManager::GetInst()->GetNextScene())
+	{
+		CScene* NextScene = CSceneManager::GetInst()->GetNextScene();
+		CViewport* NewViewport = NextScene->GetViewport();
+
+		CClientManager::GetInst()->GetInventoryWindow()->ToolTipWindowSceneChange(NextScene, NewViewport);
+	}
+
 	return true;
 }
 
@@ -383,6 +391,8 @@ void CRadishScene::CreateWayToZakumScene()
 
 	WayToZakumScene->SetPlayerObject(m_PlayerObject);
 
+	((CPlayer2D*)m_PlayerObject.Get())->ReturnIdle(0.f);
+
 	// 다음 Scene에서의 위치를 Scene의 왼쪽에 위치하도록 잡아주기
 	Vector3 WorldPos = m_PlayerObject->GetWorldPos();
 	m_PlayerObject->SetWorldPos(250.f, 200.f, WorldPos.z);
@@ -409,6 +419,8 @@ void CRadishScene::CreateLobbyScene()
 	if (!m_PlayerObject->IsGravity())
 		m_PlayerObject->SetGravity(true);
 
+	((CPlayer2D*)m_PlayerObject.Get())->ReturnIdle(0.f);
+
 	//SAFE_DELETE(m_LoadingThread);
 	m_LoadingThread = CThread::CreateThread<CLoadingThread>("LobbySceneLoadingThread");
 	m_LoadingThread->SetLoadingScene(ThreadLoadingScene::Lobby);
@@ -430,6 +442,8 @@ void CRadishScene::CreateOnionScene()
 	COnionScene* OnionScene = CSceneManager::GetInst()->CreateSceneModeEmpty<COnionScene>(false);
 
 	OnionScene->SetPlayerObject(m_PlayerObject);
+
+	((CPlayer2D*)m_PlayerObject.Get())->ReturnIdle(0.f);
 
 	// 다음 Scene에서의 위치를 Scene의 왼쪽에 위치하도록 잡아주기
 	Vector3 WorldPos = m_PlayerObject->GetWorldPos();

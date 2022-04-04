@@ -26,12 +26,12 @@
 #include "ObjectHierarchy.h"
 #include "IMGUIRadioButton.h"
 #include "IMGUITree.h"
+#include "../Scene/DefaultScene.h"
 
 #include <sstream>
 
 CSpriteWindow::CSpriteWindow() :
     m_SpriteObject(nullptr),
-    m_Sprite(nullptr),
     m_SpriteFrame(nullptr),
     m_AnimInstance(nullptr),
     m_FrameStartPosX(nullptr),
@@ -347,7 +347,7 @@ void CSpriteWindow::LoadTextureButton()
         WideCharToMultiByte(CP_ACP, 0, FileExt, -1, ConvertFileExt, Length, 0, 0);
 
         // 여기 안에서 ImageEnd를 잡아준다(ImageStart는 (0,0) 그대로)
-        m_Sprite->SetTextureFullPath(ConvertFileName, FilePath);
+        //m_Sprite->SetTextureFullPath(ConvertFileName, FilePath);
 
         if (CEditorManager::GetInst()->GetEditMode() == EditMode::Sprite)
         {
@@ -391,6 +391,18 @@ void CSpriteWindow::MapEditButton()
     m_MapEditRadioButton->SetActive(true);
 
     CEditorManager::GetInst()->SetEditMode(EditMode::TileMap);
+
+    if (m_SpriteObject)
+    {
+        CSceneManager::GetInst()->GetScene()->EraseObject(m_SpriteObject);
+        m_SpriteObject = nullptr;
+    }
+
+    if (m_AnimationList)
+        m_AnimationList->Clear();
+
+    if (m_AnimationFrameList)
+        m_AnimationFrameList->Clear();
 }
 
 
@@ -399,6 +411,33 @@ void CSpriteWindow::ObjectArrangeButton()
     m_SpriteEditRadioButton->SetActive(false);
     m_SceneEditRadioButton->SetActive(true);
     m_MapEditRadioButton->SetActive(false);
+
+    if (m_SpriteObject)
+    {
+        CSceneManager::GetInst()->GetScene()->EraseObject(m_SpriteObject);
+        m_SpriteObject = nullptr;
+    }
+
+    if(m_AnimationList)
+        m_AnimationList->Clear();
+
+    if(m_AnimationFrameList)
+        m_AnimationFrameList->Clear();
+
+    // 바뀌기전이 Sprite모드였다면 크기가 큰 아틀라스 이미지를 보기 위해 움직였던 카메라를 좌하단으로 다시 맞춰준다 
+    if (CEditorManager::GetInst()->GetEditMode() == EditMode::Sprite)
+    {
+        CDefaultScene* DefaultScene = (CDefaultScene*)CSceneManager::GetInst()->GetScene()->GetSceneMode();
+
+        if (DefaultScene)
+        {
+            CGameObject* Camera = DefaultScene->GetCameraObject();
+
+            if(Camera)
+                Camera->SetWorldPos(0.f, 0.f, 0.f);
+        }
+    }
+
 
     CEditorManager::GetInst()->SetEditMode(EditMode::Scene);
 }
@@ -484,12 +523,12 @@ void CSpriteWindow::AddAnimationFrameButton()
 
     m_SpriteFrame->SetImageEnd(EndPos.x, EndPos.y);
 
-    Vector2 SpriteFrameSize;
+    /*Vector2 SpriteFrameSize;
     SpriteFrameSize.x = abs(EndPos.x - StartPos.x);
     SpriteFrameSize.y = abs(EndPos.y - StartPos.y);
 
 
-    m_SpriteFrame->SetSize(SpriteFrameSize);
+    m_SpriteFrame->SetSize(SpriteFrameSize);*/
 }
 
 void CSpriteWindow::SelectAnimationFrame(int Index, const char* Item)
@@ -847,6 +886,9 @@ void CSpriteWindow::AdjustFrameDataStartX()
     if (SelectIndex == -1)
         return;
 
+    if (!m_SpriteObject)
+        return;
+
     CSceneResource* Resource = CSceneManager::GetInst()->GetScene()->GetResource();
 
     CAnimationSequence2D* Sequence = Resource->FindAnimationSequence2D(m_AnimationList->GetItem(SelectIndex));
@@ -896,6 +938,9 @@ void CSpriteWindow::AdjustFrameDataStartY()
 {
     int SelectIndex = m_AnimationList->GetSelectIndex();
     if (SelectIndex == -1)
+        return;
+
+    if (!m_SpriteObject)
         return;
 
     CSceneResource* Resource = CSceneManager::GetInst()->GetScene()->GetResource();
@@ -952,6 +997,9 @@ void CSpriteWindow::AdjustFrameDataEndX()
     if (SelectIndex == -1)
         return;
 
+    if (!m_SpriteObject)
+        return;
+
     CSceneResource* Resource = CSceneManager::GetInst()->GetScene()->GetResource();
 
     CAnimationSequence2D* Sequence = Resource->FindAnimationSequence2D(m_AnimationList->GetItem(SelectIndex));
@@ -1002,6 +1050,9 @@ void CSpriteWindow::AdjustFrameDataEndY()
 {
     int SelectIndex = m_AnimationList->GetSelectIndex();
     if (SelectIndex == -1)
+        return;
+
+    if (!m_SpriteObject)
         return;
 
     CSceneResource* Resource = CSceneManager::GetInst()->GetScene()->GetResource();
