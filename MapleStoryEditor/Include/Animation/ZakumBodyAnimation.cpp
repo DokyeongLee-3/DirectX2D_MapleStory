@@ -22,6 +22,7 @@ bool CZakumBodyAnimation::Init()
 
 	AddAnimation(TEXT("ZakumNormalIdle.sqc"), ANIMATION_PATH, "ZakumNormalIdle", true, 1.7f);
 	AddAnimation(TEXT("ZakumDestroyIdle.sqc"), ANIMATION_PATH, "ZakumDestroyIdle", true, 1.7f);
+	AddAnimation(TEXT("ZakumSummon.sqc"), ANIMATION_PATH, "ZakumSummon", true, 1.6f);
 
 	return true;
 }

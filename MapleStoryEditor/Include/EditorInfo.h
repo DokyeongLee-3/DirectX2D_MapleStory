@@ -26,7 +26,10 @@ enum class CreateObject_Type
 	LopeTileMapObj,
 	NPCAdobis,
 	ZakumBody,
-	NPCAmon
+	NPCAmon,
+	Puko,
+	Punko,
+	Cuzco
 };
 
 enum class TileEdit_Mode

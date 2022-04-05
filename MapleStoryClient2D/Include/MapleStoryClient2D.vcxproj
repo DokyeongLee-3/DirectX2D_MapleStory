@@ -157,11 +157,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Animation\CuzcoAnimation.cpp" />
     <ClCompile Include="Animation\DeathSideAnimation.cpp" />
     <ClCompile Include="Animation\LowerClassBookAnimation.cpp" />
     <ClCompile Include="Animation\OnionMonsterAnimation.cpp" />
     <ClCompile Include="Animation\PlayerOrb.cpp" />
     <ClCompile Include="Animation\PlayerSkillBodyEffect.cpp" />
+    <ClCompile Include="Animation\PukoAnimation.cpp" />
+    <ClCompile Include="Animation\PunkoAnimation.cpp" />
     <ClCompile Include="Animation\RadishMonsterAnimation.cpp" />
     <ClCompile Include="Animation\SylphideLancerMirrorAnimation.cpp" />
     <ClCompile Include="Animation\VoidPressureAttackSphere.cpp" />
@@ -176,6 +179,7 @@
     <ClCompile Include="Object\BlinkTree.cpp" />
     <ClCompile Include="Object\Butterfly.cpp" />
     <ClCompile Include="Object\ClapWarning.cpp" />
+    <ClCompile Include="Object\Cuzco.cpp" />
     <ClCompile Include="Object\DeathSide.cpp" />
     <ClCompile Include="Object\DeathSideHitEffect.cpp" />
     <ClCompile Include="Object\DoubleHelixBlinkTree.cpp" />
@@ -195,6 +199,8 @@
     <ClCompile Include="Object\PlayerAnimation2D.cpp" />
     <ClCompile Include="Object\PlayerSkillInfo.cpp" />
     <ClCompile Include="Object\Portal.cpp" />
+    <ClCompile Include="Object\Puko.cpp" />
+    <ClCompile Include="Object\Punko.cpp" />
     <ClCompile Include="Object\RadishMonster.cpp" />
     <ClCompile Include="Object\SingleHelixBlinkTree.cpp" />
     <ClCompile Include="Object\Stage.cpp" />
@@ -250,11 +256,14 @@
     <ClCompile Include="Widget\ToolTip.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Animation\CuzcoAnimation.h" />
     <ClInclude Include="Animation\DeathSideAnimation.h" />
     <ClInclude Include="Animation\LowerClassBookAnimation.h" />
     <ClInclude Include="Animation\OnionMonsterAnimation.h" />
     <ClInclude Include="Animation\PlayerOrb.h" />
     <ClInclude Include="Animation\PlayerSkillBodyEffect.h" />
+    <ClInclude Include="Animation\PukoAnimation.h" />
+    <ClInclude Include="Animation\PunkoAnimation.h" />
     <ClInclude Include="Animation\RadishMonsterAnimation.h" />
     <ClInclude Include="Animation\SylphideLancerMirrorAnimation.h" />
     <ClInclude Include="Animation\VoidPressureAttackSphere.h" />
@@ -269,6 +278,7 @@
     <ClInclude Include="Object\BlinkTree.h" />
     <ClInclude Include="Object\Butterfly.h" />
     <ClInclude Include="Object\ClapWarning.h" />
+    <ClInclude Include="Object\Cuzco.h" />
     <ClInclude Include="Object\DeathSide.h" />
     <ClInclude Include="Object\DeathSideHitEffect.h" />
     <ClInclude Include="Object\DoubleHelixBlinkTree.h" />
@@ -288,6 +298,8 @@
     <ClInclude Include="Object\PlayerAnimation2D.h" />
     <ClInclude Include="Object\PlayerSkillInfo.h" />
     <ClInclude Include="Object\Portal.h" />
+    <ClInclude Include="Object\Puko.h" />
+    <ClInclude Include="Object\Punko.h" />
     <ClInclude Include="Object\RadishMonster.h" />
     <ClInclude Include="Object\SingleHelixBlinkTree.h" />
     <ClInclude Include="Object\Stage.h" />

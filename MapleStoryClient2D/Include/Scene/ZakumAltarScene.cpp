@@ -296,6 +296,12 @@ void CZakumAltarScene::CreateMonsterAnimationSequence()
 	m_Scene->GetResource()->LoadSequence2D("ZakumPinkShockWave.sqc");
 
 	m_Scene->GetResource()->LoadSequence2D("NPCAmonIdle.sqc");
+
+	m_Scene->GetResource()->LoadSequence2D("ZakumSummon.sqc");
+	m_Scene->GetResource()->LoadSequence2D("PukoFly.sqc");
+	m_Scene->GetResource()->LoadSequence2D("PunkoFly.sqc");
+	m_Scene->GetResource()->LoadSequence2D("CuzcoFly.sqc");
+
 }
 
 void CZakumAltarScene::CreateSkillAnimationSequence()

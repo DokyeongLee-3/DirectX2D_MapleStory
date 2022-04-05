@@ -20,7 +20,7 @@ bool CZakumFlameAnimation::Init()
 	if (!CAnimationSequence2DInstance::Init())
 		return false;
 
-	AddAnimation(TEXT("ZakumFlame.sqc"), ANIMATION_PATH, "ZakumFlame", true, 0.6f);
+	AddAnimation(TEXT("ZakumFlame.sqc"), ANIMATION_PATH, "ZakumFlame", true, 0.9f);
 
 	return true;
 }

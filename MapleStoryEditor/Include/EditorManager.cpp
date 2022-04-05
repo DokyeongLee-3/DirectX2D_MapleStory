@@ -28,6 +28,9 @@
 #include "Animation/RadishMonsterAnimation.h"
 #include "Animation/ZakumBodyAnimation.h"
 #include "Animation/ZakumHandAnimation.h"
+#include "Animation/PukoAnimation.h"
+#include "Animation/PunkoAnimation.h"
+#include "Animation/CuzcoAnimation.h"
 #include "IMGUIImage.h"
 #include "IMGUIListBox.h"
 #include "ObjectSet.h"
@@ -506,6 +509,27 @@ CGameObject* CEditorManager::CreateObject(CScene* Scene, size_t Type)
 		return Obj;
 	}
 
+	else if (Type == typeid(CPuko).hash_code())
+	{
+		CPuko* Obj = Scene->LoadGameObject<CPuko>();
+
+		return Obj;
+	}
+
+	else if (Type == typeid(CPunko).hash_code())
+	{
+		CPunko* Obj = Scene->LoadGameObject<CPunko>();
+
+		return Obj;
+	}
+
+	else if (Type == typeid(CCuzco).hash_code())
+	{
+		CCuzco* Obj = Scene->LoadGameObject<CCuzco>();
+
+		return Obj;
+	}
+
 	return nullptr;
 }
 
@@ -612,6 +636,21 @@ void CEditorManager::CreateAnimInstance(CSpriteComponent* Sprite, size_t Type)
 	else if (Type == typeid(CZakumHandAnimation).hash_code())
 	{
 		Sprite->LoadAnimationInstance<CZakumHandAnimation>();
+	}
+
+	else if (Type == typeid(CPukoAnimation).hash_code())
+	{
+		Sprite->LoadAnimationInstance<CPukoAnimation>();
+	}
+
+	else if (Type == typeid(CPunkoAnimation).hash_code())
+	{
+		Sprite->LoadAnimationInstance<CPunkoAnimation>();
+	}
+
+	else if (Type == typeid(CCuzcoAnimation).hash_code())
+	{
+		Sprite->LoadAnimationInstance<CCuzcoAnimation>();
 	}
 }
 

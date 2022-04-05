@@ -354,6 +354,24 @@
     <ClCompile Include="Widget\SkillPointWindow.cpp">
       <Filter>03. UI\02. InGame</Filter>
     </ClCompile>
+    <ClCompile Include="Object\Cuzco.cpp">
+      <Filter>02. Object\02. Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\Puko.cpp">
+      <Filter>02. Object\02. Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\Punko.cpp">
+      <Filter>02. Object\02. Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\CuzcoAnimation.cpp">
+      <Filter>05. Animation\02. Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\PukoAnimation.cpp">
+      <Filter>05. Animation\02. Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\PunkoAnimation.cpp">
+      <Filter>05. Animation\02. Monster</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -631,6 +649,24 @@
     </ClInclude>
     <ClInclude Include="Widget\SkillPointWindow.h">
       <Filter>03. UI\02. InGame</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Cuzco.h">
+      <Filter>02. Object\02. Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Puko.h">
+      <Filter>02. Object\02. Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Punko.h">
+      <Filter>02. Object\02. Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation\CuzcoAnimation.h">
+      <Filter>05. Animation\02. Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation\PukoAnimation.h">
+      <Filter>05. Animation\02. Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation\PunkoAnimation.h">
+      <Filter>05. Animation\02. Monster</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -740,16 +740,11 @@ void CZakumBody::StretchArm(int ArmID, float DeltaTime)
 					m_vecArmState[i] = Zakum_ArmState::Idle;
 				}
 
-				for (int i = 0; i < 4; ++i)
-				{
-					char FlameName[256] = {};
-					sprintf_s(FlameName, "Flame%d", i);
-					std::string StrFlameName = FlameName;
-					CZakumFlame* Flame = (CZakumFlame*)m_Scene->FindObject(StrFlameName);
+				std::string StrFlameName = "ZakumFlame";
+				CZakumFlame* Flame = (CZakumFlame*)m_Scene->FindObject(StrFlameName);
 
-					if (Flame)
-						Flame->Destroy();
-				}
+				if (Flame)
+					Flame->Destroy();
 
 				// ´Ã¸° ÆÈ À§Ä¡ µÇµ¹·ÁÁÖ±â?
 			}
@@ -765,17 +760,11 @@ void CZakumBody::StretchArm(int ArmID, float DeltaTime)
 					m_vecArmState[i] = Zakum_ArmState::Idle;
 				}
 
-				for (int i = 0; i < 4; ++i)
-				{
-					char FlameName[256] = {};
-					sprintf_s(FlameName, "Flame%d", i);
-					std::string StrFlameName = FlameName;
-					CZakumFlame* Flame = (CZakumFlame*)m_Scene->FindObject(StrFlameName);
+				std::string StrFlameName = "ZakumFlame";
+				CZakumFlame* Flame = (CZakumFlame*)m_Scene->FindObject(StrFlameName);
 
-					if (Flame)
-						Flame->Destroy();
-
-				}
+				if (Flame)
+					Flame->Destroy();
 
 				// ´Ã¸° ÆÈ À§Ä¡ µÇµ¹·ÁÁÖ±â?
 
@@ -792,16 +781,11 @@ void CZakumBody::StretchArm(int ArmID, float DeltaTime)
 					m_vecArmState[i] = Zakum_ArmState::Idle;
 				}
 
-				for (int i = 0; i < 4; ++i)
-				{
-					char FlameName[256] = {};
-					sprintf_s(FlameName, "Flame%d", i);
-					std::string StrFlameName = FlameName;
-					CZakumFlame* Flame = (CZakumFlame*)m_Scene->FindObject(StrFlameName);
+				std::string StrFlameName = "ZakumFlame";
+				CZakumFlame* Flame = (CZakumFlame*)m_Scene->FindObject(StrFlameName);
 
-					if (Flame)
-						Flame->Destroy();
-				}
+				if (Flame)
+					Flame->Destroy();
 
 				// ´Ã¸° ÆÈ À§Ä¡ µÇµ¹·ÁÁÖ±â?
 
@@ -1035,17 +1019,11 @@ void CZakumBody::PickAndStretchClapHand(float DeltaTime)
 
 			CPlayer2D* Player = (CPlayer2D*)m_Scene->GetPlayerObject();
 
-			for (int i = 0; i < 4; ++i)
-			{
-				char FlameName[256] = {};
-				sprintf_s(FlameName, "Flame%d", i);
-				std::string StrFlameName = FlameName;
-				CZakumFlame* Flame = (CZakumFlame*)m_Scene->FindObject(StrFlameName);
+			std::string StrFlameName = "ZakumFlame";
+			CZakumFlame* Flame = (CZakumFlame*)m_Scene->FindObject(StrFlameName);
 
-				if (Flame)
-					Flame->Destroy();
-
-			}
+			if (Flame)
+				Flame->Destroy();
 
 			m_ZakumState = Zakum_State::Idle;
 			m_ClapCount = 0;
@@ -1602,16 +1580,11 @@ void CZakumBody::ClapReturnArmOriginPos()
 	{
 		CPlayer2D* Player = (CPlayer2D*)m_Scene->GetPlayerObject();
 
-		for (int i = 0; i < 4; ++i)
-		{
-			char FlameName[256] = {};
-			sprintf_s(FlameName, "Flame%d", i);
-			std::string StrFlameName = FlameName;
-			CZakumFlame* Flame = (CZakumFlame*)m_Scene->FindObject(StrFlameName);
+		std::string StrFlameName = "ZakumFlame";
+		CZakumFlame* Flame = (CZakumFlame*)m_Scene->FindObject(StrFlameName);
 
-			if (Flame)
-				Flame->Destroy();
-		}
+		if (Flame)
+			Flame->Destroy();
 
 		m_ZakumState = Zakum_State::Idle;
 		m_ClapCount = 0;
@@ -1902,16 +1875,11 @@ void CZakumBody::SetDamage(float Damage, bool Critical)
 				vecHandSmashLight[i]->SetSmashLightOwner(nullptr);
 			}
 
-			for (int i = 0; i < 4; ++i)
-			{
-				char FlameName[256] = {};
-				sprintf_s(FlameName, "Flame%d", i);
-				std::string StrFlameName = FlameName;
-				CZakumFlame* Flame = (CZakumFlame*)m_Scene->FindObject(StrFlameName);
+			std::string StrFlameName = "ZakumFlame";
+			CZakumFlame* Flame = (CZakumFlame*)m_Scene->FindObject(StrFlameName);
 
-				if (Flame)
-					Flame->Destroy();
-			}
+			if (Flame)
+				Flame->Destroy();
 
 			m_LeftArm1Hand = nullptr;
 			m_LeftArm2Hand = nullptr;
@@ -2426,19 +2394,13 @@ void CZakumBody::SmashReturnArmOriginPos()
 
 		if (m_SmashCount == m_SmashCountLimit)
 		{
-			for (int i = 0; i < 4; ++i)
-			{
-				char FlameName[256] = {};
-				sprintf_s(FlameName, "Flame%d", i);
-				std::string StrFlameName = FlameName;
-				CZakumFlame* Flame = m_Scene->CreateGameObject<CZakumFlame>(StrFlameName);
 
-				if (i != 1)
-					Flame->GetRootComponent()->DeleteChild("Body");
+			std::string StrFlameName = "ZakumFlame";
 
-				Flame->SetWorldPos(260.f + 276.f * i, 205.f, 220.f);
-				Flame->SetID(i);
-			}
+			CZakumFlame* Flame = m_Scene->CreateGameObject<CZakumFlame>(StrFlameName);
+
+			Flame->SetWorldPos(570.f, 205.f, 595.f);
+
 
 			m_SmashCount = 0;
 			m_ZakumState = Zakum_State::Clap;

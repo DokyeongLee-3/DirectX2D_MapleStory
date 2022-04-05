@@ -24,3 +24,6 @@
 #include "Object/NPCAdobis.h"
 #include "Object/NPCAmon.h"
 #include "Object/ZakumBody.h"
+#include "Object/Puko.h"
+#include "Object/Punko.h"
+#include "Object/Cuzco.h"

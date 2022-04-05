@@ -73,6 +73,9 @@ bool CEditorMenu::Init()
 	m_ObjectCombo->AddItem("NPCAdobis");
 	m_ObjectCombo->AddItem("ZakumBody");
 	m_ObjectCombo->AddItem("NPCAmon");
+	m_ObjectCombo->AddItem("PukoMonster");
+	m_ObjectCombo->AddItem("PunkoMonster");
+	m_ObjectCombo->AddItem("CuzcoMonster");
 
 	CIMGUISameLine* Line = AddWidget<CIMGUISameLine>("Line");
 
@@ -221,6 +224,15 @@ void CEditorMenu::ObjectCreateButton()
 		break;
 	case CreateObject_Type::NPCAmon:
 		CSceneManager::GetInst()->GetScene()->CreateGameObject<CNPCAmon>(m_ObjectNameInput->GetTextMultibyte());
+		break;
+	case CreateObject_Type::Puko:
+		CSceneManager::GetInst()->GetScene()->CreateGameObject<CPuko>(m_ObjectNameInput->GetTextMultibyte());
+		break;
+	case CreateObject_Type::Punko:
+		CSceneManager::GetInst()->GetScene()->CreateGameObject<CPunko>(m_ObjectNameInput->GetTextMultibyte());
+		break;
+	case CreateObject_Type::Cuzco:
+		CSceneManager::GetInst()->GetScene()->CreateGameObject<CCuzco>(m_ObjectNameInput->GetTextMultibyte());
 		break;
 	}
 
@@ -587,7 +599,9 @@ void CEditorMenu::MyShowMenuFile()
 					HierarchyWindow->ClearObjectList();
 					HierarchyWindow->GetObjectList()->SetSelectIndex(-1);
 					HierarchyWindow->GetComponentList()->SetSelectIndex(-1);
-					HierarchyWindow->GetSelectObject()->SetScene(nullptr);
+
+					if(HierarchyWindow->GetSelectObject())
+						HierarchyWindow->GetSelectObject()->SetScene(nullptr);
 
 					DatailWindow->ClearSelectObjectSequenceList();
 				}

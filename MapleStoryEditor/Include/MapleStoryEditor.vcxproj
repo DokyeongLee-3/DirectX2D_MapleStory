@@ -159,8 +159,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Animation\CuzcoAnimation.h" />
     <ClInclude Include="Animation\LowerClassBookAnimation.h" />
     <ClInclude Include="Animation\OnionMonsterAnimation.h" />
+    <ClInclude Include="Animation\PukoAnimation.h" />
+    <ClInclude Include="Animation\PunkoAnimation.h" />
     <ClInclude Include="Animation\RadishMonsterAnimation.h" />
     <ClInclude Include="Animation\ZakumBodyAnimation.h" />
     <ClInclude Include="Animation\ZakumFlameAnimation.h" />
@@ -172,6 +175,7 @@
     <ClInclude Include="Object\BlinkTree.h" />
     <ClInclude Include="Object\Butterfly.h" />
     <ClInclude Include="Object\CharacterSelectBackLight.h" />
+    <ClInclude Include="Object\Cuzco.h" />
     <ClInclude Include="Object\DoubleHelixBlinkTree.h" />
     <ClInclude Include="Object\DragObject.h" />
     <ClInclude Include="Object\LampLight.h" />
@@ -189,6 +193,8 @@
     <ClInclude Include="Object\Player2D.h" />
     <ClInclude Include="Object\PlayerSkillSet.h" />
     <ClInclude Include="Object\Portal.h" />
+    <ClInclude Include="Object\Puko.h" />
+    <ClInclude Include="Object\Punko.h" />
     <ClInclude Include="Object\RadishMonster.h" />
     <ClInclude Include="Object\SingleHelixBlinkTree.h" />
     <ClInclude Include="Object\SpriteEditObject.h" />
@@ -206,8 +212,11 @@
     <ClInclude Include="Window\TileMapWindow.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Animation\CuzcoAnimation.cpp" />
     <ClCompile Include="Animation\LowerClassBookAnimation.cpp" />
     <ClCompile Include="Animation\OnionMonsterAnimation.cpp" />
+    <ClCompile Include="Animation\PukoAnimation.cpp" />
+    <ClCompile Include="Animation\PunkoAnimation.cpp" />
     <ClCompile Include="Animation\RadishMonsterAnimation.cpp" />
     <ClCompile Include="Animation\ZakumBodyAnimation.cpp" />
     <ClCompile Include="Animation\ZakumFlameAnimation.cpp" />
@@ -218,6 +227,7 @@
     <ClCompile Include="Object\BlinkTree.cpp" />
     <ClCompile Include="Object\Butterfly.cpp" />
     <ClCompile Include="Object\CharacterSelectBackLight.cpp" />
+    <ClCompile Include="Object\Cuzco.cpp" />
     <ClCompile Include="Object\DoubleHelixBlinkTree.cpp" />
     <ClCompile Include="Object\DragObject.cpp" />
     <ClCompile Include="Object\LampLight.cpp" />
@@ -235,6 +245,8 @@
     <ClCompile Include="Object\Player2D.cpp" />
     <ClCompile Include="Object\PlayerSkillSet.cpp" />
     <ClCompile Include="Object\Portal.cpp" />
+    <ClCompile Include="Object\Puko.cpp" />
+    <ClCompile Include="Object\Punko.cpp" />
     <ClCompile Include="Object\RadishMonster.cpp" />
     <ClCompile Include="Object\SingleHelixBlinkTree.cpp" />
     <ClCompile Include="Object\SpriteEditObject.cpp" />
