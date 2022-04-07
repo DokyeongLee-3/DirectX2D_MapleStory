@@ -6,6 +6,7 @@
 #include "../Scene/SceneManager.h"
 #include "../Device.h"
 #include "MovingTileMapComponent.h"
+#include "ParticleComponent.h"
 
 CSceneComponent::CSceneComponent()	:
 	m_ZOrder(0)
@@ -400,7 +401,8 @@ void CSceneComponent::PrevRender()
 	CCameraComponent* Camera = m_Scene->GetCameraManager()->GetCurrentCamera();
 
 	// Culling으로 최적화하기
-	if (Camera && GetTypeID() != typeid(CMovingTileMapComponent).hash_code())
+	if (Camera && GetTypeID() != typeid(CMovingTileMapComponent).hash_code() &&
+		m_LayerName.find("Particle") == std::string::npos)
 	{
 		Vector3 WorldPos = GetWorldPos();
 		Vector3 Pivot = GetPivot();

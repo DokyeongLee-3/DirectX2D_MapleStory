@@ -38,6 +38,12 @@ protected:
     bool    m_SortDisable;
 
 public:
+    const std::string& GetMeshName()    const
+    {
+        return m_BackMesh->GetName();
+    }
+
+public:
     void EnableEditMode(bool Mode)
     {
         m_EditMode = Mode;

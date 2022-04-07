@@ -28,6 +28,7 @@
 #include "Component/ColliderBox2D.h"
 #include "Component/ColliderCircle.h"
 #include "Component/ColliderPixel.h"
+#include "Component/StaticMeshComponent.h"
 #include "../Component/DragCollider.h"
 
 #include <sstream>
@@ -76,6 +77,8 @@ bool CObjectHierarchy::Init()
 	m_ComponentListWidget->SetPageItemCount(15);
 	m_ComponentListWidget->SetSelectCallback(this, &CObjectHierarchy::SelectComponent);
 
+	CIMGUILabel* Label = AddWidget<CIMGUILabel>("", 250.f, 10.f);
+	Label->SetColor(0, 0, 0, 0);
 
 	m_ObjectDeleteButton = AddWidget<CIMGUIButton>("Delete Object", 100.f, 30.f);
 
@@ -150,9 +153,9 @@ bool CObjectHierarchy::Init()
 	Line = AddWidget<CIMGUISameLine>("Line", 300.f);
 	Line->SetOffsetX(230.f);
 
-	CIMGUILabel* ProfileLabel = AddWidget<CIMGUILabel>("Collision Profile : ", 110.f, 30.f);
+	Label = AddWidget<CIMGUILabel>("Collision Profile : ", 110.f, 30.f);
 	//ProfileLabel->SetColorFloat(0.0f, 0.0f, 150.f, 0.f);
-	ProfileLabel->SetColor(0, 0, 150, 0);
+	Label->SetColor(0, 0, 150, 0);
 
 	Line = AddWidget<CIMGUISameLine>("Line", 300.f);
 
@@ -254,6 +257,86 @@ void CObjectHierarchy::SelectObject(int Index, const char* Item)
 
 			else
 				DetailWindow->ClearSelectObjectSequenceList();
+
+
+			std::string MeshName = RootComp->GetMeshName();
+			std::string MaterialName = RootComp->GetMaterial()->GetTexture()->GetName();
+
+			CMaterial* Material = RootComp->GetMaterial();
+			CTexture* Tex = nullptr;
+
+			if (RootComp->GetAnimationInstance())
+			{
+				AnimationFrameData Data = RootComp->GetAnimationInstance()->GetCurrentAnimation()->GetFrameData(0);
+
+				if (Material->GetTexture())
+					Tex = Material->GetTexture();
+				else
+					Tex = CResourceManager::GetInst()->FindTexture("DefaultUI");
+
+				DetailWindow->SetMaterialImage(Tex);
+				DetailWindow->SetMaterialImageStart(Data.Start);
+				DetailWindow->SetMaterialImageEnd(Data.Start + Data.Size);
+
+				DetailWindow->SetMeshImage("SpriteMeshImage", TEXT("RectMeshImage.png"));
+			}
+
+			else
+			{
+				if (Material)
+				{
+					if (Material->GetTexture())
+						Tex = Material->GetTexture();
+					else
+						Tex = CResourceManager::GetInst()->FindTexture("DefaultUI");
+				}
+
+				else
+				{
+					Tex = CResourceManager::GetInst()->FindTexture("DefaultUI");
+				}
+
+				DetailWindow->SetMaterialImageStart(Vector2(0.f, 0.f));
+
+				unsigned int Width = Tex->GetWidth();
+				unsigned int Height = Tex->GetHeight();
+				DetailWindow->SetMaterialImageEnd(Vector2((float)Width, (float)Height));
+				DetailWindow->SetMaterialImage(Tex);
+				DetailWindow->SetMeshImage("SpriteMeshImage", TEXT("RectMeshImage.png"));
+			}
+
+			DetailWindow->SetMeshName(MeshName);
+			DetailWindow->SetMaterialName(MaterialName);
+		}
+
+		if (m_SelectObject->GetRootComponent()->GetTypeID() == typeid(CTileMapComponent).hash_code())
+		{
+			CTileMapComponent* RootComp = (CTileMapComponent*)m_SelectObject->GetRootComponent();
+
+			std::string MeshName = RootComp->GetMeshName();
+
+			CMaterial* Material = RootComp->GetTileMaterial();
+			std::string MaterialName;
+			
+			if (Material && Material->GetTexture())
+				MaterialName = Material->GetTexture()->GetName();
+			else
+				MaterialName = "NoName";
+
+			DetailWindow->SetMeshName(MeshName);
+			DetailWindow->SetMaterialName(MaterialName);
+			DetailWindow->SetMeshImage("SpriteMeshImage", TEXT("RectMeshImage.png"));
+
+			int TileCountX = RootComp->GetTileCountX();
+			int TileCountY = RootComp->GetTileCountY();
+
+			Vector2 Start = RootComp->GetTile(0)->GetFrameStart();
+			Vector3 TileSize = RootComp->GetTileSize();
+
+
+			DetailWindow->SetMaterialImage(Material->GetTexture());
+			DetailWindow->SetMaterialImageStart(Start);
+			DetailWindow->SetMaterialImageEnd(Start + Vector2(TileSize.x, TileSize.y));
 		}
 	}
 }
@@ -289,6 +372,7 @@ void CObjectHierarchy::SelectComponent(int Index, const char* Item)
 	CEditorManager::GetInst()->GetDetailWindow()->GetScaleYInput()->SetValueFloat(WorldScale.y);
 
 	CTileMapWindow* TileMapWindow = (CTileMapWindow*)CIMGUIManager::GetInst()->FindIMGUIWindow("TileMapWindow");
+	CDetailWindow* DetailWindow = (CDetailWindow*)CIMGUIManager::GetInst()->FindIMGUIWindow("DetailWindow");
 
 	if (TileMapWindow)
 	{
@@ -338,8 +422,6 @@ void CObjectHierarchy::SelectComponent(int Index, const char* Item)
 	}
 
 	m_ObjectLayer->SetText(m_SelectComponent->GetLayerName().c_str());
-
-
 
 
 	/*	int Idx = m_LayerCombo->GetSelectIndex();
@@ -427,6 +509,12 @@ void CObjectHierarchy::DeleteObjectButtonCallback()
 
 	m_ObjectListWidget->SetSelectIndex(-1);
 	m_ComponentListWidget->SetSelectIndex(-1);
+
+	CDetailWindow* DetailWindow = (CDetailWindow*)CIMGUIManager::GetInst()->FindIMGUIWindow("DetailWindow");
+
+	if (DetailWindow)
+		DetailWindow->ClearSelectObjectSequenceList();
+		
 }
 
 void CObjectHierarchy::DeleteComponentButtonCallback()

@@ -21,6 +21,10 @@
 #include "../Widget/DamageFont.h"
 #include "../Widget/BossInfoWindow.h"
 #include "Scene/SceneManager.h"
+#include "Puko.h"
+#include "Punko.h"
+#include "Cuzco.h"
+#include "../Widget/BossWarningText.h"
 
 #include <algorithm>
 
@@ -34,13 +38,14 @@ CZakumBody::CZakumBody() :
 	m_HandMeet(false),
 	m_AliveArmCount(8),
 	m_ReturnClapPosComplete(false),
-	m_CreateClapEffectComplete(false)
+	m_CreateClapEffectComplete(false),
+	m_SummonStart(false)
 {
 	SetTypeID<CZakumBody>();
 
 	m_ZakumState = Zakum_State::Idle;
 
-	m_IdleStateTime = (float)(rand() % 5) + 2.f;
+	m_IdleStateTime = (float)(rand() % 5) + 1.f;
 
 	m_vecUpHandRotUpperBound.resize(8);
 	m_vecAccUpHandRot.resize(8);
@@ -646,6 +651,32 @@ void CZakumBody::Update(float DeltaTime)
 		}
 
 		m_RightArm4Root->AddWorldRotation(Vector3(0.f, 0.f, ZRot));
+	}
+
+	// Puko, Punko, Cuzco 社発呪 社発
+	else if (m_AliveArmCount == 0 && m_ZakumInfo.BodyHP > 0 && !m_SummonStart)
+	{
+		m_Scene->GetResource()->SoundPlay("ZakumSummon");
+
+		CBossWarningText* WarningText = m_Scene->GetViewport()->CreateWidgetWindow<CBossWarningText>("BossWarningText");
+
+		CPuko* Puko = m_Scene->CreateGameObject<CPuko>("Puko");
+		CPunko* Punko = m_Scene->CreateGameObject<CPunko>("Punko");
+		CCuzco* Cuzco = m_Scene->CreateGameObject<CCuzco>("Cuzco");
+
+		CPlayer2D* Player = (CPlayer2D*)m_Scene->GetPlayerObject();
+
+		Vector3 ZakumPos = GetWorldPos();
+
+		Puko->SetWorldPos(ZakumPos.x - 40.f, ZakumPos.y - 50.f, ZakumPos.z - 12.f);
+		Punko->SetWorldPos(ZakumPos.x, ZakumPos.y - 50.f, ZakumPos.z - 12.f);
+		Cuzco->SetWorldPos(ZakumPos.x + 40.f, ZakumPos.y - 50.f, ZakumPos.z - 12.f);
+
+		Puko->SetTarget(Player);
+		Punko->SetTarget(Player);
+		Cuzco->SetTarget(Player);
+
+		m_SummonStart = true;
 	}
 
 }
@@ -2399,7 +2430,7 @@ void CZakumBody::SmashReturnArmOriginPos()
 
 			CZakumFlame* Flame = m_Scene->CreateGameObject<CZakumFlame>(StrFlameName);
 
-			Flame->SetWorldPos(570.f, 205.f, 595.f);
+			Flame->SetWorldPos(570.f, 202.f, 601.f);
 
 
 			m_SmashCount = 0;

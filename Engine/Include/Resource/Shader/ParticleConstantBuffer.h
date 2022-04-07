@@ -35,6 +35,11 @@ public:
 	}
 
 public:
+	void SetGravityFactor(float Factor)
+	{
+		m_BufferData.GravityFactor = Factor;
+	}
+
 	void SetSpawnEnable(unsigned int Enable)
 	{
 		m_BufferData.SpawnEnable = Enable;

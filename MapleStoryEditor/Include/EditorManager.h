@@ -24,6 +24,7 @@ private:
 	class CConfigurationWindow* m_ConfigurationWindow;
 	class CObjectHierarchy* m_ObjectHierarchy;
 	class CTileMapWindow* m_TileMapWindow;
+	class CParticleSystemWindow* m_ParticleWindow;
 	// 마우스로 이전프레임에 드래그하던 Collider
 	class CColliderComponent* m_PrevCollision;
 

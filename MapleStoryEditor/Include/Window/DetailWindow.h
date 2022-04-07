@@ -24,13 +24,27 @@ private:
 
 	class CIMGUIButton* m_FlipButton;
 
-
 	class CIMGUIListBox* m_SelectObjectSequenceList;
+
+	class CIMGUITextInput* m_MeshName;
+	class CIMGUITextInput* m_MaterialName;
+	class CIMGUIImage* m_MeshImage;
+	class CIMGUIImage* m_MaterialImage;
 
 
 public:
 	virtual bool Init();
 	virtual void Update(float DeltaTime);
+
+public:
+	void SetMeshName(const std::string& Name);
+	void SetMaterialName(const std::string& Name);
+	void SetMeshImage(class CTexture* Tex);
+	void SetMeshImage(const std::string& Name, const TCHAR* FileName);
+	void SetMaterialImage(class CTexture* Tex);
+	void SetMaterialImage(const std::string& Name, const TCHAR* FileName);
+	void SetMaterialImageStart(const Vector2 Start);
+	void SetMaterialImageEnd(const Vector2 End);
 
 public:
 	class CIMGUITextInput* GetPosXInput()	const

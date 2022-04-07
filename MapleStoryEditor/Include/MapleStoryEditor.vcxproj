@@ -189,6 +189,7 @@
     <ClInclude Include="Object\NPCAdobis.h" />
     <ClInclude Include="Object\NPCAmon.h" />
     <ClInclude Include="Object\OnionMonster.h" />
+    <ClInclude Include="Object\ParticleObject.h" />
     <ClInclude Include="Object\Pivot.h" />
     <ClInclude Include="Object\Player2D.h" />
     <ClInclude Include="Object\PlayerSkillSet.h" />
@@ -208,6 +209,7 @@
     <ClInclude Include="Window\DetailWindow.h" />
     <ClInclude Include="Window\EditorMenu.h" />
     <ClInclude Include="Window\ObjectHierarchy.h" />
+    <ClInclude Include="Window\ParticleSystemWindow.h" />
     <ClInclude Include="Window\SpriteWindow.h" />
     <ClInclude Include="Window\TileMapWindow.h" />
   </ItemGroup>
@@ -241,6 +243,7 @@
     <ClCompile Include="Object\NPCAdobis.cpp" />
     <ClCompile Include="Object\NPCAmon.cpp" />
     <ClCompile Include="Object\OnionMonster.cpp" />
+    <ClCompile Include="Object\ParticleObject.cpp" />
     <ClCompile Include="Object\Pivot.cpp" />
     <ClCompile Include="Object\Player2D.cpp" />
     <ClCompile Include="Object\PlayerSkillSet.cpp" />
@@ -259,6 +262,7 @@
     <ClCompile Include="Window\DetailWindow.cpp" />
     <ClCompile Include="Window\EditorMenu.cpp" />
     <ClCompile Include="Window\ObjectHierarchy.cpp" />
+    <ClCompile Include="Window\ParticleSystemWindow.cpp" />
     <ClCompile Include="Window\SpriteWindow.cpp" />
     <ClCompile Include="Window\TileMapWindow.cpp" />
   </ItemGroup>

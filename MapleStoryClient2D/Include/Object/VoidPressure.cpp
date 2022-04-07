@@ -195,11 +195,11 @@ void CVoidPressure::CollisionBeginCallback(const CollisionResult& result)
 	m_Body->Enable(false);
 	m_Scene->GetResource()->SoundPlay("VoidPressureHit");
 
-	Vector3 HitEffectPos = Dest->GetWorldPos();
+	Vector3 HitEffectPos = result.Dest->GetWorldPos();
 
 	CVoidPressureHitEffect* HitEffect = m_Scene->CloneFromPrototype<CVoidPressureHitEffect>(
 		"VoidPressureHitEffect", "VoidPressureHitEffect",
-		HitEffectPos);
+		Vector3(HitEffectPos.x, HitEffectPos.y, HitEffectPos.z - 10.f));
 }
 
 void CVoidPressure::CollisionEndCallback(const CollisionResult& result)

@@ -21,6 +21,16 @@ protected:
     class CAnimationSequence2DInstance* m_Animation;
     bool m_Flip;
 
+public:
+    const std::string& GetMeshName()    const
+    {
+        return m_Mesh->GetName();
+    }
+
+    const std::string& GetMaterialName()    const
+    {
+        return m_Material->GetName();
+    }
 
 public:
     bool IsFlip()   const

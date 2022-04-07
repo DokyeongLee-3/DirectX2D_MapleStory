@@ -33,7 +33,7 @@
 #include "Component/ColliderCircle.h"
 #include "../ObjectSet.h"
 #include "DetailWindow.h"
-
+#include "ParticleSystemWindow.h"
 
 CEditorMenu::CEditorMenu()
 {
@@ -76,6 +76,7 @@ bool CEditorMenu::Init()
 	m_ObjectCombo->AddItem("PukoMonster");
 	m_ObjectCombo->AddItem("PunkoMonster");
 	m_ObjectCombo->AddItem("CuzcoMonster");
+	m_ObjectCombo->AddItem("ParticleObject");
 
 	CIMGUISameLine* Line = AddWidget<CIMGUISameLine>("Line");
 
@@ -233,6 +234,14 @@ void CEditorMenu::ObjectCreateButton()
 		break;
 	case CreateObject_Type::Cuzco:
 		CSceneManager::GetInst()->GetScene()->CreateGameObject<CCuzco>(m_ObjectNameInput->GetTextMultibyte());
+		break;
+	case CreateObject_Type::ParticleObject:
+	{
+		CParticleSystemWindow* Window = (CParticleSystemWindow*)CIMGUIManager::GetInst()->FindIMGUIWindow("ParticleSystemWindow");
+
+		if(Window && Window->GetSelectParticle() != Select_ParticleMaterial::None)
+			CSceneManager::GetInst()->GetScene()->CreateGameObject<CParticleObject>(m_ObjectNameInput->GetTextMultibyte());
+	}
 		break;
 	}
 

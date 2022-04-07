@@ -169,15 +169,37 @@ bool CDetailWindow::Init()
 	Label->SetColor(80, 80, 80);
 	Label->SetAlign(0.5f, 0.f);
 
-	m_SelectObjectSequenceList = AddWidget<CIMGUIListBox>("SelectObjectSequenceList", 255.f, 350.f);
+	m_SelectObjectSequenceList = AddWidget<CIMGUIListBox>("SelectObjectSequenceList", 255.f, 130.f);
 	m_SelectObjectSequenceList->SetHideName(true);
-	m_SelectObjectSequenceList->SetPageItemCount(8);
+	m_SelectObjectSequenceList->SetPageItemCount(5);
 	m_SelectObjectSequenceList->SetSelectCallback<CDetailWindow>(this, &CDetailWindow::ChangeSelectObjectAnimation);
 
 	Line = AddWidget<CIMGUISameLine>("Line");
 
-	m_FlipButton = AddWidget<CIMGUIButton>("Flip", 75.f, 150.f);
+	m_FlipButton = AddWidget<CIMGUIButton>("Flip", 75.f, 95.f);
 	m_FlipButton->SetClickCallback(this, &CDetailWindow::FlipComponent);
+
+	Label = AddWidget<CIMGUILabel>("Mesh", 335.f, 25.f);
+	Label->SetColor(80, 80, 80);
+	Label->SetAlign(0.5f, 0.f);
+
+	m_MeshImage = AddWidget<CIMGUIImage>("MeshImage", 75.f, 75.f);
+
+	Line = AddWidget<CIMGUISameLine>("Line");
+
+	m_MeshName = AddWidget<CIMGUITextInput>("MeshName", 75.f, 75.f);
+	m_MeshName->SetHideName(true);
+
+	Label = AddWidget<CIMGUILabel>("Material", 335.f, 25.f);
+	Label->SetColor(80, 80, 80);
+	Label->SetAlign(0.5f, 0.f);
+
+	m_MaterialImage = AddWidget<CIMGUIImage>("MaterialImage", 100.f, 100.f);
+
+	Line = AddWidget<CIMGUISameLine>("Line");
+
+	m_MaterialName = AddWidget<CIMGUITextInput>("MaterialName", 200.f, 40.f);
+	m_MaterialName->SetHideName(true);
 
 	return true;
 }
@@ -185,6 +207,66 @@ bool CDetailWindow::Init()
 void CDetailWindow::Update(float DeltaTime)
 {
 	CIMGUIWindow::Update(DeltaTime);
+}
+
+void CDetailWindow::SetMeshName(const std::string& Name)
+{
+	m_MeshName->SetText(Name.c_str());
+}
+
+void CDetailWindow::SetMaterialName(const std::string& Name)
+{
+	m_MaterialName->SetText(Name.c_str());
+}
+
+void CDetailWindow::SetMeshImage(CTexture* Tex)
+{
+	m_MeshImage->SetTexture(Tex);
+}
+
+void CDetailWindow::SetMeshImage(const std::string& Name, const TCHAR* FileName)
+{
+	CResourceManager::GetInst()->LoadTexture(Name, FileName);
+
+	CTexture* Tex = CResourceManager::GetInst()->FindTexture(Name);
+
+	if (Tex)
+	{
+		m_MeshImage->SetTexture(Tex);
+	}
+}
+
+void CDetailWindow::SetMaterialImage(CTexture* Tex)
+{
+	m_MaterialImage->SetTexture(Tex);
+}
+
+void CDetailWindow::SetMaterialImage(const std::string& Name, const TCHAR* FileName)
+{
+	CResourceManager::GetInst()->LoadTexture(Name, FileName);
+
+	CTexture* Tex = CResourceManager::GetInst()->FindTexture(Name);
+
+	if (Tex)
+	{
+		m_MaterialImage->SetTexture(Tex);
+	}
+}
+
+void CDetailWindow::SetMaterialImageStart(const Vector2 Start)
+{
+	if (m_MaterialImage)
+	{
+		m_MaterialImage->SetImageStart(Start.x, Start.y);
+	}
+}
+
+void CDetailWindow::SetMaterialImageEnd(const Vector2 End)
+{
+	if (m_MaterialImage)
+	{
+		m_MaterialImage->SetImageEnd(End.x, End.y);
+	}
 }
 
 void CDetailWindow::PositionXCallback()

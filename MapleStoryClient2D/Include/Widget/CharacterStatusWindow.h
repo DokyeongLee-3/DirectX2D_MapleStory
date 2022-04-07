@@ -75,7 +75,7 @@ public:
 		if (Percent < m_MPBar->GetPercent())
 		{
 			m_MPBar->SetOnDecreasing(true);
-			m_HPBar->SetOnIncreasing(false);
+			m_MPBar->SetOnIncreasing(false);
 		}
 
 		else

@@ -183,6 +183,7 @@
     <ClCompile Include="Object\DeathSide.cpp" />
     <ClCompile Include="Object\DeathSideHitEffect.cpp" />
     <ClCompile Include="Object\DoubleHelixBlinkTree.cpp" />
+    <ClCompile Include="Object\DustParticle.cpp" />
     <ClCompile Include="Object\FlowingVolcano.cpp" />
     <ClCompile Include="Object\ItemOnion.cpp" />
     <ClCompile Include="Object\ItemRadish.cpp" />
@@ -236,6 +237,7 @@
     <ClCompile Include="Widget\AmonDialog.cpp" />
     <ClCompile Include="Widget\BossInfoWindow.cpp" />
     <ClCompile Include="Widget\BossMatching.cpp" />
+    <ClCompile Include="Widget\BossWarningText.cpp" />
     <ClCompile Include="Widget\CharacterEXP.cpp" />
     <ClCompile Include="Widget\CharacterSelectInfoWidget.cpp" />
     <ClCompile Include="Widget\CharacterStatusWindow.cpp" />
@@ -282,6 +284,7 @@
     <ClInclude Include="Object\DeathSide.h" />
     <ClInclude Include="Object\DeathSideHitEffect.h" />
     <ClInclude Include="Object\DoubleHelixBlinkTree.h" />
+    <ClInclude Include="Object\DustParticle.h" />
     <ClInclude Include="Object\FlowingVolcano.h" />
     <ClInclude Include="Object\ItemOnion.h" />
     <ClInclude Include="Object\ItemRadish.h" />
@@ -336,6 +339,7 @@
     <ClInclude Include="Widget\AmonDialog.h" />
     <ClInclude Include="Widget\BossInfoWindow.h" />
     <ClInclude Include="Widget\BossMatching.h" />
+    <ClInclude Include="Widget\BossWarningText.h" />
     <ClInclude Include="Widget\CharacterEXP.h" />
     <ClInclude Include="Widget\CharacterSelectInfoWidget.h" />
     <ClInclude Include="Widget\CharacterStatusWindow.h" />

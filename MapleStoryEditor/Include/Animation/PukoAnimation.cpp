@@ -22,6 +22,7 @@ bool CPukoAnimation::Init()
 
 	//AddAnimation(TEXT("ZakumSummon.sqc"), ANIMATION_PATH, "ZakumSummon", false);
 	AddAnimation(TEXT("PukoFly.sqc"), ANIMATION_PATH, "PukoFly", true);
+	AddAnimation(TEXT("PukoDie.sqc"), ANIMATION_PATH, "PukoDie", true, 1.2f);
 
 	return true;
 

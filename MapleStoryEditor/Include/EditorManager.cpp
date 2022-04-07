@@ -14,6 +14,7 @@
 #include "Window/EditorMenu.h"
 #include "Window/ObjectHierarchy.h"
 #include "Window/TileMapWindow.h"
+#include "Window/ParticleSystemWindow.h"
 #include "Object/DragObject.h"
 #include "Object/Pivot.h"
 #include "Render/RenderManager.h"
@@ -22,6 +23,7 @@
 #include "Component/StaticMeshComponent.h"
 #include "Component/ColliderCircle.h"
 #include "Component/ColliderPixel.h"
+#include "Component/ParticleComponent.h"
 #include "Animation/AnimationSequence2DInstance.h"
 #include "Animation/OnionMonsterAnimation.h"
 #include "Animation/LowerClassBookAnimation.h"
@@ -113,6 +115,7 @@ bool CEditorManager::Init(HINSTANCE hInst)
 	m_EditorMenu = CIMGUIManager::GetInst()->AddWindow<CEditorMenu>("EditorMenu");
 	m_ObjectHierarchy = CIMGUIManager::GetInst()->AddWindow<CObjectHierarchy>("ObjectHierarchy");
 	m_TileMapWindow = CIMGUIManager::GetInst()->AddWindow<CTileMapWindow>("TileMapWindow");
+	m_ParticleWindow = CIMGUIManager::GetInst()->AddWindow<CParticleSystemWindow>("ParticleSystemWindow");
 
 	CRenderManager::GetInst()->CreateLayer("DragLayer", INT_MAX);
 
@@ -530,6 +533,13 @@ CGameObject* CEditorManager::CreateObject(CScene* Scene, size_t Type)
 		return Obj;
 	}
 
+	else if (Type == typeid(CParticleObject).hash_code())
+	{
+		CParticleObject* Obj = Scene->LoadGameObject<CParticleObject>();
+
+		return Obj;
+	}
+
 	return nullptr;
 }
 
@@ -599,6 +609,13 @@ CComponent* CEditorManager::CreateComponent(CGameObject* Obj, size_t Type)
 		CTileMapComponent* Component = Obj->LoadComponent<CTileMapComponent>();
 
 		Component->EnableEditMode(true);
+
+		return Component;
+	}
+
+	else if (Type == typeid(CParticleComponent).hash_code())
+	{
+		CParticleComponent* Component = Obj->LoadComponent<CParticleComponent>();
 
 		return Component;
 	}

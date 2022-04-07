@@ -29,6 +29,17 @@ public:
     }
 
 public:
+    const std::string& GetMeshName()    const
+    {
+        return m_Mesh->GetName();
+    }
+
+    const std::string& GetMaterialName()    const
+    {
+        return m_Material->GetName();
+    }
+
+public:
     void SetMesh(const std::string& Name);
     void SetMesh(CStaticMesh* Mesh);
     void SetMaterial(CMaterial* Material);

@@ -6,7 +6,8 @@ CIMGUIImage::CIMGUIImage() :
 	m_ImageEnd{},
 	m_Tint{ 1.f, 1.f, 1.f, 1.f },
 	m_BorderColor{},
-	m_HoverCallback(nullptr)
+	m_HoverCallback(nullptr),
+	m_HoverStart(false)
 {
 }
 
@@ -68,24 +69,19 @@ void CIMGUIImage::Render()
 
 		ImGui::Image(m_Texture->GetResource(), m_Size, StartUV, EndUV, m_Tint, m_BorderColor);
 
-		if (ImGui::IsItemHovered())
+		if (ImGui::IsItemHovered() && m_HoverCallback)
 		{
-			//// 커서의 화면좌표
-			//ImVec2 MousePos = ImGui::GetMousePos();
-
-			//// 이미지의 좌상단 화면좌표
-			//ImVec2 RectMin = ImGui::GetItemRectMin();
-			//// 이미지의 우하단 화면좌표
-			//ImVec2 RectMax = ImGui::GetItemRectMax();
-
-			//ImVec2 InImagePos = { 0.f, 0.f };
-			//InImagePos.x = MousePos.x - RectMin.x;
-			//InImagePos.y = MousePos.y - RectMin.y;
-
-			//int a = 3;
+			m_HoverStart = true;
+			m_HoverCallback();
 		}
 
-		if (ImGui::IsItemHovered() && m_HoverCallback)
-			m_HoverCallback();
+		// 지난 프레임까지 Hover됐다가 이번 프레임에 Hover되지 않음
+		else if (m_HoverEndCallback && !ImGui::IsItemHovered() && m_HoverStart)
+		{
+			m_HoverEndCallback();
+			m_HoverStart = false;
+		}
+
+		//m_HoverStart = false;
 	}
 }

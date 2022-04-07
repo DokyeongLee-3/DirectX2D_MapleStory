@@ -21,6 +21,8 @@ protected:
 	ImVec4		m_BorderColor;
 
 	std::function<void()> m_HoverCallback;
+	std::function<void()> m_HoverEndCallback;
+	bool		m_HoverStart;
 
 public:
 	Vector2 GetImageSize()	const
@@ -67,6 +69,12 @@ public:
 		m_BorderColor = ImVec4(r / 255.f, g / 255.f, b / 255.f, 1.f);
 	}
 
+	ImVec4	GetBorderColor()	const
+	{
+		return m_BorderColor;
+	}
+
+
 public:
 	void SetTexture(const std::string& Name, const TCHAR* FileName,
 		const std::string& PathName = TEXTURE_PATH);
@@ -83,6 +91,12 @@ public:
 	void SetHoverCallback(T* Obj, void (T::* func)())
 	{
 		m_HoverCallback = std::bind(func, Obj);
+	}
+
+	template <typename T>
+	void SetHoverEndCallback(T* Obj, void (T::* func)())
+	{
+		m_HoverEndCallback = std::bind(func, Obj);
 	}
 };
 

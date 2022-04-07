@@ -159,7 +159,7 @@ void CDeathSide::CollisionBeginCallback(const CollisionResult& result)
 
 	CDeathSideHitEffect* HitEffect = m_Scene->CloneFromPrototype<CDeathSideHitEffect>(
 		"DeathSideHitEffect", "DeathSideHitEffect",
-		HitEffectPos);
+		Vector3(HitEffectPos.x, HitEffectPos.y, HitEffectPos.z - 10.f));
 }
 
 void CDeathSide::EnableCollider()

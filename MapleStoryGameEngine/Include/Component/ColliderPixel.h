@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ColliderComponent.h"
+#include "../Resource/Mesh/Mesh.h"
 
 class CColliderPixel :
     public CColliderComponent
@@ -22,6 +23,13 @@ protected:
     // 중앙을 중점으로 만들어줘서 사용하고, m_PixelShader에서 사용한다
     CSharedPtr<class CMesh> m_PixelMesh;
     CSharedPtr<class CShader> m_PixelShader;
+
+
+public:
+    const std::string& GetMeshName()    const
+    {
+        return m_Mesh->GetName();
+    }
 
 public:
     PixelInfo GetInfo() const

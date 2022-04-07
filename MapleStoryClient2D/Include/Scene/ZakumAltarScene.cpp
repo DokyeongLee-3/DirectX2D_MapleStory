@@ -170,15 +170,6 @@ void CZakumAltarScene::CreateMaterial()
 
 	Material->SetShader("MovingTileShader");
 	Material->SetRenderState("AlphaBlend");
-
-	// ÀÚÄñÆÈ ³»·ÁÄ¥¶§ Èë¸ÕÁö ÀÌÆåÆ®
-	/*m_Scene->GetResource()->CreateMaterial<CMaterial>("Dust");
-	Material = m_Scene->GetResource()->FindMaterial("Dust");
-
-	Material->AddTexture(0, (int)Buffer_Shader_Type::Pixel, "Dust", TEXT("smokeparticle.png"));
-
-	Material->SetShader("ParticleRenderShader");
-	Material->SetRenderState("AlphaBlend");*/
 }
 
 void CZakumAltarScene::CreateParticle()
@@ -301,6 +292,9 @@ void CZakumAltarScene::CreateMonsterAnimationSequence()
 	m_Scene->GetResource()->LoadSequence2D("PukoFly.sqc");
 	m_Scene->GetResource()->LoadSequence2D("PunkoFly.sqc");
 	m_Scene->GetResource()->LoadSequence2D("CuzcoFly.sqc");
+	m_Scene->GetResource()->LoadSequence2D("PukoDie.sqc");
+	m_Scene->GetResource()->LoadSequence2D("PunkoDie.sqc");
+	m_Scene->GetResource()->LoadSequence2D("CuzcoDie.sqc");
 
 }
 
@@ -356,6 +350,9 @@ void CZakumAltarScene::LoadSound()
 	m_Scene->GetResource()->LoadSound("Effect", false, "Tombstone", "Tombstone.mp3");
 	m_Scene->GetResource()->LoadSound("Effect", false, "DropItem", "DropItem.mp3");
 	m_Scene->GetResource()->LoadSound("Effect", false, "EatItem", "ItemEat.mp3");
+
+	m_Scene->GetResource()->LoadSound("Effect", false, "ZakumSummon", "ZakumSummon.mp3");
+
 
 	m_Scene->GetResource()->LoadSound("UI", false, "TabClick", "TabClick.mp3");
 }

@@ -13,6 +13,8 @@
 #include "../ClientManager.h"
 #include "LoadingThread.h"
 
+#include "../Object/DustParticle.h"
+
 
 CLobbyScene::CLobbyScene()	:
 	m_LoadingThread(nullptr)
@@ -110,6 +112,9 @@ bool CLobbyScene::Init()
 		CClientManager::GetInst()->GetInventoryWindow()->ToolTipWindowSceneChange(NextScene, NewViewport);
 	}
 
+	//CreateMaterial();
+	//CDustParticle* DustParticle = m_Scene->CreateGameObject<CDustParticle>("DustParticle");
+
 	return true;
 }
 
@@ -149,6 +154,34 @@ void CLobbyScene::Update(float DeltaTime)
 
 void CLobbyScene::CreateMaterial()
 {
+	// ÀÚÄñÆÈ ³»·ÁÄ¥¶§ Èë¸ÕÁö ÀÌÆåÆ®
+	m_Scene->GetResource()->CreateMaterial<CMaterial>("Dust");
+	CMaterial* Material = m_Scene->GetResource()->FindMaterial("Dust");
+
+	Material->AddTexture(0, (int)Buffer_Shader_Type::Pixel, "Dust", TEXT("smokeparticle.png"));
+
+	Material->SetShader("ParticleRenderShader");
+	Material->SetRenderState("AlphaBlend");
+
+	m_Scene->GetResource()->CreateParticle("Dust");
+	CParticle* Particle = m_Scene->GetResource()->FindParticle("Dust");
+
+	Particle->SetMaterial(Material);
+	Particle->SetSpawnCountMax(800);
+	Particle->SetLifeTimeMin(1.f);
+	Particle->SetLifeTimeMax(1.5f);
+	Particle->SetScaleMin(Vector3(64.f, 64.f, 1.f));
+	Particle->SetScaleMax(Vector3(64.f, 64.f, 1.f));
+	Particle->SetSpeedMin(50.f);
+	Particle->SetSpeedMax(60.f);
+	Particle->SetMoveDir(Vector3(0.f, 1.f, 0.f));
+	Particle->SetStartMin(Vector3(-40.f, -10.f, 0.f));
+	Particle->SetStartMax(Vector3(40.f, 10.f, 0.f));
+	Particle->SetColorMin(Vector4(1.f, 1.f, 1.f, 0.9f));
+	Particle->SetColorMax(Vector4(1.f, 1.f, 1.f, 0.f));
+	Particle->SetMoveAngle(Vector3(0.f, 0.f, 90.f));
+	//Particle->SetGravity(true);
+	Particle->SetMove(true);
 }
 
 void CLobbyScene::CreateAnimationSequence()

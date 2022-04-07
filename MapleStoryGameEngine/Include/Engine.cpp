@@ -23,9 +23,9 @@ CEngine::CEngine()	:
 	m_Play(true),
 	m_Space(Engine_Space::Space2D),
 	m_MouseState(Mouse_State::Normal),
-	m_ShowCursorCount(0)
-	//m_GlobalCBuffer(nullptr),
-	//m_GlobalAccTime(0.f)
+	m_ShowCursorCount(0),
+	m_GlobalCBuffer(nullptr),
+	m_GlobalAccTime(0.f)
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	//_CrtSetBreakAlloc(280);
@@ -121,12 +121,12 @@ bool CEngine::Init(HINSTANCE hInst, HWND hWnd,
 	if (!CRenderManager::GetInst()->Init())
 		return false;
 
-	/*m_GlobalCBuffer = new CGlobalConstantBuffer;
+	m_GlobalCBuffer = new CGlobalConstantBuffer;
 
 	if (!m_GlobalCBuffer->Init())
 		return false;
 
-	m_GlobalCBuffer->SetResolution(m_RS);*/
+	m_GlobalCBuffer->SetResolution(m_RS);
 
 	// 장면 관리자 초기화
 	if (!CSceneManager::GetInst()->Init())
@@ -137,13 +137,13 @@ bool CEngine::Init(HINSTANCE hInst, HWND hWnd,
 
 
 	// NoiseTexture
-	/*CResourceManager::GetInst()->LoadTexture("GlobalNoiseTexture", TEXT("noise_01.png"));
+	CResourceManager::GetInst()->LoadTexture("GlobalNoiseTexture", TEXT("noise_01.png"));
 
 	m_GlobalNoiseTexture = CResourceManager::GetInst()->FindTexture("GlobalNoiseTexture");
 
 	m_GlobalNoiseTexture->SetShader(100, (int)Buffer_Shader_Type::All, 0);
 
-	m_GlobalCBuffer->SetNoiseResolution((float)m_GlobalNoiseTexture->GetWidth(), (float)m_GlobalNoiseTexture->GetHeight());*/
+	m_GlobalCBuffer->SetNoiseResolution((float)m_GlobalNoiseTexture->GetWidth(), (float)m_GlobalNoiseTexture->GetHeight());
 
 	return true;
 }
@@ -197,6 +197,13 @@ void CEngine::Logic()
 
 	if (!m_Play)
 		DeltaTime = 0.f;
+
+	m_GlobalAccTime += DeltaTime;
+
+	m_GlobalCBuffer->SetDeltaTime(DeltaTime);
+	m_GlobalCBuffer->SetAccTime(m_GlobalAccTime);
+
+	m_GlobalCBuffer->UpdateCBuffer();
 
 	CInput::GetInst()->Update(DeltaTime);
 	CResourceManager::GetInst()->Update();

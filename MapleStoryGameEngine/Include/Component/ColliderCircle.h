@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ColliderComponent.h"
+#include "../Resource/Mesh/Mesh.h"
 
 class CColliderCircle :
     public CColliderComponent
@@ -14,6 +15,13 @@ protected:
 
 protected:
     CircleInfo   m_Info;
+
+
+public:
+    const std::string& GetMeshName()    const
+    {
+        return m_Mesh->GetName();
+    }
 
 public:
     CircleInfo GetInfo() const

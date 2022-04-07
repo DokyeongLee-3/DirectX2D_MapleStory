@@ -16,7 +16,6 @@ CText::CText() :
 	m_2DTarget(nullptr),
 	m_FontSize(20.f),
 	m_Alpha(true),
-	m_Opacity(1.f),
 	m_ShadowEnable(false),
 	m_ShadowColorBrush(nullptr),
 	m_ShadowAlpha(true),
@@ -151,10 +150,10 @@ void CText::SetAlphaEnable(bool AlphaEnable)
 	m_Alpha = AlphaEnable;
 }
 
-void CText::SetOpacity(float Opacity)
-{
-	m_Opacity = Opacity;
-}
+//void CText::SetOpacity(float Opacity)
+//{
+//	m_Opacity = Opacity;
+//}
 
 void CText::SetShadowEnable(bool ShadowEnable)
 {

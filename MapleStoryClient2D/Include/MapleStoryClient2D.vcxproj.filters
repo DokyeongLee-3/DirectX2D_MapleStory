@@ -372,6 +372,12 @@
     <ClCompile Include="Animation\PunkoAnimation.cpp">
       <Filter>05. Animation\02. Monster</Filter>
     </ClCompile>
+    <ClCompile Include="Widget\BossWarningText.cpp">
+      <Filter>03. UI\02. InGame</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\DustParticle.cpp">
+      <Filter>02. Object\05. MapObject\04. ZakumAltar</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -667,6 +673,12 @@
     </ClInclude>
     <ClInclude Include="Animation\PunkoAnimation.h">
       <Filter>05. Animation\02. Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\BossWarningText.h">
+      <Filter>03. UI\02. InGame</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\DustParticle.h">
+      <Filter>02. Object\05. MapObject\04. ZakumAltar</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

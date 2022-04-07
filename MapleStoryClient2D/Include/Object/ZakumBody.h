@@ -123,6 +123,9 @@ private:
     bool m_ReturnClapPosComplete;
     bool m_CreateClapEffectComplete;
 
+    // 팔 다 없어진 상황에서 소환수 소환했는지
+    bool    m_SummonStart;
+
 public:
     virtual void Start();
     virtual bool Init();

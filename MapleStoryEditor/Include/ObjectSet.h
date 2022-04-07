@@ -27,3 +27,4 @@
 #include "Object/Puko.h"
 #include "Object/Punko.h"
 #include "Object/Cuzco.h"
+#include "Object/ParticleObject.h"

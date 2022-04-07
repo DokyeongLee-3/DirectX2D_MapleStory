@@ -30,6 +30,11 @@ private:
 	int										m_SpawnCountMax;
 
 public:
+	void SetGravityFactor(float Factor)
+	{
+		m_CBuffer->SetGravityFactor(Factor);
+	}
+
 	CMaterial* CloneMaterial()	const
 	{
 		return m_Material->Clone();

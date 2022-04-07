@@ -348,7 +348,7 @@ struct	ParticleCBuffer
 	Vector3	MoveDir;				// 이동을 한다면 기준이 될 이동 방향
 	int		Is2D;					// 2D용 파티클인지
 	Vector3	MoveAngle;				// 이동을 한다면 기준이 될 방향으로부터 x, y, z 에 저장된 각도만큼 틀어진 랜덤한 방향을 구한다.
-	float	Empty;
+	float	GravityFactor;
 };
 
 struct ParticleInfo

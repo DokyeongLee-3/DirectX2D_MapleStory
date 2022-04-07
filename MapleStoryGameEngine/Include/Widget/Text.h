@@ -43,7 +43,7 @@ protected:
 	TCHAR* m_FontName;
 	float	m_FontSize;
 	bool	m_Alpha;
-	float	m_Opacity;
+	//float	m_Opacity;
 	Vector4	m_Color;
 
 	// Shadow
@@ -163,7 +163,7 @@ public:
 	void SetColor(const Vector4& Color);
 	void SetColor(unsigned int Color);
 	void SetAlphaEnable(bool AlphaEnable);
-	void SetOpacity(float Opacity);
+	//void SetOpacity(float Opacity);
 
 	void SetShadowEnable(bool ShadowEnable);
 	void SetShadowOffset(const Vector2& Offset);

@@ -85,6 +85,8 @@ void CParticleComponent::SetParticle(CParticle* Particle)
 
 	SAFE_DELETE(m_CBuffer);
 
+	m_vecStructuredBuffer.clear();
+
 	m_Particle->CloneStructuredBuffer(m_vecStructuredBuffer);
 
 	m_UpdateShader = m_Particle->CloneUpdateShader();
@@ -114,6 +116,8 @@ void CParticleComponent::Start()
 bool CParticleComponent::Init()
 {
 	m_Mesh = m_Scene->GetResource()->FindMesh("ParticlePointMesh");
+
+	SetLayerName("Particle");
 
 	return true;
 }
@@ -145,6 +149,8 @@ void CParticleComponent::PostUpdate(float DeltaTime)
 
 	// Update Shader를 동작시킨다.
 	Vector3	StartMin, StartMax;
+
+	Vector3 Current = GetWorldPos();
 
 	StartMin = GetWorldPos() + CBuffer->GetStartMin();
 	StartMax = GetWorldPos() + CBuffer->GetStartMax();
@@ -226,10 +232,52 @@ CParticleComponent* CParticleComponent::Clone()
 
 void CParticleComponent::Save(FILE* File)
 {
+	std::string	ParticleName = m_Particle->GetName();
+
+	int	Length = (int)ParticleName.length();
+
+	fwrite(&Length, sizeof(int), 1, File);
+	fwrite(ParticleName.c_str(), sizeof(char), Length, File);
+
+	fwrite(&m_SpawnTimeMax, sizeof(float), 1, File);
+
+	std::string	MeshName = m_Mesh->GetName();
+
+	Length = (int)MeshName.length();
+
+	fwrite(&Length, sizeof(int), 1, File);
+	fwrite(MeshName.c_str(), sizeof(char), Length, File);
+
+	m_Material->Save(File);
+
 	CSceneComponent::Save(File);
 }
 
 void CParticleComponent::Load(FILE* File)
 {
+	char	ParticleName[256] = {};
+
+	int	Length = 0;
+
+	fread(&Length, sizeof(int), 1, File);
+	fread(ParticleName, sizeof(char), Length, File);
+
+	SetParticle(ParticleName);
+
+	fread(&m_SpawnTimeMax, sizeof(float), 1, File);
+
+	char	MeshName[256] = {};
+
+	Length = 0;
+
+	fread(&Length, sizeof(int), 1, File);
+	fread(MeshName, sizeof(char), Length, File);
+
+	m_Mesh = m_Scene->GetResource()->FindMesh(MeshName);
+
+	m_Material = m_Scene->GetResource()->CreateMaterialEmpty<CMaterial>();
+
+	m_Material->Load(File);
+
 	CSceneComponent::Load(File);
 }

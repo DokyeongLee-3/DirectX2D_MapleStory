@@ -29,11 +29,20 @@ enum class CreateObject_Type
 	NPCAmon,
 	Puko,
 	Punko,
-	Cuzco
+	Cuzco,
+	ParticleObject
 };
 
 enum class TileEdit_Mode
 {
 	Type,
 	Frame
+};
+
+enum class Select_ParticleMaterial
+{
+	None,
+	Rain,
+	Dust,
+	Smoke
 };

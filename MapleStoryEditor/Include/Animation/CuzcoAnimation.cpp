@@ -22,6 +22,7 @@ bool CCuzcoAnimation::Init()
 
 	//AddAnimation(TEXT("ZakumSummon.sqc"), ANIMATION_PATH, "ZakumSummon", false);
 	AddAnimation(TEXT("CuzcoFly.sqc"), ANIMATION_PATH, "CuzcoFly", true);
+	AddAnimation(TEXT("CuzcoDie.sqc"), ANIMATION_PATH, "CuzcoDie", true);
 
 	return true;
 }

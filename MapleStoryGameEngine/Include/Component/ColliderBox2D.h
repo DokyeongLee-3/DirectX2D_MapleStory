@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ColliderComponent.h"
+#include "../Resource/Mesh/Mesh.h"
 
 class CColliderBox2D :
     public CColliderComponent
@@ -14,6 +15,12 @@ protected:
 
 protected:
     Box2DInfo   m_Info;
+
+public:
+    const std::string& GetMeshName()    const
+    {
+        return m_Mesh->GetName();
+    }
 
 public:
     Box2DInfo GetInfo() const

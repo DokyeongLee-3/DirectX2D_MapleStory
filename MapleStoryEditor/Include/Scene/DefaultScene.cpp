@@ -167,6 +167,107 @@ bool CDefaultScene::CreateMaterial()
     Material->SetShader("TileMapShader");
     Material->SetRenderState("AlphaBlend");
 
+
+    // 파티클들의 Material 만들어주기
+    // Rain Particle Material
+    m_Scene->GetResource()->CreateMaterial<CMaterial>("Rain");
+    Material = m_Scene->GetResource()->FindMaterial("Rain");
+
+    Material->AddTexture(0, (int)Buffer_Shader_Type::Pixel, "Rain", TEXT("Particle/HardRain.png"));
+
+    Material->SetShader("ParticleRenderShader");
+    Material->SetRenderState("AlphaBlend");
+
+    // Dust Particle Material
+    m_Scene->GetResource()->CreateMaterial<CMaterial>("Dust");
+    Material = m_Scene->GetResource()->FindMaterial("Dust");
+
+    Material->AddTexture(0, (int)Buffer_Shader_Type::Pixel, "Dust", TEXT("Particle/smokeparticle.png"));
+
+    Material->SetShader("ParticleRenderShader");
+    Material->SetRenderState("AlphaBlend");
+
+    // Smoke Particle Material
+    m_Scene->GetResource()->CreateMaterial<CMaterial>("Smoke");
+    Material = m_Scene->GetResource()->FindMaterial("Smoke");
+
+    Material->AddTexture(0, (int)Buffer_Shader_Type::Pixel, "Smoke", TEXT("Particle/smokeparticle.png"));
+
+    Material->SetShader("ParticleRenderShader");
+    Material->SetRenderState("AlphaBlend");
+
+    // Rain Particle Resource 생성
+    m_Scene->GetResource()->CreateParticle("Rain");
+    CParticle* Particle = m_Scene->GetResource()->FindParticle("Rain");
+
+    Material = m_Scene->GetResource()->FindMaterial("Rain");
+
+    Particle->SetMaterial(Material);
+    Particle->SetSpawnCountMax(2000);
+    Particle->SetLifeTimeMin(4.f);
+    Particle->SetLifeTimeMax(7.f);
+    Particle->SetScaleMin(Vector3(61.f, 105.f, 1.f));
+    Particle->SetScaleMax(Vector3(61.f, 105.f, 1.f));
+    Particle->SetSpeedMin(0.f);
+    Particle->SetSpeedMax(0.f);
+    Particle->SetMoveDir(Vector3(0.f, -1.f, 0.f));
+    Particle->SetStartMin(Vector3(-900.f, -30.f, 0.f));
+    Particle->SetStartMax(Vector3(900.f, 30.f, 0.f));
+    Particle->SetColorMin(Vector4(1.f, 1.f, 1.f, 0.6f));
+    Particle->SetColorMax(Vector4(1.f, 1.f, 1.f, 0.8f));
+    Particle->SetGravityFactor(15.f);
+    //Particle->SetMoveAngle(Vector3(0.f, 0.f, 30.f));
+    Particle->SetGravity(true);
+    Particle->SetMove(true);
+
+    // Dust Particle Resource 생성
+    m_Scene->GetResource()->CreateParticle("Dust");
+    Particle = m_Scene->GetResource()->FindParticle("Dust");
+
+    Material = m_Scene->GetResource()->FindMaterial("Dust");
+
+    Particle->SetMaterial(Material);
+    Particle->SetSpawnCountMax(1000);
+    Particle->SetLifeTimeMin(3.f);
+    Particle->SetLifeTimeMax(3.5f);
+    Particle->SetScaleMin(Vector3(128.f, 128.f, 1.f));
+    Particle->SetScaleMax(Vector3(128.f, 128.f, 1.f));
+    Particle->SetSpeedMin(30.f);
+    Particle->SetSpeedMax(50.f);
+    Particle->SetMoveDir(Vector3(0.f, 1.f, 0.f));
+    Particle->SetStartMin(Vector3(30.f, -10.f, 0.f));
+    Particle->SetStartMax(Vector3(-30.f, 10.f, 0.f));
+    Particle->SetColorMin(Vector4(0.6f, 0.26f, 0.0196f, 1.f));
+    Particle->SetColorMax(Vector4(0.6f, 0.26f, 0.0196f, 0.4f));
+    //Particle->SetGravityFactor(1.f);
+    Particle->SetMoveAngle(Vector3(0.f, 0.f, 120.f));
+    Particle->SetGravity(false);
+    Particle->SetMove(true);
+
+    // Smoke Particle Resource 생성
+    m_Scene->GetResource()->CreateParticle("Smoke");
+    Particle = m_Scene->GetResource()->FindParticle("Smoke");
+
+    Material = m_Scene->GetResource()->FindMaterial("Smoke");
+
+    Particle->SetMaterial(Material);
+    Particle->SetSpawnCountMax(1200);
+    Particle->SetLifeTimeMin(3.f);
+    Particle->SetLifeTimeMax(4.f);
+    Particle->SetScaleMin(Vector3(128.f, 128.f, 1.f));
+    Particle->SetScaleMax(Vector3(128.f, 128.f, 1.f));
+    Particle->SetSpeedMin(70.f);
+    Particle->SetSpeedMax(80.f);
+    Particle->SetMoveDir(Vector3(0.f, 1.f, 0.f));
+    Particle->SetStartMin(Vector3(0.f, -10.f, 0.f));
+    Particle->SetStartMax(Vector3(0.f, 10.f, 0.f));
+    Particle->SetColorMin(Vector4(1.f, 1.f, 1.f, 1.f));
+    Particle->SetColorMax(Vector4(1.f, 1.f, 1.f, 0.4f));
+    //Particle->SetGravityFactor(1.f);
+    Particle->SetMoveAngle(Vector3(0.f, 0.f, 60.f));
+    Particle->SetGravity(false);
+    Particle->SetMove(true);
+
     return true;
 }
 

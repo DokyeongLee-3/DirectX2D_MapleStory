@@ -22,6 +22,7 @@ bool CPunkoAnimation::Init()
 
 	//AddAnimation(TEXT("ZakumSummon.sqc"), ANIMATION_PATH, "ZakumSummon", false);
 	AddAnimation(TEXT("PunkoFly.sqc"), ANIMATION_PATH, "PunkoFly", true);
+	AddAnimation(TEXT("PunkoDie.sqc"), ANIMATION_PATH, "PunkoDie", true);
 
 	return true;
 }
