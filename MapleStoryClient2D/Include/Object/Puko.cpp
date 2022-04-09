@@ -3,6 +3,7 @@
 #include "../Animation/PukoAnimation.h"
 #include "../Widget/DamageFont.h"
 #include "Player2D.h"
+#include "Render/RenderManager.h"
 
 CPuko::CPuko()
 {
@@ -60,6 +61,8 @@ bool CPuko::Init()
 	m_Body->Enable(false);
 
 	m_RotDirVector = Vector3(1.f, 0.f, 0.f);
+
+	m_Body->AddCollisionCallback<CPuko>(Collision_State::Begin, this, &CPuko::CollisionBeginCallback);
 
 	return true;
 }
@@ -137,6 +140,24 @@ void CPuko::Save(FILE* File)
 void CPuko::Load(FILE* File)
 {
 	CMonster::Load(File);
+}
+
+void CPuko::CollisionBeginCallback(const CollisionResult& Result)
+{
+	CGameObject* Object = Result.Dest->GetGameObject();
+
+	if (Object->GetTypeID() == typeid(CPlayer2D).hash_code())
+	{
+		if (CRenderManager::GetInst()->GetStartFadeIn())
+			return;
+
+		((CPlayer2D*)Object)->SetDamage((float)m_MonsterInfo.Attack, false);
+		((CPlayer2D*)Object)->SetOnHit(true);
+	}
+}
+
+void CPuko::CollisionEndCallback(const CollisionResult& Result)
+{
 }
 
 void CPuko::SetDamage(float Damage, bool Critical)

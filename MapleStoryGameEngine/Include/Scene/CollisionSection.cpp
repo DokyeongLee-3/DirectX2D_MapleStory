@@ -61,6 +61,9 @@ void CCollisionSection::Collision(float DeltaTime)
 			CollisionProfile* SrcProfile = Src->GetCollisionProfile();
 			CollisionProfile* DestProfile = Dest->GetCollisionProfile();
 
+			if (!SrcProfile || !DestProfile)
+				return;
+
 			if (SrcProfile && DestProfile)
 			{
 

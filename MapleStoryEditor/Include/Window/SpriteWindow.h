@@ -94,6 +94,9 @@ public:
 	void SetPlayTime(float PlayTime);
 
 	void SetSpriteObject(class CSpriteEditObject* Obj);
+	void SetSpriteFrameTexture(const std::string& Name, const TCHAR* FileName);
+	void SetSpriteFrameImageStart(const Vector2 Start);
+	void SetSpriteFrameImageEnd(const Vector2 End);
 
 public:
 	virtual bool Init();

@@ -253,6 +253,22 @@ void CDetailWindow::SetMaterialImage(const std::string& Name, const TCHAR* FileN
 	}
 }
 
+void CDetailWindow::SetMeshImageStart(const Vector2 Start)
+{
+	if (m_MeshImage)
+	{
+		m_MeshImage->SetImageStart(Start.x, Start.y);
+	}
+}
+
+void CDetailWindow::SetMeshImageEnd(const Vector2 End)
+{
+	if (m_MeshImage)
+	{
+		m_MeshImage->SetImageEnd(End.x, End.y);
+	}
+}
+
 void CDetailWindow::SetMaterialImageStart(const Vector2 Start)
 {
 	if (m_MaterialImage)

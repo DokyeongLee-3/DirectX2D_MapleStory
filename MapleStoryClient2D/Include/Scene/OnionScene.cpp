@@ -362,6 +362,8 @@ void COnionScene::CreateWayToZakumScene()
 
 	WayToZakumScene->SetPlayerObject(m_PlayerObject);
 
+	((CPlayer2D*)m_PlayerObject.Get())->SetTileCollisionEnable(false);
+
 	// 다음 Scene에서의 위치를 Scene의 왼쪽에 위치하도록 잡아주기
 	m_PlayerObject->SetWorldPos(250.f, 200.f, 0.f);
 
@@ -379,6 +381,8 @@ void COnionScene::CreateLobbyScene()
 	CLobbyScene* LobbyScene = CSceneManager::GetInst()->CreateSceneModeEmpty<CLobbyScene>(false);
 
 	LobbyScene->SetPlayerObject(m_PlayerObject);
+
+	((CPlayer2D*)m_PlayerObject.Get())->SetTileCollisionEnable(false);
 
 	// 다음 Scene에서의 위치를 Scene의 왼쪽에 위치하도록 잡아주기
 	Vector3 WorldPos = m_PlayerObject->GetWorldPos();
@@ -408,6 +412,8 @@ void COnionScene::CreateRadishScene()
 	CRadishScene* RadishScene = CSceneManager::GetInst()->CreateSceneModeEmpty<CRadishScene>(false);
 
 	RadishScene->SetPlayerObject(m_PlayerObject);
+
+	((CPlayer2D*)m_PlayerObject.Get())->SetTileCollisionEnable(false);
 
 	// 다음 Scene에서의 위치를 Scene의 왼쪽에 위치하도록 잡아주기
 	Vector3 WorldPos = m_PlayerObject->GetWorldPos();

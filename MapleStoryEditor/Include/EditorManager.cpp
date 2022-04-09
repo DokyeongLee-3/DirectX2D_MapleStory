@@ -64,6 +64,27 @@ void CEditorManager::SetEditMode(EditMode Mode)
 	switch (m_EditMode)
 	{
 	case EditMode::Scene:
+	{
+		if (m_DragObj)
+		{
+			m_DragObj->Destroy();
+			m_DragObj = nullptr;
+		}
+
+		if (m_DragPivot)
+		{
+			m_DragPivot->Destroy();
+			m_DragPivot = nullptr;
+		}
+
+		CSpriteWindow* SpriteWindow = m_SpriteWindow;
+		if (SpriteWindow)
+		{
+			SpriteWindow->SetSpriteFrameTexture("DefaultUI", TEXT("NoImage.png"));
+			SpriteWindow->SetSpriteFrameImageStart(Vector2(0.f, 0.f));
+			SpriteWindow->SetSpriteFrameImageEnd(Vector2(100.f, 100.f));
+		}
+	}
 		break;
 	case EditMode::Sprite:
 		if (m_DragObj)
@@ -81,11 +102,27 @@ void CEditorManager::SetEditMode(EditMode Mode)
 		m_DragPivot->SetPivot(0.5f, 0.5f, 0.f);
 		break;
 	case EditMode::TileMap:
+	{
 		if (m_DragObj)
 		{
 			m_DragObj->Destroy();
 			m_DragObj = nullptr;
 		}
+
+		if (m_DragPivot)
+		{
+			m_DragPivot->Destroy();
+			m_DragPivot = nullptr;
+		}
+
+		CSpriteWindow* SpriteWindow = m_SpriteWindow;
+		if (SpriteWindow)
+		{
+			SpriteWindow->SetSpriteFrameTexture("DefaultUI", TEXT("NoImage.png"));
+			SpriteWindow->SetSpriteFrameImageStart(Vector2(0.f, 0.f));
+			SpriteWindow->SetSpriteFrameImageEnd(Vector2(100.f, 100.f));
+		}
+	}
 		break;
 	}
 

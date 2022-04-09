@@ -500,6 +500,21 @@ void CEditorMenu::SaveScene()
 
 void CEditorMenu::LoadScene()
 {
+	CDetailWindow* DetailWindow = (CDetailWindow*)CIMGUIManager::GetInst()->FindIMGUIWindow("DetailWindow");
+
+	if (DetailWindow)
+	{
+		DetailWindow->SetMeshName("");
+		DetailWindow->SetMeshImage("DefaultUI", TEXT("NoImage.png"));
+		DetailWindow->SetMeshImageStart(Vector2(0.f, 0.f));
+		DetailWindow->SetMeshImageEnd(Vector2(100.f, 100.f));
+
+		DetailWindow->SetMaterialName("");
+		DetailWindow->SetMaterialImage("DefaultUI", TEXT("NoImage.png"));
+		DetailWindow->SetMaterialImageStart(Vector2(0.f, 0.f));
+		DetailWindow->SetMaterialImageEnd(Vector2(100.f, 100.f));
+	}
+
 	TCHAR   FilePath[MAX_PATH] = {};
 
 	OPENFILENAME    OpenFile = {};

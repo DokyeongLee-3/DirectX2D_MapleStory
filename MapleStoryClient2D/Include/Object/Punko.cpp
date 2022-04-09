@@ -3,10 +3,18 @@
 #include "../Animation/PunkoAnimation.h"
 #include "../Widget/DamageFont.h"
 #include "Player2D.h"
+#include "Render/RenderManager.h"
 
 CPunko::CPunko()
 {
 	SetTypeID<CPunko>();
+
+	MonsterInfo Info = CClientManager::GetInst()->FindMonsterInfo("Punko");
+
+	m_MonsterInfo.HP = Info.HP;
+	m_MonsterInfo.HPMax = Info.HPMax;
+	m_MonsterInfo.Level = Info.Level;
+	m_MonsterInfo.Attack = Info.Attack;
 }
 
 CPunko::CPunko(const CPunko& obj)	:
@@ -80,6 +88,8 @@ bool CPunko::Init()
 	m_Sprite->SetLayerName("MovingObjFront");
 
 	m_RotDirVector = Vector3(1.f, 0.f, 0.f);
+
+	m_Body->AddCollisionCallback<CPunko>(Collision_State::Begin, this, &CPunko::CollisionBeginCallback);
 
 	return true;
 }
@@ -157,4 +167,22 @@ void CPunko::Save(FILE* File)
 void CPunko::Load(FILE* File)
 {
 	CMonster::Load(File);
+}
+
+void CPunko::CollisionBeginCallback(const CollisionResult& Result)
+{
+	CGameObject* Object = Result.Dest->GetGameObject();
+
+	if (Object->GetTypeID() == typeid(CPlayer2D).hash_code())
+	{
+		if (CRenderManager::GetInst()->GetStartFadeIn())
+			return;
+
+		((CPlayer2D*)Object)->SetDamage((float)m_MonsterInfo.Attack, false);
+		((CPlayer2D*)Object)->SetOnHit(true);
+	}
+}
+
+void CPunko::CollisionEndCallback(const CollisionResult& Result)
+{
 }

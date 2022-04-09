@@ -542,17 +542,27 @@ void CPlayer2D::MoveLeft(float DeltaTime)
 			}
 		}
 
+		bool Stop = false;
+
+		Vector3 PlayerPos = m_Body->GetWorldPos();
+		Vector3 PlayerScale = m_Body->GetWorldScale();
+
+		if (PlayerPos.x - PlayerScale.x <= 0.f)
+			Stop = true;
+
+
 		Vector3 CamWorldPos = m_Camera->GetWorldPos();
 		m_PrevFrameCameraMove = Vector2(CamWorldPos.x, CamWorldPos.y);
 
 		//m_BodySprite->AddWorldPos(m_BodySprite->GetWorldAxis(AXIS_X) * -180.f * DeltaTime);
-		if(m_OnJump)
+		if(m_OnJump && !Stop)
 			m_RootComponent->AddWorldPos(Vector3(-180.f * DeltaTime, 0.f, 0.f) * m_DirVector);
-		else
+		else if(!Stop)
 			m_RootComponent->AddWorldPos(Vector3(-180.f * DeltaTime, -180.f * DeltaTime, 0.f) * m_DirVector);
 
 		if (!m_OnJump && !m_BodySprite->GetAnimationInstance()->CheckCurrentAnimation("WalkLeft"))
 			m_BodySprite->ChangeAnimation("WalkLeft");
+
 
 		m_Dir = PlayerDir::Left;
 	}
@@ -611,12 +621,27 @@ void CPlayer2D::MoveRight(float DeltaTime)
 			}
 		}
 
+		bool Stop = false;
+		std::vector<CStage*>	vecStage;
+		m_Scene->FindObjectByType<CStage>(vecStage);
+
+		if (vecStage.size() == 1)
+		{
+			CStage* Stage = vecStage[0];
+			Vector3 WorldSize = Stage->GetWorldScale();
+			Vector3 PlayerPos = m_Body->GetWorldPos();
+			Vector3 PlayerScale = m_Body->GetWorldScale();
+
+			if (PlayerPos.x + PlayerScale.x >= WorldSize.x)
+				Stop = true;
+		}
+
 		Vector3 CamWorldPos = m_Camera->GetWorldPos();
 		m_PrevFrameCameraMove = Vector2(CamWorldPos.x, CamWorldPos.y);
 
-		if (m_OnJump)
+		if (m_OnJump && !Stop)
 			m_RootComponent->AddWorldPos(Vector3(180.f * DeltaTime, 0.f, 0.f) * m_DirVector);
-		else
+		else if(!Stop)
 			m_RootComponent->AddWorldPos(Vector3(180.f * DeltaTime, 180.f * DeltaTime, 0.f) * m_DirVector);
 
 		if (!m_OnJump && !m_BodySprite->GetAnimationInstance()->CheckCurrentAnimation("WalkLeft"))
@@ -1698,11 +1723,6 @@ void CPlayer2D::SetDamage(float Damage, bool Critical)
 
 	float HPPercent = (float)m_PlayerInfo.HP / m_PlayerInfo.HPMax;
 
-	CClientManager::GetInst()->GetCharacterStatusWindow()->SetCurrentHP(m_PlayerInfo.HP);
-	CClientManager::GetInst()->GetCharacterStatusWindow()->SetHPPercent(HPPercent);
-
-	PushDamageFont(Damage);
-
 	if (m_PlayerInfo.HP <= 0.f)
 	{
 		m_PlayerInfo.HP = 0;
@@ -1711,6 +1731,11 @@ void CPlayer2D::SetDamage(float Damage, bool Critical)
 		CClientManager::GetInst()->GetCharacterStatusWindow()->SetHPPercent(0);
 		Die();
 	}
+
+	CClientManager::GetInst()->GetCharacterStatusWindow()->SetCurrentHP(m_PlayerInfo.HP);
+	CClientManager::GetInst()->GetCharacterStatusWindow()->SetHPPercent(HPPercent);
+
+	PushDamageFont(Damage);
 }
 
 void CPlayer2D::PushDamageFont(float Damage)

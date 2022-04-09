@@ -68,6 +68,21 @@ void CSpriteWindow::SetSpriteObject(CSpriteEditObject* Obj)
     m_SpriteObject = Obj;
 }
 
+void CSpriteWindow::SetSpriteFrameTexture(const std::string& Name, const TCHAR* FileName)
+{
+    m_SpriteFrame->SetTexture(Name, FileName);
+}
+
+void CSpriteWindow::SetSpriteFrameImageStart(const Vector2 Start)
+{
+    m_SpriteFrame->SetImageStart(Start.x, Start.y);
+}
+
+void CSpriteWindow::SetSpriteFrameImageEnd(const Vector2 End)
+{
+    m_SpriteFrame->SetImageEnd(End.x, End.y);
+}
+
 bool CSpriteWindow::Init()
 {
     CIMGUIWindow::Init();

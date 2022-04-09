@@ -32,6 +32,9 @@ void CParticleObject::Start()
 {
 	CGameObject::Start();
 
+	if (!m_Particle)
+		return;
+
 	CParticleSystemWindow* ParticleWindow = (CParticleSystemWindow*)CIMGUIManager::GetInst()->FindIMGUIWindow("ParticleSystemWindow");
 
 	if (ParticleWindow)
@@ -41,6 +44,7 @@ void CParticleObject::Start()
 		switch (SelectMaterial)
 		{
 		case Select_ParticleMaterial::Rain:
+			
 			SetParticle("Rain");
 			m_Particle->SetSpawnTimeMax(0.08f);
 			break;
@@ -58,9 +62,6 @@ void CParticleObject::Start()
 	if(m_Particle)
 		m_Particle->SetRelativePos(100.f, 500.f, 0.f);
 
-	//m_Particle->SetParticle("Rain");
-
-	//SetLifeSpan(5.f);
 }
 
 CParticleObject* CParticleObject::Clone()

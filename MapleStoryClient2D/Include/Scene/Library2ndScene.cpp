@@ -343,6 +343,8 @@ void CLibrary2ndScene::CreateLobbyScene()
 	if (!m_PlayerObject->IsGravity())
 		m_PlayerObject->SetGravity(true);
 
+	((CPlayer2D*)m_PlayerObject.Get())->SetTileCollisionEnable(false);
+
 	//SAFE_DELETE(m_LoadingThread);
 	m_LoadingThread = CThread::CreateThread<CLoadingThread>("LobbySceneLoadingThread");
 	m_LoadingThread->SetLoadingScene(ThreadLoadingScene::Lobby);
@@ -364,6 +366,7 @@ void CLibrary2ndScene::CreateWayToZakumScene()
 
 	WayToZakumScene->SetPlayerObject(m_PlayerObject);
 
+	((CPlayer2D*)m_PlayerObject.Get())->SetTileCollisionEnable(false);
 
 	// 다음 Scene에서의 위치를 Scene의 왼쪽에 위치하도록 잡아주기
 	Vector3 WorldPos = m_PlayerObject->GetWorldPos();

@@ -34,6 +34,8 @@ private:
 	std::vector<SkillPointInfo*>	m_vecSecondGradeSkillPointInfo;
 	std::vector<SkillPointInfo*>	m_vecThirdGradeSkillPointInfo;
 
+	CSharedPtr<CImage>	m_BlankCollider;
+
 	int m_CurrentOpenTabNum;
 
 public:
@@ -52,5 +54,8 @@ public:
 	void LevelUpDeathSideSkill();
 	// 레벨업해서 스킬포인트가 있고, 마스터 안한 스킬 한정으로 스킬레벨 올릴 수 있는 모든 스킬들의 버튼 Enable로 활성화 시켜주기
 	void ActivateAllLevelUpButton();
+
+public:
+	void DragWindow();
 };
 

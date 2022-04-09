@@ -3,10 +3,19 @@
 #include "../Animation/CuzcoAnimation.h"
 #include "Player2D.h"
 #include "../Widget/DamageFont.h"
+#include "Render/RenderManager.h"
 
 CCuzco::CCuzco()
 {
 	SetTypeID<CCuzco>();
+
+	MonsterInfo Info = CClientManager::GetInst()->FindMonsterInfo("Cuzco");
+
+	m_MonsterInfo.HP = Info.HP;
+	m_MonsterInfo.HPMax = Info.HPMax;
+	m_MonsterInfo.Level = Info.Level;
+	m_MonsterInfo.Attack = Info.Attack;
+
 }
 
 CCuzco::CCuzco(const CCuzco& obj)	:
@@ -80,6 +89,8 @@ bool CCuzco::Init()
 	m_Body->Enable(false);
 
 	m_RotDirVector = Vector3(1.f, 0.f, 0.f);
+
+	m_Body->AddCollisionCallback<CCuzco>(Collision_State::Begin, this, &CCuzco::CollisionBeginCallback);
 
 	return true;
 }
@@ -157,4 +168,22 @@ void CCuzco::Save(FILE* File)
 void CCuzco::Load(FILE* File)
 {
 	CMonster::Load(File);
+}
+
+void CCuzco::CollisionBeginCallback(const CollisionResult& Result)
+{
+	CGameObject* Object = Result.Dest->GetGameObject();
+
+	if (Object->GetTypeID() == typeid(CPlayer2D).hash_code())
+	{
+		if (CRenderManager::GetInst()->GetStartFadeIn())
+			return;
+
+		((CPlayer2D*)Object)->SetDamage((float)m_MonsterInfo.Attack, false);
+		((CPlayer2D*)Object)->SetOnHit(true);
+	}
+}
+
+void CCuzco::CollisionEndCallback(const CollisionResult& Result)
+{
 }

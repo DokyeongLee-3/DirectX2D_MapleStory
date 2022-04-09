@@ -391,6 +391,8 @@ void CRadishScene::CreateWayToZakumScene()
 
 	WayToZakumScene->SetPlayerObject(m_PlayerObject);
 
+	((CPlayer2D*)m_PlayerObject.Get())->SetTileCollisionEnable(false);
+
 	((CPlayer2D*)m_PlayerObject.Get())->ReturnIdle(0.f);
 
 	// 다음 Scene에서의 위치를 Scene의 왼쪽에 위치하도록 잡아주기
@@ -415,6 +417,8 @@ void CRadishScene::CreateLobbyScene()
 	// 다음 Scene에서의 위치를 Scene의 왼쪽에 위치하도록 잡아주기
 	Vector3 WorldPos = m_PlayerObject->GetWorldPos();
 	m_PlayerObject->SetWorldPos(1750.f, 320.f, WorldPos.z);
+
+	((CPlayer2D*)m_PlayerObject.Get())->SetTileCollisionEnable(false);
 
 	if (!m_PlayerObject->IsGravity())
 		m_PlayerObject->SetGravity(true);
@@ -442,6 +446,8 @@ void CRadishScene::CreateOnionScene()
 	COnionScene* OnionScene = CSceneManager::GetInst()->CreateSceneModeEmpty<COnionScene>(false);
 
 	OnionScene->SetPlayerObject(m_PlayerObject);
+
+	((CPlayer2D*)m_PlayerObject.Get())->SetTileCollisionEnable(false);
 
 	((CPlayer2D*)m_PlayerObject.Get())->ReturnIdle(0.f);
 

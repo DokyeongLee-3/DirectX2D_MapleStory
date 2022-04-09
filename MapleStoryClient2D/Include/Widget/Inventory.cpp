@@ -417,6 +417,7 @@ void CInventory::ReturnScrollUse()
     {
         //Player->GetScene()->GetResource()->SoundStop("WayToZakumBGM");
         Player->ClearListCollision();
+        Player->SetTileCollisionEnable(false);
         CWayToZakumScene* CurrentMode = (CWayToZakumScene*)Mode;
         CRenderManager::GetInst()->SetStartFadeIn(true);
         CSceneManager::GetInst()->SetFadeInEndCallback<CWayToZakumScene>(CurrentMode, &CWayToZakumScene::CreateLobbyScene);
@@ -427,6 +428,7 @@ void CInventory::ReturnScrollUse()
     {
         //Player->GetScene()->GetResource()->SoundStop("OnionSceneBGM");
         Player->ClearListCollision();
+        Player->SetTileCollisionEnable(false);
         COnionScene* CurrentMode = (COnionScene*)Mode;
         CRenderManager::GetInst()->SetStartFadeIn(true);
         CSceneManager::GetInst()->SetFadeInEndCallback<COnionScene>(CurrentMode, &COnionScene::CreateLobbyScene);
@@ -437,6 +439,7 @@ void CInventory::ReturnScrollUse()
     {
         //Player->GetScene()->GetResource()->SoundStop("OnionSceneBGM");
         Player->ClearListCollision();
+        Player->SetTileCollisionEnable(false);
         CRadishScene* CurrentMode = (CRadishScene*)Mode;
         CRenderManager::GetInst()->SetStartFadeIn(true);
         CSceneManager::GetInst()->SetFadeInEndCallback<CRadishScene>(CurrentMode, &CRadishScene::CreateLobbyScene);
@@ -447,6 +450,7 @@ void CInventory::ReturnScrollUse()
     {
         //Player->GetScene()->GetResource()->SoundStop("FairyAcademyBGM");
         Player->ClearListCollision();
+        Player->SetTileCollisionEnable(false);
         CLibrary2ndScene* CurrentMode = (CLibrary2ndScene*)Mode;
         CRenderManager::GetInst()->SetStartFadeIn(true);
         CSceneManager::GetInst()->SetFadeInEndCallback<CLibrary2ndScene>(CurrentMode, &CLibrary2ndScene::CreateLobbyScene);

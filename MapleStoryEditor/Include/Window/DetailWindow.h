@@ -43,6 +43,8 @@ public:
 	void SetMeshImage(const std::string& Name, const TCHAR* FileName);
 	void SetMaterialImage(class CTexture* Tex);
 	void SetMaterialImage(const std::string& Name, const TCHAR* FileName);
+	void SetMeshImageStart(const Vector2 Start);
+	void SetMeshImageEnd(const Vector2 End);
 	void SetMaterialImageStart(const Vector2 Start);
 	void SetMaterialImageEnd(const Vector2 End);
 

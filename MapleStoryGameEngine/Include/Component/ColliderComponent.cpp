@@ -291,6 +291,7 @@ void CColliderComponent::CheckCollision()
 void CColliderComponent::PrevRender()
 {
 #ifdef _DEBUG
+
 	CSceneComponent::PrevRender();
 
 #endif // _DEBUG

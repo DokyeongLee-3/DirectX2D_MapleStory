@@ -4,6 +4,7 @@
 #include "Widget/Button.h"
 #include "../Object/Player2D.h"
 #include "../Object/PlayerSkillInfo.h"
+#include "Input.h"
 
 CSkillPointWindow::CSkillPointWindow()
 {
@@ -93,6 +94,14 @@ bool CSkillPointWindow::Init()
 	m_Title->SetAlignH(TEXT_ALIGN_H::Center);
 	m_Title->SetFont("Thin");
 	m_Title->SetText(TEXT("루미너스"));
+
+	m_BlankCollider = CreateWidget<CImage>("BlankCollider");
+	m_BlankCollider->SetTexture("BlankCollider", TEXT("UI/BlankCollider.png"));
+	m_BlankCollider->SetPos(10.f, 340.f);
+	m_BlankCollider->SetSize(285.f, 16.f);
+	m_BlankCollider->SetMouseCollisionEnable(true);
+	m_BlankCollider->SetClickCallback(this, &CSkillPointWindow::DragWindow);
+	m_BlankCollider->SetZOrder(5);
 
 	m_SkillPointWindowBack = CreateWidget<CImage>("SkillPointWindowBack");
 	m_SkillPointWindowBack->SetTexture("SkillPointWindowBack", TEXT("UI/Skill/SkillPointWindowBack.png"));
@@ -743,4 +752,21 @@ void CSkillPointWindow::ActivateAllLevelUpButton()
 			m_vecThirdGradeSkillPointInfo[i]->SkillLevelUpButton->ButtonEnable(true);
 		}
 	}
+}
+
+void CSkillPointWindow::DragWindow()
+{
+	int TopMost = m_Viewport->GetTopmostWindowZOrder();
+
+	if (TopMost >= m_ZOrder)
+	{
+		m_Viewport->DecrementAllWindowZOrder();
+		m_ZOrder = TopMost;
+	}
+
+	Vector2 MouseMove = CInput::GetInst()->GetMouseMove();
+
+	m_Pos += MouseMove;
+
+	m_BlankCollider->SetClicked(false);
 }

@@ -46,5 +46,9 @@ public:
     {
         return m_Body;
     }
+
+public:
+    void CollisionBeginCallback(const CollisionResult& Result);
+    void CollisionEndCallback(const CollisionResult& Result);
 };
 
