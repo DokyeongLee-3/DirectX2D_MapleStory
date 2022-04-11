@@ -116,7 +116,7 @@ bool COnionScene::Init()
 
 	if (m_PlayerObject)
 	{
-		m_PlayerObject->SetGravity(true);
+		m_PlayerObject->SetGravity(false);
 		m_PlayerObject->SetTileCollisionEnable(false);
 	}
 
@@ -388,8 +388,8 @@ void COnionScene::CreateLobbyScene()
 	Vector3 WorldPos = m_PlayerObject->GetWorldPos();
 	m_PlayerObject->SetWorldPos(1750.f, 320.f, WorldPos.z);
 	
-	if (!m_PlayerObject->IsGravity())
-		m_PlayerObject->SetGravity(true);
+	//if (!m_PlayerObject->IsGravity())
+	//	m_PlayerObject->SetGravity(true);
 
 	//SAFE_DELETE(m_LoadingThread);
 	m_LoadingThread = CThread::CreateThread<CLoadingThread>("LobbySceneLoadingThread");

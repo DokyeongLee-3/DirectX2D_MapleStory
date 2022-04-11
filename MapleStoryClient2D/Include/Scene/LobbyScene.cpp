@@ -468,7 +468,8 @@ void CLobbyScene::CreateOnionScene()
 
 	// 다음 Scene에서의 위치를 Scene의 왼쪽에 위치하도록 잡아주기
 	Vector3 WorldPos = m_PlayerObject->GetWorldPos();
-	m_PlayerObject->SetWorldPos(170.f, 270.f, WorldPos.z);
+	m_PlayerObject->SetWorldPos(170.f, 275.f, WorldPos.z);
+	((CPlayer2D*)m_PlayerObject.Get())->GetPlayerBody()->ClearFrame();
 
 	m_LoadingThread = CThread::CreateThread<CLoadingThread>("OnionSceneLoadingThread");
 	m_LoadingThread->SetLoadingScene(ThreadLoadingScene::Onion);

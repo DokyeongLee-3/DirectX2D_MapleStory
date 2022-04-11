@@ -20,6 +20,8 @@ CScene::CScene()
 	//m_NavManager->m_Scene = this;
 
 	m_Start = false;
+	// º¯°æ
+	//m_Start = true;
 
 	m_Collision->Init();
 	m_CameraManager->Init();

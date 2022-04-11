@@ -106,6 +106,37 @@ CVoidPressureOrb* CPlayer2D::GetVoidPressureOrb() const
 	return m_VoidPressureOrb;
 }
 
+void CPlayer2D::Start()
+{
+	CGameObject::Start();
+
+	std::vector<CColliderBox2D*> vecTileCollider;
+
+	m_Body->FindMultipleCollisionComponentByObjType<CColliderBox2D, CTileObject>(vecTileCollider);
+
+	size_t Count = vecTileCollider.size();
+
+	if (Count > 0)
+	{
+		for (size_t i = 0; i < Count; ++i)
+		{
+			CTileObject* TileObj = (CTileObject*)vecTileCollider[i]->GetGameObject();
+
+			if (TileObj->IsBottomMostFloor())
+				m_Gravity = false;
+			else
+				m_Gravity = true;
+		}
+	}
+
+	else
+		m_Gravity = true;
+
+	m_GravityAccTime = 0.f;
+	m_OnJump = false;
+	m_TileCollisionEnable = false;
+}
+
 bool CPlayer2D::Init()
 {
 	m_BodySprite = CreateComponent<CSpriteComponent>("PlayerSprite");
@@ -1335,7 +1366,7 @@ void CPlayer2D::CollisionBeginCallback(const CollisionResult& Result)
 	if (PreviousScene && UpComingScene)
 	{
 		// Scene전환중에 이전 Scene에 있는 Object라면 충돌처리 X
-		if (DestObj->GetScene() == PreviousScene && DestObj->GetScene() != UpComingScene)
+		if (DestObj->GetScene() == PreviousScene && UpComingScene != nullptr && DestObj->GetScene() != UpComingScene)
 			return;
 	}
 
@@ -2142,6 +2173,9 @@ void CPlayer2D::GotoNextMap(float DeltaTime)
 		return;
 
 	if (!m_Body->CheckPrevCollisionGameObjectType(typeid(CPortal).hash_code()))
+		return;
+
+	if (CSceneManager::GetInst()->GetNextScene())
 		return;
 
 	if (m_Scene->GetSceneMode()->GetTypeID() == typeid(CLobbyScene).hash_code())

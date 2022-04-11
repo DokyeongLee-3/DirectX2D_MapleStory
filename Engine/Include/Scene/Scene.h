@@ -30,6 +30,11 @@ private:
 
 
 public:
+	bool IsStart()	const
+	{
+		return m_Start;
+	}
+
 	void AddObject(CGameObject* Object)
 	{
 		m_ObjList.push_back(Object);

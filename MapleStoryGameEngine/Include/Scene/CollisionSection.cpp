@@ -44,6 +44,7 @@ void CCollisionSection::Collision(float DeltaTime)
 {
 	size_t	Count = m_vecCollider.size();
 
+
 	if (Count < 2)
 		return;
 
@@ -62,6 +63,12 @@ void CCollisionSection::Collision(float DeltaTime)
 			CollisionProfile* DestProfile = Dest->GetCollisionProfile();
 
 			if (!SrcProfile || !DestProfile)
+			{
+				SrcProfile = Src->GetCollisionProfile();
+				DestProfile = Dest->GetCollisionProfile();
+			}
+
+			if (!SrcProfile || !DestProfile)
 				return;
 
 			if (SrcProfile && DestProfile)
@@ -71,7 +78,9 @@ void CCollisionSection::Collision(float DeltaTime)
 					Collision_Interaction::Ignore ||
 					DestProfile->vecInteraction[(int)SrcProfile->Channel] ==
 					Collision_Interaction::Ignore)
+				{
 					continue;
+				}
 
 				if (Src->Collision(Dest))
 				{
@@ -85,6 +94,19 @@ void CCollisionSection::Collision(float DeltaTime)
 						Src->CallCollisionCallback(Collision_State::Begin);
 						Dest->CallCollisionCallback(Collision_State::Begin);
 					}
+
+					//else if ((Src->GetGameObject()->GetName().find("Player") != std::string::npos &&
+					//	Dest->GetGameObject()->GetName().find("Floor") != std::string::npos))
+					//{
+					//	if (Src->GetGameObject()->IsGravity())
+					//		int a = 3;
+					//}
+					//else if ((Dest->GetGameObject()->GetName().find("Player") != std::string::npos &&
+					//	Src->GetGameObject()->GetName().find("Floor") != std::string::npos))
+					//{
+					//	if(Dest->GetGameObject()->IsGravity())
+					//		int a = 3;
+					//}
 
 					Src->AddCurrentFrameCollision(Dest);
 					Dest->AddCurrentFrameCollision(Src);
