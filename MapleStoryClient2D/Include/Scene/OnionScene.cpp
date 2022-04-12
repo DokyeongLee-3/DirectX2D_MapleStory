@@ -365,7 +365,8 @@ void COnionScene::CreateWayToZakumScene()
 	((CPlayer2D*)m_PlayerObject.Get())->SetTileCollisionEnable(false);
 
 	// 다음 Scene에서의 위치를 Scene의 왼쪽에 위치하도록 잡아주기
-	m_PlayerObject->SetWorldPos(250.f, 200.f, 0.f);
+	Vector3 WorldPos = m_PlayerObject->GetWorldPos();
+	m_PlayerObject->SetWorldPos(250.f, 200.f, WorldPos.z);
 
 	m_LoadingThread = CThread::CreateThread<CLoadingThread>("WayToZakumSceneLoadingThread");
 	m_LoadingThread->SetLoadingScene(ThreadLoadingScene::WayToZakum);

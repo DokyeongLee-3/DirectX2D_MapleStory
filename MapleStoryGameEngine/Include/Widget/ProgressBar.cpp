@@ -171,7 +171,7 @@ void CProgressBar::Update(float DeltaTime)
 		float Goal = m_Percent;
 		float Current = m_ProgressCBuffer->GetPercent();
 
-		if (Goal > 0.f)
+		if (Goal > 1.f)
 			Goal = 1.f;
 
 		if (Current + (DeltaTime / 5.f) >= 1.f)
