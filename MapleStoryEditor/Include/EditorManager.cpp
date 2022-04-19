@@ -130,7 +130,7 @@ void CEditorManager::SetEditMode(EditMode Mode)
 
 bool CEditorManager::Init(HINSTANCE hInst)
 {
-	CEngine::GetInst()->SetPlay(true);
+	//CEngine::GetInst()->SetPlay(true);
 
 	if (!CEngine::GetInst()->Init(hInst, TEXT("MapleStoryEditor"),
 		1280, 720, IDI_ICON2))

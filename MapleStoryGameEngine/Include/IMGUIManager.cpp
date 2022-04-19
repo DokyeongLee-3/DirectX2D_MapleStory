@@ -49,10 +49,6 @@ bool CIMGUIManager::Init(HWND hWnd)
 	AddFont("DefaultBlack", "NotoSansKR-Black.otf", 15.f, true);
 	AddFont("DefaultBold", "NotoSansKR-Bold.otf", 15.f, true);
 
-	/*AddFont("DefaultLarge", "NotoSansKR-Regular.otf", 25.f, true);
-	AddFont("DefaultBlackLarge", "NotoSansKR-Black.otf", 25.f, true);
-	AddFont("DefaultBoldLarge", "NotoSansKR-Bold.otf", 25.f, true);*/
-
 	m_CurrentFont = FindFont("Default");
 
 	return true;

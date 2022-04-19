@@ -29,6 +29,8 @@
 #include "Widget/ToolTip.h"
 #include "PathManager.h"
 
+//#include "MemoryPool/MemoryPoolManager/CMemoryPoolManager.h"
+
 #include <istream>
 #include <fstream>
 #include <sstream>
@@ -37,6 +39,7 @@ DEFINITION_SINGLE(CClientManager)
 
 CClientManager::CClientManager()
 {
+	//MemoryPoolManager = std::make_unique<CMemoryPoolManager>(arena_size);
 }
 
 CClientManager::~CClientManager()

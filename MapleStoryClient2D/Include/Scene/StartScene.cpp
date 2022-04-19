@@ -90,7 +90,6 @@ void CStartScene::CreateNextScene()
 
 	m_LoadingThread = CThread::CreateThread<CLoadingThread>("LobbyLoadingThread");
 	m_LoadingThread->SetLoadingScene(ThreadLoadingScene::Lobby);
-	//m_LoadingThread->SetLoadingScene(ThreadLoadingScene::Main);
 
 	m_LoadingThread->Start();
 }

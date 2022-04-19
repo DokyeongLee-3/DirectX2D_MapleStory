@@ -12,13 +12,6 @@ CIMGUITree::~CIMGUITree()
 
 	for (int i = 0; i < Size; ++i)
 	{
-		/*size_t WidgetSize = m_vecNode[i]->vecWidget.size();
-
-		for (int j = 0; j < WidgetSize; ++j)
-		{
-			SAFE_DELETE(m_vecNode[i]->vecWidget[j]);
-		}*/
-
 		SAFE_DELETE(m_vecNode[i]);
 	}
 }

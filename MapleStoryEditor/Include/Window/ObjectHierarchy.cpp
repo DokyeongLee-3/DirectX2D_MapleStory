@@ -384,8 +384,8 @@ void CObjectHierarchy::SelectComponent(int Index, const char* Item)
 				CSpriteWindow* SpriteWindow = (CSpriteWindow*)CIMGUIManager::GetInst()->FindIMGUIWindow("SpriteWindow");
 
 				CIMGUIRadioButton* Radio = SpriteWindow->GetTileMapEditRadioButton();
-				Radio->SetActive(true);
-				Radio->CallRadioButtonCallback();
+				Radio->SetActive(0, true);
+				Radio->CallRadioButtonCallback(0);
 
 				/*MessageBox(0, TEXT("Please Check Map Edit Mode first"), TEXT("WARNING"), MB_OK);
 				CEngine::GetInst()->Exit();*/

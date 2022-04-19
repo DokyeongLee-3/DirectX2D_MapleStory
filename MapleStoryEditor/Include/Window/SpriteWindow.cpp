@@ -387,9 +387,9 @@ void CSpriteWindow::LoadTextureButton()
 
 void CSpriteWindow::SpriteEditButton()
 {
-    m_SpriteEditRadioButton->SetActive(true);
-    m_SceneEditRadioButton->SetActive(false);
-    m_MapEditRadioButton->SetActive(false);
+    m_SpriteEditRadioButton->SetActive(0, true);
+    m_SceneEditRadioButton->SetActive(0, false);
+    m_MapEditRadioButton->SetActive(0, false);
 
     CEditorManager::GetInst()->SetEditMode(EditMode::Sprite);
 
@@ -401,9 +401,9 @@ void CSpriteWindow::SpriteEditButton()
 
 void CSpriteWindow::MapEditButton()
 {
-    m_SpriteEditRadioButton->SetActive(false);
-    m_SceneEditRadioButton->SetActive(false);
-    m_MapEditRadioButton->SetActive(true);
+    m_SpriteEditRadioButton->SetActive(0, false);
+    m_SceneEditRadioButton->SetActive(0, false);
+    m_MapEditRadioButton->SetActive(0, true);
 
     CEditorManager::GetInst()->SetEditMode(EditMode::TileMap);
 
@@ -423,9 +423,9 @@ void CSpriteWindow::MapEditButton()
 
 void CSpriteWindow::ObjectArrangeButton()
 {
-    m_SpriteEditRadioButton->SetActive(false);
-    m_SceneEditRadioButton->SetActive(true);
-    m_MapEditRadioButton->SetActive(false);
+    m_SpriteEditRadioButton->SetActive(0, false);
+    m_SceneEditRadioButton->SetActive(0, true);
+    m_MapEditRadioButton->SetActive(0, false);
 
     if (m_SpriteObject)
     {

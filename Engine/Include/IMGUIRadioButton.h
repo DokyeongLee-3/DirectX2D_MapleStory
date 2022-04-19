@@ -46,7 +46,7 @@ protected:
     std::vector<bool>       m_vecActive;
 
 public:
-    char* GetRadioButtonLabel(int Index = 0)
+    char* GetRadioButtonLabel(int Index)
     {
         return m_vecRadioData[Index].TextUTF8;
     }
@@ -56,12 +56,12 @@ public:
         m_vecActive.push_back(Active);
     }
 
-    void SetActive(bool Active, int Index = 0)
+    void SetActive(int Index, bool Active)
     {
         m_vecActive[Index] = Active;
     }
 
-    void CallRadioButtonCallback(int Index = 0)
+    void CallRadioButtonCallback(int Index)
     {
         m_vecRadioData[Index].Callback();
     }

@@ -16,7 +16,7 @@ private:
 	// 생성한 Scene이 생성되고나서(Init에서 new로 만드는거)
 	// 실제로 Engine::Run에서 시작됐는지 안됐는지
 	bool		m_Start;
-	bool		m_Play;
+
 	Engine_Space	m_Space;
 	int				m_ShowCursorCount;
 	Mouse_State		m_MouseState;
@@ -49,16 +49,6 @@ public:
 	Engine_Space GetEngineSpace()	const
 	{
 		return m_Space;
-	}
-
-	bool IsPlay()	const
-	{
-		return m_Play;
-	}
-
-	void SetPlay(bool Play)
-	{
-		m_Play = Play;
 	}
 
 	HWND GetWindowHandle()	const

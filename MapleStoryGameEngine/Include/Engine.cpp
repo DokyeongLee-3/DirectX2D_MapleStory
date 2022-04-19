@@ -20,7 +20,6 @@ CEngine::CEngine()	:
 	m_ClearColor{},
 	m_Timer(nullptr),
 	m_Start(false),
-	m_Play(true),
 	m_Space(Engine_Space::Space2D),
 	m_MouseState(Mouse_State::Normal),
 	m_ShowCursorCount(0),
@@ -63,10 +62,10 @@ CEngine::~CEngine()
 
 void CEngine::SetMouseState(Mouse_State State)
 {
-	if (m_MouseWidget[(int)m_MouseState])
-	{
+	//if (m_MouseWidget[(int)m_MouseState])
+	//{
 
-	}
+	//}
 
 	m_MouseState = State;
 }
@@ -195,9 +194,6 @@ void CEngine::Logic()
 
 	float DeltaTime = m_Timer->GetDeltaTime();
 
-	if (!m_Play)
-		DeltaTime = 0.f;
-
 	m_GlobalAccTime += DeltaTime;
 
 	m_GlobalCBuffer->SetDeltaTime(DeltaTime);
@@ -281,13 +277,6 @@ bool CEngine::Render(float DeltaTime)
 	CDevice::GetInst()->RenderStart();
 	CDevice::GetInst()->ClearRenderTarget(m_ClearColor);
 	CDevice::GetInst()->ClearDepthStencil(1.f, 0);
-
-	//CMesh* Mesh = CResourceManager::GetInst()->FindMesh("SpriteMesh");
-	//CShader* Shader = CResourceManager::GetInst()->FindShader("ColorMeshShader");
-
-	//Shader->SetShader();
-
-	//Mesh->Render();
 
 	CRenderManager::GetInst()->Render();
 

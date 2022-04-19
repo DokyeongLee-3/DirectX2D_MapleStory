@@ -1270,10 +1270,6 @@ void CPlayer2D::DeathSide(float DeltaTime)
 	m_Scene->GetResource()->SoundPlay("DeathSideVoice2");
 
 	Vector3 WorldPos = GetRootComponent()->GetWorldPos();
-
-	if (m_Scene->GetSceneMode()->GetTypeID() == typeid(CZakumAltarScene).hash_code())
-		WorldPos.z = 215.f;
-
 	CDeathSide* DeathSide = m_Scene->CreateGameObject<CDeathSide>("DeathSide");
 	DeathSide->SetAllSceneComponentsLayer("MovingObjFront");
 	DeathSide->SetWorldPos(WorldPos.x, WorldPos.y, WorldPos.z - 10.f);
@@ -1283,6 +1279,9 @@ void CPlayer2D::DeathSide(float DeltaTime)
 	m_PlayerOrb->SetFadeApply(false);
 
 	SkillInfo->Active = true;
+
+	if (m_Scene->GetSceneMode()->GetTypeID() == typeid(CZakumAltarScene).hash_code())
+		WorldPos.z = 215.f;
 }
 
 void CPlayer2D::UseNum1QuickSlotItem(float DeltaTime)
