@@ -2,6 +2,7 @@
 
 #include "../Ref.h"
 
+
 class CSceneMode :
     public CRef
 {

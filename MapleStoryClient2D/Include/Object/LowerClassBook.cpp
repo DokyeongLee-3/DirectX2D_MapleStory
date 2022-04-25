@@ -372,3 +372,34 @@ void CLowerClassBook::CollisionEndCallback(const CollisionResult& Result)
 {
 }
 
+void CLowerClassBook::ReturnMemory(void* Mem)
+{
+	if (m_InPool)
+	{
+		ResetInfo();
+		CClientManager::GetInst()->GetLowerClassBookPoolManager()->ReturnMemory((CLowerClassBook*)this);
+	}
+
+	else
+	{
+		delete this;
+		return;
+	}
+}
+
+void CLowerClassBook::ResetInfo()
+{
+	CGameObject::ResetInfo();
+
+	MonsterInfo Info = CClientManager::GetInst()->FindMonsterInfo("LowerClassBookMonster");
+
+	m_TileCollisionEnable = true;
+	m_MonsterInfo.HP = Info.HP;
+	m_MonsterInfo.HPMax = Info.HPMax;
+	m_MonsterInfo.Level = Info.Level;
+	m_MonsterInfo.Attack = Info.Attack;
+
+	m_FiniteStateTimeTable[(int)Monster_State::Idle] = (float)(rand() % 5) + 1.f;
+	m_FiniteStateTimeTable[(int)Monster_State::Move] = (float)(rand() % 4) + 1.f;
+}
+

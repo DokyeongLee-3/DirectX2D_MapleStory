@@ -33,6 +33,8 @@ COnionScene::~COnionScene()
 		Player->SetVoidPressure(nullptr);
 		Player->SetVoidPressureOrb(nullptr);
 	}
+
+	CClientManager::GetInst()->GetOnionMonsterPoolManager()->ClearAndReAllocPool();
 }
 
 void COnionScene::PushOnionMonster(COnionMonster* Monster)
@@ -53,6 +55,8 @@ CLoadingThread* COnionScene::GetLoadingThread() const
 void COnionScene::Start()
 {
 	CSceneMode::Start();
+
+	CClientManager::GetInst()->GetStaticMapObjectPoolManager()->ClearAndReAllocPool();
 
 	if (m_PlayerObject)
 	{

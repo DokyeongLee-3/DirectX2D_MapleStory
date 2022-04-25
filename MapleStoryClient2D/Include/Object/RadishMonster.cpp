@@ -452,4 +452,35 @@ void CRadishMonster::CollisionEndCallback(const CollisionResult& Result)
 {
 }
 
+void CRadishMonster::ReturnMemory(void* Mem)
+{
+	if (m_InPool)
+	{
+		ResetInfo();
+		CClientManager::GetInst()->GetRadishMonsterPoolManager()->ReturnMemory((CRadishMonster*)this);
+	}
+
+	else
+	{
+		delete this;
+		return;
+	}
+}
+
+void CRadishMonster::ResetInfo()
+{
+	CGameObject::ResetInfo();
+
+	MonsterInfo Info = CClientManager::GetInst()->FindMonsterInfo("RadishMonster");
+
+	m_TileCollisionEnable = true;
+	m_MonsterInfo.HP = Info.HP;
+	m_MonsterInfo.HPMax = Info.HPMax;
+	m_MonsterInfo.Level = Info.Level;
+	m_MonsterInfo.Attack = Info.Attack;
+
+	m_FiniteStateTimeTable[(int)Monster_State::Idle] = (float)(rand() % 5) + 1.f;
+	m_FiniteStateTimeTable[(int)Monster_State::Move] = (float)(rand() % 4) + 1.f;
+}
+
 

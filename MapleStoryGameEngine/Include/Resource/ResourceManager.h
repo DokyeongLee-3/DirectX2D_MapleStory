@@ -9,6 +9,8 @@
 #include "Font/FontManager.h"
 #include "Particle/ParticleManager.h"
 
+#include <memory>
+
 class CResourceManager
 {
 private:

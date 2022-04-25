@@ -4,13 +4,12 @@
 #include "../Resource/Mesh/SpriteMesh.h"
 #include "../Resource/Material/Material.h"
 
-
 class CSpriteComponent :
     public CSceneComponent
 {
     friend class CGameObject;
 
-protected:
+public:
     CSpriteComponent();
     CSpriteComponent(const CSpriteComponent& com);
     virtual ~CSpriteComponent();

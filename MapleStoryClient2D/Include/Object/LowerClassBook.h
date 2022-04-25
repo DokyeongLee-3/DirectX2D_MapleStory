@@ -10,7 +10,7 @@ class CLowerClassBook :
 {
     friend class CScene;
 
-protected:
+public:
     CLowerClassBook();
     CLowerClassBook(const CLowerClassBook& obj);
     virtual ~CLowerClassBook();
@@ -59,5 +59,8 @@ public:
     void CollisionBeginCallback(const CollisionResult& Result);
     void CollisionEndCallback(const CollisionResult& Result);
 
+public:
+    virtual void ReturnMemory(void* Mem);
+    virtual void ResetInfo();
 };
 

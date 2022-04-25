@@ -433,6 +433,18 @@ bool CGameObject::EdgeTileCheck(CTileMapComponent* TileComponent, const Vector3&
 	return false;
 }
 
+void CGameObject::ResetInfo()
+{
+	CRef::ResetInfo();
+	m_Scene = nullptr; 
+	m_Parent = nullptr;
+	m_LifeSpan = 0.f;
+	m_Gravity = false;
+	m_GravityFactor = 3700.f;
+	m_GravityAccTime = 0.f;
+	m_TileCollisionEnable = false;
+}
+
 //void CGameObject::Move(const Vector3& EndPos)
 //{
 //	size_t	Size = m_vecObjectComponent.size();

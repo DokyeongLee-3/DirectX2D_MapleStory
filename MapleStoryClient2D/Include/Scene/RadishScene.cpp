@@ -34,6 +34,8 @@ CRadishScene::~CRadishScene()
 		Player->SetVoidPressure(nullptr);
 		Player->SetVoidPressureOrb(nullptr);
 	}
+
+	CClientManager::GetInst()->GetRadishMonsterPoolManager()->ClearAndReAllocPool();
 }
 
 void CRadishScene::PushRadishMonster(CRadishMonster* Monster)
@@ -54,6 +56,8 @@ CLoadingThread* CRadishScene::GetLoadingThread() const
 void CRadishScene::Start()
 {
 	CSceneMode::Start();
+
+	CClientManager::GetInst()->GetStaticMapObjectPoolManager()->ClearAndReAllocPool();
 
 	if (m_PlayerObject)
 	{

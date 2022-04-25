@@ -29,7 +29,7 @@
 #include "Widget/ToolTip.h"
 #include "PathManager.h"
 
-//#include "MemoryPool/MemoryPoolManager/CMemoryPoolManager.h"
+int GlobalFrameCount = 1;
 
 #include <istream>
 #include <fstream>
@@ -37,14 +37,24 @@
 
 DEFINITION_SINGLE(CClientManager)
 
-CClientManager::CClientManager()
+CClientManager::CClientManager()	:
+	m_StaticMapObjectPoolManager(nullptr),
+	m_OnionMonsterPoolManager(nullptr),
+	m_RadishMonsterPoolManager(nullptr),
+	m_LowerClassBookPoolManager(nullptr)
 {
-	//MemoryPoolManager = std::make_unique<CMemoryPoolManager>(arena_size);
 }
 
 CClientManager::~CClientManager()
 {
 	CEngine::DestroyInst();
+
+	outFile.close();
+
+	SAFE_DELETE(m_StaticMapObjectPoolManager);
+	SAFE_DELETE(m_OnionMonsterPoolManager);
+	SAFE_DELETE(m_RadishMonsterPoolManager);
+	SAFE_DELETE(m_LowerClassBookPoolManager);
 }
 
 bool CClientManager::Init(HINSTANCE hInst)
@@ -78,12 +88,6 @@ bool CClientManager::Init(HINSTANCE hInst)
 	CInput::GetInst()->SetKeyCallback<CClientManager>("TurnOffUIWindow", Key_State::KeyState_Down, this, &CClientManager::TurnOffWindow);
 
 	//CInput::GetInst()->CreateKey("MovePoint", VK_RBUTTON);
-
-
-
-
-
-
 
 	CResourceManager::GetInst()->CreateSoundChannelGroup("UI");
 	CResourceManager::GetInst()->CreateSoundChannelGroup("BGM");
@@ -230,6 +234,19 @@ bool CClientManager::Init(HINSTANCE hInst)
 
 	file.close(); //파일 입출력 완료 후 닫아준다.
 
+	char Path[MAX_PATH] = {};
+	Info = CPathManager::GetInst()->FindPath(ROOT_PATH);
+	strcpy_s(Path, Info->PathMultibyte);
+
+	strcat_s(Path, "test.txt");
+
+	outFile.open(Path);
+
+	m_StaticMapObjectPoolManager = new CObjectPool<CStaticMapObj>(40);
+	m_OnionMonsterPoolManager = new CObjectPool<COnionMonster>(20);
+	m_RadishMonsterPoolManager = new CObjectPool<CRadishMonster>(20);
+	m_LowerClassBookPoolManager = new CObjectPool<CLowerClassBook>(20);
+
 	return true;
 }
 
@@ -240,6 +257,29 @@ void CClientManager::CreateStartSceneMode()
 
 int CClientManager::Run()
 {
+	char FPSStr[256] = {};
+
+	float FPS = CEngine::GetInst()->GetFPS();
+
+	sprintf_s(FPSStr, "%f\n", FPS);
+
+	if (outFile.is_open())
+	{
+		if (GlobalFrameCount == 1)
+		{
+			outFile << "x" << " " << "y\n";
+		}
+
+		std::stringstream ss;
+
+		ss << GlobalFrameCount;
+
+		std::string StrFrameCount = ss.str();
+
+		outFile << StrFrameCount << " " << FPSStr;
+		++GlobalFrameCount;
+	}
+
 	return CEngine::GetInst()->Run();
 }
 
@@ -270,14 +310,38 @@ CGameObject* CClientManager::CreateObject(CScene* Scene, size_t Type)
 
 	else if (Type == typeid(CRadishMonster).hash_code())
 	{
+
+#ifdef USE_OBJECT_POOL
+
+		CRadishMonster* Obj = m_RadishMonsterPoolManager->GetMemory();
+
+		Obj->SetInPool(true);
+
+		Scene->LoadGameObject<CRadishMonster>(Obj);
+
+#else
 		CRadishMonster* Obj = Scene->LoadGameObject<CRadishMonster>();
+
+#endif
 
 		return Obj;
 	}
 
 	else if (Type == typeid(COnionMonster).hash_code())
 	{
+
+#ifdef USE_OBJECT_POOL
+
+		COnionMonster* Obj = m_OnionMonsterPoolManager->GetMemory();
+
+		Obj->SetInPool(true);
+
+		Scene->LoadGameObject<COnionMonster>(Obj);
+
+#else
 		COnionMonster* Obj = Scene->LoadGameObject<COnionMonster>();
+
+#endif
 
 		return Obj;
 	}
@@ -327,7 +391,18 @@ CGameObject* CClientManager::CreateObject(CScene* Scene, size_t Type)
 
 	else if (Type == typeid(CLowerClassBook).hash_code())
 	{
+#ifdef USE_OBJECT_POOL
+
+		CLowerClassBook* Obj = m_LowerClassBookPoolManager->GetMemory();
+
+		Obj->SetInPool(true);
+
+		Scene->LoadGameObject<CLowerClassBook>(Obj);
+
+#else
 		CLowerClassBook* Obj = Scene->LoadGameObject<CLowerClassBook>();
+
+#endif
 
 		return Obj;
 	}
@@ -339,24 +414,22 @@ CGameObject* CClientManager::CreateObject(CScene* Scene, size_t Type)
 		return Obj;
 	}
 
-	//else if (Type == typeid(CLibrary2ndLampLight).hash_code())
-	//{
-	//	CLibrary2ndLampLight* Obj = Scene->LoadGameObject<CLibrary2ndLampLight>();
-
-	//	return Obj;
-	//}
-
-	//else if (Type == typeid(CLibrary2ndButterfly).hash_code())
-	//{
-	//	CLibrary2ndButterfly* Obj = Scene->LoadGameObject<CLibrary2ndButterfly>();
-
-	//	return Obj;
-	//}
-
 	else if (Type == typeid(CStaticMapObj).hash_code())
 	{
-		CStaticMapObj* Obj = Scene->LoadGameObject<CStaticMapObj>();
+#ifdef USE_OBJECT_POOL
 
+		CStaticMapObj* Obj = m_StaticMapObjectPoolManager->GetMemory();
+
+		Obj->SetInPool(true);
+
+		Scene->LoadGameObject<CStaticMapObj>(Obj);
+
+#else
+
+	CStaticMapObj* Obj = Scene->LoadGameObject<CStaticMapObj>();
+
+#endif
+		
 		return Obj;
 	}
 

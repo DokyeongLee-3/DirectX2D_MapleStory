@@ -79,6 +79,9 @@
     <Filter Include="02. Object\08. DropItem">
       <UniqueIdentifier>{d4054e55-79ba-4925-b78a-8fdfa730744d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. ObjectPool">
+      <UniqueIdentifier>{086d58e8-fec8-4c6b-a1ea-694e04844c8b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -679,6 +682,9 @@
     </ClInclude>
     <ClInclude Include="Object\DustParticle.h">
       <Filter>02. Object\05. MapObject\04. ZakumAltar</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectPool\objectPool.h">
+      <Filter>06. ObjectPool</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

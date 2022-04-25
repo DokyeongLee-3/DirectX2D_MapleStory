@@ -10,7 +10,7 @@ class COnionMonster :
 {
     friend class CScene;
 
-protected:
+public:
     COnionMonster();
     COnionMonster(const COnionMonster& obj);
     virtual ~COnionMonster();
@@ -55,5 +55,9 @@ public:
 public:
     void CollisionBeginCallback(const CollisionResult& Result);
     void CollisionEndCallback(const CollisionResult& Result);
+
+public:
+    virtual void ReturnMemory(void* Mem);
+    virtual void ResetInfo();
 };
 

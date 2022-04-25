@@ -364,6 +364,37 @@ void COnionMonster::CollisionEndCallback(const CollisionResult& Result)
 {
 }
 
+void COnionMonster::ReturnMemory(void* Mem)
+{
+	if (m_InPool)
+	{
+		ResetInfo();
+		CClientManager::GetInst()->GetOnionMonsterPoolManager()->ReturnMemory((COnionMonster*)this);
+	}
+
+	else
+	{
+		delete this;
+		return;
+	}
+}
+
+void COnionMonster::ResetInfo()
+{
+	CGameObject::ResetInfo();
+
+	MonsterInfo Info = CClientManager::GetInst()->FindMonsterInfo("OnionMonster");
+
+	m_TileCollisionEnable = true;
+	m_MonsterInfo.HP = Info.HP;
+	m_MonsterInfo.HPMax = Info.HPMax;
+	m_MonsterInfo.Level = Info.Level;
+	m_MonsterInfo.Attack = Info.Attack;
+
+	m_FiniteStateTimeTable[(int)Monster_State::Idle] = (float)(rand() % 5) + 1.f;
+	m_FiniteStateTimeTable[(int)Monster_State::Move] = (float)(rand() % 4) + 1.f;
+}
+
 void COnionMonster::Save(FILE* File)
 {
 	CMonster::Save(File);

@@ -33,6 +33,8 @@ CLibrary2ndScene::~CLibrary2ndScene()
 		Player->SetVoidPressure(nullptr);
 		Player->SetVoidPressureOrb(nullptr);
 	}
+
+	CClientManager::GetInst()->GetLowerClassBookPoolManager()->ClearAndReAllocPool();
 }
 
 void CLibrary2ndScene::PushLowerClassBook(CLowerClassBook* Book)
@@ -48,6 +50,8 @@ void CLibrary2ndScene::SetStageObject(CStage* Stage)
 void CLibrary2ndScene::Start()
 {
 	CSceneMode::Start();
+
+	CClientManager::GetInst()->GetStaticMapObjectPoolManager()->ClearAndReAllocPool();
 
 	if (m_PlayerObject)
 	{

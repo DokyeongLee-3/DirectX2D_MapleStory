@@ -14,13 +14,24 @@ protected:
 	bool			m_Enable;
 	bool			m_Active;
 	size_t			m_TypeID;
-
+	bool			m_InPool;
 
 public:
 	virtual void Save(FILE* File);
 	virtual void Load(FILE* File);
 
+
 public:
+	bool IsInPool()	const
+	{
+		return m_InPool;
+	}
+
+	void SetInPool(bool InPool)
+	{
+		m_InPool = InPool;
+	}
+
 	void Enable(bool bEnable)
 	{
 		m_Enable = bEnable;
@@ -57,7 +68,14 @@ public:
 
 		if (m_RefCount <= 0)
 		{
-			delete	this;
+			if (m_InPool)
+			{
+				ReturnMemory(this);
+			}
+
+			else
+				delete	this;
+
 			return 0;
 		}
 
@@ -90,5 +108,8 @@ public:
 	{
 		return m_TypeID;
 	}
+
+	virtual void ReturnMemory(void* Mem);
+	virtual void ResetInfo();
 };
 

@@ -1,7 +1,10 @@
 
 #include "ResourceManager.h"
+#include "../Component/SpriteComponent.h"
 
 DEFINITION_SINGLE(CResourceManager)
+
+#define arena_size 50000
 
 CResourceManager::CResourceManager() :
 	m_MeshManager(nullptr),

@@ -45,6 +45,8 @@ void CLobbyScene::Start()
 {
 	CSceneMode::Start();
 
+	CClientManager::GetInst()->GetStaticMapObjectPoolManager()->ClearAndReAllocPool();
+
 	if (m_PlayerObject)
 	{
 		CWidgetWindow* Window = ((CPlayer2D*)m_PlayerObject.Get())->GetDamageWidgetComponent()->GetWidgetWindow();

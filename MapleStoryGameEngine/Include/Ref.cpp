@@ -1,10 +1,13 @@
+
 #include "Ref.h"
+#include "Resource/ResourceManager.h"
 
 CRef::CRef() :
 	m_RefCount(0),
 	m_Enable(true),
 	m_Active(true),
-	m_TypeID(0)
+	m_TypeID(0),
+	m_InPool(false)
 {
 }
 
@@ -36,5 +39,18 @@ void CRef::Load(FILE* File)
 	fread(&m_Enable, sizeof(bool), 1, File);
 	fread(&m_Active, sizeof(bool), 1, File);
 	fread(&m_TypeID, sizeof(size_t), 1, File);
+}
+
+void CRef::ReturnMemory(void* Mem)
+{
+}
+
+void CRef::ResetInfo()
+{
+	m_Name.clear();
+	m_RefCount = 0;
+	m_Enable = true;
+	m_Active = true;
+	m_InPool = false;
 }
 

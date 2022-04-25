@@ -4,6 +4,7 @@
 #include "Component/ColliderComponent.h"
 #include "Player2D.h"
 #include "Engine.h"
+#include "../ClientManager.h"
 
 CStaticMapObj::CStaticMapObj() :
 	m_Sprite(nullptr),
@@ -165,6 +166,29 @@ void CStaticMapObj::CollisionEndCallback(const CollisionResult& Result)
 			}
 		}
 	}
+}
+
+void CStaticMapObj::ReturnMemory(void* Mem)
+{
+	if (m_InPool)
+	{
+		ResetInfo();
+		CClientManager::GetInst()->GetStaticMapObjectPoolManager()->ReturnMemory((CStaticMapObj*)this);
+	}
+
+	else
+	{
+		delete this;
+		return;
+	}
+}
+
+void CStaticMapObj::ResetInfo()
+{
+	CGameObject::ResetInfo();
+	m_Sprite = nullptr;
+	m_CollisionID = -1;
+	m_IsFloor = false;
 }
 
 

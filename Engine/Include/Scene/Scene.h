@@ -203,7 +203,7 @@ public:
 	template <typename T>
 	T* CreateGameObject(const std::string& Name)
 	{
-		T* Obj = new T;
+		T* Obj =  new T;
 
 		Obj->SetName(Name);
 		Obj->SetScene(this);
@@ -226,6 +226,32 @@ public:
 	T* LoadGameObject()
 	{
 		T* Obj = new T;
+
+		CScene* NextScene = CSceneManager::GetInst()->GetNextScene();
+
+		if (NextScene)
+		{
+			NextScene->AddObject(Obj);
+			Obj->SetScene(NextScene);
+		}
+
+		else
+		{
+			m_ObjList.push_back(Obj);
+			Obj->SetScene(this);
+		}
+
+		if (m_Start)
+			Obj->Start();
+
+		return Obj;
+	}
+
+	template <typename T>
+	T* LoadGameObject(T* Obj)
+	{
+		if (!Obj)
+			return nullptr;
 
 		CScene* NextScene = CSceneManager::GetInst()->GetNextScene();
 

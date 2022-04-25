@@ -33,6 +33,9 @@ CSpriteComponent::CSpriteComponent(const CSpriteComponent& com) :
 
 CSpriteComponent::~CSpriteComponent()
 {
+	//if (m_InPool)
+	//	CResourceManager::GetInst()->GetSpriteComponentPoolManager()->Deallocate(this);
+
 	SAFE_DELETE(m_Animation);
 }
 
@@ -307,7 +310,8 @@ void CSpriteComponent::Load(FILE* File)
 	fread(&Length, sizeof(int), 1, File);
 	fread(MeshName, sizeof(char), Length, File);
 
-	m_Mesh = (CSpriteMesh*)m_Scene->GetResource()->FindMesh(MeshName);
+	//m_Mesh = (CSpriteMesh*)m_Scene->GetResource()->FindMesh(MeshName);
+	m_Mesh = (CSpriteMesh*)CResourceManager::GetInst()->FindMesh(MeshName);
 
 	m_Material = m_Scene->GetResource()->CreateMaterialEmpty<CMaterial>();
 

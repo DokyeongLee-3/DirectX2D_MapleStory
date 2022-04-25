@@ -9,7 +9,7 @@ class CStaticMapObj :
 {
     friend class CScene;
 
-protected:
+public:
     CStaticMapObj();
     CStaticMapObj(const CStaticMapObj& obj);
     virtual ~CStaticMapObj();
@@ -59,5 +59,8 @@ public:
     void CollisionBeginCallback(const CollisionResult& Result);
     void CollisionEndCallback(const CollisionResult& Result);
 
+public:
+    virtual void ReturnMemory(void* Mem);
+    virtual void ResetInfo();
 };
 

@@ -11,7 +11,7 @@ class CRadishMonster :
 {
     friend class CScene;
 
-protected:
+public:
     CRadishMonster();
     CRadishMonster(const CRadishMonster& obj);
     virtual ~CRadishMonster();
@@ -53,5 +53,10 @@ public:
 public:
     void CollisionBeginCallback(const CollisionResult& Result);
     void CollisionEndCallback(const CollisionResult& Result);
+
+
+public:
+    virtual void ReturnMemory(void* Mem);
+    virtual void ResetInfo();
 };
 

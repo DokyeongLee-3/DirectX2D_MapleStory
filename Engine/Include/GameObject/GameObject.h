@@ -253,6 +253,28 @@ public:
 		return Component;
 	}
 
+	template <typename T>
+	void LoadComponent(T* Component)
+	{
+		if (!Component)
+			return;
+
+		Component->SetScene(m_Scene);
+
+		Component->SetGameObject(this);
+
+		if (Component->GetComponentType() == Component_Type::ObjectComponent)
+			m_vecObjectComponent.push_back((class CObjectComponent*)Component);
+
+		else
+		{
+			m_SceneComponentList.push_back((class CSceneComponent*)Component);
+
+			if (!m_RootComponent)
+				m_RootComponent = Component;
+		}
+	}
+
 
 	// Transform 관련 함수들
 public:	
@@ -764,5 +786,7 @@ public:
 
 		m_RootComponent->AddWorldPos(x, y, z);
 	}
+
+	virtual void ResetInfo();
 };
 

@@ -11,6 +11,14 @@
 #include "Widget/DyingNoticeWindow.h"
 #include "Widget/SkillPointWindow.h"
 
+#include "ObjectPool/objectPool.h"
+
+#include <fstream>
+#include <iostream>
+
+#define USE_OBJECT_POOL
+
+
 struct MonsterInfo
 {
 	std::string Name;
@@ -85,7 +93,34 @@ private:
 	std::vector<MonsterInfo> m_vecMonsterInfo;
 	ZakumInfo					m_ZakumInfo;
 
+	CObjectPool<class CStaticMapObj>* m_StaticMapObjectPoolManager;
+	CObjectPool<class COnionMonster>* m_OnionMonsterPoolManager;
+	CObjectPool<class CRadishMonster>* m_RadishMonsterPoolManager;
+	CObjectPool<class CLowerClassBook>* m_LowerClassBookPoolManager;
+
+	std::ofstream outFile;
+
 public:
+	CObjectPool<class CStaticMapObj>* GetStaticMapObjectPoolManager()	const
+	{
+		return m_StaticMapObjectPoolManager;
+	}
+
+	CObjectPool<class COnionMonster>* GetOnionMonsterPoolManager()	const
+	{
+		return m_OnionMonsterPoolManager;
+	}
+
+	CObjectPool<class CRadishMonster>* GetRadishMonsterPoolManager()	const
+	{
+		return m_RadishMonsterPoolManager;
+	}
+
+	CObjectPool<class CLowerClassBook>* GetLowerClassBookPoolManager()	const
+	{
+		return m_LowerClassBookPoolManager;
+	}
+
 	void SetStatWindow(CStatWindow* Window)
 	{
 		m_StatWindow = Window;
